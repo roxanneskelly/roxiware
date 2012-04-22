@@ -1,0 +1,12 @@
+<div class="span-1">&nbsp;</div>
+<div class="page_content span-15">
+  <% if (can? :edit, @page) %>
+    <div rel="#overlay_page" id="edit-<%= @page.page_type %>" class="page_edit_button edit_button">&nbsp;</div>
+  <% end %>
+  <%= raw @page.content %>
+</div>
+<% if (can? :edit, @page) %>
+<%= render :partial=>"shared/page_edit" %>
+<% end %>
+
+

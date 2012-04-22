@@ -1,0 +1,33 @@
+<div class="page_edit_overlay overlay" id="page_edit_overlay">
+  <%= form_tag do %>
+    <div class="span-16 last">
+      <%= text_area_tag :content, nil, :class=>"popup_wysiwyg span-16 page_edit_content" %>
+      <div id="save_control" class="save_button right">&nbsp</div>
+    </div>
+  <% end %>
+</div>
+<script>
+$(document).bind("ready", function() {
+
+    $("div.page_edit_button[rel]").overlay( {
+         effect: 'apple',
+         onClose: function() { 
+         },
+         target: '#page_edit_overlay',
+         onBeforeLoad: function() {
+            var page_type = this.getTrigger().attr("id").split("-")[1];
+            var endpoint = "/page/"+page_type;
+            var method = "PUT";
+            $(".page_edit_overlay").popup_form(endpoint,
+                  {
+                    canEdit: true,
+                    method: method,
+                    complete: function(xhr, status) {
+                       window.location.reload();
+                    }
+                  });
+        }
+    });
+});
+</script>
+

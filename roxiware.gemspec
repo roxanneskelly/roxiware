@@ -7,14 +7,17 @@ require "roxiware/version"
 Gem::Specification.new do |s|
   s.name        = "roxiware"
   s.version     = Roxiware::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Roxiware."
-  s.description = "TODO: Description of Roxiware."
+  s.authors     = ["Roxanne Skelly"]
+  s.email       = ["roxanne@roxiware.com"]
+  s.homepage    = "http://www.roxiware.com/"
+  s.summary     = "Roxiware app development tools."
+  s.description = "Various development tools for roxiware website development."
+  s.authors     = ['Roxanne Skelly']
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
-  s.test_files = Dir["test/**/*"]
+  s.files = `git ls-files`.split("\n")
+  s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
+  s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  s.require_paths = ["lib"]
 
   s.add_dependency "rails", "~> 3.1.3"
 

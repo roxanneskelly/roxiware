@@ -1,0 +1,15 @@
+<section class="news last">
+<% if (can? :create, Roxiware::NewsItem) && @enable_news_edit %>
+  <div rel="#overlay_news" id="edit-news-item-new" class="news_add_button add_button">&nbsp;</div>
+<% end %>
+<% for news_item in @news  %>
+  <article class="news_item last" id="news_item-<%= news_item.id %>">
+    <% if (can? :edit, news_item) && @enable_news_edit %>
+      <div class="edit_controls"><div rel="#overlay_news" id="edit-news-item-<%= news_item.id %>" class="news_edit_button edit_button">&nbsp;</div><div class="news_delete_button delete_button" id="delete-news-item-<%= news_item.id %>" >&nbsp;</div></div>
+    <% end%>
+    <h1><%= news_item.headline %></h1>
+    <div class="post_date last" data="<%= news_item.post_date %>"><%= news_item.post_date.strftime("%A, %B %e, %Y") %></div>
+    <div class="content last"><%= raw news_item.content %></div>
+  </article>
+<% end %>
+</section>

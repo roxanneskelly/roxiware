@@ -35,3 +35,13 @@ end
 
 
 task :default => :test
+
+desc 'Print out all defined routes in match order, with names. Target specific controller with CONTROLLER=x.'
+task :routes do
+  Roxiware::Engine.reload_routes!
+  all_routes = Roxiware::Engine.routes.routes
+
+  require 'rails/application/route_inspector'
+  inspector = Rails::Application::RouteInspector.new
+  puts inspector.format(all_routes, ENV['CONTROLLER']).join "\n"
+end

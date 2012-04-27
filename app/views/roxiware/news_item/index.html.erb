@@ -1,0 +1,58 @@
+
+<div class="span-13 last"><%= render :partial => 'shared/news' %></div>
+
+<% if !current_user.nil? %>
+  <div class="news_item_overlay overlay" id="overlay_news">
+      <%= form_tag do%>
+        <div class="left last"><%= label_tag :headline, "Headline:", :class=>"span-3 left"%>
+           <%= text_field_tag :headline, nil, :class=>"span-12 last" %></div>
+        <div class="left last"><%= label_tag :content, "Content" %></div>
+           <%= text_area_tag :content, nil, :class=>"popup_wysiwyg news_item_content" %>
+       <% end %>
+     <div id="save_control" class="save_button right">&nbsp;</div>
+   </div>
+<% end %>
+
+<script>
+$(document).ready(function() {
+
+<% if !current_user.nil? %>
+    $("div[rel=#overlay_news]").overlay( {
+         effect: 'apple',
+         onClose: function() { 
+         },
+         onBeforeLoad: function() {
+            var news_item_id= this.getTrigger().attr("id").split("-")[3];
+            var endpoint = "/news_items";
+            var method = "POST";
+            if (news_item_id != "new") {
+               endpoint = endpoint + "/" + news_item_id;
+               method = "PUT";
+            }
+            $(".news_item_overlay").popup_form(endpoint,
+                {
+                  canEdit: true,
+                  method: method,
+                  complete: function(xhr, status) {
+                     window.location = "/news";
+                  }
+                });
+       } 
+    });
+   
+    $(".news_item .delete_button").click(function(event) {
+       var news_item = $(this).attr("id").split("-")[3];
+       endpoint = "/news_items/" + news_item + ".json";
+       $.ajax({
+                url: endpoint,
+                type: "DELETE",
+                processData: false,
+                complete: function(event) {
+                   window.location="/news/"
+                   }
+               });
+        });
+<% end %>
+});
+</script>
+

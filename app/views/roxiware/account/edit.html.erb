@@ -1,20 +1,15 @@
-<h2>Edit <%= current_user.email %></h2>
-
-<%= form_for(:user, :url => user_registration_path,  :html=> {:method => :put} ) do |f| %>
-
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, { :value=>current_user.email, :autocomplete=>"off" } %></div>
-
-  <div><%= f.label :password %> <i>(leave blank if you don't want to change it)</i><br />
-  <%= f.password_field :password, { :autocomplete=>"off"} %></div>
-
-  <div><%= f.label :password_confirmation %><br />
-  <%= f.password_field :password_confirmation, {:autocomplete=>"off"} %></div>
-
-  <div><%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i><br />
-  <%= f.password_field :current_password %></div>
-
-  <div><%= f.submit "Update" %></div>
+<h2>Edit <%= @user.username %></h2>
+<%= form_for(@user,  :url=>roxiware.edit_self_path, :method=>:put) do |f| %>
+  <div class="span-16 last">
+    <div class="span-12 last"><%= f.label :name, :class=>"span-3 left"%>
+      <%= f.text_field :name,:class=>"span-5 last" %></div>
+    <div class="span-12 last"><%= f.label :email, :class=>"span-3 left"%>
+      <%= f.text_field :email,:class=>"span-5 last" %></div>
+    <div class="span-12 last"><%= f.label :password,  :class=>"span-3 left"%>
+      <%= f.password_field :password, :class=>"span-5 last" %></div>
+    <div class="span-12 last"><%= f.label :password_confirmation, :class=>"span-3 left"%>
+      <%= f.password_field :password_confirmation, :class=>"span-5 last" %></div>
+    <div class="span-12 last"><%= f.submit "Save" %></div>
+  </div>
 <% end %>
 
-<br/><p>Delete Account? <%= link_to "Delete Account", user_registration_path, :confirm => "Are you sure?", :method => :delete %>.</p>

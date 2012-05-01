@@ -1,5 +1,5 @@
 
-<div class="span-13 last"><%= render :partial => 'shared/news' %></div>
+<div class="span-13 last"><%= render :partial => 'news' %></div>
 
 <% if !current_user.nil? %>
   <div class="news_item_overlay overlay" id="overlay_news">
@@ -23,7 +23,7 @@ $(document).ready(function() {
          },
          onBeforeLoad: function() {
             var news_item_id= this.getTrigger().attr("id").split("-")[3];
-            var endpoint = "/news_items";
+            var endpoint = "/news_item";
             var method = "POST";
             if (news_item_id != "new") {
                endpoint = endpoint + "/" + news_item_id;
@@ -33,8 +33,8 @@ $(document).ready(function() {
                 {
                   canEdit: true,
                   method: method,
-                  complete: function(xhr, status) {
-                     window.location = "/news";
+                  success: function(xhr, status) {
+                     window.location.reload();
                   }
                 });
        } 
@@ -42,13 +42,13 @@ $(document).ready(function() {
    
     $(".news_item .delete_button").click(function(event) {
        var news_item = $(this).attr("id").split("-")[3];
-       endpoint = "/news_items/" + news_item + ".json";
+       endpoint = "/news_item/" + news_item + ".json";
        $.ajax({
                 url: endpoint,
                 type: "DELETE",
                 processData: false,
                 complete: function(event) {
-                   window.location="/news/"
+                   window.location.reload();
                    }
                });
         });

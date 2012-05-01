@@ -103,8 +103,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activemodel (~> 3.1.4)
   cancan
   devise
   jquery-rails
+  rails (~> 3.1.4)
   roxiware!
   sqlite3

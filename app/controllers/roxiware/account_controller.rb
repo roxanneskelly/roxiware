@@ -1,34 +1,10 @@
 class Roxiware::AccountController < ApplicationController
-  respond_to :html
-  
-  ADMIN_EDIT_VALUES = ["username", "email", "name", "role", "password", "password_confirmation"]
-  
-  def allowed_edit_values(operation, object)
-     if can? operation, object
-        if params[:id]=="0"
-           ["email", "name", "password", "password_confirmation"]
-        else
-           result = ["username", "email", "name", "password", "password_confirmation"]
-	   result << "role" unless (object == current_user)
-	   result
-        end
-     else
-       nil
-     end
-  end
-
-  def report_error(object)
-    error_out = []
-    object.errors.each do |attribute, error|
-      error_out << [attribute.to_s(), error.to_s()]
-    end
-    return {:error=>error_out}
-  end
+  load_and_authorize_resource :except => [ :show, :edit ], :class=>"Roxiware::User"
 
   # GET - enumerate user
   def index
-    render :status => :unauthorized unless can? :read, Roxiware::User
     @robots="noindex,nofollow"
+    logger.debug(@users)
     @users = Roxiware::User.all()
   end
 
@@ -43,9 +19,8 @@ class Roxiware::AccountController < ApplicationController
 
     render :status => :not_found unless(!@user.nil?)
     render :status => :unauthorized unless can? :read, @user
-    
     respond_to do |format|
-      @user["can_edit"] = allowed_edit_values(:edit, @user)
+      @user["can_edit"] = @user.writable_attribute_names(current_user)
       @user.password=""
       @user.password_confirmation=""
       format.html { render }
@@ -64,7 +39,7 @@ class Roxiware::AccountController < ApplicationController
     render :status => :not_found unless(!@user.nil?)
     render :status => :unauthorized unless can? :read, @user
     respond_to do |format|
-      @user["can_edit"] = allowed_edit_values(:edit, @user)
+      @user["can_edit"] = @user.writable_attribute_names(current_user)
       @user.password=nil
       @user.password_confirmation=nil
       format.html { render }
@@ -74,13 +49,9 @@ class Roxiware::AccountController < ApplicationController
 
   # GET - return form for new user creation
   def new
-    render :status => :unauthorized unless can? :create, Roxiware::User
     @robots="noindex,nofollow"
-    @user = Roxiware::User.new()
-    @user.email ="email@email.com"
-    @user.username ="username"
-    @user.name = "name"
-    @user["can_edit"] = allowed_edit_values(:create, Roxiware::User)
+    @user = Roxiware::User.new({:email => "email.com", :username=>"username", :name=>"name"}, :as=>current_user.role )
+    @user["can_edit"] = @user.writable_attribute_names(current_user)
     respond_to do |format|
         format.html
         format.json { render :json => @user }
@@ -89,19 +60,11 @@ class Roxiware::AccountController < ApplicationController
 
   # POST - create a user
   def create
-    render :status => :unauthorized unless can? :create, Roxiware::User
     @robots="noindex,nofollow"
     respond_to do |format|
-      logger.debug("creating user")
-      @user = Roxiware::User.new()
+      @user = Roxiware::User.new
 	
-      update_params = {}
-      allowed_edit_values(:create, Roxiware::User).each do |attribute_name|
-        if params.has_key?(attribute_name)
-          update_params[attribute_name] = params[attribute_name]
-        end
-      end
-      if !@user.update_without_password(update_params)
+      if !@user.update_without_password(params, :as=>current_user.role)
          format.json { render :json=>report_error(@user)}
       else
          format.json { render :json => @user }
@@ -115,29 +78,21 @@ class Roxiware::AccountController < ApplicationController
     if (params[:id] == 0)
       @user = Roxiware::User.find(current_user.id)
     else 
-      @user = Roxiware::User.find(params[:id])
+      @user = Roxiware::User::find(params[:id])
     end
-    render status => :not_found unless(!@user.nil?)
+    render status => :not_found if @user.nil?
     render status => :unauthorized unless(can? :edit, @user)
 
     respond_to do |format|
-      update_params = {}
+      update_params = params
       if params.has_key?("user")
-        check_params=params["user"]
-      else
-        check_params=params
-      end
-      allowed_edit_values(:edit, @user).each.each do |attribute_name|
-        if check_params.has_key?(attribute_name)
-          update_params[attribute_name] = check_params[attribute_name]
-        end
+        update_params=params["user"]
       end
       if update_params.has_key?("password") && update_params["password"].empty?()
          update_params.delete("password")
          update_params.delete("password_confirmation")
       end
-
-      if !@user.update_without_password(update_params)
+      if !@user.update_without_password(params, :as=>current_user.role)
          format.json { render :json=>report_error(@user)}
       else
         format.json { render :json => @user }
@@ -150,15 +105,15 @@ class Roxiware::AccountController < ApplicationController
   def destroy
     @robots="noindex,nofollow"
     @user = Roxiware::User.find(params[:id])
-    render status => :not_found unless(!@user.nil?)
-    render status => :unauthorized unless(can? :destroy, @user)
-    if @user == current_user 
-      format.json { render :json=>{:error=>[nil, "You cannot delete yourself"]}}
-    end
-    if !@user.delete
-      format.json { render :json=>report_error(@user)}
-    else
-      format.json { render :json=>{}}
+    respond_to do |format|
+      if @user == current_user 
+        format.json { render :json=>{:error=>[nil, "You cannot delete yourself"]}}
+      end
+      if !@user.delete
+        format.json { render :json=>report_error(@user)}
+      else
+        format.json { render :json=>{}}
+      end
     end
   end
 end

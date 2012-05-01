@@ -16,6 +16,8 @@ gem "jquery-rails"
 # To use debugger
 # gem 'ruby-debug'
 
+gem 'rails', "~>3.1.4"
+gem 'activemodel', "~>3.1.4"
 
 gem 'devise'
 

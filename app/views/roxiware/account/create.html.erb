@@ -1,6 +1,6 @@
 <h2>Create User</h2>
 
-<%= form_for("user", :url => user_registration_path, :html => { :method => :put }) do |f| %>
+<%= form_for("user", :url => user_registration_path, :html => { :method => :post }) do |f| %>
 
   <div><%= f.label :email %><br />
   <%= f.email_field :email, { :autocomplete=>"off" } %></div>

@@ -1,0 +1,80 @@
+
+<div class="portfolio_nav">
+  <% @portfolio_entries.each() do |portfolio_entry| %>
+    <a class="button_box">
+       <div class="portfolio_entry">
+          <img src="<%= portfolio_entry.thumbnail_url %>"/>
+       </div>
+    </a>
+  <% end %>
+  <% if (can? :create, Roxiware::PortfolioEntry) %>
+    <a class="button_box">
+       <div class="portfolio_entry">
+          New Entry
+       </div>
+    </a>
+   <% end %>
+</div>
+<div class="portfolio_listing_scrollable" id="portfolio_listing_scrollable" %>
+  <div class="portfolio_listings" %>
+  <% @portfolio_entries.each() do |portfolio_entry| %>
+    <article class="portfolio_listing" rel="#<%=portfolio_entry.seo_index%>">
+      <% if (can? :edit, portfolio_entry) %>
+        <div class="edit_controls">
+        <div rel="#portfolio_edit_overlay" id="edit-portfolio-entry-<%= portfolio_entry.id %>" class="portfolio_entry_edit_button edit_button">&nbsp;</div>
+        <div id="delete-portfolio-entry-<%= portfolio_entry.id %>" class="portfolio_delete_button delete_button">&nbsp;</div> 
+      </div>
+    <% end %>
+    <h1><%= portfolio_entry.name %></h1>
+    <img src="<%= portfolio_entry.image_url %>" class="portfolio_image"/>
+    <% if !portfolio_entry.blurb.empty? %>
+       <div class="portfolio_blurb"><q><%= portfolio_entry.blurb %></q></div> 
+    <% end %>
+    <%= raw portfolio_entry.description %>
+
+    <% if !portfolio_entry.url.empty? %>
+       <%= link_to "Check It Out >", portfolio_entry.url, :class=>"portfolio_website button_box", :target=>"blank" %>
+    <% end %>
+  </article>
+ <% end %>
+  <% if (can? :create, Roxiware::PortfolioEntry) %>
+     <article class="portfolio_listing" rel="#new-entry">
+       NEW ENTRY
+       <div class="edit_controls">
+        <div rel="#portfolio_edit_overlay" id="edit-portfolio-entry-new" class="portfolio_entry_add_button add_button">&nbsp;</div>
+     </article>
+  <% end %>
+</div>
+</div>
+
+<% if (can? :edit, Roxiware::PortfolioEntry) || (can? :add, Roxiware::PortfolioEntry) %>
+  <%= render :partial => 'roxiware/portfolio_entries/editform' %>
+<% end %>
+
+<script>
+$(document).bind("ready", function() {
+   $(".portfolio_listing_scrollable").scrollable(
+            {items:".portfolio_listings",
+             onSeek:function() 
+             {
+               location.hash=this.getItems().eq(this.getIndex()).attr("rel");
+             }
+             }).navigator({navi:"div.portfolio_nav",
+                            activeClass:"button_box_selected"});
+
+     var scrollable = $(".portfolio_listing_scrollable").data("scrollable");
+     scrollable.getItems().each(function(index, elem){
+           if (location.hash == $(elem).attr("rel")) 
+           { 
+               scrollable.seekTo(index,0);
+               scrollable = null;
+           }
+      });
+      if(scrollable)
+      {
+          scrollable.begin(0);
+      }
+
+
+});
+</script>

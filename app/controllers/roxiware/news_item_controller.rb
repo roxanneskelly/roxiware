@@ -1,7 +1,5 @@
 module Roxiware
   class NewsItemController < ApplicationController
-    include Roxiware::NewsItemHelper
-
     load_and_authorize_resource :except => [ :show_seo ]
 
     # GET /news_items
@@ -9,7 +7,6 @@ module Roxiware
     def index
       @enable_news_edit = true
       @news = NewsItem.find(:all, :order=>"post_date DESC")
-      logger.debug("got news")
       @title = @title + " : News"
       @meta_description = @title
       @news.each do |news_item| 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-class AssetController < ApplicationController
+class Roxiware::AssetController < ApplicationController
   require 'RMagick'
   def upload
      render :status => 401 unless (!current_user.nil?)

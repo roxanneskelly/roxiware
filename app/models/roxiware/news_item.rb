@@ -1,7 +1,6 @@
 module Roxiware
   class NewsItem < ActiveRecord::Base
 
-    include ActiveModel::MassAssignmentSecurity
     set_table_name "news_items"
     validates_presence_of :headline
     validates_uniqueness_of :headline

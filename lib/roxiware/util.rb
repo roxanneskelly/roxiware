@@ -40,10 +40,10 @@ module Roxiware
 	   other_copy.id = my_id
 	   other_copy.save()
            my_copy
-        rescue => e
-	   object.errors.add("", e.msg)
-           object
-	end
+         end
+       rescue => e
+	 object.errors.add("", e.msg)
+         object
        end
     end
   end

@@ -1,0 +1,14 @@
+<section class="secret_pages">
+  <div>&nbsp;</div>
+  <div class="span-18 last">
+    <div class="span-7 left">&nbsp;</div>
+    <div class="span-4">
+       <div>Enter your secret code</div>
+         <%= form_tag do %>
+           <%= text_field_tag :secret, nil, :class=>"span-4" %>
+           <%= submit_tag "Submit"%>
+         <% end %>
+    </div>
+  </div>
+  <div class="span-7 last">&nbsp;</div>
+</section>

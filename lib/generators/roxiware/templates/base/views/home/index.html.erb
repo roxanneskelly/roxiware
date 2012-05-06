@@ -1,0 +1,17 @@
+<table><tr>
+<%= render :partial => 'shared/sidebar' %>
+<td class="right_home_box span-15">
+<div class="span-13 last" style="position:relative">
+<% if (can? :edit, @homebox) %>
+  <div rel="#overlay_page" id="edit-<%= @home_box.page_type %>" class="page_edit_button edit_button">&nbsp;</div>
+<% end %>
+<div class="span-14 page_content">
+<%= raw @home_box.content %>
+</div>
+</div>
+<div class="span-13 last" <%= render :partial => 'roxiware/news_item/news' %></div>
+</td>
+</tr></table>
+<% if (can? :edit, @home_box) %>
+<%= render :partial=>"roxiware/page/page_edit" %>
+<% end %>

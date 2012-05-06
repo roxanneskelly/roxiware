@@ -1,0 +1,60 @@
+<h1> Your Logo </h1>
+<% if user_signed_in? %>
+  <div id="session-greeting">Welcome <%= current_user.email %></div>
+<% end %>
+<% if user_signed_in?  || secret_authenticated? %>
+<nav class="ddsmoothmenu" style="width:auto;" id="smoothmenu1">
+  <ul>
+    <li ><%= link_to_unless_current("Home", "/") do %><span>Home</span><% end %></li>
+    <li ><%= link_to "Services", "/service/web" %>
+      <ul>
+         <li><%= link_to_unless_current("Web Design", "/service/web") do %><span>Web&nbsp;Design</span><% end %>
+         <li><%= link_to_unless_current( "Art and Photography", "/service/artistic") do%><span>Art&nbsp;and&nbsp;Photography</span><% end %>
+         <li><%= link_to_unless_current( "Writing", "/service/writing") do%><span>Writing</span><% end %>
+      </ul>
+    </li>
+    <li ><%= link_to_unless_current "Portfolio", "/portfolio" %></li>
+    <li ><%= link_to_unless_current("About Us", "/vision") do %><span>About&nbsp;Us</span><% end %>
+      <ul>
+       <li ><%= link_to_unless_current("Vision", "/vision") do %><span>Vision</span><% end %>
+       <li ><%= link_to_unless((params[:controller] == "employees"), 
+		              "People", 
+		              "/people/") do %><span>People</span><% end %></li>
+       <li ><%= link_to_unless_current("Contact", "/contact") do %><span>Contact</span><% end %>
+      </ul>
+    </li>
+    <li ><%= link_to "Account", "/account" %>
+      <ul>
+         <% if (params[:controller] != "devise/sessions") && (params[:controller] != "devise/passwords")%>
+            <% if user_signed_in? %>
+	       <li><%= link_to_unless_current( "Log Out", roxiware.destroy_user_session_path, {:method=>'delete'}) do %>Log&nbsp;Out<% end %></li>
+	       <li><%= link_to_unless_current("Edit", roxiware.edit_self_path) do %><span>Edit</span><% end %></li>
+            <% else -%>
+               <li><%= link_to_unless_current("Log In", roxiware.new_user_session_path) do  %><span>Log&nbsp;In</span><% end %> </li>
+            <% end -%>
+         <% end -%>
+       </ul>
+    </li>
+    <% if user_signed_in? %>
+      <li >
+         <%= link_to "Admin", "/admin" %>
+         <ul>
+          <li><%= link_to_unless_current("News", "/news") do %><span>News</span><% end %></li>
+            <li><%= link_to_unless_current("Manage Users", roxiware.account_index_path) do %><span>Create&nbsp;User</span><% end %> </li>
+         </ul>
+       </li>
+    <% end %>
+  </ul>
+</nav>
+<% end %>
+<script>
+$(document).bind("ready", function() {
+ddsmoothmenu.init({
+ mainmenuid: "smoothmenu1", //menu DIV id
+ orientation: 'h', //Horizontal or vertical menu: Set to "h" or "v"
+ classname: 'ddsmoothmenu', //class added to menu's outer DIV
+ //customtheme: ["#1c5a80", "#18374a"],
+ contentsource: "markup"
+});
+});
+</script>

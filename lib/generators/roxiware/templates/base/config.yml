@@ -1,0 +1,34 @@
+common:
+   copyright: Your Company
+   company_phone: Your Phone
+   company_email: your_email@your_domain.com
+   company_address: Your Address1
+   company_address2: Your Address2
+   company_city: Your City
+   company_state: State
+   company_zip: Zip
+   thumbnail_image_width: 160
+   thumbnail_image_height: 160
+   meta_keywords: meta keywords, more keywords
+   meta_description: Your Description
+   title: Your Title
+
+production:
+   upload_path: "public/assets/uploads"
+   upload_url: "/assets/uploads"
+   google_analytics_id: "UA-30294324-1"
+   google_analytics_domain: "roxiware.com"
+
+development:
+   upload_path: "app/assets/images/uploads"
+   upload_url: "/assets/uploads"
+
+test:
+   upload_path: "app/assets/images/uploads"
+   upload_url: "/assets/uploads"
+
+template:
+   upload_path: "public/assets/uploads"
+   upload_url: "/assets/uploads"
+   google_analytics_id: "Analytics ID"
+   google_analytics_domain: "Analytics Domain"

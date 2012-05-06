@@ -13,19 +13,24 @@ module Roxiware
 
     # Setup accessible (or protected) attributes for your model
 
+    attr_accessible :username, :name, :email, :password, :password_confirmation, :remember_me, :as=>nil # nil represents 'system'
     attr_accessible :name, :email, :password, :password_confirmation, :remember_me, :as=>"user"
     attr_accessible :username, :name, :email, :password, :password_confirmation, :remember_me, :role, :as=>"admin"
 
     # Activemodel, it'd be so much easier if we could actually access the names of writable attributs
     # given above in code
-    def writable_attribute_names(current_user)
-       case current_user.role
+    def writeable_attribute_names(current_user)
+       role = nil
+       if current_user.id == id
+         role = "self"
+       else
+         role=current_user.role unless current_user.nil?
+       end
+       case role
+       when "self"
+           [:username, :name, :email, :password, :password_confirmation, :remember_me]
        when "admin"
-          if current_user.id == id
-             [:username, :name, :email, :password, :password_confirmation, :remember_me]
-          else
-             [:username, :name, :email, :password, :password_confirmation, :remember_me, :role]
-          end
+           [:username, :name, :email, :password, :password_confirmation, :remember_me, :role]
        when "user"
           [:name, :email, :password, :password_confirmation, :remember_me]
        else

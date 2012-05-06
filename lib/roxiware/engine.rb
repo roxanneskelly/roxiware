@@ -1,5 +1,6 @@
 require 'rails'
 require 'devise'
+require 'cancan'
 require 'roxiware/version'
 require 'roxiware/ability'
 require 'roxiware/jquerypopupform'

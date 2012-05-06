@@ -14,7 +14,7 @@ class Roxiware::PortfolioEntriesController < ApplicationController
   # GET /portfolio_entries/:id
   # GET /portfolio_entries/:id.json
   def show
-    @portfolio_entry["can_edit"] = @portfolio_entry.writable_attribute_names(current_user)
+    @portfolio_entry["can_edit"] = @portfolio_entry.writeable_attribute_names(current_user)
     respond_to do |format|
       format.html # show.html.erb
       format.json { render :json => @portfolio_entry }
@@ -32,7 +32,7 @@ class Roxiware::PortfolioEntriesController < ApplicationController
     @portfolio_entry["description"] = "description"
     @portfolio_entry["url"] = "url"
     @portfolio_entry["blurb"] = "blurb"
-    @portfolio_entry["can_edit"] = @portfolio_entry.writable_attribute_names(current_user)
+    @portfolio_entry["can_edit"] = @portfolio_entry.writeable_attribute_names(current_user)
     
     respond_to do |format|
       format.html # new.html.erb

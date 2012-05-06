@@ -18,7 +18,7 @@ module Roxiware
     # GET /news_items/:id
     # GET /news_items/:id.json
     def show
-      @news_item["can_edit"] = @news_item.writable_attribute_names(current_user)
+      @news_item["can_edit"] = @news_item.writeable_attribute_names(current_user)
       respond_to do |format|
         format.html # show.html.erb
         format.json { render :json => @news_item }
@@ -35,7 +35,7 @@ module Roxiware
     def new
       @news_item["headline"] = "Headline"
       @news_item["content"] = "Content"
-      @news_item["can_edit"] = @news_item.writable_attribute_names(current_user)
+      @news_item["can_edit"] = @news_item.writeable_attribute_names(current_user)
       respond_to do |format|
         format.html # new.html.erb
         format.json { render :json => @news_item.to_json }

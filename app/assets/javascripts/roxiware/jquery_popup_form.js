@@ -1,4 +1,9 @@
 
+function toTitleCase(str)
+{
+   return str.replace(/_/g, " ").replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
 (function($) {
 
     $.roxiware = $.roxiware || {version: '@VERSION'};
@@ -23,7 +28,13 @@
 	    errorPopupGenerator: function(data) {
 		result = "<div class='popup_form_alert'><table>";
 	        $.each(data, function(key, value) {
-			result +="<tr><td>"+value[0]+"</td><td>"+value[1]+"</td></tr>";
+			if (value[0]) {
+                            result +="<tr><td>"+toTitleCase(value[0])+"</td><td>"+value[1]+"</td></tr>";
+                        }
+                        else {
+                          result +="<tr><td>System Error</td><td>"+value[1]+"</td></tr>";
+			}
+		       
 		    });
                 result += "</table></div>";
 		console.log(result);
@@ -124,12 +135,12 @@
 				     data: jQuery.param(self.find("form").serializeArray()),
 				     complete: conf.complete,
 				     error: function (jqXHR, textStatus, errorThrown) {
-				     self.alert([["Server Error", errorThrown]]);
+				     self.alert([[null, errorThrown]], false);
 				     },
 				     success: function (data, textStatus, jqXHR) 
 				     {
 				       if ("error" in data) {
-					   self.alert(data["error"]);
+					   self.alert(data["error"], false);
 				       }
                                        else {
 				         conf.success(data, textStatus, jqXHR);
@@ -137,10 +148,11 @@
 				 }
 				  });
 		     },
-             alert: function(data) {
-			 
+          	 alert: function(data, closeOverlay) {
 		   $.each(data, function(key, value) {
-			   self.find("input[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+			   if(value[0]) { 
+                              self.find("input[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+                           }
 		      });
 		      result =conf.errorPopupGenerator(data);
 		      self.before(result);
@@ -157,6 +169,9 @@
 				      },
                                   onClose: function() { 
 			          result.remove();
+				  if(closeOverlay) {
+                                      self.find(".close").click();
+				  }
 			      }});
 		     },
              delete: function() {
@@ -165,7 +180,9 @@
 				     type: "DELETE",
 				     processData: false,
 				     complete: conf.complete,
-				     error: conf.error,
+				     error: function (jqXHR, textStatus, errorThrown) {
+                                        self.alert([[null, errorThrown]], false);
+				     },
 				     success: conf.success
 				     });
 		     }
@@ -177,32 +194,42 @@
 	    get_endpoint += "/new";
 	}	
 	get_endpoint += ".json"
-	$.getJSON(get_endpoint,
-		  function(json_data) {
-		      $.each(json_data, function(key, value) {
-			      self.find("input[name="+key+"]").val(value);
-			      self.find("hidden[name="+key+"]").val(value);
-			      self.find("textarea[name="+key+"]").text(value);
-			      self.find("img[name="+key+"]").attr("src", value);
-			      self.find("select[name="+key+"]").val(value);
-			  });
-		      if (json_data.can_edit) {
-			  if(conf.canEdit) {
-			      self.edit(json_data.can_edit);
-			  }
-			  else {
-			      self.find("div.edit_button").css("visibility", "visible").click(function() {
-				  self.edit(json_data.can_edit);
+	    $.ajax({
+		    url:get_endpoint,
+			dataType:'json',
+			
+                        error: function (jqXHR, textStatus, errorThrown) {
+			self.alert([[null, errorThrown]], true);
+			},
+		        success:function(json_data) {
+                            if ("error" in json_data) {
+				self.alert(json_data["error"], true);
+			    }
+			    else {
+		               $.each(json_data, function(key, value) {
+			           self.find("input[name="+key+"]").val(value);
+			           self.find("hidden[name="+key+"]").val(value);
+			           self.find("textarea[name="+key+"]").text(value);
+			           self.find("img[name="+key+"]").attr("src", value);
+			           self.find("select[name="+key+"]").val(value);
 			      });
-			  }
-			  self.find("div.delete").css("visibility", "visible").click(function() {
-			      });
-		      }
-		      else
-		      {
-			  self.find("div.edit_button").css("visibility", "hidden").click();
-		      }
-		  });
+		              if (json_data.can_edit) {
+			        if(conf.canEdit) {
+			          self.edit(json_data.can_edit);
+			        }
+			        else {
+			            self.find("div.edit_button").css("visibility", "visible").click(function() {
+				      self.edit(json_data.can_edit);
+			            });
+			        }
+			        self.find("div.delete").css("visibility", "visible").click(function() {
+			          });
+		              }
+		              else {
+			        self.find("div.edit_button").css("visibility", "hidden").click();
+    		              }
+			    }
+		    }});
 		  
     }
 

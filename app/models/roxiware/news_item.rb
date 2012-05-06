@@ -15,8 +15,9 @@ module Roxiware
     attr_accessible :headline, :content, :post_date, :as=>"admin"
 
 
-    def writable_attribute_names(current_user)
-       case current_user.role
+    def writeable_attribute_names(current_user)
+       role = current_user.role unless current_user.nil?
+       case role
        when "admin"
           [:headline, :content, :post_date, :seo_index]
        when "user"

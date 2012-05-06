@@ -20,7 +20,7 @@ class Roxiware::AccountController < ApplicationController
     render :status => :not_found unless(!@user.nil?)
     render :status => :unauthorized unless can? :read, @user
     respond_to do |format|
-      @user["can_edit"] = @user.writable_attribute_names(current_user)
+      @user["can_edit"] = @user.writeable_attribute_names(current_user)
       @user.password=""
       @user.password_confirmation=""
       format.html { render }
@@ -39,7 +39,7 @@ class Roxiware::AccountController < ApplicationController
     render :status => :not_found unless(!@user.nil?)
     render :status => :unauthorized unless can? :read, @user
     respond_to do |format|
-      @user["can_edit"] = @user.writable_attribute_names(current_user)
+      @user["can_edit"] = @user.writeable_attribute_names(current_user)
       @user.password=nil
       @user.password_confirmation=nil
       format.html { render }
@@ -51,7 +51,7 @@ class Roxiware::AccountController < ApplicationController
   def new
     @robots="noindex,nofollow"
     @user = Roxiware::User.new({:email => "email.com", :username=>"username", :name=>"name"}, :as=>current_user.role )
-    @user["can_edit"] = @user.writable_attribute_names(current_user)
+    @user["can_edit"] = @user.writeable_attribute_names(current_user)
     respond_to do |format|
         format.html
         format.json { render :json => @user }

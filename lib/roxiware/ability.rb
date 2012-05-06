@@ -1,7 +1,6 @@
 
 class Ability
   include CanCan::Ability
-
   def initialize(user)
     user ||= Roxiware::User.new # guest user (not logged in)
     case user.role
@@ -14,7 +13,7 @@ class Ability
         resource==user
       end
     else
-      can :read, [Roxiware::NewsItem]
+      can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page]
     end
   end
 end

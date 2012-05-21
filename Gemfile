@@ -20,6 +20,7 @@ gem 'jquery-rails', '>= 1.0.12'
 
 gem 'rmagick'
 
+gem 'uuid'
 
 gem 'devise', :path=>"~roxie/git/devise" 
 gem 'cancan'

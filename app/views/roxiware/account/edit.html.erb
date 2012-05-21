@@ -1,8 +1,7 @@
+<div class="account_edit">
 <h2>Edit <%= @user.username %></h2>
 <%= form_for(@user,  :url=>roxiware.edit_self_path, :method=>:put) do |f| %>
   <div class="span-16 last">
-    <div class="span-12 last"><%= f.label :name, :class=>"span-3 left"%>
-      <%= f.text_field :name,:class=>"span-5 last" %></div>
     <div class="span-12 last"><%= f.label :email, :class=>"span-3 left"%>
       <%= f.text_field :email,:class=>"span-5 last" %></div>
     <div class="span-12 last"><%= f.label :password,  :class=>"span-3 left"%>
@@ -12,4 +11,4 @@
     <div class="span-12 last"><%= f.submit "Save" %></div>
   </div>
 <% end %>
-
+</div>

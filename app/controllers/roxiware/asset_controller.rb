@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 class Roxiware::AssetController < ApplicationController
   require 'RMagick'
+  require 'UUID'
   def upload
      render :status => 401 unless (!current_user.nil?)
      case params[:upload_type]
        when "image"
           upload_image_thumbprint = UUID.new.generate :compact
           # create the file path
-          path = File.join(AppConfig.upload_path, upload_image_thumbprint + ".png")
+          path = File.join(Rails.root.join(AppConfig.upload_path), upload_image_thumbprint + ".png")
           # resize
           image = Magick::Image.from_blob(params[:upload_asset].read).first
           width = (params.has_key?(:width))?(params[:width].to_i):(image.columns)
@@ -42,7 +43,7 @@ class Roxiware::AssetController < ApplicationController
           if params.has_key?(:thumbnail_width) && params.has_key?(:thumbnail_height)
 	      thumbnail_image = Magick::Image.read(path)
               image.resize_to_fit!(params[:thumnail_width], params[:thumbnail_height])
-              thumbnail_path = File.join(AppConfig.upload_path, upload_image_thumbprint + "_thumbnail.png")
+              thumbnail_path = File.join(Rails.root, AppConfig.upload_path, upload_image_thumbprint + "_thumbnail.png")
 	      image.write(thumbnail_path)
 	      result[:thumbnail_url] = File.join(AppConfig.upload_url, upload_image_thumbprint + "_thumbnail.png")
           end

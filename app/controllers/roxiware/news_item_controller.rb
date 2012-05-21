@@ -1,27 +1,34 @@
 module Roxiware
   class NewsItemController < ApplicationController
-    load_and_authorize_resource :except => [ :show_seo ]
+    load_and_authorize_resource  :except=>[:new, :index]
+
+  before_filter do
+    @role = current_user.role unless current_user.nil?
+  end
 
     # GET /news_items
     # GET /news_items.json
     def index
       @enable_news_edit = true
-      @news = NewsItem.find(:all, :order=>"post_date DESC")
+      @news = Roxiware::NewsItem.order("post_date DESC")
       @title = @title + " : News"
       @meta_description = @title
       @news.each do |news_item| 
         @meta_keywords = @meta_keywords + ", " + news_item.headline
       end 
+      respond_to do |format|
+        format.html
+	format.json { render :json=>@news }
+      end
     end
 
 
     # GET /news_items/:id
     # GET /news_items/:id.json
     def show
-      @news_item["can_edit"] = @news_item.writeable_attribute_names(current_user)
       respond_to do |format|
         format.html # show.html.erb
-        format.json { render :json => @news_item }
+        format.json { render :json => @news_item.ajax_attrs(@role) }
       end
     end
 
@@ -33,12 +40,11 @@ module Roxiware
     # GET /news_item/new
     # GET /news_item/new.json
     def new
-      @news_item["headline"] = "Headline"
-      @news_item["content"] = "Content"
-      @news_item["can_edit"] = @news_item.writeable_attribute_names(current_user)
+      authorize! :create, Roxiware::NewsItem
+      @news_item =  Roxiware::NewsItem.new({:headline=>"Headline", :content=>"Content", :post_date=>DateTime.now.utc}, :as=>@role)
       respond_to do |format|
         format.html # new.html.erb
-        format.json { render :json => @news_item.to_json }
+        format.json { render :json => @news_item.ajax_attrs(@role) }
       end
     end
 
@@ -47,9 +53,9 @@ module Roxiware
     def create
       params[:post_date] = DateTime.now
       respond_to do |format|
-        if @news_item.update_attributes(params, :as=>current_user.role)
+        if @news_item.update_attributes(params, :as=>@role)
 	   format.html { redirect_to @news_item, :notice => 'NewsItem was successfully updated.' }
-           format.json { render :json => @news_item }
+           format.json { render :json => @news_item.ajax_attrs(@role) }
         else
 	   format.html { redirect_to @news_item, :notice => 'Failure updating news_item.' }
            format.json { render :json=>report_error(@news_item)}
@@ -62,9 +68,9 @@ module Roxiware
     def update
       params[:post_date] = DateTime.now
       respond_to do |format|
-        if @news_item.update_attributes(params, :as=>current_user.role)
+        if @news_item.update_attributes(params, :as=>@role)
            format.html { redirect_to @news_item, :notice => 'NewsItem was successfully updated.' }
-           format.json { render :json => @news_item }
+           format.json { render :json => @news_item.ajax_attrs(@role) }
         else
 	   format.html { redirect_to @news_item, :notice => 'Failure updating news_item.' }
            format.json { render :json=>report_error(@news_item)}

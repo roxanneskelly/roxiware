@@ -1,0 +1,75 @@
+// Place all the styles related to the NewsItem controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+div.news_index
+{
+  padding-left:40px;
+}
+
+section.news
+{
+   padding:10px;
+}
+
+article.news_item
+{
+   position:relative;
+   margin-top:20px;
+   padding-bottom:10px;
+   padding-top:10px;
+   position:relative;
+   border-top: 2px solid #360d08;
+}
+
+article.news_item .post_date
+{
+   text-align:left;
+   padding-left:10px;
+   padding-bottom:6px;
+   font-size:75%;
+   font-style:italic;   
+}
+
+article.news_item .content
+{
+   text-align:left;
+   font-size:100%;
+   padding-left:10px;
+}
+
+
+/* the overlayed element */
+.news_item_overlay {
+}
+
+/* default close button positioned on upper right corner */
+.news_item_overlay .close {
+}
+
+
+.news_item_overlay label
+{
+   display:inline-block;
+}
+
+.news_item_overlay .news_item_content
+{
+    margin:10px;
+    height:300px;
+    width:600px;
+}
+
+.edit_controls
+{
+  float:right;
+  display:inline;
+}
+
+.news_edit_button {
+  display:inline-block;
+}
+
+.news_delete_button {
+  display:inline-block;
+}

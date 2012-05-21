@@ -1,18 +1,20 @@
-
-<div class="portfolio_nav">
-  <% @portfolio_entries.each() do |portfolio_entry| %>
-    <a class="button_box">
-       <div class="portfolio_entry">
-          <img src="<%= portfolio_entry.thumbnail_url %>"/>
-       </div>
-    </a>
-  <% end %>
+<div class="portfolio">
+<div class="portfolio_nav_page">
+  <div class="portfolio_nav">
+    <% @portfolio_entries.each() do |portfolio_entry| %>
+      <a class="button_box">
+         <div class="portfolio_entry">
+            <img src="<%= portfolio_entry.thumbnail_url %>"/>
+         </div>
+      </a>
+    <% end %>
+  </div>
   <% if (can? :create, Roxiware::PortfolioEntry) %>
-    <a class="button_box">
+    <div class="button_box" rel="#portfolio_edit_overlay" id="edit-portfolio-entry-new">
        <div class="portfolio_entry">
           New Entry
        </div>
-    </a>
+    </div>
    <% end %>
 </div>
 <div class="portfolio_listing_scrollable" id="portfolio_listing_scrollable" %>
@@ -42,6 +44,7 @@
        NEW ENTRY
        <div class="edit_controls">
         <div rel="#portfolio_edit_overlay" id="edit-portfolio-entry-new" class="portfolio_entry_add_button add_button">&nbsp;</div>
+       </div>
      </article>
   <% end %>
 </div>
@@ -50,9 +53,10 @@
 <% if (can? :edit, Roxiware::PortfolioEntry) || (can? :add, Roxiware::PortfolioEntry) %>
   <%= render :partial => 'roxiware/portfolio_entries/editform' %>
 <% end %>
-
+</div>
 <script>
 $(document).bind("ready", function() {
+  <% if @portfolio_entries.count > 0 %>
    $(".portfolio_listing_scrollable").scrollable(
             {items:".portfolio_listings",
              onSeek:function() 
@@ -62,19 +66,19 @@ $(document).bind("ready", function() {
              }).navigator({navi:"div.portfolio_nav",
                             activeClass:"button_box_selected"});
 
-     var scrollable = $(".portfolio_listing_scrollable").data("scrollable");
-     scrollable.getItems().each(function(index, elem){
-           if (location.hash == $(elem).attr("rel")) 
-           { 
-               scrollable.seekTo(index,0);
-               scrollable = null;
-           }
-      });
-      if(scrollable)
-      {
-          scrollable.begin(0);
-      }
-
+    var scrollable = $(".portfolio_listing_scrollable").data("scrollable");
+    scrollable.getItems().each(function(index, elem) {
+        if (location.hash == $(elem).attr("rel")) 
+        { 
+            scrollable.seekTo(index,0);
+            scrollable = null;
+        }
+     });
+     if(scrollable)
+     {
+         scrollable.begin(0);
+     }
+   <% end %>
 
 });
 </script>

@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency "cancan"
   s.add_dependency "jquery-rails"
   s.add_dependency "railties"
+  s.add_dependency "uuid"
 
   s.add_development_dependency "sqlite3"
 end

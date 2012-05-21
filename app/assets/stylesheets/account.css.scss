@@ -1,0 +1,15 @@
+// Place all the styles related to the Account controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+table.accounts tr th
+{
+   border-bottom: 1px solid black;
+   font-weight:900;
+}
+
+table.accounts tr td
+{
+   border-bottom: 1px solid black;
+}

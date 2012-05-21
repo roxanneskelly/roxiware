@@ -1,0 +1,50 @@
+<table class="people"><tr>
+<td class="person_directory"> 
+  <%= render :partial => 'roxiware/people/directory' %>
+</td>
+<% if !@person.nil? %>
+  <td class="person_listing">
+  <article class="span-13 person_listing">
+    <% if (can? :edit, Roxiware::Person)  %>
+      <div class="edit_controls">
+        <div rel="#person_edit_overlay" id="edit-person-<%= @person.id %>" class="person_edit_button edit_button">&nbsp;</div>
+	<% if @person.user_id.nil? %>
+          <div id="delete-person-<%= @person.id %>" class="person_delete_button delete_button">&nbsp;</div> 
+	<% end %>
+      </div>
+    <% end %>
+    <div class="social_network_icons">
+    <% website = nil
+       @person.social_networks.each do |network| %>
+       <% if network.network_type != "website" %>
+          <%= link_to network.network_url, {:target=>"blank", :class=>"social_network_link"} do %>
+             <%= image_tag("icons/social_networking/"+network.network_type+".png", :class=>"social_network_icon") %>
+          <% end %>
+       <% else 
+         website = network.network_url   
+       end %>
+    <% end %>
+    </div>
+    <img src="<%= @person.image_url %>" class="person_portrait"/>
+    <div>
+    <% if !@person.user_id.nil? 
+       user = Roxiware::User.find(@person.user_id)%>
+      <div class="person_user">Person entry for : <%= user.username %></div>
+    <% end %>
+    <div class="person_name"><%= @person.first_name %> <%= @person.last_name %></div>
+    <div class="person_role">, <%= @person.role %></div>
+    <% if !@person.email.nil? && @person.email != ""%>
+      <div><address><a href="mailto:<%= @person.email %>"><%= @person.email %></a></address></div>
+    <% end %>
+    </div>
+    <%= raw @person.bio %>
+    <% if !website.nil? %>
+       <div class="person_website"><%= link_to website, website %> </div>
+    <% end %>
+  </article>
+  </td>
+<% end %>
+</tr></table>
+<% if (can? :edit, Roxiware::Person) || (can? :add, Roxiware::Person) %>
+   <%= render :partial => 'roxiware/people/editform' %>
+<% end %>

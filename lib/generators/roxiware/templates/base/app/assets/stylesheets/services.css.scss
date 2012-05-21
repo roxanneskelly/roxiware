@@ -1,0 +1,133 @@
+// Place all the styles related to the services controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+/* the overlayed element */
+.service_edit_overlay {
+}
+
+.left_service_box
+{
+   position:relative;
+   padding-left:15px;
+   padding-right:15px;
+}
+
+article.service_listing
+{
+   display:block;
+   padding-left:10px;
+}
+
+article.service_listing h1 
+{
+   text-align:center;
+   padding:2px;
+}
+
+article.service_listing .edit_controls {
+   position: relative;
+   top:-10px;
+   left:0px;
+}
+
+article.service_summary 
+{
+   margin-top:20px;
+   margin-bottom:20px;
+   padding: 0px;
+   position:relative;
+}
+
+
+article.service_summary .edit_controls {
+   position: relative;
+   top:5px;
+   width:70px;
+   left:0px;
+   padding: 5px 5px 0px 5px;
+   o-border-radius: 5px;
+   -icab-border-radius: 5px;
+   -khtml-border-radius: 5px;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   border-radius: 5px;
+   -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -moz-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -webkit-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+}
+
+article.service_summary h1 
+{
+   text-align:center;
+   border-bottom: solid 2px #360d08;
+   padding:2px;
+}
+
+
+.service_edit_button
+{
+   display:inline-block;
+}
+.service_delete_button
+{
+   display:inline-block;
+}
+
+.service_edit_overlay label
+{
+   display:inline-block;
+}
+
+.service_edit_overlay .summary_content
+{
+    margin:10px;
+    height:100px;
+}
+
+.service_edit_overlay .description_content
+{
+    margin:10px;
+    height:220px;
+}
+
+.service_edit_overlay .upload_target
+{
+    width: 160px;
+    height: 160px;
+    margin:0px;
+}
+
+
+.service_add_button {
+    position:static;
+}
+
+td.service_directory
+{
+   border-right: solid 2px #360d08;
+   vertical-align:top;
+}
+
+td.service_listing
+{
+  vertical-align:top;
+}
+
+
+.service_directory_entry
+{
+   color: #360d08 !important;
+   font-weight:900;
+}
+
+.service_directory_entry a
+{
+   font-weight:500;
+   color: #360d08 !important;
+   width:400px !important;
+}
+
+

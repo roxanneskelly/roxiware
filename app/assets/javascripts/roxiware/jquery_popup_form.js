@@ -69,7 +69,8 @@ function toTitleCase(str)
 		 
 			 // disable inputs 
 			 self.find("input").attr("readonly","").removeClass(conf.fieldErrorClass);
-			 self.find("input[type=text]").val("").removeClass(conf.fieldErrorClass);
+			 self.find("input[type=text]").val("");
+			 self.find("input:checkbox").attr("disabled", "").removeAttr("checked").val("false");
 			 self.find("textarea").attr("readonly","").removeClass(conf.fieldErrorClass);
 			 self.find("textarea").text("").removeClass(conf.fieldErrorClass);
 			 self.find("select").attr("disabled", "").removeClass(conf.fieldErrorClass);
@@ -82,12 +83,16 @@ function toTitleCase(str)
 		     },
 
 		 edit: function(edit_fields) {
-			 console.log("setting edit fields");
 			 $.each(edit_fields, function(index,key) {
-				      console.log("setting to edit " + key);
 			           self.find("input[name="+key+"]").removeAttr("readonly");
 			           self.find("textarea[name="+key+"]").removeAttr("readonly");
 			           self.find("select[name="+key+"]").removeAttr("disabled");
+				   self.find("input:checkbox").removeAttr("disabled");
+				   self.find("input.jquerytools_date").dateinput({
+					   format: 'mm/dd/yyyy',
+					       trigger: true,
+					       min: -1
+				       });
 				   self.find("textarea.popup_wysiwyg[name="+key+"]").wysiwyg({
 				       controls: {
 				          undo: { visible: false },
@@ -128,11 +133,19 @@ function toTitleCase(str)
 			     });
 		     },
 		 save: function() {
+			 // unchecked checkboxes won't be included, so we need
+			 // to add them.
+			 var form_data = self.find("form").serializeArray();
+			 self.find("input:checkbox[checked!=checked]").each(function(index, element) {
+				 form_data.push({
+					 name: $(element).attr("name"),
+					     value:"false"});
+			     });
 			 $.ajax({
 				 url: endpoint +".json",
 				     type: conf.method,
 				     processData: false,
-				     data: jQuery.param(self.find("form").serializeArray()),
+				     data: jQuery.param(form_data),
 				     complete: conf.complete,
 				     error: function (jqXHR, textStatus, errorThrown) {
 				     self.alert([[null, errorThrown]], false);
@@ -207,7 +220,17 @@ function toTitleCase(str)
 			    }
 			    else {
 		               $.each(json_data, function(key, value) {
-			           self.find("input[name="+key+"]").val(value);
+			       console.log("setting "+key+" to "+value);
+			           self.find("input[name="+key+"]:hidden").val(value);
+			           self.find("input[name="+key+"]:text").val(value);
+			           self.find("input[name="+key+"]:password").val(value);
+			           self.find("input:checkbox[name="+key+"]").val("true").each(function(index, elem) {
+					   if (value) {
+					       $(elem).attr("checked", "checked");
+					   }
+					   else {
+					       $(elem).removeAttr("checked");
+					   }});
 			           self.find("hidden[name="+key+"]").val(value);
 			           self.find("textarea[name="+key+"]").text(value);
 			           self.find("img[name="+key+"]").attr("src", value);

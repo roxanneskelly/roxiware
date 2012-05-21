@@ -1,5 +1,9 @@
 class Roxiware::PortfolioEntriesController < ApplicationController
-  load_and_authorize_resource :except => [ :show_seo ]
+  load_and_authorize_resource :except => [:new]
+
+  before_filter do
+    @role = current_user.role unless current_user.nil?
+  end
 
   # GET /portfolio_entries
   # GET /portfolio_entries.json
@@ -14,39 +18,31 @@ class Roxiware::PortfolioEntriesController < ApplicationController
   # GET /portfolio_entries/:id
   # GET /portfolio_entries/:id.json
   def show
-    @portfolio_entry["can_edit"] = @portfolio_entry.writeable_attribute_names(current_user)
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render :json => @portfolio_entry }
+      format.json { render :json => @portfolio_entry.ajax_attrs(@role) }
     end
-  end
-
-  def show_seo
   end
 
   # GET /portfolio_entries/new
   # GET /portfolio_entries/new.json
   def new
-    @portfolio_entry["name"] = "Name"
-    @portfolio_entry["service_class"] = "web"
-    @portfolio_entry["description"] = "description"
-    @portfolio_entry["url"] = "url"
-    @portfolio_entry["blurb"] = "blurb"
-    @portfolio_entry["can_edit"] = @portfolio_entry.writeable_attribute_names(current_user)
-    
+    authorize! :create, Roxiware::PortfolioEntry
+    @portfolio_entry = Roxiware::PortfolioEntry.new({:name=>"Name", :service_class=>"web", :description=>"Description", :url=>"", :blurb=>"blurb"}, :as=>current_user.role)
     respond_to do |format|
       format.html # new.html.erb
-      format.json { render :json => @portfolio_entry.to_json }
+      format.json { render :json => @portfolio_entry.ajax_attrs(@role) }
     end
   end
 
   # POST /portfolio_entries
   # POST /portfolio_entries.json
   def create
+      uri_obj = URI
       respond_to do |format|
-        if @portfolio_entry.update_attributes(params, :as=>current_user.role)
+        if @portfolio_entry.update_attributes(params, :as=>@role)
 	   format.html { redirect_to @portfolio_entry, :notice => 'Portfolio Entry was successfully updated.' }
-           format.json { render :json => @portfolio_entry }
+           format.json { render :json => @portfolio_entry.ajax_attrs(@role) }
         else
 	   format.html { redirect_to @portfolio_entry, :notice => 'Failure updating Portfolio Entry.' }
            format.json { render :json=>report_error(@portfolio_entry)}
@@ -58,9 +54,9 @@ class Roxiware::PortfolioEntriesController < ApplicationController
   # PUT /portfolio_entries/1.json
   def update
       respond_to do |format|
-        if @portfolio_entry.update_attributes(params, :as=>current_user.role)
+        if @portfolio_entry.update_attributes(params, :as=>@role)
            format.html { redirect_to @portfolio_entry, :notice => 'Portfolio entry was successfully updated.' }
-           format.json { render :json => @portfolio_entry }
+           format.json { render :json => @portfolio_entry.ajax_attrs(@role) }
         else
 	   format.html { redirect_to @portfolio_entry, :notice => 'Failure updating Portfolio entry.' }
            format.json { render :json=>report_error(@portfolio_entry)}

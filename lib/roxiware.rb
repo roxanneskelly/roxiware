@@ -4,26 +4,38 @@ autoload :AppConfig, 'roxiware/appconfig'
 
 module Roxiware
 
-  mattr_accessor :include_portfolio
-  @@include_portfolio = false
+  mattr_accessor :enable_portfolio
+  @@enable_portfolio = false
 
-  mattr_accessor :include_news
-  @@include_news = false
+  mattr_accessor :enable_news
+  @@enable_news = false
 
-  mattr_accessor :include_services
-  @@include_services = false
+  mattr_accessor :enable_services
+  @@enable_services = false
 
-  mattr_accessor :include_gallery
-  @@include_gallery = false
+  mattr_accessor :enable_gallery
+  @@enable_gallery = false
 
-  mattr_accessor :include_appearances
-  @@include_appearances = false
+  mattr_accessor :enable_events
+  @@enable_events = false
 
-  mattr_accessor :include_employees
-  @@include_employees = false
+  mattr_accessor :enable_people
+  @@enable_people = false
 
   mattr_accessor :secret_page
   @@secret_page = nil?
+
+  mattr_accessor :galleries_per_row
+  @@galleries_per_row = 6
+
+  mattr_accessor :galleries_per_row
+  @@gallery_rows_per_page = 6
+
+  mattr_accessor :gallery_items_per_row
+  @@gallery_items_per_row = 6
+
+  mattr_accessor :gallery_rows_per_page
+  @@gallery_items_per_row = 4
 
   def self.setup
     yield self

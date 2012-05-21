@@ -1,0 +1,114 @@
+// Place all the styles related to the employees controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+/* the overlayed element */
+.person_overlay label
+{
+   display:inline-block;
+}
+
+.person_overlay .bio_content
+{
+    margin:10px;
+    height:200px;
+    width:600px;
+}
+
+img.person_portrait
+{
+
+    float:right;
+    border: solid 2px #360d08;
+}
+
+.person_overlay .upload_target
+{
+    width: 200px;
+    height: 200px;
+    margin:0px;
+}
+
+article.person_listing
+{
+    display:block;
+    padding-left:10px;
+}
+
+article.person_listing img
+{
+   padding:0px;
+}
+
+article.person_listing .person_name
+{
+   font-size:20px;
+   display:inline;
+}
+article.person_listing .person_role
+{
+   font-size:12px;
+   font-style: italic;
+   display:inline;
+}
+
+article.person_listing address
+{
+   display:inline;
+}
+
+input.person_portrait
+{
+   margin: 10px;
+    width: 200px;
+    height: 200px;
+}
+
+.person_listing .social_network_icons {
+   display: block;
+   text-align:right;
+}
+
+.person_listing .social_network_link {
+}
+
+td.person_directory
+{
+   vertical-align:top;
+   border-right: solid 2px #360d08;
+}
+
+td.person_directory nav
+{
+   padding-right:10px;
+}
+
+td.person_directory nav .person_name
+{
+   font-size:13px;
+   display:inline;
+}
+
+td.person_directory nav .role
+{
+   font-style:italic;
+   font-size:11px;
+}
+
+
+
+.person_directory_entry {
+   margin-bottom:20px;
+   margin-right:10px;
+}
+
+td.person_listing
+{
+   vertical-align:top;
+   padding:10px;
+}
+section.person_listing .person_role
+{
+   font-size:10px;
+   font-style: italic;
+   display:inline;
+}

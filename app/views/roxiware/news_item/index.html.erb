@@ -1,24 +1,26 @@
 
+<div class="news_index">
 <div class="span-13 last"><%= render :partial => 'news' %></div>
 
-<% if !current_user.nil? %>
+<% if can? :create, Roxiware::NewsItem %>
   <div class="news_item_overlay overlay" id="overlay_news">
       <%= form_tag do%>
-        <div class="left last"><%= label_tag :headline, "Headline:", :class=>"span-3 left"%>
-           <%= text_field_tag :headline, nil, :class=>"span-12 last" %></div>
-        <div class="left last"><%= label_tag :content, "Content" %></div>
-           <%= text_area_tag :content, nil, :class=>"popup_wysiwyg news_item_content" %>
+        <div class="span-16 last">
+	  <%= label_tag :headline, "Headline:", :class=>"span-3 left"%>
+          <%= text_field_tag :headline, nil, :class=>"span-12 last" %>
+          <%= text_area_tag :content, nil, :class=>"popup_wysiwyg news_item_content left last" %>
+        </div>
        <% end %>
      <div id="save_control" class="save_button right">&nbsp;</div>
    </div>
 <% end %>
+</end>
 
 <script>
 $(document).ready(function() {
 
 <% if !current_user.nil? %>
     $("div[rel=#overlay_news]").overlay( {
-         effect: 'apple',
          onClose: function() { 
          },
          onBeforeLoad: function() {

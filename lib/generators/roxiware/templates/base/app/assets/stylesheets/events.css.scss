@@ -1,0 +1,179 @@
+// Place all the styles related to the Events controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+section.events
+{
+   display:block;
+   padding-left:40px;
+   margin-top:10px;
+   margin-bottom:10px;
+   padding-right:20px;
+   text-align:left;
+}
+
+div.event
+{
+   margin:10px;
+}
+
+h3.event_title
+{
+   font-size:125%;
+   padding:2px;
+   margin:0px;
+   margin-bottom:5px !important;
+}
+
+
+div.event_start_time
+{
+   display: inline;
+   margin-left:20px;
+}
+
+div.event_location
+{
+   display:inline;
+}
+
+div.event_location a
+{
+   text-decoration:none;
+   color:#ff8080;
+}
+
+div.event_description
+{
+    margin-top:15px;
+    margin-left:20px;
+}
+
+/* the overlayed element */
+.event_overlay {
+  display:none;
+  background-image:url(/assets/overlay/overlay_background.png);
+  color:#FFFFFF;
+  width:640px;
+  padding:50px;
+  font-size:15px;
+}
+
+/* default close button positioned on upper right corner */
+.event_overlay .close {
+	       background-image:url(/assets/overlay/close.png);
+	       position:absolute; right:5px; top:5px;
+	       cursor:pointer;
+	       height:35px;
+	       width:35px;
+}
+
+
+.event_overlay label
+{
+   display:inline-block;
+}
+
+.event_overlay input.event_date
+{
+   display:inline-block;
+   padding:2px;
+}
+
+.event_overlay input.event_time
+{
+   display:inline-block;
+   padding:2px;
+}
+
+.event_overlay .event_description
+{
+    margin:10px;
+    height:300px;
+    width:600px;
+}
+
+#date_hour {
+   width:10px;
+}
+
+.timeHolder{
+	background-color: #2d2d2d;
+	border: inset 1px #404040;
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	height: 30px;
+	position: relative;
+	width: 90px;
+        display:inline-block;
+}
+
+.timeSelector{
+	background-color: #2d2d2d;
+	display: block;
+	height: 30px;
+	left: 0;
+	line-height: 30px;
+	outline: none;
+	overflow: hidden;
+	position: absolute;
+	text-indent: 10px;
+	top: 0;
+	width: 70px;
+}
+
+.timeSelector:link, .timeSelector:visited, .timeSelector:hover{
+		  color: #ffffff;
+		  outline: none;
+		  text-decoration: none;
+}
+
+.timeOptions{
+	background-color: #212121;
+	border: solid 1px #515151;
+	list-style: none;
+	left: -1px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 30px;
+	width: 90px;
+	z-index: 1;
+	overflow-y: auto;
+}
+.timeOptions li{
+	   padding: 0 7px;
+}
+.timeOptions a{
+	   border-bottom: dotted 1px #515151;
+	   display: block;
+	   outline: none;
+	   padding: 7px 0 7px 3px;
+}
+.timeOptions a:link, .timeOptions a:visited{
+	   color: #ddd;
+	   text-decoration: none;
+}
+.timeOptions a:hover{
+	   color: #EBB52D;
+}
+.timeOptions li.last a{
+	   border-bottom: none;
+}
+.timeOptions .timeDisabled{
+	   border-bottom: dotted 1px #515151;
+	   color: #999;
+	   display: block;
+	   padding: 7px 0 7px 3px;
+}
+.timeOptions .timeGroup{
+	   border-bottom: dotted 1px #515151;
+	   color: #EBB52D;
+	   display: block;
+	   font-weight: bold;
+	   padding: 7px 0 7px 3px;
+}
+.timeOptions .timeSub {
+	   padding-left: 17px;
+}

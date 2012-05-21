@@ -1,23 +1,23 @@
 <div class="account_edit_overlay overlay" id="account_edit_overlay">
   <%= form_tag do %>
-    <div class="span-16 last">
+    <div class="span-10 last">
 
       <div class="span-12 last"><%= label_tag :role, "Role", :class=>"span-3 left"%>
       <%= select_tag :role, options_for_select({"Admin"=>:admin, "User"=>:user, "Guest"=>:guest}), :class=>"span-5 last" %></div>
       <div class="span-12 last"><%= label_tag :username, "Username:", :class=>"span-3 left"%>
-      <%= text_field_tag :username, nil, :class=>"span-5 last" %></div>
+      <%= text_field_tag :username, nil, :class=>"" %></div>
 
       <div class="span-12 last"><%= label_tag :name, "Name:", :class=>"span-3 left"%>
-      <%= text_field_tag :name, nil, :class=>"span-5 last" %></div>
-
+      <%= text_field_tag :first_name, nil, :class=>"" %>
+      <%= text_field_tag :last_name, nil, :class=>"last" %></div>
       <div class="span-12 last"><%= label_tag :email, "Email:", :class=>"span-3 left"%>
-      <%= text_field_tag :email, nil, :class=>"span-5 last" %></div>
+      <%= text_field_tag :email, nil, :class=>"span-6 last" %></div>
       <div class="span-12 last"><%= label_tag :password, "Password:", :class=>"span-3 left"%>
-      <%= password_field_tag :password, nil, :class=>"span-5 last" %></div>
+      <%= password_field_tag :password, nil, :class=>"span-6 last", :autocomplete=>"off" %></div>
       <div class="span-12 last"><%= label_tag :password_confirmation, "Confirm:", :class=>"span-3 left"%>
-      <%= password_field_tag :password_confirmation, nil, :class=>"span-5 last" %></div>
+      <%= password_field_tag :password_confirmation, nil, :class=>"span-6 last" %></div>
 
-      <div id="save_control" class="save_button left last">&nbsp</div>
+      <div id="save_control" class="save_button right last">&nbsp</div>
     </div>
   <% end %>
 </div>
@@ -38,7 +38,6 @@ $(document).bind("ready", function() {
 
 
     $("div[rel=#overlay_account]").overlay( {
-         effect: 'apple',
          onClose: function() { 
          },
          target: '#account_edit_overlay',

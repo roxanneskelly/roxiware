@@ -1,0 +1,151 @@
+// Place all the styles related to the portfolio_entries controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.portfolio
+{
+  margin-left:50px;
+}
+.portfolio_overlay label
+{
+   display:inline-block;
+}
+
+.portfolio_overlay .description
+{
+    margin:10px;
+    height:200px;
+    width:600px;
+}
+
+img.portfolio_image
+{
+    margin-left:20px;
+    margin-bottom:10px;
+    float:right;
+}
+
+input.portfolio_thumbnail
+{
+    width: 64px;
+    height: 64px;
+}
+
+input.portfolio_image
+{
+    width: 300px;
+    height: 300px;
+}
+
+.portfolio_overlay .upload_target
+{
+    width: 200px;
+    height: 200px;
+    margin:10px;
+}
+
+.portfolio_overlay .upload_target img
+{
+    width: 200px;
+    height: 200px;
+}
+
+
+td.portfolio_directory
+{
+   vertical-align:top;
+   border-right: solid 2px #360d08;
+}
+
+nav.portfolio_directory .portfolio_name
+{
+   font-size:13px;
+   display:inline;
+}
+
+.portfolio_directory_entry {
+   margin-bottom:20px;
+   margin-right:10px;
+}
+
+article.portfolio_listing
+{
+   vertical-align:top;
+}
+
+
+.portfolio_listing_scrollable
+{
+   position:relative;
+   overflow:hidden;
+   width:700px;
+   height:500px;
+}
+
+.portfolio_listings
+{
+  width:20000em;
+  position:absolute;
+}
+
+.portfolio_listings article
+{
+   height:500px;
+   width:700px;
+   float:left;
+   padding:0px;
+}
+article.portfolio_listing img
+{
+   padding:0px;
+   float:right;
+}
+
+
+.portfolio_entry
+{
+   width:90px;
+   height:70px;
+   opacity:0.8;
+}
+
+a.portfolio_entry_active .portfolio_entry
+{
+   opacity:1.0;
+}
+
+div.portfolio_entry:active
+{
+}
+
+div.portfolio_nav_page
+{
+   border-bottom: solid 2px #360d08;
+   width:100%;
+   text-align:center;
+   padding-bottom:15px;
+   margin-bottom:20px;
+}
+div.portfolio_nav
+{
+   display:inline-block;
+}
+
+article.portfolio_listing h1
+{
+   font-size:2.5em;
+}
+
+div.portfolio_website 
+{
+}
+
+div.portfolio_blurb q
+{
+   font-size:0.8em;
+   color:#444;
+   font-style:italic;
+   display:block;
+   padding:10px;
+
+}

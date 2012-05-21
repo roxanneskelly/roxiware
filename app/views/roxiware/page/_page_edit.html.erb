@@ -1,5 +1,5 @@
 <div class="page_edit_overlay overlay" id="page_edit_overlay">
-  <%= form_tag do %>
+  <%= form_tag('/') do %>
     <div class="span-16 last">
       <%= text_area_tag :content, nil, :class=>"popup_wysiwyg span-16 page_edit_content" %>
       <div id="save_control" class="save_button right">&nbsp</div>
@@ -10,7 +10,6 @@
 $(document).bind("ready", function() {
 
     $("div.page_edit_button[rel]").overlay( {
-         effect: 'apple',
          onClose: function() { 
          },
          target: '#page_edit_overlay',

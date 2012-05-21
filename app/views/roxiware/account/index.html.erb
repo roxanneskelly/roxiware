@@ -1,25 +1,42 @@
-<h2>Users</h2>
+<div class="accounts span-18 last">
+  <h2>Users</h2>
 
-<table class="accounts">
-<tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>&nbsp;</th></tr>
+  <table>
+    <tr>
+       <th class="account_controls">&nbsp;</th>
+       <th class="span-2">Role</th>
+       <th class="span-4 account_username">Username</th>
+       <th class="span-4 account_username">Name</th>
+       <th class="">Email</th>
+     </tr>
 
-<% @users.each() do |user| %>
- <tr>
-<td class="span-3"><%= user.username %></td>
-<td class="span-5"><%= user.name %></td>
-<td class="span-4"><%= user.email %></td>
-<td class="span-2"><%= user.role %></td>
-<td class="span-2"><div rel="#overlay_account" id="edit-account-<%= user.id %>" class="account_edit_button edit_button">&nbsp;</div>
-<% if user != current_user %>
-<div rel="#overlay_account" id="delete-account-<%= user.id %>" class="account_delete_button delete_button">&nbsp;</div>
-<% end %>
-</td>
- </tr>
-<% end %>
-<tr><td class="span-3">&nbsp;</td>
-    <td class="span-5">&nbsp;</td>
-    <td class="span-4">&nbsp;</td>
-    <td class="span-2">&nbsp;</td>
-    <td class="span-2"><div rel="#overlay_account" id="edit-account-new" class="account_add_button add_button">&nbsp;</div></td></tr>
-</table>
+    <% @users.each() do |user| %>
+      <% if can? :read, user %>
+        <tr>
+          <td>
+            <% if can? :edit, user %>
+              <div rel="#overlay_account" id="edit-account-<%= user.id %>" class="account_edit_button edit_button">&nbsp;</div>
+            <% end %>
+            <% if can? :delete, user %>
+              <div id="delete-account-<%= user.id %>" class="account_delete_button delete_button">&nbsp;</div>
+            <% end %>
+          </td>
+          <td><%= user.role %></td>
+          <td><%= user.username %></td>
+          <td><%= user.full_name %></td>
+          <td><%= user.email %></td>
+        </tr>
+      <% end %>
+    <% end %>
+    <% if can? :create, Roxiware::User %>
+      <tr>
+        <td><div rel="#overlay_account" id="edit-account-new" class="account_add_button add_button">&nbsp;</div></td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+    <% end %>
+  </table>
+</div>
 <%= render :partial=>"account_edit" %>

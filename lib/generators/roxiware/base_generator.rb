@@ -29,7 +29,7 @@ module Roxiware
       end
 
       def install_migrations
-         environment("\nconfig.paths['db/migrate'] = Roxiware::Engine.paths['db/migrate'].existent\n")
+         environment("\n    config.paths['db/migrate'] = Roxiware::Engine.paths['db/migrate'].existent\n")
       end
 
       def add_seed

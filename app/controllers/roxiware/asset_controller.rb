@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 class Roxiware::AssetController < ApplicationController
   require 'RMagick'
-  require 'UUID'
+  require 'uuid'
   def upload
      render :status => 401 unless (!current_user.nil?)
      case params[:upload_type]

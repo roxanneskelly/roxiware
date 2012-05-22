@@ -22,5 +22,5 @@ gem 'rmagick'
 
 gem 'uuid'
 
-gem 'devise', :path=>"~roxie/git/devise" 
+gem 'devise'
 gem 'cancan'

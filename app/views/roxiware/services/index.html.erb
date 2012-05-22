@@ -1,0 +1,54 @@
+<table><tr>
+    <%= render :partial => 'shared/sidebar' %>
+<td class="left_service_box span-14">
+  <% if (can? :edit, @header) %>
+    <div rel="#overlay_page" id="edit-<%= @header.page_type %>" class="page_edit_button edit_button">&nbsp;</div>
+  <% end %>
+  <%= raw @header.content %>
+      <% if (can? :create, Roxiware::Service) %>
+        <div rel="#service_edit_overlay" id="edit-service-new" class="service_add_button button_box">Create New Service</div>
+      <% end %>
+  <div class="span-14 last">
+    <div class="span-6">
+      <% if !@services.nil?
+         num_services = @services.size
+         for service_index in (0..num_services)
+           service = @services.at(service_index) 
+           if !service.nil? %>
+             <article class="service_summary">
+               <% if (can? :edit, @service) %>
+                 <div class="edit_controls">
+		   <% if service_index > 0 %>
+                      <div id="up-service-<%= service.id %>" class="service_up_button up_button">&nbsp;</div>
+		   <% end %>
+		   <% if service_index < (num_services-1) %>
+                      <div id="down-service-<%= service.id %>" class="service_down_button down_button">&nbsp;</div>
+		   <% end %>
+                   <div rel="#service_edit_overlay" id="edit-service-<%= service.id %>" class="service_edit_button edit_button">&nbsp;</div>
+                   <div id="delete-service-<%= service.id %>" class="service_delete_button delete_button">&nbsp;</div>
+                 </div>
+               <% end %>
+	       <%= link_to ({:action=>"show_seo", :seo_index=>service.seo_index}) do %>
+               <h1><%= service.name %></h1>
+               <% end %>
+               <div><%= raw service.summary %></div>
+	       <%= link_to ("More >", {:action=>"show_seo", :seo_index=>service.seo_index}) %>
+             </article>
+             <% if service_index == ((num_services-1).to_f / 2).floor.to_i %>
+               </div>
+               <div class="span-1">&nbsp;</div>
+               <div class="span-6 last">
+             <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </td>
+</tr>
+</table>
+<% if (can? :edit, Roxiware::Service) || (can? :add, Roxiware::Service) %>
+  <%= render :partial => 'roxiware/page/page_edit' %>
+<% end %>
+<% if (can? :edit, Roxiware::Service)  %>
+  <%= render :partial => 'roxiware/services/editform' %>
+<% end %>

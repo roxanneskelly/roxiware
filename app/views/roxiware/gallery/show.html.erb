@@ -1,0 +1,130 @@
+<div class="gallery">
+<div id="gallery_name"><%= @gallery.name %></div>
+<div id="gallery_description"><%= raw @gallery.description %></div>
+<%
+gallery_pages = []
+@gallery.gallery_items.in_groups_of(Roxiware.gallery_items_per_row * Roxiware.gallery_rows_per_page, false) do |gallery_page |
+  gallery_pages << []
+  gallery_page.in_groups_of(Roxiware.gallery_items_per_row, false) do |gallery_row|
+   gallery_pages.last << gallery_row
+  end
+end
+%>
+<% if gallery_pages.size > 1 %>
+<div class="gallery_nav">
+  <a class="prev browse"><</a>
+  <div class="gallery_nav_ctrl">
+    <% (0..(gallery_pages.size-1)).each do |page_index|%>
+      <%= link_to (page_index+1), { :anchor => page_index}, {:class=>(page_index==0)?"active":""} %>
+    <% end %>
+  </div>
+  <a class="next browse">></a>
+</div>
+<% end %>
+<div id="gallery_scrollable" class="gallery_scrollable">
+  <div class="gallery_pages">
+   <% gallery_pages.each do |gallery_page| %>
+    <div class="gallery_page"><table>
+      <% gallery_page.each do |gallery_row| %>
+        <tr>
+	  <% gallery_row.each do |gallery_item| %>
+	    <td>
+                <% if !gallery_item.id.nil? %>
+		  <% if user_signed_in? %>
+                     <div class="gallery_edit_controls">
+                        <% if can? :edit, gallery_item %>
+                          <div rel="#gallery_item_edit_overlay" id="edit-gallery_item-<%= gallery_item.gallery_id %>-<%= gallery_item.id %>" class="gallery_edit_item_button edit_button">&nbsp;</div>
+                          <div id="delete-gallery_item-<%= gallery_item.gallery_id %>-<%= gallery_item.id %>" class="gallery_delete_item_button delete_button">&nbsp;</div>
+                        <% end %>
+		     </div>
+                  <% end %>
+		  <div class="gallery_item" rel="#gallery_item_overlay" id="gallery-item-<%= gallery_item.gallery_id%>-<%= gallery_item.id %>">
+	            <img src="<%= gallery_item.image_url %>" class="gallery_item_image"/>
+	            <div class="gallery_item_name"><%= gallery_item.name %></div>
+                  </div>
+		<% else %>
+                  <% if can? :create, Roxiware::GalleryItem %>
+		    <div class="gallery_edit_controls">&nbsp;</div>
+                    <div class="gallery_item" rel="#gallery_item_edit_overlay" id="gallery-item-<%= gallery_item.gallery_id%>-new">
+	              <img src="<%= gallery_item.image_url %>" class="gallery_item_image"/>
+	              <div class="gallery_item_name"><%= gallery_item.name %></div>
+                   </div>
+                <% end %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </table></div>
+   <% end %>
+  </div>
+</div>
+
+<div class="gallery_item_overlay overlay" id="gallery_item_overlay">
+  <img id="image_url" class="gallery_item_overlay_image"/>
+  <div id="title_field"><span id="name">&nbsp;</span><span id="artist">&nbsp;</span></div>
+  <div id="medium">&nbsp;</div>
+  <div id="description">&nbsp;</div>
+</div>
+</div>
+
+<script>
+ $(document).bind("ready", function() {
+    $("#gallery_scrollable").scrollable( {
+        disabledClass: "gallery_nav_disabled",
+        onSeek:function() {
+          location.hash=(this.getIndex()+1);
+        }
+    }
+    ).navigator("div.gallery_nav_ctrl");
+
+    var scrollable = $("#gallery_scrollable").data("scrollable");
+    var current_index = parseInt(location.hash.substring(1));
+    if(current_index == NaN)
+    {
+      scrollable.begin(0);
+    }
+    else {
+       scrollable.seekTo(current_index-1, 0);
+    }
+
+    $("div[rel=#gallery_item_overlay]").overlay( {
+        load:false,
+        closeOnClick:false,
+        fixed: false,
+        top: 30,
+        onBeforeLoad: function() {
+          var gallery_id = this.getTrigger().attr("id").split("-")[2];
+          var gallery_item_id = this.getTrigger().attr("id").split("-")[3];
+          // populate gallery popup
+	  
+	  $.ajax({
+		    url:"/gallery/"+gallery_id+"/item/"+gallery_item_id+".json",
+			dataType:'json',
+                        error: function (jqXHR, textStatus, errorThrown) {
+			  alert(errorThrown);
+			},
+		        success:function(json_data) {
+                            if ("error" in json_data) {
+				alert(json_data["error"]);
+			    }
+			    else {
+		               $.each(json_data, function(key, value) {
+			           $("img#image_url").attr("src", json_data["image_url"]);
+			           $("#name").text(json_data["name"]);
+                                   if(json_data["full_name"]) {
+			             $("#artist").text(", by "+json_data["full_name"]);
+                                   }
+			           $("#medium").text(json_data["medium"]);
+			           $("#description").html(json_data["description"]);
+                                   $("div[rel=#gallery_item_overlay]").getOverlay().load();
+			      });
+			    }
+		    }});
+        }
+    });
+ });
+</script>
+<%= render :partial=>"itemedit" if ((can? :edit, Roxiware::GalleryItem) || (can? :create, Roxiware::GalleryItem)) %>
+
+

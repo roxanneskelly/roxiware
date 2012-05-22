@@ -1,0 +1,62 @@
+<div class="gallery_list">
+<%
+gallery_list_pages = []
+@galleries.in_groups_of(Roxiware.galleries_per_row * Roxiware.gallery_rows_per_page, false) do |gallery_list_page |
+  gallery_list_pages << []
+  gallery_list_page.in_groups_of(Roxiware.galleries_per_row, false) do |gallery_list_row|
+   gallery_list_pages.last << gallery_list_row
+  end
+end
+%>
+
+<% if gallery_list_pages.size > 1 %>
+<div class="gallery_nav">
+  <a class="prev browse"><</a>
+  <div class="gallery_nav_ctrl">
+    <% (0..(gallery_list_pages.size-1)).each do |page_index|%>
+      <%= link_to (page_index+1), { :anchor => page_index}, {:class=>(page_index==0)?"active":""} %>
+    <% end %>
+  </div>
+  <a class="next browse">></a>
+</div>
+<% end %>
+
+<div id="gallery_scrollable" class="gallery_scrollable">
+  <div class="gallery_list_pages">
+    <% gallery_list_pages.each do |gallery_list_page| %>
+      <div class="gallery_list_page span-20"><table>
+        <% gallery_list_page.each do |gallery_list_row| %>
+         <tr>
+           <% gallery_list_row.each do |gallery| %>
+             <td>
+                 <% if !gallery.id.nil? %>
+	           <% if can? :edit, gallery %>
+		     <div>
+	               <div rel="#gallery_edit_overlay" id="edit-gallery-<%= gallery.id %>" class="gallery_edit_button edit_button">&nbsp;</div>
+                       <div id="delete-gallery-<%= gallery.id %>" class="gallery_delete_button delete_button">&nbsp;</div>
+		     </div>
+		   <% end %>
+		   <div class="gallery_list_item button_box">
+                     <%= link_to({:controller=>"gallery", :action=>"show_seo", :gallery_seo_index=>gallery.seo_index }) do %>
+                       <img src="<%= gallery.image_url %>" class="gallery_image"/>
+	               <div class="gallery_name"><%= gallery.name %></div>
+                     <% end %> 
+                   </div>
+		 <% else %>
+                   <% if can? :create, Roxiware::Gallery %>
+	             <div  rel="#gallery_edit_overlay" id="edit-gallery-new" class="gallery_list_item button_box">
+	               <div class="gallery_name"><%= gallery.name %></div>
+		     </div>
+		   <% end %>
+		 <% end %>
+	     </td>
+          <% end %>
+      </tr>
+   <% end %></table>
+   </div>
+  <% end %>
+ </div>
+</div>
+
+<%= render :partial=>"editform" if ((can? :edit, Roxiware::Gallery) || (can? :create, Roxiware::Gallery)) %>
+

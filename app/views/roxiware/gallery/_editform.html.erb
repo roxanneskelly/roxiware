@@ -1,0 +1,58 @@
+<div class="gallery_overlay overlay" id="gallery_edit_overlay">
+  <%= form_tag do%>
+    <div class="span-10">
+      <div class="left last"><%= label_tag :name, "Name:", :class=>"span-2 left"%>
+           <%= text_field_tag :name, nil, :class=>"span-8 last" %></div>
+    </div>
+    <div class="span-3 last upload_target">Upload Image
+      <input type="hidden" name="image_url" class="gallery_image"/>
+      <img name="image_url" id="overlay_image" class="gallery_image"/>
+    </div>
+    <div><%= text_area_tag :description, nil, :class=>"popup_wysiwyg span-16 bio_content" %></div>
+  <% end %>
+  <div id="save_control" class="save_button right">&nbsp;</div>
+</div>
+
+<script>
+$(document).bind("ready", function() {
+    console.log("binding ready");
+    $("div[rel=#gallery_edit_overlay]").overlay( {
+         onClose: function() { 
+         },
+         onBeforeLoad: function() {
+            console.log("before load");
+            var gallery_id= this.getTrigger().attr("id").split("-")[2];
+            var endpoint = "/gallery";
+            var method = "POST";
+            if (gallery_id != "new") {
+               endpoint = endpoint + "/" + gallery_id;
+               method = "PUT";
+            }
+            $(".gallery_overlay").popup_form(endpoint,
+                  {
+                    canEdit: true,
+                    method: method,
+                    success: function(xhr, status) {
+                       window.location = "/gallery/";
+                    },
+                    error: function(xhr, status) {
+                      window.location = "/galleries/";
+                    }
+                  });
+        }
+    });
+   
+    $(".gallery_delete_button").click(function(event) {
+          var gallery = $(this).attr("id").split("-")[2];
+          endpoint = "/gallery/"+gallery + ".json";
+          $.ajax({
+                url: endpoint,
+                type: "DELETE",
+                processData: false,
+                complete: function(event) {
+                   window.location = "/galleries/";
+                   },
+               });
+     });      
+});
+</script>

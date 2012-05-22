@@ -1,0 +1,69 @@
+<div class="events_edit_overlay overlay span-18" id="events_edit_overlay">
+<%= form_tag do%>
+  <div class="span-18 last">
+    <%= label_tag :start_time, "Start Time:", :class=>"span-3 left" %>
+    <%= text_field_tag :start_date, nil, {:class=>"events_date span-3 jquerytools_date"} %>
+    <%= select_tag :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}), :class=>"span-3" %>
+    <%= label_tag :duration, "Duration:", :class=>"span-2 left" %>
+    <%= select_tag :duration, options_for_select([""] + (1..9).collect()), :class=>"span-2" %>
+    <%= select_tag :duration_units, options_for_select({""=>:none, "Days"=>:days, "Hours"=>:hours, "Minutes"=>:minutes}), :class=>"span-2" %>
+  </div>
+  <div class="span-18 last">
+      <%= label_tag :location, "Location:", :class=>"span-3 left" %>
+      <%= text_field_tag :location, nil, :class=>"span-6 last" %>
+      <%= label_tag :location_url, "URL:", :class=>"span-2 left"  %>
+      <%= text_field_tag :location_url, nil, :class=>"span-6 last" %>
+  </div>
+  <div class="span-15 last">
+    <%= label_tag :city, "City:", :class=>"span-3 left"%>
+    <%= text_field_tag :city, nil, :class=>"span-3 left" %>
+    <%= label_tag :state, "State:", :class=>"span-2 left"%>
+    <%= text_field_tag :state, nil, :class=>"span-1 last" %>
+  </div>
+  <div class="span-15 last">
+      <%= text_area_tag :description, nil, :class=>"events_description popup_wysiwyg span-17 left last" %>
+      <div id="save_control" class="save_button left last">&nbsp</div>
+  </div>
+<% end %>
+</div>
+<script>
+$(document).bind("ready", function() {
+    $(".events_delete_button").click(function(event) {
+       var events_id = $(this).attr("id").split("-")[2];
+       endpoint = "/events/" + events_id + ".json";
+       $.ajax({
+                url: endpoint,
+                type: "DELETE",
+                processData: false,
+                complete: function(event) {
+                   window.location.reload();
+                   }
+               });
+        });
+
+
+    $("div[rel=#overlay_event]").overlay( {
+         onClose: function() { 
+         },
+         target: '#events_edit_overlay',
+         onBeforeLoad: function() {
+            var events_id = this.getTrigger().attr("id").split("-")[2];
+            var endpoint = "/events";
+            var method = "POST";
+            if (events_id != "new")
+            {
+               method = "PUT";
+               endpoint = "/events/"+events_id;
+            }
+            $(".events_edit_overlay").popup_form(endpoint,
+                  {
+                    canEdit: true,
+                    method: method,
+                    success: function(xhr, status) {
+                       window.location.reload();
+                    }
+                  });
+        }
+    });
+});
+</script>

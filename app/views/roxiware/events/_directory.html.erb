@@ -1,0 +1,40 @@
+
+<section class="events">
+<h2>Events</h2>
+<% @events.each do |event|  %>
+  <div id="event-<%= event.id %>" class="event">
+    <% if can? :edit, event %>
+       <div rel="#overlay_event" id="edit-event-<%= event.id %>" class="event_edit_button edit_button">&nbsp;</div>
+       <div id="delete-event-<%= event.id %>" class="event_delete_button delete_button">&nbsp;</div>
+    <% end%>
+    
+    <h3 class="event_title last">
+      <%= show_time = event.start.strftime("%b %e")
+          if (event.duration_units == "days" && event.duration > 0)
+  	    end_time = event.start + event.duration.days
+	    show_time = event.start.strftime("%b %e, %Y") unless end_time.year == event.start.year
+	    show_time += " - "
+	    show_time += end_time.strftime("%b %e, %Y") if event.start.month != end_time.month
+	    show_time += end_time.strftime("%e, %Y") if event.start.month == end_time.month
+          end
+          show_time %>
+      <%= ": " + event.city unless event.city.blank? %> 
+      <%= ", " + event.state unless event.state.blank? %>
+    </h3>
+      <% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
+        <div class="event_start_time last"><%= event.start.strftime("%l:%M %p") %> <%= ", " unless event.location.blank? %></div>
+      <% end %>
+    <div class="event_location">
+      <% if !event.location_url.blank? %>
+        <%= link_to event.location, event.location_url, :target=>"_blank"%>
+      <% else %>
+        <%= event.location %>
+      <% end %>
+    </div>
+    <div class="event_description last"><%= raw event.description %></div>
+  </div>
+<% end %>
+<% if can? :create, Roxiware::Event %>
+  <div rel="#overlay_event" id="edit-event-new" class="event_add_button add_button">&nbsp;</div>
+<% end %>
+</section>

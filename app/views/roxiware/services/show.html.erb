@@ -1,0 +1,19 @@
+<table class="span-18"><tr>
+<td class="service_directory span-3"><%= render :partial => 'roxiware/services/directory' %></td>
+<td class="service_listing"><% if !@service.nil? %>
+  <article class="span-12 service_listing right">
+    <% if (can? :edit, @service) %>
+      <div class="edit_controls">
+        <div rel="#service_edit_overlay" id="edit-service-<%= @service.id %>" class="service_edit_button edit_button">&nbsp;</div>
+        <div id="delete-service-<%= @service.id %>" class="service_delete_button delete_button">&nbsp;</div> 
+      </div>
+    <% end %>
+    <h1><%= @service.name %></h1>
+    <%= raw @service.description %>
+  </article>
+</td>
+</tr></table>
+  <% if (can? :edit, Roxiware::Service)  %>
+    <%= render :partial => 'roxiware/services/editform' %>
+  <% end %>
+<% end %>

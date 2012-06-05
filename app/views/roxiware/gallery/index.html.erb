@@ -1,4 +1,4 @@
-<div class="gallery_list">
+<section class="gallery_list">
 <%
 gallery_list_pages = []
 @galleries.in_groups_of(Roxiware.galleries_per_row * Roxiware.gallery_rows_per_page, false) do |gallery_list_page |
@@ -21,10 +21,10 @@ end
 </div>
 <% end %>
 
-<div id="gallery_scrollable" class="gallery_scrollable">
+<div id="gallery_list_scrollable" class="gallery_list_scrollable">
   <div class="gallery_list_pages">
     <% gallery_list_pages.each do |gallery_list_page| %>
-      <div class="gallery_list_page span-20"><table>
+      <div class="gallery_list_page"><table>
         <% gallery_list_page.each do |gallery_list_row| %>
          <tr>
            <% gallery_list_row.each do |gallery| %>
@@ -36,9 +36,9 @@ end
                        <div id="delete-gallery-<%= gallery.id %>" class="gallery_delete_button delete_button">&nbsp;</div>
 		     </div>
 		   <% end %>
-		   <div class="gallery_list_item button_box">
+		   <div class="button_box gallery_list_item">
                      <%= link_to({:controller=>"gallery", :action=>"show_seo", :gallery_seo_index=>gallery.seo_index }) do %>
-                       <img src="<%= gallery.image_url %>" class="gallery_image"/>
+                       <img src="<%= gallery.thumbnail_url %>" class="gallery_thumbnail"/>
 	               <div class="gallery_name"><%= gallery.name %></div>
                      <% end %> 
                    </div>
@@ -56,7 +56,31 @@ end
    </div>
   <% end %>
  </div>
-</div>
+</section>
+
+<script>
+ $(document).bind("ready", function() {
+    $("#gallery_list_scrollable").scrollable( {
+        disabledClass: "gallery_nav_disabled",
+        onSeek:function() {
+          location.hash=(this.getIndex()+1);
+        }
+    }
+    ).navigator("div.gallery_nav_ctrl");
+
+    var scrollable = $("#gallery_scrollable").data("scrollable");
+    if (scrollable) {
+    var current_index = parseInt(location.hash.substring(1));
+    if(current_index == NaN)
+    {
+      scrollable.begin(0);
+    }
+    else {
+       scrollable.seekTo(current_index-1, 0);
+    }
+   }
+ });
+</script>
 
 <%= render :partial=>"editform" if ((can? :edit, Roxiware::Gallery) || (can? :create, Roxiware::Gallery)) %>
 

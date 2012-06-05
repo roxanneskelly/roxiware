@@ -5,7 +5,7 @@
     <%= text_field_tag :start_date, nil, {:class=>"events_date span-3 jquerytools_date"} %>
     <%= select_tag :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}), :class=>"span-3" %>
     <%= label_tag :duration, "Duration:", :class=>"span-2 left" %>
-    <%= select_tag :duration, options_for_select([""] + (1..9).collect()), :class=>"span-2" %>
+    <%= select_tag :duration, options_for_select([""] + (1..40).collect()), :class=>"span-2" %>
     <%= select_tag :duration_units, options_for_select({""=>:none, "Days"=>:days, "Hours"=>:hours, "Minutes"=>:minutes}), :class=>"span-2" %>
   </div>
   <div class="span-18 last">
@@ -28,7 +28,7 @@
 </div>
 <script>
 $(document).bind("ready", function() {
-    $(".events_delete_button").click(function(event) {
+    $(".event_delete_button").click(function(event) {
        var events_id = $(this).attr("id").split("-")[2];
        endpoint = "/events/" + events_id + ".json";
        $.ajax({

@@ -20,7 +20,7 @@ module Roxiware
       end
 
       def add_routes
-        route('devise_for :users, :class_name=>"Roxiware::User", :module=>"devise", :path=>'account', :path_names=>{:sign_in=>"login", :sign_out=>"logout"}, :skip=>:registration')
+        route('devise_for :users, :class_name=>"Roxiware::User", :module=>"devise", :path=>"account", :path_names=>{:sign_in=>"login", :sign_out=>"logout"}, :skip=>:registration')
 
          route('mount Roxiware::Engine => "/", :as=>"roxiware"')
          route("root :to =>'home#index'")
@@ -73,7 +73,7 @@ Roxiware.setup do |config|
   config.enable_news = #{options.news?}
   config.enable_portfolio = #{options.portfolio?}
   config.enable_services = #{options.services?}
-  config.enable_eventss = #{options.events?}
+  config.enable_events = #{options.events?}
   config.enable_gallery = #{options.gallery?}
   config.secret_page = nil
   config.enable_people = #{options.people?}

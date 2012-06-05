@@ -1,6 +1,6 @@
 
 <div class="news_index">
-<div class="span-13 last"><%= render :partial => 'news' %></div>
+<div><%= render :partial => 'news' %></div>
 
 <% if can? :create, Roxiware::NewsItem %>
   <div class="news_item_overlay overlay" id="overlay_news">

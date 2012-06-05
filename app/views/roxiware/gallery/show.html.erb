@@ -1,4 +1,4 @@
-<div class="gallery">
+<section class="gallery">
 <div id="gallery_name"><%= @gallery.name %></div>
 <div id="gallery_description"><%= raw @gallery.description %></div>
 <%
@@ -58,9 +58,9 @@ end
     </table></div>
    <% end %>
   </div>
-</div>
+</section>
 
-<div class="gallery_item_overlay overlay" id="gallery_item_overlay">
+<div class="overlay gallery_item_overlay" id="gallery_item_overlay">
   <img id="image_url" class="gallery_item_overlay_image"/>
   <div id="title_field"><span id="name">&nbsp;</span><span id="artist">&nbsp;</span></div>
   <div id="medium">&nbsp;</div>
@@ -80,13 +80,11 @@ end
 
     var scrollable = $("#gallery_scrollable").data("scrollable");
     var current_index = parseInt(location.hash.substring(1));
-    if(current_index == NaN)
+    if(isNaN(current_index))
     {
-      scrollable.begin(0);
+      current_index=1;
     }
-    else {
-       scrollable.seekTo(current_index-1, 0);
-    }
+    scrollable.seekTo(current_index-1, 0);
 
     $("div[rel=#gallery_item_overlay]").overlay( {
         load:false,
@@ -117,7 +115,6 @@ end
                                    }
 			           $("#medium").text(json_data["medium"]);
 			           $("#description").html(json_data["description"]);
-                                   $("div[rel=#gallery_item_overlay]").getOverlay().load();
 			      });
 			    }
 		    }});

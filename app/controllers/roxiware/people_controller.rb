@@ -17,15 +17,19 @@ class Roxiware::PeopleController < ApplicationController
         @meta_keywords = @meta_keywords  + " " + person.last_name
       end
     end
-    first_person = @people.first
-    if (first_person.nil? || first_person.seo_index.nil?)
+    @person = @people.first
+    if (@person.nil? || @person.seo_index.nil?)
         respond_to do |format|
             format.html 
         end
     else
         respond_to do |format|
-            format.html { redirect_to :action=>'show_seo', :seo_index =>
-first_person.seo_index }
+	    if Roxiware.single_person
+                 format.html { render :action=>"show" }
+	    else
+              format.html { redirect_to :action=>'show_seo', :seo_index => @person.seo_index }
+
+            end
         end
     end
   end

@@ -25,6 +25,9 @@ module Roxiware
   mattr_accessor :secret_page
   @@secret_page = nil?
 
+  mattr_accessor :single_person	
+  @@single_person = false
+
   mattr_accessor :galleries_per_row
   @@galleries_per_row = 6
 

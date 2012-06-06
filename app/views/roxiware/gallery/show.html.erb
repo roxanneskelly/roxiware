@@ -89,7 +89,7 @@ end
     $("div[rel=#gallery_item_overlay]").overlay( {
         load:false,
         closeOnClick:false,
-        fixed: false,
+        fixed: true,
         top: 30,
         onBeforeLoad: function() {
           var gallery_id = this.getTrigger().attr("id").split("-")[2];

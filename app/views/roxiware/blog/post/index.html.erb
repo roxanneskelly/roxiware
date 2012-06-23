@@ -1,0 +1,87 @@
+
+<% if (can? :create, Roxiware::Blog::Post) && @enable_blog_edit %>
+  <div rel="#overlay_post" id="edit-post-item-new" class="post_add button_add">&nbsp;</div>
+<% end %>
+<% unless @posts.nil? %>
+    <section class="post">
+  <% @posts.each do |post|  %>
+      <article class="post" id="post-<%= post.id %>">
+	<% if (can? :edit, post) && @enable_blog_edit %>
+          <div class="post_manage_controls">
+	    <div class="post_status">
+		<%= check_box_tag :post_status, "publish", (post.post_status == "publish"), :post=>post.id %>
+                <%= label_tag :post_status, "Publish" %>
+	    </div>
+	    <div class="comment_permissions">
+              <%= label_tag :post_status, "Comments:" %>
+	      <% Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.each do |permission| %>
+		 <%=  radio_button_tag "comment_permissions-#{post.id}", permission, (post.comment_permissions == permission), :post=>post.id %>
+		 <%= label_tag "comment_permissions-#{post.id}", permission %>
+	      <% end %>
+	    </div>
+	    <div class="edit_controls">
+	      <div rel="#overlay_post" id="edit-post-item-<%= post.id %>" class="post_edit button_edit">&nbsp;</div>
+	      <div class="post_delete button_delete" id="delete-post-item-<%= post.id %>" >&nbsp;</div>
+	    </div>
+	  </div>
+	<% end %>
+	<h1><%= link_to post.post_title, post.post_link %></h1>
+	<div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%A, %B %e, %Y %I:%M %p") %></div>
+	<div class="comments_link">
+	   <%= link_to pluralize(post.comment_count, "Comment"), post.post_link %>
+        </div>
+        <a class="post_person" href="<%= people_url %>/<%= post.person.seo_index %>"><%= post.person.full_name %></a>
+	<div class="content last">
+	    <%= raw post.post_exerpt %>
+	    <div><%= link_to "More...", post.post_link %></div>
+	</div>
+      </article>
+  <% end %>
+    </section>
+    <div class="blog_nav">
+      <%= link_to("<< Newer posts", @prev_page_link, :class=>"prev_page") if @prev_page_link %>
+      <%= link_to("Older posts >>", @next_page_link, :class=>"next_page") if @next_page_link %>
+    </div>
+<% end %>
+<div class="feed_buttons">
+<a href="http://fusion.google.com/add?feedurl=AppConfig::feedburner_url"><img src="http://buttons.googlesyndication.com/fusion/add.gif" width="104" height="17" style="border:0" alt="Add to Google Reader or Homepage"/></a>
+
+<a href="http://add.my.yahoo.com/rss?url=<%= AppConfig::feedburner_url %>" title="<%= AppConfig::title %>"><img src="http://us.i1.yimg.com/us.yimg.com/i/us/my/addtomyyahoo4.gif" alt="" style="border:0"/></a>
+
+<a href="http://www.newsgator.com/ngs/subscriber/subext.aspx?url=AppConfig::feedburner_url" title="Roxanne Skelly&amp;#039;s Pen"><img src="http://www.newsgator.com/images/ngsub1.gif" alt="Subscribe in NewsGator Online" style="border:0"/></a>
+
+<a href="http://www.bloglines.com/sub/AppConfig::feedburner_url" title="Roxanne Skelly&amp;#039;s Pen" type="application/rss+xml"><img src="http://www.bloglines.com/images/sub_modern11.gif" alt="Subscribe in Bloglines" style="border:0"/></a>
+
+<a href="http://www.netvibes.com/subscribe.php?url=AppConfig::feedburner_url"><img src="http://www.netvibes.com/img/add2netvibes.gif" width="91" height="17" alt="Add to netvibes" style="border:0" /></a>
+
+<a href="<%= AppConfig::feedburner_url %>" rel="alternate" type="application/rss+xml"><img src="http://www.feedburner.com/fb/images/pub/feed-icon16x16.png" alt="&nbsp;RSS" style="vertical-align:top;border:0"/>&nbsp;Suscribe via RSS</a>
+</div>
+
+
+<%= render :partial=>"edit_post" if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) %>
+<script>
+$(document).ready(function() {
+    $("div.comment_permissions").on("change", "input[type=radio]", function() {
+       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+						type:"PUT",
+				                data: {comment_permissions:$(this).val()},
+						error: function (jqXHR, textStatus, errorThrown) {
+						    alert(errorThrown);
+                                                    window.location.reload();
+						  }
+						});
+          });
+
+    $("article.post").on("change", "input[type=checkbox]", function() {
+       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+						type:"PUT",
+				                data: {post_status:$(this).attr("checked")?"publish":"draft"},
+						error: function (jqXHR, textStatus, errorThrown) {
+						    alert(errorThrown);
+                                                    window.location.reload();
+						  }
+						});
+          });
+});
+</script>
+

@@ -8,10 +8,9 @@ class Roxiware::Person < ActiveRecord::Base
    validates_presence_of :first_name
    validates :first_name, :length=>{:minimum=>2}
    validates_uniqueness_of :first_name, :scope=>:last_name
-   @@can_edit_attrs = {}
-    validates_uniqueness_of :seo_index, :message=>"Name not sufficiently unique"
+   validates_uniqueness_of :seo_index, :message=>"Name not sufficiently unique"
 
-   edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_url, :bio, :as=>[:admin, :self, nil]
+   edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_url, :thumbnail_url, :bio, :as=>[:admin, :self, nil]
    ajax_attr_accessible :first_name, :last_name, :role, :email, :image_url, :bio, :show_in_directory
 
    def self.add_social_networks (*args)

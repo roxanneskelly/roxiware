@@ -1,0 +1,112 @@
+<section class="post">
+   <article class="post"  id="post-<%=@post.id %>">
+     <span class='st_fblike'></span>
+     <span class='st_facebook'></span>
+     <span class='st_twitter'></span>
+     <span class='st_googleplus'></span>
+     <span class='st_google_reader'></span>
+     <span class='st_tumblr'></span>
+     <span class='st_email'></span>
+     <% if (can? :edit, @post) %>
+        <div class="post_manage_controls">
+          <div class="post_status">
+	    <%= check_box_tag :post_status, "publish", (@post.post_status == "publish"), :post=>@post.id %>
+            <%= label_tag :post_status, "Publish" %>
+	  </div>
+          <div class="comment_permissions">
+            <%= label_tag :post_status, "Comments:" %>
+	    <% Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.each do |permission| %>
+	      <%=  radio_button_tag "comment_permissions-#{@post.id}", permission, (@post.comment_permissions == permission), :post=>@post.id %>
+	      <%= label_tag "comment_permissions-#{@post.id}", permission %>
+	    <% end %>
+	  </div>
+          <div class="edit_controls">
+	    <div rel="#overlay_post" id="edit-post-item-<%= @post.id %>" class="post_edit button_edit">&nbsp;</div>
+	    <div class="post_delete button_delete" id="delete-post-item-<%= @post.id %>" >&nbsp;</div>
+	  </div>
+	</div>
+     <% end%>
+     
+     <h1><%= link_to @post.post_title, @post.post_link %></h1>
+     <a class="post_person" href="<%= people_url %>/<%= @post.person.seo_index %>"><img src="<%= @post.person.thumbnail_url %>" class="person_thumbnail"/><%= @post.person.full_name %></a>
+     <div class="post_date last" data="<%= @post.post_date %>"><%= @post.post_date.localtime.strftime("%A, %B %e, %Y %I:%M %p") %></div>
+     <div class="content last"><%= raw @post.post_content %></div>
+   </article>
+   <section class="comments">
+     <% if can? :read_comments, @post %>
+       <% can_reply = can? :comment, @post 
+	  can_manage = can? :edit, @post %>
+       <% if can_reply %>
+         <%= content_tag(:div, "Reply", {:id=>"reply-to-0", :class=>"comment_reply"}) %>
+       <% end %>
+       <div class="comments">
+         <%= raw Roxiware::Blog::PostsHelper.display_comments(@comments, :allow_reply=>can_reply, :allow_edit=>can_manage) %>
+       </div>
+     <% end %>
+    </section>
+</section>
+
+
+<%= render(:partial=>"edit_post", :locals=>{:post=>@post}) if (can? :edit, @post) %>
+<div class="comment_form_template"><div class="comment_form_cancel">Cancel</div>
+  <%= form_tag blog_post_comment_index_path(@post.id) do %>
+     <%= hidden_field_tag :parent_id %>
+     <div><%= text_area_tag :comment_content, nil, :class=>"comment_form_content" %></div>
+     <% if !user_signed_in? %>
+       <div><%= label_tag :comment_author, "Name", :class=>"comment_form_author_name" %>
+            <%= text_field_tag :comment_author, nil, :class=>"comment_form_author_name" %></div>
+       <div><%= label_tag :comment_author_url, "URL", :class=>"comment_form_author_url" %>
+            <%= text_field_tag :comment_author_url, nil, :class=>"comment_form_author_url" %></div>
+       <div><%= label_tag :comment_author_email, "Email", :class=>"comment_form_author_email" %>
+            <%= text_field_tag :comment_author_email, nil, :class=>"comment_form_author_email" %><span class="comment_email_notice last">Email will not be displayed</span></div>
+     <% end %>
+     <%= submit_tag "Post" %>
+  <% end %>
+</div>
+
+<script>
+$(document).ready(function() {
+    $("div.comment_reply").click(function() {
+        $(".comment_form").remove();
+        var blog_comment_id = $(this).attr("id").split("-")[2];
+        var form_div = $(".comment_form_template").clone().addClass("comment_form").removeClass("comment_form_template").insertAfter($(this));
+        form_div.find("input[name=parent_id]").val(blog_comment_id);
+        form_div.find(".comment_form_cancel").click(function() {
+           form_div.remove();
+        });
+     });
+    $("div.comment").on("change", "input[type=checkbox]", function() {
+       var blog_comment_id = $(this).attr("comment");
+       jQuery.ajax("<%= blog_post_comment_index_path(@post.id) %>" + "/"+blog_comment_id, {
+						type:"PUT",
+				                data: {comment_status:$(this).attr("checked")?"publish":"moderate"},
+						error: function (jqXHR, textStatus, errorThrown) {
+						    alert(errorThrown);
+                                                    window.location.reload();
+						  }
+		  });
+    });
+    $("div.comment_permissions").on("change", "input[type=radio]", function() {
+       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+						type:"PUT",
+				                data: {comment_permissions:$(this).val()},
+						error: function (jqXHR, textStatus, errorThrown) {
+						    alert(errorThrown);
+                                                    window.location.reload();
+						  }
+						});
+          });
+
+    $("article.post").on("change", "input[type=checkbox]", function() {
+       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+						type:"PUT",
+				                data: {post_status:$(this).attr("checked")?"publish":"draft"},
+						error: function (jqXHR, textStatus, errorThrown) {
+						    alert(errorThrown);
+                                                    window.location.reload();
+						  }
+						});
+          });
+});
+</script>
+

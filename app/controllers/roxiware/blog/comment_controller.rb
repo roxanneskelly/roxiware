@@ -73,7 +73,11 @@ module Roxiware
 	   end
 	   respond_to do |format|
 	       if @comment.update_attributes(params, :as=>@role)
-                  @post.comment_count = @post.comments.count
+	          if(@comment.comment_status == "publish")
+		     Roxiware::Blog::Post.increment_counter(:comment_count, @post.id)
+		  else
+		     Roxiware::Blog::Post.increment_counter(:pending_comment_count, @post.id)
+		  end		  
 		  @post.save
 		  format.html { redirect_to @post.post_link, :notice => 'Blog comment was successfully created.' }
 		  format.json { render :json => @comment.ajax_attrs(@role) }
@@ -96,8 +100,17 @@ module Roxiware
 	   params[:comment_date] = DateTime.now
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
 	   logger.debug("UPDATING_ATTRIBUTES:"+params.to_json)
+	   old_comment_status = @comment.comment_status
 	   respond_to do |format|
 	       if @comment.update_attributes(params, :as=>@role)
+                  if(old_comment_status == "publish") && (@comment.comment_status != "publish")
+	             Roxiware::Blog::Post.decrement_counter(:comment_count, @post.id)
+	             Roxiware::Blog::Post.increment_counter(:pending_comment_count, @post.id)
+		  elsif (old_comment_status != "publish") && (@comment.comment_status == "publish")
+	             Roxiware::Blog::Post.decrement_counter(:pending_comment_count, @post.id)
+	             Roxiware::Blog::Post.increment_counter(:comment_count, @post.id)
+                  end
+
 		  format.json { render :json => @comment.ajax_attrs(@role) }
 	       else
 		  format.json { render :json=>report_error(@comment)}
@@ -108,13 +121,18 @@ module Roxiware
 	 # DELETE /posts/1
 	 # DELETE /posts/1.json
 	 def destroy
+	   comment_status = @comment.comment_status
 	   respond_to do |format|
 	     if !@comment.destroy
 	       format.json { render :json=>report_error(@comment)}
 	       format.html { redirect_to @comment, :alert => 'Failure deleting blog post.' }
 	     else
                @post = Roxiware::Blog::Post.find(params[:post_id])
-               @post.comment_count = @post.comments.count
+               if(@comment_status == "publish")
+	           Roxiware::Blog::Post.decrement_counter(:comment_count, @post.id)
+	       else
+		   Roxiware::Blog::Post.decrement_counter(:pending_comment_count, @post.id)
+	       end		  
                @post.save
 	       format.json { render :json=>{}}
 	     end

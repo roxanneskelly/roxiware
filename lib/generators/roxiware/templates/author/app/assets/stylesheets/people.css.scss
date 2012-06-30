@@ -1,0 +1,68 @@
+// Place all the styles related to the services controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+/* the overlayed element */
+.people
+{
+   
+}
+
+table.people td.person_directory
+{
+  border-right:solid 2px black;
+}
+
+table.people td nav
+{
+  margin-left:10px;
+}
+
+table.people td.person_listing
+{
+  padding:10px;
+}
+
+img.person_portrait
+{
+
+    float:right;
+    border: solid 2px black;
+    padding:0px;
+    width: 200px;
+    height: 200px;
+    margin: 10px;
+}
+input.person_portrait
+{
+    width: 200px;
+    height: 200px;
+}
+
+.person_thumbnail
+{
+    width: 48px;
+    height: 48px;
+}
+
+
+article.person_listing .person_name
+{
+   font-size:20px;
+   display:inline;
+}
+article.person_listing .person_role
+{
+   font-size:12px;
+   font-style: italic;
+   display:inline;
+}
+
+article.person_listing address
+{
+   display:inline;
+}
+
+.person_listing .social_network_icons {
+   display: block;
+   text-align:right;
+}

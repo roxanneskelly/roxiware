@@ -1,0 +1,38 @@
+// Place all the styles related to the gallery controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+.account_login
+{
+   margin-left:40px;
+}
+
+
+.accounts
+{
+  margin-left: 40px;
+}
+.accounts table
+{
+}
+.accounts td
+{
+  padding-left:10px;
+  padding-right:10px;
+}
+.accounts th
+{
+  padding-left:10px;
+  padding-right:10px;
+}
+.accounts .account_controls
+{
+  width:40px;
+}
+
+.accounts tr:nth-child(even) {background: #EEE}
+
+.account_edit
+{
+  margin-left: 40px;
+}

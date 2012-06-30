@@ -1,0 +1,37 @@
+<% unless @calendar_posts.blank? %>
+  <nav class="widget calendar_nav">
+    <div class="calendar_nav_title">Archive</div>
+    <ul>
+      <% @calendar_posts.each do |year, year_posts| %>
+        
+        <li class="calendar_nav_year calendar_nav_hidden"><a>
+	    <%= year %> (<%= year_posts[:count]%>)
+	      <% if (year_posts[:unpublished_count] > 0) %>
+	        <span class="post_unpublished">(<%= year_posts[:unpublished_count] %>)</span>
+              <% end %>
+	  </a>
+	  <ul class="calendar_nav_months">
+	    <% year_posts[:monthly].each do |month, month_posts| %>
+	      <li class="calendar_nav_month calendar_nav_hidden"><a><%= month %> (<%= month_posts[:count] %>)
+                <% if (month_posts[:unpublished_count] > 0) %>
+	           <span class="post_unpublished">(<%= month_posts[:unpublished_count] %>)</span>
+                 <% end %>
+		</a>
+	        <ul class="calendar_nav_posts">
+		  <% month_posts[:posts].each do |post| %>
+                      <li><%= link_to post[:title], post[:link], :class=>post[:published]?"":"post_unpublished" %></li>
+		  <% end %>
+	        </ul>
+	      </li>
+	    <% end %>
+	  </ul>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+  <script>
+     $(".calendar_nav li a").click(function(){
+       $(this).parent().toggleClass("calendar_nav_hidden");
+     });
+  </script>
+<% end %>

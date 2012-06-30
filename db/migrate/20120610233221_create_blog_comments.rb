@@ -13,6 +13,7 @@ class CreateBlogComments < ActiveRecord::Migration
       t.timestamps
     end
     add_column :blog_posts, :comment_count, :integer, :default=>0
+    add_column :blog_posts, :pending_comment_count, :integer, :default=>0
     add_index :blog_comments, :person_id
     add_index :blog_comments, :post_id
   end

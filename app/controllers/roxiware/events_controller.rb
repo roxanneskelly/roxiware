@@ -4,6 +4,7 @@ class Roxiware::EventsController < ApplicationController
   load_and_authorize_resource :except=>[:index, :new]
   
   before_filter do
+    @role = "guest"
     @role = current_user.role unless current_user.nil?
   end
 

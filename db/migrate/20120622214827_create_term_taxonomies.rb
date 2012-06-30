@@ -1,6 +1,6 @@
-class CreateBlogTermTaxonomies < ActiveRecord::Migration
+class CreateTermTaxonomies < ActiveRecord::Migration
   def change
-    create_table :blog_term_taxonomies do |t|
+    create_table :term_taxonomies do |t|
       t.string :name, :null=>false
       t.string :seo_index, :null=>false
       t.text :description

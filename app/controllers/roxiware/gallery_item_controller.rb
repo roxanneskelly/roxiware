@@ -3,6 +3,7 @@ class Roxiware::GalleryItemController < ApplicationController
   load_and_authorize_resource :except=>[:new, :create]
 
   before_filter do
+    @role = "guest"
     @role = current_user.role unless current_user.nil?
   end
 

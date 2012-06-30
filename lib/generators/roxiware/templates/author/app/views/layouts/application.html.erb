@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+  <meta name="description" content="<%= @meta_description %>"/>
+  <meta name="keywords" content="<%= @meta_keywords %>"/>
+  <meta name="robots" content="<%= @robots %>" />
+  <title><%= @title %></title>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <!--[if lt IE 9]> 
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> 
+  <![endif]-->
+
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag "/assets/icons/favicon.ico"%>
+  <%= render :partial=>'roxiware/layouts/ga' %>
+
+   <script type="text/javascript">var switchTo5x=true;</script>
+   <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+   <script type="text/javascript">stLight.options({publisher: "ur-ca989226-25fa-9b19-1a62-5e8eb5c8abc6"}); </script>
+
+</head>
+<body class="application_body">
+  <div id="mainBody">
+    <header class="main_header">
+      <%= render :partial => 'shared/header' %>
+    </header>
+    <div id="layout_body">
+      <div id="flash_section">
+	<% if (!flash[:notice].nil?) && (flash[:notice].length > 0) %>
+	  <div class="notice-flash"><%= flash[:notice] %></div>
+	<% end %>
+	<% if (!flash[:alert].nil?) && (flash[:alert].length > 0) %>
+	  <div class="alert-flash"><%= flash[:alert] %></div>
+	<% end %>
+	<% if (!flash[:error].nil?) && (flash[:error].length > 0) %>
+	<div class="error-flash"><%= flash[:error] %></div>
+	<% end %>
+      </div>
+      <div id="content_section">
+	<% unless @left_widgets.blank? %>
+	  <div id="left_bar">
+	    <% @left_widgets.each do |widget| %>
+	       <%= render :partial => widget %>
+	    <% end %>
+	  </div>
+	<% end %>
+	<div id="center_content">
+	  <%= yield %>
+	</div>
+	<% unless @right_widgets.blank? %>
+	  <div  id="right_bar">
+	    <% @right_widgets.each do |widget| %>
+	       <%= render :partial => widget %>
+	    <% end %>
+	  </div>
+	<% end %>
+      </div>
+    </div>
+    <footer class="main_footer">
+      <%= render :partial => 'shared/footer' %>
+    </footer>
+  </div>
+
+  <!--[if IE]> 
+  <script>
+  /* IE bug where clicks on contained elements don't set container to 'active' */
+  $(document).bind("ready", function() {
+     $(".button_box").bind("mousedown", function() {
+	$(this).addClass("button_box_pressed");
+     });
+     $(".button_box").bind("mouseleave", function() {
+	$(this).removeClass("button_box_pressed");
+     });
+     $(".button_box").bind("mouseup", function() {
+	$(this).removeClass("button_box_pressed");
+     });
+  });
+  </script>
+  <![endif]-->
+</body>
+
+</html>

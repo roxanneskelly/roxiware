@@ -6,7 +6,12 @@ module Roxiware
 	 before_filter do
 	   @role = "guest"
 	   @role = current_user.role unless current_user.nil?
+
+	   @categories = Hash[Roxiware::Terms::Term.categories().map {|category| [category.id, category]}]
 	 end
+	 
+
+	 before_filter :add_nav, :only=>[:index_by_date, :show_by_title]
 
 	 def index_by_date
 	   @enable_blog_edit = true
@@ -32,7 +37,20 @@ module Roxiware
 				  -1, -1, -1)
               conditions[:post_date] =start_date..end_date
 	   end
-           @posts = Roxiware::Blog::Post.visible(@role, person_id).where(conditions).order("post_date DESC").limit(num_posts+1).offset(num_posts*(page-1))
+
+	   if params.has_key?(:category)
+              conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy::CATEGORY_ID, :seo_index=>params[:category]}
+	   end
+	   if params.has_key?(:tag)
+              conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy::TAG_ID, :seo_index=>params[:tag]}
+	   end
+	   if conditions.has_key?(:terms)
+	     @posts = Roxiware::Blog::Post.joins(:terms).visible(@role, person_id)
+	   else 
+	     @posts = Roxiware::Blog::Post.visible(@role, person_id)
+	   end
+
+           @posts = @posts.includes(:term_relationships, :terms).where(conditions).order("post_date DESC").limit(num_posts+1).offset(num_posts*(page-1))
 
            if (@posts.length == num_posts+1)
 	      @posts.pop
@@ -45,16 +63,20 @@ module Roxiware
 
 	   @title = @title + " : Blog"
 	   @meta_description = @title
-	   clean_posts = []
 	   @posts.each do |post| 
 	     @meta_keywords = @meta_keywords + ", " + post.post_title
-	     clean_posts << post.ajax_attrs(@role)
 	   end 
 	   
 
 	   respond_to do |format|
 	     format.html {render :action=>"index"}
-	     format.json { render :json => clean_posts }
+	     format.json do
+                clean_posts = []
+                @posts.each do |post| 
+                  clean_posts << post.ajax_attrs(@role)
+	        end 
+                render :json => clean_posts 
+	     end
              format.rss { render :layout => false, :action=>"index" }
 	   end
 	 end
@@ -62,6 +84,7 @@ module Roxiware
 	 # GET /posts/1
 	 # GET /posts/1.json
 	 def show_by_title
+	   @enable_blog_edit = true
 	   @post = Roxiware::Blog::Post.where(:guid=>request.env['REQUEST_PATH']).first
 	   raise ActiveRecord::RecordNotFound if @post.nil?
 	   authorize! :read, @post
@@ -143,6 +166,7 @@ module Roxiware
 
 	 # POST /posts
 	 # POST /posts.json
+
 	 def create
 	   params[:post_date] = DateTime.now
 	   @post = Roxiware::Blog::Post.new({:person_id=>current_user.person.id, 
@@ -185,9 +209,6 @@ module Roxiware
 	 # PUT /posts/1.json
 	 def update
 	   respond_to do |format|
-	       if(params[:format] =="json")
-                 @post.post_status="draft"
-	       end
 	       if @post.update_attributes(params, :as=>@role)
 		  format.json { render :json => @post.ajax_attrs(@role) }
 	       else
@@ -225,6 +246,47 @@ module Roxiware
 	     end
 	   end
 	 end
+
+	 private
+
+	   def add_nav
+	     raw_calendar_posts = Roxiware::Blog::Post.order("post_date DESC").select("post_title, post_date, post_link, post_status")
+	     
+	     @calendar_posts = {}
+             raw_calendar_posts = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
+
+	     published_post_ids = []
+
+	     raw_calendar_posts.each do |post|
+	       year = post.post_date.year
+	       month = post.post_date.strftime("%B")
+	       @calendar_posts[year] ||= {:count=>0, :unpublished_count=>0, :monthly=>{}}
+	       @calendar_posts[year][:monthly][month] ||= {:count=>0, :unpublished_count=>0, :posts=>[]}
+	       @calendar_posts[year][:monthly][month][:posts] << {:title=>post.post_title, :published=>(post.post_status == "publish"), :link=>post.post_link}
+	       if post.post_status == "publish"
+                  @calendar_posts[year][:count] += 1
+	          @calendar_posts[year][:monthly][month][:count] += 1
+		  published_post_ids << post.id
+               elsif can? :edit, post
+                  @calendar_posts[year][:unpublished_count] += 1
+	          @calendar_posts[year][:monthly][month][:unpublished_count] += 1
+               end
+	     end
+
+             @category_counts = {}
+
+	     print "PUBLISHED POST IDS " + published_post_ids.to_json + "\n\n"
+	     Roxiware::Terms::TermRelationship.where(:term_id=>@categories.keys, 
+	                                             :term_object_id=>published_post_ids, 
+						     :term_object_type=>"Roxiware::Blog::Post").each do |relationship|
+	        @category_counts[relationship.term_id] ||= 0
+	        @category_counts[relationship.term_id] += 1
+	     end
+
+
+	     @left_widgets <<"roxiware/blog/post/calendar_nav"
+	     @left_widgets <<"roxiware/blog/post/categories_nav"
+	  end
       end
    end
 end

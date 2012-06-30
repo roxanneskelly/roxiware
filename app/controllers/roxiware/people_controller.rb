@@ -3,6 +3,7 @@ class Roxiware::PeopleController < ApplicationController
   load_and_authorize_resource :except => [ :show_seo, :new ]
 
   before_filter do
+    @role = "guest"
     @role = current_user.role unless current_user.nil?
   end
 
@@ -61,7 +62,14 @@ class Roxiware::PeopleController < ApplicationController
   def show_seo
     people = Roxiware::Person.all
     @people = people.select { |person| can? :read, person }
-    @person = Roxiware::Person.where(:seo_index => params[:seo_index]).first
+    if params[:seo_index].blank?
+      people.each do |person|
+         print person.to_json
+      end
+      @person = people.select { |person| person.show_in_directory }.first
+    else
+      @person = Roxiware::Person.where(:seo_index => params[:seo_index]).first
+    end
     raise ActiveRecord::RecordNotFound if @person.nil?
     authorize! :read, @person
     @title = @title + ": People : " + @person.first_name + " " + @person.last_name

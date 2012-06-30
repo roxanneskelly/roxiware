@@ -7,6 +7,7 @@ module Roxiware
        desc "Generate an artist roxiware website layout, with authentication, page display"
 
        class_option :news, :desc => "Enable news", :type => :boolean, :default => true
+       class_option :blog, :desc => "Enable blog", :type => :boolean, :default => false
        class_option :portfolio, :desc => "Enable portfolio", :type => :boolean, :default => false
        class_option :services, :desc => "Enable services", :type => :boolean, :default => false
        class_option :events, :desc => "Enable events", :type => :boolean, :default => true
@@ -17,6 +18,7 @@ module Roxiware
         insert_into_file "app/assets/javascripts/application.js", "//= require roxiware\n", :after => "jquery_ujs\n"
 	insert_into_file "app/assets/stylesheets/application.css", " *= require 'roxiware'\n", :after => "require_self\n"
         directory 'app/assets', 'app/assets'
+        insert_into_file "config/application.rb", "require 'jquery-rails'\n", :after => "require 'rails/all'\n"
       end
 
       def add_routes
@@ -71,6 +73,7 @@ APPHELPER
 	   data = <<INITIALIZER
 Roxiware.setup do |config| 
   config.enable_news = #{options.news?}
+  config.enable_blog = #{options.blog?}
   config.enable_portfolio = #{options.portfolio?}
   config.enable_services = #{options.services?}
   config.enable_events = #{options.events?}

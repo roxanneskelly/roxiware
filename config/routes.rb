@@ -19,10 +19,12 @@ Roxiware::Engine.routes.draw do
     get "/portfolio" =>"portfolio_entries#index"
   end
 
-  if Roxiware.enable_people
-    get "/people/" => "people#index"
-    get "/people/:seo_index" => "people#show_seo"
-    resources :people, :path=>"/person"
+  get "/people/" => "people#index"
+  get "/people/:seo_index" => "people#show_seo"
+  resources :people, :path=>"/person"
+
+  if Roxiware.single_person
+    get "/about" => "people#show_seo"
   end
 
   if Roxiware.enable_services
@@ -49,4 +51,16 @@ Roxiware::Engine.routes.draw do
     end
   end
 
+  if Roxiware.enable_blog
+    namespace :blog do
+      resources :post do
+         resources :comment
+      end
+      get "(:year(/:month(/:day)))" => "post#index_by_date"
+      get ":year/:month/:day/:title"=> "post#show_by_title"
+      get ":year/:month/:day/:title/edit" => "post#edit_by_title"
+      put ":year/:month/:day/:title" => "post#update_by_title"
+      delete ":year/:month/:day/:title" => "post#destroy_by_title"
+    end
+  end
 end

@@ -1,4 +1,5 @@
 require 'set'
+require 'sanitize'
 module Roxiware
   module BaseModel 
 
@@ -38,35 +39,40 @@ module Roxiware
 	  if as_options.empty?
 	    as_options << :default
 	  end
-	  logger.debug("as options " + as_options.to_json)
           @ajax_attrs ||= {}
           as_options.each do |as_option|
-            @ajax_attrs[as_option.to_s] ||= []
-            @ajax_attrs[as_option.to_s] |= args.collect {|arg| arg.to_s}
+            @ajax_attrs[as_option.to_s] ||= Set.new([])
+            @ajax_attrs[as_option.to_s].merge(args.collect {|arg| arg.to_s})
           end
 	end
       end
 
       def ajax_attrs(role)
-        print "role is #{role}\n"
 	role ||= "default"
-	valid_read_keys = []
-        print "role is #{role}\n"
+	valid_read_keys = Set.new([])
+
 	
-	valid_write_keys = self.class.can_edit_attrs[role] || []
+	valid_write_keys = self.class.can_edit_attrs[role].clone || Set.new([])
 	valid_read_keys |= self.class.ajax_attrs[role] if self.class.ajax_attrs.has_key?(role)
-	valid_read_keys |= self.class.ajax_attrs["default"] if self.class.ajax_attrs.has_key?("default")
+	valid_read_keys |= self.class.ajax_attrs["default"].to_a if self.class.ajax_attrs.has_key?("default")
 
 	# user can of course read keys that they can write
 	valid_read_keys |= valid_write_keys
 
         attrs = {}
         valid_read_keys.each do |key|
-          attrs[key] = eval("self.#{key}")
+	  value = eval("self.#{key}")
+	  if value.class == Array
+	     attrs[key+"[]"] = value
+	     if valid_write_keys.include?(key)
+		valid_write_keys.delete(key)
+	        valid_write_keys << key+"[]"
+	     end
+          else
+	     attrs[key] = value
+	  end
         end
-        attrs["can_edit"] = valid_write_keys
-	print "ajax attrs according to #{role}\n"
-	print attrs.to_json + "\n\n"
+        attrs["can_edit"] = valid_write_keys.to_a
         attrs
       end
   end

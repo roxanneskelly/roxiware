@@ -1,6 +1,7 @@
 require 'rails'
 require 'devise'
 require 'cancan'
+require 'httparty'
 require 'roxiware/version'
 require 'roxiware/ability'
 require 'roxiware/jquerypopupform'
@@ -10,8 +11,8 @@ require 'roxiware/helpers'
 require 'roxiware/mass_assignment_security'
 require 'roxiware/controller_helpers'
 require 'roxiware/base_model'
-
-
+require 'roxiware/goodreads'
+require 'roxiware/seo_string'
 module Roxiware
   class Engine < ::Rails::Engine
     engine_name "roxiware"

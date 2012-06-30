@@ -1,0 +1,15 @@
+
+<% unless @goodreads_list.blank? %>
+  <div class="widget book_ads">
+  <h1>Good Books</h1>
+  <% @goodreads_list.each do |review| %>
+     <div class="book">
+       <a type="amzn" search="<%= review['book']['isbn13']%>" category="books">
+	 <img border="0" src="<%= review['book']['image_url'] %>" alt="<%= review['book']['title']%>"/>
+	 <div  class="book_title"><%= review['book']['title'] %></div>
+       </a>
+     </div>
+  <% end %>
+  <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= AppConfig::amazon_associate_id %>"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= URI.escape(AppConfig::amazon_associate_id) %>&Operation=NoScript">Amazon.com Widgets</A></NOSCRIPT>
+  </div>
+<% end %>

@@ -2,6 +2,9 @@
   <div class="post_item_overlay overlay" id="overlay_post">
       <%= form_tag do%>
         <div class="span-16 last">
+          <div class="left last"><%= label_tag :category_name, "Categories", :class=>"span-2 left" %>
+             <%= text_field_tag(:category_name, nil, :class=>"category_input") %>
+	  </div>
           <div class="left last"><%= label_tag :person_id, "Person", :class=>"span-2 left"%>
 	  
 	     <%= select_tag(:person_id, options_from_collection_for_select(Roxiware::Person.all, :id, :full_name ))%> 
@@ -9,19 +12,23 @@
 	  <%= label_tag :post_title, "Title:", :class=>"span-3 left"%>
           <%= text_field_tag :post_title, nil, :class=>"span-12 last" %>
           <%= text_area_tag :post_content, nil, :class=>"popup_wysiwyg post_item_content left last" %>
+	  <%= label_tag :tag_csv, "Tags", :class=>"span-2 left"%><%= text_field_tag :tag_csv, nil, :class=>"span-12 last" %>
         </div>
        <% end %>
      <div id="save_control" class="save_button right">&nbsp;</div>
    </div>
 <script>
 $(document).ready(function() {
+
+    var categories = [<%= @categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]
+    $("#category_name").autocomplete({source:categories});
+
     $("div[rel=#overlay_post]").overlay( {
          onClose: function() { 
          },
          onBeforeLoad: function() {
             var blog_post_id= this.getTrigger().attr("id").split("-")[3];
             var endpoint = "<%= blog_post_index_path %>";
-            console.log("Blog post foo " + blog_post_id);
             var method = "POST";
             if (blog_post_id != "new") {
                endpoint += "/"+blog_post_id;
@@ -31,8 +38,11 @@ $(document).ready(function() {
                 {
                   canEdit: true,
                   method: method,
-                  success: function(data, status, jqhxr) {
-                     window.location = data["post_link"];
+                  success: function(xhr, status) {
+                     window.location.reload();
+                  },
+                  error: function(xhr, status) {
+                    window.location.reload();
                   }
                 });
        } 
@@ -46,7 +56,11 @@ $(document).ready(function() {
                 type: "DELETE",
                 processData: false,
                 complete: function(event) {
-                   window.location="/blog";
+                     <% if index %>
+                        window.location.reload();
+		     <% else %>
+                        window.location = "/blog";
+		     <% end %>
                    }
                });
         });

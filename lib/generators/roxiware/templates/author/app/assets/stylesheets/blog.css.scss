@@ -1,0 +1,279 @@
+// Place all the styles related to the NewsItem controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+div.feed_buttons a
+{
+}
+
+div.feed_buttons
+{
+   clear:both;
+}
+
+div.post_index
+{
+  padding-left:40px;
+}
+
+section.posts
+{
+   padding:10px;
+}
+
+div.post_list_item
+{
+   margin-bottom:40px;
+}
+
+article.post
+{
+   clear:both;
+   margin-right:auto;
+}
+
+
+article.post div.post_categories
+{
+   border:solid 1px black;
+   margin-bottom:5px;
+   background:#ccc;
+   min-width:300px;
+   float:left;
+}
+
+article.post div.post_categories a
+{
+   margin-right: auto;
+   padding-right:10px;
+   padding-left:10px;
+}
+
+article.post div.post_tags
+{
+   margin-bottom:5px;
+   background:#ccc;
+   padding-left:10px;
+   float:left;
+}
+
+article.post div.post_share
+{
+   clear:both;
+}
+
+article.post div.post_tags a
+{
+   margin-right: auto;
+   padding-right:10px;
+   padding-left:10px;
+}
+
+article.post div.post_header
+{
+   vertical-align:baseline;
+   margin-bottom:20px;
+   padding-top:20px;
+   margin-left:20px;
+   float:right;
+   width:170px;
+   clear:left;
+}
+
+div.post_header img.person_thumbnail, div.comments img.person_thumbnail
+{
+  padding:3px;
+  margin: 5px;
+  -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+  -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+  -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+  -moz-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+  -webkit-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+}
+
+div.post_header img.person_thumbnail
+{
+   float:right;
+}
+
+div.comments img.person_thumbnail
+{
+   float:left;
+   margin-left:0px;
+}
+article.post .post_manage_controls
+{
+    font-size:0.7em;
+}
+
+article.post .post_manage_controls .post_status
+{
+    display:inline-block;
+}
+
+
+article.post .edit_controls
+{
+  display:inline-block;
+}
+
+.post_edit_button {
+  display:inline-block;
+}
+
+.post_delete_button {
+  display:inline-block;
+}
+
+article.post .post_manage_controls .comment_permissions
+{
+    display:inline-block;
+    margin-left: 30px;
+}
+
+article.post h1.post_title
+{
+   clear:left;
+   margin-right:auto;
+   padding-top:15px;
+   padding-bottom:0px;
+   margin-bottom:0px;
+   color:black;
+   font-size:1.5em;
+}
+
+div.post_header .post_author
+{
+   display:inline-block;
+   margin-top:5px;   
+}
+
+div.post_header div.post_date
+{
+   clear:both;
+   text-align:left;
+   margin-top:5px;
+   font-size:75%;
+   font-style:italic;   
+}
+
+div.post_header .comments_link
+{
+  margin-bottom: 10px;
+}
+div.post_header .comments_link a
+{
+   font-size:0.7em;
+}
+
+article.post .content
+{
+   text-align:left;
+   font-size:100%;
+   padding-left:10px;
+}
+
+
+/* the overlayed element */
+.post_overlay {
+}
+
+/* default close button positioned on upper right corner */
+.post_overlay .close {
+}
+
+
+.post_overlay label
+{
+   display:inline-block;
+}
+
+.post_overlay .post_content
+{
+    margin:10px;
+    height:300px;
+    width:600px;
+}
+
+
+.blog_nav
+{
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+}
+
+div.comments
+{
+   display:block;
+   clear:both;
+   margin-left:20px;
+}
+div.comment
+{
+   margin-left:10px;
+   padding:10px;
+}
+
+div.comment_date
+{
+   clear:both;
+}
+
+div.comment_content
+{
+  margin-top:10px;
+}
+
+div.comment_reply
+{
+   cursor:pointer;
+   border: solid 1px black;
+   margin-right:auto;
+   margin-top:8px;
+   margin-left:10px;
+   width:50px;
+   padding-left:5px;
+   padding-right:5px;
+   text-align:center;
+   clear:both;
+}
+
+div.comment_reply:hover
+{
+   background:grey;
+}
+
+div.comment_form_template
+{
+   display:none;
+}
+
+li.calendar_nav_year a
+{
+   cursor:pointer;
+}
+
+div.calendar_nav div.calendar_months
+{
+}
+
+div.calendar_nav div.calendar_nav_months div.calendar_nav_posts
+{
+}
+
+li.calendar_nav_hidden ul
+{
+   display:none;
+}
+
+.post_unpublished
+{
+   color:red !important;
+}
+
+.pending_comments
+{
+   color:red !important;
+}

@@ -3,6 +3,7 @@ module Roxiware
     load_and_authorize_resource  :except=>[:new, :index]
 
   before_filter do
+    @role = "guest"
     @role = current_user.role unless current_user.nil?
   end
 
@@ -13,12 +14,14 @@ module Roxiware
       @news = Roxiware::NewsItem.order("post_date DESC")
       @title = @title + " : News"
       @meta_description = @title
+      clean_news = []
       @news.each do |news_item| 
         @meta_keywords = @meta_keywords + ", " + news_item.headline
+	clean_news << news_item.ajax_attrs(@role)
       end 
       respond_to do |format|
         format.html
-	format.json { render :json=>@news }
+	format.json { render :json=>clean_news }
       end
     end
 
@@ -79,11 +82,13 @@ module Roxiware
     end
 
     def destroy
+     respond_to do |format|
       if !@news_item.destroy
         format.json { render :json=>report_error(@news_item)}
       else
         format.json { render :json=>{}}
       end
+     end
     end
   end
 end

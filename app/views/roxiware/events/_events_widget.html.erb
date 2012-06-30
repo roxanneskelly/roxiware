@@ -1,0 +1,32 @@
+
+<nav class="widget events_widget">
+  <%= link_to("Events",events_path, :class=>"events_widget_title") %>
+  <% @events.each do |event|  %>
+    <div id="event-<%= event.id %>" class="event_widget_event">
+      <div class="event_widget_date">
+	<%= show_time = event.start.strftime("%b %e")
+	    if (event.duration_units == "days" && event.duration > 0)
+	      end_time = event.start + event.duration.days
+	      show_time = event.start.strftime("%b %e, %Y") unless end_time.year == event.start.year
+	      show_time += " - "
+	      show_time += end_time.strftime("%b %e, %Y") if event.start.month != end_time.month
+	      show_time += end_time.strftime("%e, %Y") if event.start.month == end_time.month
+	    end
+	    show_time %>
+      </div>
+      <% if !(event.city.blank? && event.state.blank?) %>
+	<div class="event_widget_city">
+	  <%= event.city unless event.city.blank? %> 
+	  <%= ", " + event.state unless event.state.blank? %>
+	</div>
+      <% end %>
+      <div class="event_widget_location">
+        <% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
+	  <span class="event_widget_start"><%= event.start.strftime("%l:%M %p") %> <%= ", " unless event.location.blank? %></span>
+        <% end %>
+        <%= event.location %>
+      </div>
+    </div>
+  <% end %>
+  <%= link_to("More >", events_path) %>
+</nav>

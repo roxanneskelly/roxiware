@@ -1,0 +1,97 @@
+  <article class="post" id="post-<%= post.id %>">
+     <% if (can? :edit, post) && @enable_blog_edit %>
+         <div class="post_manage_controls">
+	    <div class="post_status">
+		<%= check_box_tag :post_status, "publish", (post.post_status == "publish"), :post=>post.id %>
+                <%= label_tag :post_status, "Publish" %>
+	    </div>
+	    <div class="comment_permissions">
+              <%= label_tag :post_status, "Comments:" %>
+	      <%= select_tag "comment_permissions-#{post.id}", options_for_select(Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS, post.comment_permissions), :post=>post.id %>
+	    </div>
+	    <div class="edit_controls">
+	      <div rel="#overlay_post" id="edit-post-item-<%= post.id %>" class="post_edit button_edit">&nbsp;</div>
+	      <div class="post_delete button_delete" id="delete-post-item-<%= post.id %>" >&nbsp;</div>
+	    </div>
+	  </div>
+	<% end %>
+
+        <% if !post.categories.nil? %>
+          <div class="post_categories">
+	   <%  post.category_ids.each do |category_id| %>
+	     <%= link_to @categories[category_id].name, blog_path(:category=>@categories[category_id].seo_index), :class=>"post_category"  %>
+	   <% end %>
+          </div>
+        <% end %>
+	<div class="post_header">
+	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%A, %B %e, %Y %I:%M %p") %></div>
+          <div class="comments_link">
+	      <%= link_to pluralize(post.comment_count, "Comment"), post.post_link %>
+	      <% if can?(:edit, post) && (post.pending_comment_count > 0) %>
+	        <span class="pending_comments">(<%= post.pending_comment_count %>)</span>
+	      <% end %>
+          </div>
+	  <div class="post_author">
+	      by <a href="<%= people_url %>/<%= post.person.seo_index %>">
+                <img src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/>
+		<%= post.person.full_name %>
+	      </a>
+	  </div>
+	</div>
+        <div class="content last">
+            <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
+	    <% if show_full_content %>
+              <%= raw post.post_content %>
+	    <% else %>
+              <%= raw post.post_exerpt %>
+              <div><%= link_to "More...", post.post_link %></div>
+            <% end %>
+	</div>
+        <% if show_full_content %>
+          <% if !post.tag_ids.blank? %>
+	    <div class="post_tags">
+	     Tags: <% post.tags.each do |tag| %>
+	       <%= link_to tag.name, blog_path(:tag=>tag.seo_index), :class=>"post_tag"  %>
+	     <% end %>
+	   </div>
+          <% end %>
+          <div class="post_share">Share: 
+	    <span class='st_facebook'></span>
+	    <span class='st_twitter'></span>
+	    <span class='st_googleplus'></span>
+	    <span class='st_google_reader'></span>
+	    <span class='st_tumblr'></span>
+	    <span class='st_email'></span>
+	    <span class='st_fblike'></span>
+	  </div>
+        <% end %>
+      </article>
+<%= render :partial=>"roxiware/blog/post/edit_post", :locals=>{:index=>index} if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) && @enable_blog_edit%>
+<script>
+$(document).ready(function() {
+    $("div.comment_permissions").on("change", "select", function() {
+       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+						type:"PUT",
+				                data: {comment_permissions:$(this).val()},
+                                                complete: function(jqXHR, textStatus) {
+                                                },
+						error: function (jqXHR, textStatus, errorThrown) {
+                                                    window.location.reload();
+						  }
+						});
+          });
+
+    $("article.post").on("change", "input[type=checkbox]", function() {
+       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+						type:"PUT",
+				                data: {post_status:$(this).attr("checked")?"publish":"draft"},
+                                                complete: function(jqXHR, textStatus) {
+                                                },
+						error: function (jqXHR, textStatus, errorThrown) {
+                                                    window.location.reload();
+						  }
+						});
+          });
+});
+</script>
+

@@ -1,0 +1,12 @@
+<% unless @categories.blank? %>
+   <nav class="widget categories_nav">
+     <div class="category_nav_title">Categories</div>
+     <ul>
+       <% @categories.each do |category_id, category|
+         if !@category_counts[category_id].blank? %>
+           <li><%= link_to category.name, blog_path(:category=>category.seo_index) %>(<%= @category_counts[category_id] %>)</li>
+	 <% end %>
+       <% end %>
+     </ul>
+   </nav>
+<% end %>

@@ -20,11 +20,11 @@ module Roxiware
       end
 
       def add_routes
-        route('devise_for :users, :class_name=>"Roxiware::User", :module=>"devise", :path=>"account", :path_names=>{:sign_in=>"login", :sign_out=>"logout"}, :skip=>:registration')
 
          route('mount Roxiware::Engine => "/", :as=>"roxiware"')
          route("root :to =>'home#index'")
 	 route("get '/contact' => 'roxiware/page#show', :page_type=>'contact'")
+        route('devise_for :users, :class_name=>"Roxiware::User", :module=>"devise", :path=>"account", :path_names=>{:sign_in=>"login", :sign_out=>"logout"}, :skip=>:registration')
       end
 
       def install_migrations

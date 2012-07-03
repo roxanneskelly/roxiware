@@ -49,10 +49,10 @@ $(document).bind("ready", function() {
                     canEdit: true,
                     method: method,
                     success: function(xhr, status) {
-                       window.location = "/person/";
+                       window.location.reload();
                     },
                     error: function(xhr, status) {
-                      window.location = "/people/";
+                      window.location.reload();
                     }
                   });
         }

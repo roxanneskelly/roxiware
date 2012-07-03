@@ -8,6 +8,7 @@ module Roxiware
 
        class_option :news, :desc => "Enable news", :type => :boolean, :default => true
        class_option :blog, :desc => "Enable blog", :type => :boolean, :default => true
+       class_option :portfolio, :desc => "Enable portfolio", :type => :boolean, :default => false
        class_option :books, :desc => "Enable books", :type => :boolean, :default => true
        class_option :events, :desc => "Enable events", :type => :boolean, :default => true
        class_option :biography, :desc => "Enable biography", :type=>:boolean, :default=>true
@@ -71,8 +72,8 @@ APPHELPER
 Roxiware.setup do |config| 
   config.enable_news = #{options.news?}
   config.enable_blog = #{options.blog?}
-  config.enable_books = true
-  config.enable_portfolio = #{options.books?}
+  config.enable_portfolio = #{options.portfolio?}
+  config.enable_books = #{options.books?}
   config.enable_services = false
   config.enable_events = #{options.events?}
   config.enable_gallery = false

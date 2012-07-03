@@ -125,7 +125,7 @@ module Roxiware
     scope :visible, lambda{|role, person_id| where(role=="admin"?"":["person_id = ? OR comment_status='publish'", person_id])}
 
     before_validation() do
-       self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED)
+       self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))
     end
   end
  end

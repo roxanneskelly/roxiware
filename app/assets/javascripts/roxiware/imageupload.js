@@ -37,6 +37,11 @@
 		    name: "upload_asset",
 		    responseType: "json",
 		    onSubmit : function(file, ext) {
+                        var upload_wait_icon = $("<img src='/assets/wait30trans.gif'/>");
+                         $("body").append(upload_wait_icon);
+			 upload_wait_icon.addClass("wait_icon");
+
+
 		        if (! (ext && /^(jpg|png|jpeg|gif)$/i.test(ext))){
                             // extension is not allowed
 			    alert('Error: invalid file extension');
@@ -62,10 +67,7 @@
 		    },
 
 		    onComplete: function(file, json_data) {
-		        console.log("setting image path to" + json_data.image_url);
-		        console.log("image preview " + conf.uploadImagePreview);
-		        console.log("image url target " + conf.uploadImageUrlTarget);
-		        console.log("image thumbnail target " + conf.uploadImageThumbnailTarget);
+		    $(".wait_icon").remove();
 			$(conf.uploadImagePreview).attr("src", json_data.image_url);
 			$(conf.uploadImageUrlTarget).val(json_data.image_url);
 			$(conf.uploadImageUrlTarget).change();
@@ -81,7 +83,6 @@
 	conf = $.extend(true, {}, $.roxiware.image_upload.conf, conf);
 
 	this.each(function() {
-		console.log("adding image upload");
 		iu_api = new ImageUpload($(this), conf);
 		$(this).data("image_upload", iu_api);
 	    });

@@ -1,25 +1,25 @@
 
-  <div class="post_item_overlay overlay" id="overlay_post">
+  <div class="post_item_overlay popup_form overlay" id="overlay_post">
       <%= form_tag do%>
-        <div class="span-16 last">
-          <div class="left last"><%= label_tag :category_name, "Categories", :class=>"span-2 left" %>
-             <%= text_field_tag(:category_name, nil, :class=>"category_input") %>
-	  </div>
-          <div class="left last"><%= label_tag :person_id, "Person", :class=>"span-2 left"%>
-	  
-	     <%= select_tag(:person_id, options_from_collection_for_select(Roxiware::Person.all, :id, :full_name ))%> 
-          </div>
-	  <%= label_tag :post_title, "Title:", :class=>"span-3 left"%>
-          <%= text_field_tag :post_title, nil, :class=>"span-12 last" %>
-          <%= text_area_tag :post_content, nil, :class=>"popup_wysiwyg post_item_content left last" %>
-	  <%= label_tag :tag_csv, "Tags", :class=>"span-2 left"%><%= text_field_tag :tag_csv, nil, :class=>"span-12 last" %>
-        </div>
+
+        <%= label_tag :category_name, "Category" %>
+        <%= text_field_tag(:category_name, nil, :class=>"category_input") %>
+        
+        <%= label_tag :person_id, "Author" %>
+        <%= select_tag(:person_id, options_from_collection_for_select(Roxiware::Person.where(:show_in_directory=>true), :id, :full_name ))%> 
+
+	 <%= label_tag :post_title, "Title", :class=>"next_form_line"%>
+         <%= text_field_tag :post_title, nil%>
+
+         <%= text_area_tag :post_content, nil, :class=>"next_form_line popup_wysiwyg post_item_content" %>
+
+         <%= label_tag :tag_csv, "Tags", :class=>"next_form_line"%>
+         <%= text_field_tag :tag_csv, nil %>
+         <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
        <% end %>
-     <div id="save_control" class="save_button right">&nbsp;</div>
    </div>
 <script>
 $(document).ready(function() {
-
     var categories = [<%= @categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]
     $("#category_name").autocomplete({source:categories});
 
@@ -36,6 +36,7 @@ $(document).ready(function() {
             }
             $(".post_item_overlay").popup_form(endpoint,
                 {
+                  wysiwyg_css: "<%= stylesheet_path('application') %>",
                   canEdit: true,
                   method: method,
                   success: function(xhr, status) {

@@ -37,7 +37,6 @@ function toTitleCase(str)
 		       
 		    });
                 result += "</table></div>";
-		console.log(result);
 		return $(result);
 
             },
@@ -93,7 +92,8 @@ function toTitleCase(str)
 					       trigger: true,
 					       min: -1
 				       });
-				   self.find("textarea.popup_wysiwyg[name='"+key+"']").wysiwyg({
+				   var wysiwyg_params = {
+                                       css: conf.wysiwyg_css,
 				       controls: {
 				          undo: { visible: false },
 					  redo: { visible: false},
@@ -105,10 +105,11 @@ function toTitleCase(str)
 					      tooltip: "File Manager"
 						  }
 					   }
-				       });
-                                       self.find("select[name='"+key+"']").removeAttr("disabled");
-                                       self.find("textarea[name='"+key+"']").removeAttr("readonly");
-				  });
+				   }
+				   self.find("textarea.popup_wysiwyg[name='"+key+"']").wysiwyg(wysiwyg_params)
+                                   self.find("select[name='"+key+"']").removeAttr("disabled");
+                                   self.find("textarea[name='"+key+"']").removeAttr("readonly");
+			     });
 
 			 var image_upload_params = {
 			     width: self.find(conf.uploadImageUrlTarget).width(),
@@ -124,8 +125,8 @@ function toTitleCase(str)
 			     image_upload_params["watermark"] = conf.watermark;
 			 };
 			 self.find(conf.uploadImageTarget).image_upload(image_upload_params);
-			 self.find("div.edit_button").css("visibility", "hidden").off("click");
-			 self.find("div.save_button").css("visibility", "visible").click(function(){
+			 self.find("button#edit_button").css("visibility", "hidden").off("click");
+			 self.find("button#save_button").css("visibility", "visible").click(function(){
 				 self.save();
 			     });
 			 self.find("div.delete_button").css("visibility", "visible").click(function(){
@@ -141,13 +142,17 @@ function toTitleCase(str)
 					 name: $(element).attr("name"),
 					     value:"false"});
 			     });
+			 var wait_icon = $("<img src='/assets/wait30trans.gif'/>");
+                         self.prepend(wait_icon);
+			 wait_icon.addClass("wait_icon");
+
 			 $.ajax({
 				 url: endpoint +".json",
 				     type: conf.method,
 				     processData: false,
 				     dataType: "json",
 				     data: jQuery.param(form_data),
-				     complete: conf.complete,
+				     complete: function() { wait_icon.remove(); conf.complete },
 				     error: function (jqXHR, textStatus, errorThrown) {
 				     self.alert([[null, errorThrown]], false);
 				     },
@@ -206,7 +211,12 @@ function toTitleCase(str)
 	var get_endpoint = endpoint;
 	if (conf.method == "POST") {
 	    get_endpoint += "/new";
-	}	
+	}
+        self.find("button").button();
+
+	var wait_icon = $("<img src='/assets/wait30trans.gif'/>");
+	self.prepend(wait_icon);
+	wait_icon.addClass("wait_icon");
 	get_endpoint += ".json"
 	    $.ajax({
 		    url:get_endpoint,
@@ -215,6 +225,7 @@ function toTitleCase(str)
                         error: function (jqXHR, textStatus, errorThrown) {
 			self.alert([[null, errorThrown]], true);
 			},
+                        complete: function() { wait_icon.remove(); conf.complete },
 		        success:function(json_data) {
                             if ("error" in json_data) {
 				self.alert(json_data["error"], true);

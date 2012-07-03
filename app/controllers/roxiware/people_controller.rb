@@ -42,6 +42,7 @@ class Roxiware::PeopleController < ApplicationController
     @people = people.select { |person| can? :read, person }
     print "Person user id is " + @person.user_id.to_s + "\n\n"
     @title = @title + ": People : " + @person.first_name + " " + @person.last_name
+
     respond_to do |format|
        format.html # show.html.erb
        format.json { render :json => @person.ajax_attrs(@role) }
@@ -75,6 +76,10 @@ class Roxiware::PeopleController < ApplicationController
     @title = @title + ": People : " + @person.first_name + " " + @person.last_name
     @meta_description = @title
     @meta_keywords = @meta_keywords + ", " + @person.first_name + " " + @person.last_name
+
+    @recent_posts = Roxiware::Blog::Post.published().where(:person_id=>@person.id).order("post_date DESC").limit(5).collect{|post| post}
+    @left_widgets << "roxiware/blog/post/recent_posts"
+
     respond_to do |format|
       format.html { render :action => 'show' }
       format.json { render :json => @person.ajax_attrs(@role) }

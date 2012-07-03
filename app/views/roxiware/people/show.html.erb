@@ -10,7 +10,7 @@
     <% if (can? :edit, Roxiware::Person)  %>
       <div class="edit_controls">
         <div rel="#person_edit_overlay" id="edit-person-<%= @person.id %>" class="person_edit_button edit_button">&nbsp;</div>
-	<% if @person.user_id.nil? %>
+	<% if (!Roxiware.single_person) && (@person.user_id.nil?) %>
           <div id="delete-person-<%= @person.id %>" class="person_delete_button delete_button">&nbsp;</div> 
 	<% end %>
       </div>
@@ -34,7 +34,7 @@
       <div class="person_user">Person entry for : <%= user.username %></div>
      <% end %>
      <div class="person_name"><%= @person.first_name %> <%= @person.last_name %></div>
-     <div class="person_role">, <%= @person.role %></div>
+     <% if !@person.role.blank? %><div class="person_role">, <%= @person.role %></div><% end %>
      <% if !@person.email.nil? && @person.email != ""%>
       <div><address><a href="mailto:<%= @person.email %>"><%= @person.email %></a></address></div>
      <% end %>

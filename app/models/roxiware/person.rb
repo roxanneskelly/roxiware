@@ -1,4 +1,4 @@
-require 'set'
+require 'uri'
 class Roxiware::Person < ActiveRecord::Base
    include Roxiware::BaseModel
    self.table_name=  "people"
@@ -24,7 +24,6 @@ class Roxiware::Person < ActiveRecord::Base
       end
       args.each do |arg|
         self.send(:define_method, "#{arg}=") do |value|
-	  logger.debug("setting #{arg} to #{value}")
           social_net_entry = self.social_networks.find_by_network_type("#{arg}")
 	  if (value.nil? || value.blank?)
 	     logger.debug("deleting social network")
@@ -42,7 +41,6 @@ class Roxiware::Person < ActiveRecord::Base
 	  social_net = self.social_networks.find_by_network_type("#{arg}")
 	  social_net.network_link if social_net
 	end
-	print "sending for #{arg}\n"
 	self.send(:edit_attr_accessible, arg, :as=>options[:as]) 
       end
    end
@@ -56,7 +54,12 @@ class Roxiware::Person < ActiveRecord::Base
       return_full_name
    end
 
-    after_validation do
-       self.seo_index = self.full_name.downcase.gsub(/[^a-z0-9]+/i, '-')
+    before_validation do
+       self.seo_index = self.full_name.to_seo
     end
+
+    before_validation do
+       self.seo_index = self.full_name.to_seo
+    end
+
 end

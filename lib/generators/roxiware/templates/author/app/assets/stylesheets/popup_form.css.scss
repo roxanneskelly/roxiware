@@ -1,0 +1,107 @@
+
+
+.popup_form 
+{
+   font-size: 1.0em;
+}
+
+.next_form_line
+{
+   clear:left;
+}
+
+
+.popup_form label {
+   text-align:right;
+   float:left;
+   vertical-align:middle;
+   margin:5px;
+   line-height:1.6;
+}
+
+
+.popup_form input[type=text] {
+   line-height:1.6;
+   vertical-align:middle;
+   margin:4px;
+   float:left;
+
+}
+
+.popup_form textarea
+{
+   float:left;
+}
+
+.popup_form select {
+  float:left;
+  margin: 5px;
+  padding:0px;
+  vertical-align:middle;
+} 
+
+.popup_form button
+{
+  display:block;
+  margin:5px;
+  height:2.2em;
+  font-size:0.9em;
+  vertical-align:middle;
+  position:relative;
+  top:3px;
+
+}
+
+.popup_form input[type=submit]
+{
+  display:block;
+}
+
+input.popup_form_error_field {
+  background: #FFDDDD !important;
+}
+
+div.popup_form_alert {
+   background:#ffffff;
+   z-index:20000;
+}
+
+
+/* the popup_form_alerted element */
+.popup_form_alert {
+  display:none;
+  color:#000000;
+  padding:50px;
+  font-size:15px;
+  border:solid 2px black;
+  background:#ffffff;
+}
+
+/* default close button positioned on upper right corner */
+.popup_form_alert .close {
+	background-image:url(/assets/overlay/close_unpressed.png);
+	position:absolute; right:4px; top:-9px;
+	background-color: none;
+	cursor:pointer;
+	height:29px;
+	width:28px;
+}
+
+.popup_form_alert .close:active {
+	background-image:url(/assets/overlay/close_pressed.png);
+}
+
+/* default close button positioned on upper right corner */
+.popup_form_alert .close:hover {
+	background-color: inherit;
+}
+
+.wait_icon
+{
+     position:fixed;
+     z-index: 99999;
+     left:45%;
+     top:40%;
+     width:30px;
+     height:30px;
+}

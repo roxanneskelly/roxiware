@@ -176,24 +176,12 @@ article.post .content
 
 
 /* the overlayed element */
-.post_overlay {
+.post_item_overlay {
+   width:650px;
 }
 
-/* default close button positioned on upper right corner */
-.post_overlay .close {
-}
-
-
-.post_overlay label
+.post_item_overlay input#category_name
 {
-   display:inline-block;
-}
-
-.post_overlay .post_content
-{
-    margin:10px;
-    height:300px;
-    width:600px;
 }
 
 
@@ -277,3 +265,35 @@ li.calendar_nav_hidden ul
 {
    color:red !important;
 }
+
+.post_item_overlay label
+{
+   width:70px;
+}
+
+input#category_name
+{
+   width:300px;
+}
+
+input#post_title
+{
+   width:560px;
+}
+
+select#person_id 
+{
+   width:170px;
+}
+
+textarea#post_content
+{
+   width:636px;
+   height:400px;
+}
+
+input#tag_csv
+{
+   width:500px;
+}
+

@@ -10,7 +10,7 @@ module Roxiware
     validates_uniqueness_of :name, :scope=>:service_class
     validates_uniqueness_of :seo_index, :message=>"Name not sufficiently unique"
     before_validation do
-       self.seo_index = self.name.downcase.gsub(/[^a-z0-9]+/i, '-')
+       self.seo_index = self.name.to_seo
        
        if !(self.url.nil? || self.url.empty?) 
          parsed_uri = URI::parse(self.url)

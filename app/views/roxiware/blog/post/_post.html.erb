@@ -66,32 +66,3 @@
 	  </div>
         <% end %>
       </article>
-<%= render :partial=>"roxiware/blog/post/edit_post", :locals=>{:index=>index} if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) && @enable_blog_edit%>
-<script>
-$(document).ready(function() {
-    $("div.comment_permissions").on("change", "select", function() {
-       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
-						type:"PUT",
-				                data: {comment_permissions:$(this).val()},
-                                                complete: function(jqXHR, textStatus) {
-                                                },
-						error: function (jqXHR, textStatus, errorThrown) {
-                                                    window.location.reload();
-						  }
-						});
-          });
-
-    $("article.post").on("change", "input[type=checkbox]", function() {
-       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
-						type:"PUT",
-				                data: {post_status:$(this).attr("checked")?"publish":"draft"},
-                                                complete: function(jqXHR, textStatus) {
-                                                },
-						error: function (jqXHR, textStatus, errorThrown) {
-                                                    window.location.reload();
-						  }
-						});
-          });
-});
-</script>
-

@@ -18,7 +18,6 @@ class Roxiware::AssetController < ApplicationController
              logger.debug "resizing to "+width.to_s+" "+height.to_s
           end
           # center image
-	  image = image.colorize(0.20, 0.20, 0.20, 0.20, '#cc9953')
           image.background_color = 'none';
           logger.warn "height " + height.to_s
           if params.has_key?(:pad_image) && (params[:pad_image])

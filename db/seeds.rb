@@ -18,10 +18,10 @@ if user.nil?
 			   :password=>"Password", 
                            :password_confirmation=>"Password"}, 
 			   :without_protection=>true)
-  user.create_person({:first_name=>"Admin", :last_name=>"User", :role=>"Admin"}, :without_protection=>true)
+  user.create_person({:first_name=>"Admin", :last_name=>"User", :role=>"Admin", :bio=>"", :role=>""}, :without_protection=>true)
   user.save!
 
-  Roxiware::Person.create({:first_name=>"First", :last_name=>"Last", :show_in_directory=>true}, :without_protection=>true)
+  Roxiware::Person.create({:first_name=>"First", :last_name=>"Last", :bio=>"", :role=>"", :show_in_directory=>true}, :without_protection=>true)
 
 else
   print "User admin already exists\n"

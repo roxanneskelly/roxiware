@@ -3,39 +3,40 @@
 .popup_form 
 {
    font-size: 1.0em;
-}
-
-.next_form_line
-{
-   clear:left;
+   margin-right:auto;
 }
 
 
 .popup_form label {
    text-align:right;
-   float:left;
    vertical-align:middle;
-   margin:5px;
    line-height:1.6;
+   display:inline-block;
+}
+
+
+.popup_form input[type=checkbox]
+{
+   vertical-align:baseline;
+   line-height:0.6;
+   margin-top:3px;
+   margin-left:50px;
 }
 
 
 .popup_form input[type=text] {
    line-height:1.6;
    vertical-align:middle;
-   margin:4px;
-   float:left;
-
+   margin:2px;
 }
 
 .popup_form textarea
 {
-   float:left;
+   margin:0px;
 }
 
 .popup_form select {
-  float:left;
-  margin: 5px;
+  margin: 2px;
   padding:0px;
   vertical-align:middle;
 } 
@@ -43,7 +44,7 @@
 .popup_form button
 {
   display:block;
-  margin:5px;
+  margin:2px;
   height:2.2em;
   font-size:0.9em;
   vertical-align:middle;
@@ -104,4 +105,34 @@ div.popup_form_alert {
      top:40%;
      width:30px;
      height:30px;
+}
+
+.upload_target
+{
+   padding:3px;
+   -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -icab-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -khtml-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+div.upload_target_hover
+{
+   padding:2px;
+   border:solid 1px #000000;
+}
+
+
+span.popup_help_text
+{
+   font-size:0.7em;
+   color:#777;
+}
+
+.popup_form button#save_button
+{
+   clear:both;
+   float:right;
 }

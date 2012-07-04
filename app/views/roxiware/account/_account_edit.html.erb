@@ -1,24 +1,30 @@
-<div class="account_edit_overlay overlay" id="account_edit_overlay">
+<div class="account_edit_overlay popup_form overlay" id="account_edit_overlay">
   <%= form_tag do %>
-    <div class="span-10 last">
+      <%= label_tag :role, "Role"%>
+      <%= select_tag :role, options_for_select({"Admin"=>:admin, "User"=>:user, "Guest"=>:guest}) %>
+      <br/>
 
-      <div class="span-12 last"><%= label_tag :role, "Role", :class=>"span-3 left"%>
-      <%= select_tag :role, options_for_select({"Admin"=>:admin, "User"=>:user, "Guest"=>:guest}), :class=>"span-5 last" %></div>
-      <div class="span-12 last"><%= label_tag :username, "Username:", :class=>"span-3 left"%>
-      <%= text_field_tag :username, nil, :class=>"" %></div>
+      <%= label_tag :username, "Username" %>
+      <%= text_field_tag :username, nil %>
+      <br/>
 
-      <div class="span-12 last"><%= label_tag :name, "Name:", :class=>"span-3 left"%>
-      <%= text_field_tag :first_name, nil, :class=>"" %>
-      <%= text_field_tag :last_name, nil, :class=>"last" %></div>
-      <div class="span-12 last"><%= label_tag :email, "Email:", :class=>"span-3 left"%>
-      <%= text_field_tag :email, nil, :class=>"span-6 last" %></div>
-      <div class="span-12 last"><%= label_tag :password, "Password:", :class=>"span-3 left"%>
-      <%= password_field_tag :password, nil, :class=>"span-6 last", :autocomplete=>"off" %></div>
-      <div class="span-12 last"><%= label_tag :password_confirmation, "Confirm:", :class=>"span-3 left"%>
-      <%= password_field_tag :password_confirmation, nil, :class=>"span-6 last" %></div>
+      <%= label_tag :name, "Name"%>
+      <%= text_field_tag :first_name, nil %>
+      <%= text_field_tag :last_name, nil %>
+      <br/>
 
-      <div id="save_control" class="save_button right last">&nbsp</div>
-    </div>
+      <%= label_tag :email, "Email"%>
+      <%= text_field_tag :email, nil %>
+      <br/>
+
+      <%= label_tag :password, "Password"%>
+      <%= password_field_tag :password, nil, :autocomplete=>"off" %>
+      <br/>
+
+      <%= label_tag :password_confirmation, "Confirm"%>
+      <%= password_field_tag :password_confirmation, nil %>
+      <br/>
+      <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
   <% end %>
 </div>
 <script>

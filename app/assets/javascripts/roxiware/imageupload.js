@@ -20,7 +20,9 @@
 	    uploadParams: {},
 	    uploadImageUrlTarget: null,
 	    uploadImageThumbnailTarget: null,
-	    uploadImagePreview: null
+	    uploadImagePreview: null,
+	    hoverClass: "upload_target_hover",
+	    focusClass: "upload_target_focus"
 
 	}
     };
@@ -36,6 +38,8 @@
 		    autoSubmit: conf.autoSubmit,
 		    name: "upload_asset",
 		    responseType: "json",
+		    hoverClass: conf.hoverClass,
+		    focusClass: conf.focusClass,
 		    onSubmit : function(file, ext) {
                         var upload_wait_icon = $("<img src='/assets/wait30trans.gif'/>");
                          $("body").append(upload_wait_icon);

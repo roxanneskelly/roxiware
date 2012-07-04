@@ -36,3 +36,30 @@
 {
   margin-left: 40px;
 }
+
+.account_edit_overlay label
+{
+   width:70px;
+}
+
+input#role
+{
+   width:70px;
+}
+
+input[type=text]#first_name, 
+input[type=text]#last_name
+{
+     width:115px;
+}
+
+input#password,
+input#password_confirmation
+{
+    width:240px;
+}
+
+input[type=text]#email
+{
+    width:240px;
+}

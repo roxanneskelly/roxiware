@@ -1,6 +1,7 @@
 require 'uri'
 class Roxiware::Person < ActiveRecord::Base
    include Roxiware::BaseModel
+   include ActionView::Helpers::AssetTagHelper
    self.table_name=  "people"
 
    belongs_to :user, :polymorphic=>true
@@ -56,10 +57,7 @@ class Roxiware::Person < ActiveRecord::Base
 
     before_validation do
        self.seo_index = self.full_name.to_seo
+       self.image_url ||= "/assets/uploads/unknown_person.png"
+       self.thumbnail_url ||= "/assets/uploads/unknown_person_thumbnail.png"
     end
-
-    before_validation do
-       self.seo_index = self.full_name.to_seo
-    end
-
 end

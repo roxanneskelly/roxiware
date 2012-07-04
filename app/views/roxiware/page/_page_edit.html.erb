@@ -1,9 +1,8 @@
-<div class="page_edit_overlay overlay" id="page_edit_overlay">
-  <%= form_tag('/') do %>
-    <div class="span-16 last">
-      <%= text_area_tag :content, nil, :class=>"popup_wysiwyg span-16 page_edit_content" %>
-      <div id="save_control" class="save_button right">&nbsp</div>
-    </div>
+<div class="page_edit_overlay popup_form overlay" id="page_edit_overlay">
+  <%= form_tag("/") do %>
+      <%= text_area_tag :content, nil, :class=>"popup_wysiwyg page_edit_content" %>
+      <br/>
+      <%= button_tag "Save", :id=>"save_button", :type=>"button next_form_line" %>
   <% end %>
 </div>
 <script>

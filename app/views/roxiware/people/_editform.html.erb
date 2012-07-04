@@ -1,33 +1,50 @@
-<div class="person_overlay overlay" id="person_edit_overlay">
+<div class="person_overlay popup_form overlay" id="person_edit_overlay">
   <%= form_tag do%>
-    <div class="span-9">
-      <div class="left last"><%= label_tag :show_in_directory, "Show In Directory", :class=>"span-6 left"%>
-	<%= check_box_tag :show_in_directory %></div>
-      <div class="left last"><%= label_tag :name, "Name:", :class=>"span-2 left"%>
-           <%= text_field_tag :first_name, nil, :class=>"span-3 last" %>
-           <%= text_field_tag :last_name, nil, :class=>"span-3 last" %></div>
-      <div class="left last"><%= label_tag :role, "Role:", :class=>"span-2 left"%>
-           <%= text_field_tag :role, nil, :class=>"span-6 last" %></div>
-      <div class="left last"><%= label_tag :email, "Email:", :class=>"span-2 left"%>
-           <%= text_field_tag :email, nil, :class=>"span-6 last" %></div>
-      <div class="left last"><%= label_tag :website, "Website:", :class=>"span-2 left"%>
-           <%= text_field_tag :website, nil, :class=>"span-6 last" %></div>
-      <div class="left last"><%= label_tag :twitter, "Twitter", :class=>"span-2 left"%>
-           <%= text_field_tag :twitter, nil, :class=>"span-6 last" %></div>
-      <div class="left last"><%= label_tag :facebook, "Facebook", :class=>"span-2 left"%>
-           <%= text_field_tag :facebook, nil, :class=>"span-6 last" %></div>
-      <div class="left last"><%= label_tag :google, "Google+", :class=>"span-2 left"%>
-           <%= text_field_tag :google, nil, :class=>"span-6 last" %></div>
-    </div>
-    <div class="span-5 last upload_target">
-      Upload Image
-      <input type="hidden" name="image_url" class="person_portrait"/>
-      <input type="hidden" name="thumbnail_url" class="person_thumbnail"/>
-      <img name="image_url" id="overlay_image" class="person_portrait"/>
-    </div>
-    <div><%= text_area_tag :bio, nil, :class=>"popup_wysiwyg span-16 bio_content" %></div>
+      <div id="left_section">
+        <%= check_box_tag :show_in_directory%>
+        <%= label_tag :show_in_directory, "Show In Directory"%>
+        <br/>
+        <%= label_tag :name, "Name"%>
+        <%= text_field_tag :first_name, nil  %>
+        <%= text_field_tag :last_name, nil %>
+        <br/>
+
+        <%= label_tag :role, "Role"%>
+        <%= text_field_tag :role, nil %>
+        <br/>
+
+	<%= label_tag :email, "Email"%>
+	<%= text_field_tag :email, nil %>
+        <br/>
+
+	<%= label_tag :website, "Website"%>
+	<%= text_field_tag :website, nil %>
+        <br/>
+
+	<%= label_tag :twitter, "Twitter"%>
+	<%= text_field_tag :twitter, nil %>
+        <br/>
+
+	<%= label_tag :facebook, "Facebook"%>
+	<%= text_field_tag :facebook, nil %>
+        <br/>
+
+	<%= label_tag :google, "Google+"%>
+	<%= text_field_tag :google, nil %>
+      </div>
+      <div id="right_section">
+        <span class="popup_help_text next_form_line">Click to upload.</span>
+	<div class="upload_target">
+	   <input type="hidden" name="image_url" class="person_portrait"/>
+	   <input type="hidden" name="thumbnail_url" class="person_thumbnail"/>
+	   <img name="image_url" id="overlay_image"/>
+	 </div>
+       </div>
+       <br/>
+       <%= text_area_tag :bio, nil, :class=>"popup_wysiwyg bio_content next_form_line" %>
+       <br/>
+       <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
   <% end %>
-  <div id="save_control" class="save_button right">&nbsp;</div>
 </div>
 <script>
 $(document).bind("ready", function() {

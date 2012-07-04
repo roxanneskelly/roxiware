@@ -1,20 +1,21 @@
 
   <div class="post_item_overlay popup_form overlay" id="overlay_post">
       <%= form_tag do%>
-
         <%= label_tag :category_name, "Category" %>
         <%= text_field_tag(:category_name, nil, :class=>"category_input") %>
         
         <%= label_tag :person_id, "Author" %>
         <%= select_tag(:person_id, options_from_collection_for_select(Roxiware::Person.where(:show_in_directory=>true), :id, :full_name ))%> 
-
-	 <%= label_tag :post_title, "Title", :class=>"next_form_line"%>
+	<br/>
+	 <%= label_tag :post_title, "Title"%>
          <%= text_field_tag :post_title, nil%>
-
-         <%= text_area_tag :post_content, nil, :class=>"next_form_line popup_wysiwyg post_item_content" %>
-
-         <%= label_tag :tag_csv, "Tags", :class=>"next_form_line"%>
+	 <br/>
+         <%= text_area_tag :post_content, nil, :class=>"popup_wysiwyg post_item_content" %>
+	 <br/>
+	 
+         <%= label_tag :tag_csv, "Tags"%>
          <%= text_field_tag :tag_csv, nil %>
+	 <br/>
          <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
        <% end %>
    </div>

@@ -243,17 +243,57 @@ li.calendar_nav_year a
    cursor:pointer;
 }
 
-div.calendar_nav div.calendar_months
+nav.calendar_nav
+{
+  padding-left:15px;
+}
+
+ul.calendar_nav_posts
+{
+   list-style-type:none;
+   padding: 5px 0px 5px 0px;
+}
+
+ul.calendar_nav_posts li
+{
+   padding: 3px 0px 4px 0px;
+}
+
+ul.calendar_nav_months, ul.calendar_nav_years
+{
+   list-style-type:circle;
+   list-style-position:outside;
+   padding-left:8px;
+   margin:0px;
+}
+
+nav.calendar_nav li
+{
+   font-size:0.9em;
+}
+
+nav.calendar_nav li.calendar_nav_year
 {
 }
 
-div.calendar_nav div.calendar_nav_months div.calendar_nav_posts
+nav.calendar_nav li.calendar_nav_months li.calendar_nav_posts
 {
+}
+
+li.calendar_nav_hidden
+{
+   list-style-type:disc;
 }
 
 li.calendar_nav_hidden ul
 {
    display:none;
+}
+
+div.recent_post_entry
+{
+   font-size:0.8em;
+   margin-top:10px;
 }
 
 .post_unpublished

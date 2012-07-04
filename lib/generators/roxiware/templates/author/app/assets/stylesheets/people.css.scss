@@ -25,18 +25,21 @@ table.people td.person_listing
 img.person_portrait
 {
 
-    float:right;
     border: solid 2px black;
     padding:0px;
     width: 200px;
     height: 200px;
     margin: 10px;
+    float:right;
 }
+
 input.person_portrait
 {
     width: 200px;
     height: 200px;
 }
+
+
 
 .person_thumbnail
 {
@@ -65,4 +68,74 @@ article.person_listing address
 .person_listing .social_network_icons {
    display: block;
    text-align:right;
+}
+
+.prson_overlay
+{
+   width:600px;
+}
+
+.person_overlay label
+{
+    width:60px;
+}
+
+.person_overlay label[for=show_in_directory]
+{
+    width:140px;
+    text-align:left;
+}
+
+.person_overlay input#show_in_directory
+{
+    
+}
+
+.person_overlay div#left_section
+{
+   margin:10px 10px 10px 0px;
+   display:inline-block;
+    vertical-align:top;
+}
+
+.person_overlay div#right_section
+{
+   margin:10px 10px 10px 10px;
+   display:inline-block;
+   vertical-align:top;
+}
+
+
+input[type=text]#role, 
+input[type=text]#email,
+input[type=text]#website,
+input[type=text]#twitter,
+input[type=text]#facebook,
+input[type=text]#google
+{
+    width:240px;
+}
+
+input[type=text]#first_name, 
+input[type=text]#last_name
+{
+     width:115px;
+}
+
+.person_overlay div.upload_target
+{
+    width: 200px;
+    height: 200px;
+}
+
+.person_overlay textarea#bio
+{
+   clear:both;
+   width:540px;
+   height:200px;
+}
+
+button#save_button
+{
+   float:right;
 }

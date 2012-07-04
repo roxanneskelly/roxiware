@@ -1,9 +1,9 @@
 <% unless @calendar_posts.blank? %>
   <nav class="widget calendar_nav">
     <div class="calendar_nav_title">Archive</div>
-    <ul>
-      <% @calendar_posts.each do |year, year_posts| %>
-        
+    <ul class="calendar_nav_years">
+      <% @calendar_posts.keys.sort.reverse.each do |year| %>
+        <% year_posts = @calendar_posts[year] %>
         <li class="calendar_nav_year calendar_nav_hidden"><a>
 	    <%= year %> (<%= year_posts[:count]%>)
 	      <% if (year_posts[:unpublished_count] > 0) %>
@@ -11,8 +11,9 @@
               <% end %>
 	  </a>
 	  <ul class="calendar_nav_months">
-	    <% year_posts[:monthly].each do |month, month_posts| %>
-	      <li class="calendar_nav_month calendar_nav_hidden"><a><%= month %> (<%= month_posts[:count] %>)
+	    <% year_posts[:monthly].keys.sort.each do |month| %>
+	      <% month_posts = year_posts[:monthly][month] %>
+	      <li class="calendar_nav_month calendar_nav_hidden"><a><%= month_posts[:name] %> (<%= month_posts[:count] %>)
                 <% if (month_posts[:unpublished_count] > 0) %>
 	           <span class="post_unpublished">(<%= month_posts[:unpublished_count] %>)</span>
                  <% end %>

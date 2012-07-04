@@ -1,29 +1,27 @@
-<div class="events_edit_overlay overlay span-18" id="events_edit_overlay">
+<div class="events_edit_overlay popup_form overlay" id="events_edit_overlay">
 <%= form_tag do%>
-  <div class="span-18 last">
-    <%= label_tag :start_time, "Start Time:", :class=>"span-3 left" %>
-    <%= text_field_tag :start_date, nil, {:class=>"events_date span-3 jquerytools_date"} %>
-    <%= select_tag :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}), :class=>"span-3" %>
-    <%= label_tag :duration, "Duration:", :class=>"span-2 left" %>
-    <%= select_tag :duration, options_for_select([""] + (1..40).collect()), :class=>"span-2" %>
-    <%= select_tag :duration_units, options_for_select({""=>:none, "Days"=>:days, "Hours"=>:hours, "Minutes"=>:minutes}), :class=>"span-2" %>
-  </div>
-  <div class="span-18 last">
-      <%= label_tag :location, "Location:", :class=>"span-3 left" %>
-      <%= text_field_tag :location, nil, :class=>"span-6 last" %>
-      <%= label_tag :location_url, "URL:", :class=>"span-2 left"  %>
-      <%= text_field_tag :location_url, nil, :class=>"span-6 last" %>
-  </div>
-  <div class="span-15 last">
-    <%= label_tag :city, "City:", :class=>"span-3 left"%>
-    <%= text_field_tag :city, nil, :class=>"span-3 left" %>
-    <%= label_tag :state, "State:", :class=>"span-2 left"%>
-    <%= text_field_tag :state, nil, :class=>"span-1 last" %>
-  </div>
-  <div class="span-15 last">
-      <%= text_area_tag :description, nil, :class=>"events_description popup_wysiwyg span-17 left last" %>
-      <div id="save_control" class="save_button left last">&nbsp</div>
-  </div>
+    <%= label_tag :start_time, "Start Time:" %>
+    <%= text_field_tag :start_date, nil, :class=>"jquerytools_date" %>
+    <%= select_tag :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}) %>
+    <%= label_tag :duration, "Duration:" %>
+    <%= select_tag :duration, options_for_select([""] + (1..40).collect()) %>
+    <%= select_tag :duration_units, options_for_select({""=>:none, "Days"=>:days, "Hours"=>:hours, "Minutes"=>:minutes}) %>
+    <br/>
+
+    <%= label_tag :location, "Location:" %>
+    <%= text_field_tag :location, nil %>
+    <%= label_tag :location_url, "URL:" %>
+    <%= text_field_tag :location_url, nil %>
+    <br/>
+
+    <%= label_tag :city, "City:"%>
+    <%= text_field_tag :city, nil %>
+    <%= label_tag :state, "State:"%>
+    <%= text_field_tag :state, nil %>
+    <br/>
+    <%= text_area_tag :description, nil, :class=>"events_description popup_wysiwyg" %>
+    <br/>
+    <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
 <% end %>
 </div>
 <script>

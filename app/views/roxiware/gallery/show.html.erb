@@ -44,12 +44,10 @@ end
                   </div>
 		<% else %>
                   <% if can? :create, Roxiware::GalleryItem %>
-		    <div class="gallery_edit_controls">&nbsp;</div>
-                    <div class="gallery_item" rel="#gallery_item_edit_overlay" id="gallery-item-<%= gallery_item.gallery_id%>-new">
-	              <img src="<%= gallery_item.image_url %>" class="gallery_item_image"/>
-	              <div class="gallery_item_name"><%= gallery_item.name %></div>
-                   </div>
-                <% end %>
+	             <div  rel="#gallery_item_edit_overlay" id="edit-gallery_item-<%= gallery_item.gallery_id %>-new" class="gallery_item button_box">
+	               <div class="gallery_item_name"><%= gallery_item.name %></div>
+		     </div>
+                  <% end %>
               <% end %>
             </td>
           <% end %>
@@ -58,6 +56,7 @@ end
     </table></div>
    <% end %>
   </div>
+
 </section>
 
 <div class="overlay gallery_item_overlay" id="gallery_item_overlay">
@@ -65,7 +64,6 @@ end
   <div id="title_field"><span id="name">&nbsp;</span><span id="artist">&nbsp;</span></div>
   <div id="medium">&nbsp;</div>
   <div id="description">&nbsp;</div>
-</div>
 </div>
 
 <script>

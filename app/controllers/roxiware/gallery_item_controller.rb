@@ -35,7 +35,7 @@ class Roxiware::GalleryItemController < ApplicationController
      @robots="noindex,nofollow"
      authorize! :create, Roxiware::GalleryItem
      person_id = current_user.person.id
-     @gallery_item = Roxiware::GalleryItem.new({:name=>"New Item", :person_id=>current_user.person.id, :description=>"Description", :image_url=>"foo", :thumbnail_url=>"bar"}, :as=>@role) 
+     @gallery_item = Roxiware::GalleryItem.new({:name=>"New Item", :person_id=>current_user.person.id, :description=>"Description", :image_url=>"/foo", :thumbnail_url=>"/bar"}, :as=>@role) 
      respond_to do |format|
          format.html
          format.json { render :json => @gallery_item.ajax_attrs(@role) }

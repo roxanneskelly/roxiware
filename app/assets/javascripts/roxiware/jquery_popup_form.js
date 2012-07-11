@@ -73,6 +73,7 @@ function toTitleCase(str)
 			 self.find("textarea").attr("readonly","").removeClass(conf.fieldErrorClass);
 			 self.find("textarea").text("").removeClass(conf.fieldErrorClass);
 			 self.find("select").attr("disabled", "").removeClass(conf.fieldErrorClass);
+			 self.find("select").selectBox("disable");
 		    
 			 self.find("textarea.popup_wysiwyg").wysiwyg('destroy');
 			 // clear images for all popup form uploadable images
@@ -85,7 +86,7 @@ function toTitleCase(str)
 			 $.each(edit_fields, function(index,key) {
 			           self.find("input[name='"+key+"']").removeAttr("readonly");
 			           self.find("textarea[name='"+key+"']").removeAttr("readonly");
-			           self.find("select[name='"+key+"']").removeAttr("disabled");
+			           self.find("select[name='"+key+"']").selectBox("enable");
 				   self.find("input:checkbox").removeAttr("disabled");
 				   self.find("input.jquerytools_date").dateinput({
 					   format: 'mm/dd/yyyy',
@@ -107,7 +108,7 @@ function toTitleCase(str)
 					   }
 				   }
 				   self.find("textarea.popup_wysiwyg[name='"+key+"']").wysiwyg(wysiwyg_params)
-                                   self.find("select[name='"+key+"']").removeAttr("disabled");
+				       self.find("select[name='"+key+"']").selectBox("enable");
                                    self.find("textarea[name='"+key+"']").removeAttr("readonly");
 			     });
 
@@ -245,7 +246,8 @@ function toTitleCase(str)
 			           self.find("hidden[name='"+key+"']").val(value);
 			           self.find("textarea[name='"+key+"']").text(value);
 			           self.find("img[name='"+key+"']").attr("src", value);
-			           self.find("select[name='"+key+"']").val(value);
+			           self.find("select[name='"+key+"']").find("option[value="+"admin"+"]").attr("selected", "selected");
+			           self.find("select[name='"+key+"']").selectBox("value", value);
 			      });
 		              if (json_data.can_edit) {
 			        if(conf.canEdit) {

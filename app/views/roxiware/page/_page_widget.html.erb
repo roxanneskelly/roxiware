@@ -1,0 +1,7 @@
+<% page = Roxiware::Page.where(:page_type=>page_type).first || Roxiware::Page.new({:page_type=>page_type, :content=>"New Content"}, :as=>"") %>
+<div class="widget page_widget">
+  <% if (can? :edit, @page) %>
+    <div rel="#overlay_page" id="edit-<%= page_type %>" class="page_edit_button edit_button">&nbsp;</div>
+  <% end %>
+    <%= raw page.content %>
+</div>

@@ -23,23 +23,23 @@
 	   <% end %>
           </div>
         <% end %>
+        <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
 	<div class="post_header">
-	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%A, %B %e, %Y %I:%M %p") %></div>
+          <img class="post_author_img" src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/>
+	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%D %I:%M %p") %></div>
+	  <div class="post_author">
+	      by <a href="<%= people_url %>/<%= post.person.seo_index %>">
+		<%= post.person.full_name %>
+	      </a>
+	  </div>
           <div class="comments_link">
 	      <%= link_to pluralize(post.comment_count, "Comment"), post.post_link %>
 	      <% if can?(:edit, post) && (post.pending_comment_count > 0) %>
 	        <span class="pending_comments">(<%= post.pending_comment_count %>)</span>
 	      <% end %>
           </div>
-	  <div class="post_author">
-	      by <a href="<%= people_url %>/<%= post.person.seo_index %>">
-                <img src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/>
-		<%= post.person.full_name %>
-	      </a>
-	  </div>
 	</div>
-        <div class="content last">
-            <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
+        <div class="content">
 	    <% if show_full_content %>
               <%= raw post.post_content %>
 	    <% else %>
@@ -65,4 +65,5 @@
 	    <span class='st_fblike'></span>
 	  </div>
         <% end %>
+	<div style="clear:both">&nbsp;</div>
       </article>

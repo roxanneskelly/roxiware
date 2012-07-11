@@ -1,17 +1,23 @@
-<div class="gallery_overlay overlay" id="gallery_edit_overlay">
+<div class="gallery_overlay popup_form overlay" id="gallery_edit_overlay">
   <%= form_tag do%>
-    <div class="span-10">
-      <div class="left last"><%= label_tag :name, "Name:", :class=>"span-2 left"%>
-           <%= text_field_tag :name, nil, :class=>"span-8 last" %></div>
-    </div>
-    <div class="span-3 last upload_target">Upload Image
-      <input type="hidden" name="image_url" class="gallery_image"/>
-      <input type="hidden" name="thumbnail_url" class="gallery_thumbnail"/>
-      <img name="image_url" id="overlay_image" class="gallery_image"/>
-    </div>
-    <div><%= text_area_tag :description, nil, :class=>"popup_wysiwyg span-16 bio_content" %></div>
+      <div id="left_section">
+         <%= label_tag :name, "Name" %>
+         <%= text_field_tag :name, nil %>
+      </div>
+      <div id="right_section">
+        <span class="popup_help_text">Click to upload.</span>
+	<br/>
+	<div class="upload_target gallery_image">
+	   <input type="hidden" name="image_url" class="gallery_image"/>
+	   <input type="hidden" name="thumbnail_url" class="gallery_thumbnail"/>
+	   <img name="image_url" id="overlay_image"/>
+	 </div>
+      </div>
+    <br/>
+    <%= text_area_tag :description, nil, :class=>"popup_wysiwyg gallery_description" %>
+    <br/>
+    <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
   <% end %>
-  <div id="save_control" class="save_button right">&nbsp;</div>
 </div>
 
 <script>

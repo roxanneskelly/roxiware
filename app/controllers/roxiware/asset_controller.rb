@@ -19,8 +19,8 @@ class Roxiware::AssetController < ApplicationController
           end
           # center image
           image.background_color = 'none';
-          logger.warn "height " + height.to_s
           if params.has_key?(:pad_image) && (params[:pad_image])
+	     print "PADDING IMAGE\n\n"
 	     width_offset = (width-image.columns)/2
              height_offset = (height-image.rows)/2
 
@@ -36,7 +36,6 @@ class Roxiware::AssetController < ApplicationController
                                    width_offset,
 		                   height_offset)
           end
-    	  logger.debug "thumbprint"+upload_image_thumbprint
           image.write(path)
 	  result = {:image_url=>File.join(AppConfig.upload_url, upload_image_thumbprint + ".png") }
           if params.has_key?(:thumbnail_width) && params.has_key?(:thumbnail_height)

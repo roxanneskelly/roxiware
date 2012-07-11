@@ -18,7 +18,7 @@ module Roxiware
 
      edit_attr_accessible :name, :description, :medium, :image_url, :thumbnail_url, :featured, :as=>[:admin, :user, nil]
      edit_attr_accessible :person_id, :seo_index, :as=>[:admin, nil]
-     ajax_attr_accessible :name, :description, :medium, :image_url, :thumbnail_url, :featured, :person_id, :full_name
+     ajax_attr_accessible :name, :description, :medium, :image_url, :thumbnail_url, :featured, :person_id, :full_name, :as=>[:guest]
 
     before_validation() do
        self.seo_index = self.name.downcase.gsub(/[^a-z0-9]+/i, '-')

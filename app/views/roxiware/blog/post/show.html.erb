@@ -26,6 +26,7 @@
      <%= submit_tag "Post" %>
   <% end %>
 </div>
+<%= render :partial=>"edit_post", :locals=>{:index=>true} if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) %>
 
 <script>
 $(document).ready(function() {

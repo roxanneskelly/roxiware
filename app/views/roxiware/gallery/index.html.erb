@@ -7,9 +7,9 @@ gallery_list_pages = []
    gallery_list_pages.last << gallery_list_row
   end
 end
+
 %>
 
-<% if gallery_list_pages.size > 1 %>
 <div class="gallery_nav">
   <a class="prev browse"><</a>
   <div class="gallery_nav_ctrl">
@@ -19,7 +19,6 @@ end
   </div>
   <a class="next browse">></a>
 </div>
-<% end %>
 
 <div id="gallery_list_scrollable" class="gallery_list_scrollable">
   <div class="gallery_list_pages">
@@ -68,16 +67,16 @@ end
     }
     ).navigator("div.gallery_nav_ctrl");
 
-    var scrollable = $("#gallery_scrollable").data("scrollable");
+    var scrollable = $("#gallery_list_scrollable").data("scrollable");
     if (scrollable) {
-    var current_index = parseInt(location.hash.substring(1));
-    if(current_index == NaN)
-    {
-      scrollable.begin(0);
-    }
-    else {
-       scrollable.seekTo(current_index-1, 0);
-    }
+      var current_index = parseInt(location.hash.substring(1));
+      if(current_index == NaN)
+      {
+        scrollable.begin(0);
+      }
+      else {
+         scrollable.seekTo(current_index-1, 0);
+      }
    }
  });
 </script>

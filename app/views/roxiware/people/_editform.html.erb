@@ -33,7 +33,8 @@
 	<%= text_field_tag :google, nil %>
       </div>
       <div id="right_section">
-        <span class="popup_help_text next_form_line">Click to upload.</span>
+        <span class="popup_help_text">Click to upload.</span>
+	<br/>
 	<div class="upload_target">
 	   <input type="hidden" name="image_url" class="person_portrait"/>
 	   <input type="hidden" name="thumbnail_url" class="person_thumbnail"/>
@@ -41,7 +42,7 @@
 	 </div>
        </div>
        <br/>
-       <%= text_area_tag :bio, nil, :class=>"popup_wysiwyg bio_content next_form_line" %>
+       <%= text_area_tag :bio, nil, :class=>"popup_wysiwyg bio_content" %>
        <br/>
        <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
   <% end %>

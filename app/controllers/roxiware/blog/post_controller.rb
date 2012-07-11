@@ -250,7 +250,6 @@ module Roxiware
 	 private
 
 	   def add_nav
-	     raw_calendar_posts = Roxiware::Blog::Post.order("post_date DESC").select("post_title, post_date, post_link, post_status")
 	     
 	     @calendar_posts = {}
              raw_calendar_posts = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
@@ -259,33 +258,27 @@ module Roxiware
 
 	     raw_calendar_posts.each do |post|
 	       year = post.post_date.year
-	       month = post.post_date.strftime("%B")
 	       @calendar_posts[year] ||= {:count=>0, :unpublished_count=>0, :monthly=>{}}
-	       @calendar_posts[year][:monthly][month] ||= {:count=>0, :unpublished_count=>0, :posts=>[]}
-	       @calendar_posts[year][:monthly][month][:posts] << {:title=>post.post_title, :published=>(post.post_status == "publish"), :link=>post.post_link}
+	       @calendar_posts[year][:monthly][post.post_date.month] ||= {:count=>0, :unpublished_count=>0, :name=>post.post_date.strftime("%B"), :posts=>[]}
+	       @calendar_posts[year][:monthly][post.post_date.month][:posts] << {:title=>post.post_title, :published=>(post.post_status == "publish"), :link=>post.post_link}
 	       if post.post_status == "publish"
                   @calendar_posts[year][:count] += 1
-	          @calendar_posts[year][:monthly][month][:count] += 1
+	          @calendar_posts[year][:monthly][post.post_date.month][:count] += 1
 		  published_post_ids << post.id
                elsif can? :edit, post
                   @calendar_posts[year][:unpublished_count] += 1
-	          @calendar_posts[year][:monthly][month][:unpublished_count] += 1
+	          @calendar_posts[year][:monthly][post.post_date.month][:unpublished_count] += 1
                end
 	     end
 
              @category_counts = {}
 
-	     print "PUBLISHED POST IDS " + published_post_ids.to_json + "\n\n"
 	     Roxiware::Terms::TermRelationship.where(:term_id=>@categories.keys, 
 	                                             :term_object_id=>published_post_ids, 
 						     :term_object_type=>"Roxiware::Blog::Post").each do |relationship|
 	        @category_counts[relationship.term_id] ||= 0
 	        @category_counts[relationship.term_id] += 1
 	     end
-
-
-	     @left_widgets <<"roxiware/blog/post/calendar_nav"
-	     @left_widgets <<"roxiware/blog/post/categories_nav"
 	  end
       end
    end

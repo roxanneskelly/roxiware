@@ -51,6 +51,8 @@ class Roxiware::AccountController < ApplicationController
     authorize! :create, Roxiware::User
     @user = Roxiware::User.new({:email => "email@email.com", :username=>"username", :role=>"guest"}, :as=>self.get_role )
     @user.build_person({:first_name=>"First", :last_name=>"Last", :role=>"Guest", :bio=>""}, :as=>self.get_role)
+
+    print @user.ajax_attrs(self.get_role).to_json + "\n\n\n"
     respond_to do |format|
         format.html
         format.json { render :json => @user.ajax_attrs(self.get_role) }

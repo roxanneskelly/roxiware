@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
   s.add_dependency "railties"
   s.add_dependency "uuid"
   s.add_dependency "sanitize"
-  s.add_dependency "sanitize"
   s.add_dependency "acts_as_tree_rails3"
   s.add_dependency "httparty"
   s.add_development_dependency "sqlite3"

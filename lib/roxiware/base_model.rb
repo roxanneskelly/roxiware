@@ -52,7 +52,11 @@ module Roxiware
 	valid_read_keys = Set.new([])
 
 	
-	valid_write_keys = self.class.can_edit_attrs[role].clone || Set.new([])
+	if (self.class.can_edit_attrs[role])
+	   valid_write_keys = self.class.can_edit_attrs[role].clone
+	else
+	   valid_write_keys =  Set.new([])
+        end
 	valid_read_keys |= self.class.ajax_attrs[role] if self.class.ajax_attrs.has_key?(role)
 	valid_read_keys |= self.class.ajax_attrs["default"].to_a if self.class.ajax_attrs.has_key?("default")
 

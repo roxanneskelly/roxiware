@@ -16,18 +16,6 @@ body.application_body
   font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
 }
 
-@font-face {
-    font-family: Cuneiform;
-    src: url(/assets/NEOASS.TTF);
-    font-weight:400;
-}
-
-@font-face
-{
-   font-family: Cuneiform2;
-   src: url('images/NEOASS.TTF');
-}
-
 body.application_body  h1, h2, h3, h4, h5, h6 {
    font-family:Georgia, serif;
    color:#fff;

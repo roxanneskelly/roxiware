@@ -1,12 +1,9 @@
 class HomeController < ApplicationController
 
   def index
+      @categories = Hash[Roxiware::Terms::Term.categories().map {|category| [category.id, category]  }]
       if Roxiware.enable_blog
-         @post = @recent_posts.shift
-      end
-
-      if Roxiware.enable_gallery
-        @gallery_item = Roxiware::GalleryItem.where(:gallery_id=>1).first
+         @post = Roxiware::Blog::Post.order("post_date DESC").limit(1).first
       end
   end
 

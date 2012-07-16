@@ -6,8 +6,7 @@ module Roxiware
 	 before_filter do
 	   @role = "guest"
 	   @role = current_user.role unless current_user.nil?
-
-	   @categories = Hash[Roxiware::Terms::Term.categories().map {|category| [category.id, category]}]
+           @categories = Hash[Roxiware::Terms::Term.categories().map {|category| [category.id, category]  }]
 	 end
 	 
 
@@ -271,14 +270,6 @@ module Roxiware
                end
 	     end
 
-             @category_counts = {}
-
-	     Roxiware::Terms::TermRelationship.where(:term_id=>@categories.keys, 
-	                                             :term_object_id=>published_post_ids, 
-						     :term_object_type=>"Roxiware::Blog::Post").each do |relationship|
-	        @category_counts[relationship.term_id] ||= 0
-	        @category_counts[relationship.term_id] += 1
-	     end
 	  end
       end
    end

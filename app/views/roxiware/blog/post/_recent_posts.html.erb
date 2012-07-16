@@ -1,7 +1,7 @@
-<% unless @recent_posts.blank? %>
-  <nav class="widget recent_post">
+<% if recent_posts.present? %>
+  <nav class="recent_post">
     <div class="recent_post_title">Recent Posts</div>
-    <% @recent_posts.each do |post| %>
+    <% recent_posts.each do |post| %>
        <div class="recent_post_entry"><%= link_to post.post_title, post.post_link %>
          <div class="post_date"><%= post.post_date.localtime.strftime("%D") %>,&nbsp;
 	    <div class="post_author">

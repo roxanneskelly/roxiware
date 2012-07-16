@@ -1,14 +1,5 @@
-<% if (can? :edit, @homebox) %>
-  <div rel="#overlay_page" id="edit-<%= @home_box.page_type %>" class="page_edit_button edit_button">&nbsp;</div>
-<% end %>
-<div class="page_content">
-<%= raw @home_box.content %>
-</div>
 <% if !@post.blank? %>
   <section class="post">
    <%= render :partial=>"roxiware/blog/post/post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true} %>
   </section>
-<% end %>
-<% if (can? :edit, @home_box) %>
-  <%= render :partial=>"roxiware/page/page_edit" %>
 <% end %>

@@ -6,13 +6,16 @@ module Roxiware
 
        desc "Generate a base roxiware website layout, with authentication, page display"
 
-       class_option :news, :desc => "Enable news", :type => :boolean, :default => true
-       class_option :blog, :desc => "Enable news", :type => :boolean, :default => false
-       class_option :portfolio, :desc => "Enable portfolio", :type => :boolean, :default => false
-       class_option :services, :desc => "Enable services", :type => :boolean, :default => false
-       class_option :events, :desc => "Enable events", :type => :boolean, :default => false
-       class_option :gallery, :desc => "Enable gallery", :type=> :boolean, :default => false
-       class_option :people, :desc => "Enable people", :type=>:boolean, :default=>false
+       class_option :news, :desc => "Enable News", :type => :boolean, :default => true
+       class_option :blog, :desc => "Enable Blog", :type => :boolean, :default => false
+       class_option :portfolio, :desc => "Enable Portfolio", :type => :boolean, :default => false
+       class_option :services, :desc => "Enable Services", :type => :boolean, :default => false
+       class_option :events, :desc => "Enable Events", :type => :boolean, :default => false
+       class_option :gallery, :desc => "Enable Gallery", :type=> :boolean, :default => false
+       class_option :secretpage, :desc => "SecretPage", :type=>:string, :default=>""
+       class_option :people, :desc => "Enable People", :type=>:boolean, :default=>true
+       class_option :singleperson, :desc => "Single Person", :type=>:boolean, :default=>false
+       class_option :books, :desc => "Enable Books", :type=>:boolean, :default=>false
 
       def add_assets
         insert_into_file "app/assets/javascripts/application.js", "//= require roxiware\n", :after => "jquery_ujs\n"
@@ -22,12 +25,10 @@ module Roxiware
       end
 
       def add_routes
-        route('devise_for :users, :class_name=>"Roxiware::User", :module=>"devise", :path=>"account", :path_names=>{:sign_in=>"login", :sign_out=>"logout"}, :skip=>:registration')
-
          route('mount Roxiware::Engine => "/", :as=>"roxiware"')
          route("root :to =>'home#index'")
 	 route("get '/contact' => 'roxiware/page#show', :page_type=>'contact'")
-	 route("get '/about' => 'roxiware/page#show', :page_type=>'about'")
+         route('devise_for :users, :class_name=>"Roxiware::User", :module=>"devise", :path=>"account", :path_names=>{:sign_in=>"login", :sign_out=>"logout"}, :skip=>:registration')
       end
 
       def install_migrations
@@ -78,9 +79,10 @@ Roxiware.setup do |config|
   config.enable_services = #{options.services?}
   config.enable_events = #{options.events?}
   config.enable_gallery = #{options.gallery?}
-  config.secret_page = nil
+  config.secret_page = #{options.secretpage?}
   config.enable_people = #{options.people?}
-  config.single_person = false
+  config.single_person = #{options.singleperson?}
+  config.enable_books = #{options.books?}
   config.gallery_items_per_row = 6
   config.gallery_rows_per_page = 4
 end

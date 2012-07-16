@@ -1,9 +1,9 @@
-<% unless @calendar_posts.blank? %>
-  <nav class="widget calendar_nav">
+<% if calendar_posts.present? %>
+  <nav class="calendar_nav">
     <div class="calendar_nav_title">Archive</div>
     <ul class="calendar_nav_years">
-      <% @calendar_posts.keys.sort.reverse.each do |year| %>
-        <% year_posts = @calendar_posts[year] %>
+      <% calendar_posts.keys.sort.reverse.each do |year| %>
+        <% year_posts = calendar_posts[year] %>
         <li class="calendar_nav_year calendar_nav_hidden"><a>
 	    <%= year %> (<%= year_posts[:count]%>)
 	      <% if (year_posts[:unpublished_count] > 0) %>

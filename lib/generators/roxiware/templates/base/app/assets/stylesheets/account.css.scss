@@ -10,29 +10,75 @@
 
 .accounts
 {
-  margin-left: 40px;
+  margin-left: 4em;
 }
 .accounts table
 {
+  border:1px solid #333;
 }
-.accounts td
+.accounts td, .accounts th
 {
-  padding-left:10px;
-  padding-right:10px;
+  padding:0 1em 0 1em;
 }
-.accounts th
-{
-  padding-left:10px;
-  padding-right:10px;
-}
-.accounts .account_controls
-{
-  width:40px;
-}
-
-.accounts tr:nth-child(even) {background: #EEE}
 
 .account_edit
 {
   margin-left: 40px;
+}
+
+.account_edit_overlay label
+{
+   width:7em;
+}
+
+input#role
+{
+   width:10em;
+}
+
+input#username
+{
+    width:24em;
+}
+
+input[type=text]#first_name, 
+input[type=text]#last_name
+{
+     width:11.4em;
+}
+
+input#password,
+input#password_confirmation
+{
+    width:24em;
+}
+
+input[type=text]#email
+{
+    width:24em;
+}
+
+.accounts td.account_controls, th.account_controls
+{
+  width: 8em;
+}
+
+.accounts td.account_username, th.account_username
+{
+  width: 8em;
+}
+
+.accounts td.account_full_name, th.account_full_name
+{
+  width: 12em;
+}
+
+.accounts td.email, th.account_email
+{
+  width: 12em;
+}
+
+.accounts td.account_role, th.account_role
+{
+  width: 7em;
 }

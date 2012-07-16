@@ -6,10 +6,34 @@ class Roxiware::Person < ActiveRecord::Base
 
    belongs_to :user, :polymorphic=>true
    has_many :social_networks, :autosave=>true, :dependent=>:destroy
-   validates_presence_of :first_name
-   validates :first_name, :length=>{:minimum=>2}
-   validates_uniqueness_of :first_name, :scope=>:last_name
-   validates_uniqueness_of :seo_index, :message=>"Name not sufficiently unique"
+
+   validates :first_name, :length=>{:minimum=>3,
+                                   :too_short => "The first name must be at least %{count} characters.", 
+                                   :maximum=>32,
+                                   :too_long => "The first name must be no more than %{count} characters." 
+				   }
+    validates_uniqueness_of :seo_index, :message=>"The name has already been taken."
+
+    validates :email, :length=>{:maximum=>256,
+                                 :too_long => "The email address must be no more than %{count} characters." 
+				 }
+    validates_uniqueness_of :email, :message=>"The email address has is not unique."
+
+    validates :role, :length=>{:maximum=>64,
+                                 :too_long => "The role must be no more than %{count} characters." 
+				 }
+
+    validates :image_url, :length=>{:maximum=>256,
+                                 :too_long => "The image url must be no more than %{count} characters." 
+				 }
+
+    validates :thumbnail_url, :length=>{:maximum=>256,
+                                 :too_long => "The thumbnail url must be no more than %{count} characters." 
+				 }
+
+    validates :bio, :length=>{:maximum=>32768,
+                                 :too_long => "The bio must be no more than %{count} characters." 
+				 }
 
    edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_url, :thumbnail_url, :bio, :as=>[:admin, :self, nil]
    ajax_attr_accessible :first_name, :last_name, :role, :email, :image_url, :bio, :show_in_directory

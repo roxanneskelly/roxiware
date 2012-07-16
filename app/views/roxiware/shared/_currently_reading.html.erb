@@ -1,11 +1,11 @@
 
-<% unless @currently_reading.blank? %>
+<% unless currently_reading.blank? %>
   <div class="widget currently_reading">
   <h1>Currently Reading</h1>
   <div class="book" >
-     <a type="amzn" search="<%= @currently_reading['book']['isbn13']%>" category="books">
-       <img border="0" src="<%= @currently_reading['book']['image_url'] %>" alt="<%= @currently_reading['book']['title']%>"/>
-        <div class="book_title"><%= @currently_reading['book']['title'] %></div>
+     <a type="amzn" search="<%= currently_reading['book']['isbn13']%>" category="books">
+       <img border="0" src="<%= currently_reading['book']['image_url'] %>" alt="<%= currently_reading['book']['title']%>"/>
+        <div class="book_title"><%= currently_reading['book']['title'] %></div>
      </a>
   </div>
   <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= AppConfig::amazon_associate_id %>"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= URI.escape(AppConfig::amazon_associate_id) %>&Operation=NoScript">Amazon.com Widgets</A></NOSCRIPT>

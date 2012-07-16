@@ -41,19 +41,42 @@
       </div>
       <div id="content_section">
 	<% unless @left_widgets.blank? %>
-	  <div id="left_bar">
+	  <div id="left_bar" class="<%= @left_bar_class %>">
 	    <% @left_widgets.each do |widget| %>
-	       <%= render :partial => widget %>
+	      <div class="transparent_box_container">
+		<div class="transparent_box"></div>
+	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
+	      </div>
 	    <% end %>
 	  </div>
 	<% end %>
-	<div id="center_content">
-	  <%= yield %>
+	<div id="center_bar" class="<%= @center_bar_class %>">
+          <% @top_widgets.each do |widget| %>
+	      <div class="transparent_box_container">
+		<div class="transparent_box"></div>
+	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
+	      </div>
+	  <% end %>
+	  <div class="transparent_box_container">
+	     <div class="transparent_box"></div>
+	      <div id="center_content" class="<%= @center_content_class %>">
+	      <%= yield %>
+	    </div>
+	  </div>
+	  <% @bottom_widgets.each do |widget| %>
+	      <div class="transparent_box_container">
+		<div class="transparent_box"></div>
+	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
+	      </div>
+	  <% end %>
 	</div>
 	<% unless @right_widgets.blank? %>
-	  <div  id="right_bar">
+	  <div id="right_bar" class="<%= @right_bar_class %>">
 	    <% @right_widgets.each do |widget| %>
-	       <%= render :partial => widget %>
+	      <div class="transparent_box_container">
+		<div class="transparent_box"></div>
+	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
+	      </div>
 	    <% end %>
 	  </div>
 	<% end %>
@@ -63,7 +86,9 @@
       <%= render :partial => 'shared/footer' %>
     </footer>
   </div>
-
+  <% if can? :edit, Roxiware::Page %>
+     <%= render :partial=>"roxiware/page/page_edit" %>
+  <% end %>
   <script>
   $(document).bind("ready", function() {
      $("SELECT").selectBox();

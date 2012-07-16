@@ -26,7 +26,7 @@ function toTitleCase(str)
             dataId: "user",
 	    fieldErrorClass: "popup_form_error_field",
 	    errorPopupGenerator: function(data) {
-		result = "<div class='popup_form_alert'><table>";
+		result = "<div class='overlay popup_form_alert'><table>";
 	        $.each(data, function(key, value) {
 			if (value[0]) {
                             result +="<tr><td>"+toTitleCase(value[0])+"</td><td>"+value[1]+"</td></tr>";
@@ -80,6 +80,8 @@ function toTitleCase(str)
 			 self.find(conf.uploadImagePreview).removeAttr("src");
 			 self.find(conf.uploadImageUrlTarget).removeAttr("value");
 			 self.find(conf.uploadImageThumbnailTarget).removeAttr("value");
+			 self.find("button#save_button").css("visibility", "hidden").off("click");
+			 self.find("button#edit_button").css("visibility", "hidden").off("click");
 		     },
 
 		 edit: function(edit_fields) {
@@ -181,17 +183,18 @@ function toTitleCase(str)
 				  oneInstance: false,
 				  load: true,
 				  zIndex: 99999,
+                                  closeOnClick: false,
 				  mask: {
 				  zIndex: 99998,
-				      color: "#000000",
+				      color: "#777",
 				      loadSpeed: 200,
 				      opacity: 0.6
 				      },
-                                  onClose: function() { 
-			          result.remove();
-				  if(closeOverlay) {
-                                      self.find(".close").click();
-				  }
+                                  onClose: function() {
+				     result.remove();
+				     if(closeOverlay) {
+                                        self.find(".close").click();
+				     }
 			      }});
 		     },
              delete: function() {

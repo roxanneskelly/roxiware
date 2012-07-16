@@ -1,8 +1,8 @@
 
-<% unless @goodreads_list.blank? %>
+<% unless book_ads.blank? %>
   <div class="widget book_ads">
   <h1>Good Books</h1>
-  <% @goodreads_list.each do |review| %>
+  <% book_ads.each do |review| %>
      <div class="book">
        <a type="amzn" search="<%= review['book']['isbn13']%>" category="books">
 	 <img border="0" src="<%= review['book']['image_url'] %>" alt="<%= review['book']['title']%>"/>

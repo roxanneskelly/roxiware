@@ -2,11 +2,14 @@
 <section class="events">
 <h2><%= link_to_unless(params[:controller]=="roxiware/events", "Events",events_path) %>
 </h2>
+<% if (params[:controller]=="roxiware/events") && (can? :create, Roxiware::Event) %>
+  <%= button_tag "New", :id=>"edit-event-new", :class=>"event_edit button_add", :type=>"button"  %>
+<% end %>
 <% @events.each do |event|  %>
   <div id="event-<%= event.id %>" class="event">
     <% if (params[:controller]=="roxiware/events") && (can? :edit, Roxiware::Event) %>
-       <div rel="#overlay_event" id="edit-event-<%= event.id %>" class="event_edit_button edit_button">&nbsp;</div>
-       <div id="delete-event-<%= event.id %>" class="event_delete_button delete_button">&nbsp;</div>
+       <%= button_tag "Edit", :id=>"edit-event-#{event.id}", :class=>"event_edit button_edit", :type=>"button"  %>
+       <%= button_tag "Delete", :id=>"delete-event-#{event.id}", :class=>"event_delete button_delete", :type=>"button" %>
     <% end%>
     
     <h3 class="event_title last">
@@ -39,7 +42,4 @@
   <%= link_to("More >", events_path) %>
 <% end %>
 
-<% if (params[:controller]=="roxiware/events") && (can? :create, Roxiware::Event) %>
-  <div rel="#overlay_event" id="edit-event-new" class="event_add_button add_button">&nbsp;</div>
-<% end %>
 </section>

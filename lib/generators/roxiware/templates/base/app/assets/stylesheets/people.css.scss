@@ -25,18 +25,19 @@ table.people td.person_listing
 img.person_portrait
 {
 
-    float:right;
     border: solid 2px black;
     padding:0px;
-    width: 200px;
-    height: 200px;
     margin: 10px;
+    float:right;
 }
-input.person_portrait
+
+
+.person_thumbnail
 {
-    width: 200px;
-    height: 200px;
+    width: 48px;
+    height: 48px;
 }
+
 
 article.person_listing .person_name
 {
@@ -59,3 +60,81 @@ article.person_listing address
    display: block;
    text-align:right;
 }
+
+.prson_overlay
+{
+   width:600px;
+}
+
+.person_edit_overlay label
+{
+    width:60px;
+}
+
+.person_edit_overlay label[for=show_in_directory]
+{
+    width:140px;
+    text-align:left;
+}
+
+.person_edit_overlay input#show_in_directory
+{
+    
+}
+
+.person_edit_overlay div#left_section
+{
+   margin:10px 10px 10px 0px;
+   display:inline-block;
+    vertical-align:top;
+}
+
+.person_edit_overlay div#right_section
+{
+   margin:10px 10px 10px 10px;
+   display:inline-block;
+   vertical-align:top;
+}
+
+
+.person_edit_overlay input[type=text]#role, 
+.person_edit_overlay input[type=text]#email,
+.person_edit_overlay input[type=text]#website,
+.person_edit_overlay input[type=text]#twitter,
+.person_edit_overlay input[type=text]#facebook,
+.person_edit_overlay input[type=text]#google
+{
+    width:24em;
+}
+
+.person_edit_overlay input[type=text]#first_name, 
+.person_edit_overlay input[type=text]#last_name
+{
+     width:11em;
+}
+
+.person_edit_overlay div.upload_target
+{
+    width: 200px;
+    height: 200px;
+}
+
+.person_edit_overlay textarea#bio
+{
+   clear:both;
+   width:51em;
+   height:20em;
+}
+
+button#save_button
+{
+   float:right;
+}
+
+input.person_portrait
+{
+    width: 200px;
+    height: 200px;
+}
+
+

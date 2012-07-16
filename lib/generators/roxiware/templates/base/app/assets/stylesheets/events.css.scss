@@ -49,50 +49,6 @@ div.event_description
     margin-left:20px;
 }
 
-/* the overlayed element */
-.event_overlay {
-  display:none;
-  background-image:url(/assets/overlay/overlay_background.png);
-  color:#FFFFFF;
-  width:640px;
-  padding:50px;
-  font-size:15px;
-}
-
-/* default close button positioned on upper right corner */
-.event_overlay .close {
-	       background-image:url(/assets/overlay/close.png);
-	       position:absolute; right:5px; top:5px;
-	       cursor:pointer;
-	       height:35px;
-	       width:35px;
-}
-
-
-.event_overlay label
-{
-   display:inline-block;
-}
-
-.event_overlay input.event_date
-{
-   display:inline-block;
-   padding:2px;
-}
-
-.event_overlay input.event_time
-{
-   display:inline-block;
-   padding:2px;
-}
-
-.event_overlay .event_description
-{
-    margin:10px;
-    height:300px;
-    width:600px;
-}
-
 #date_hour {
    width:10px;
 }
@@ -176,4 +132,41 @@ div.event_description
 }
 .timeOptions .timeSub {
 	   padding-left: 17px;
+}
+
+.events_widget_title
+{
+  font-size:1.1em;
+  font-weight:800;
+}
+
+.event_widget_date
+{
+   font-size:0.9em;
+   font-weight:800;
+}
+
+.event_widget_city
+{
+   font-size:0.8em;
+   padding-left:10px;
+}
+
+.event_widget_location
+{
+   font-size:0.8em;
+   padding-left:10px;
+   display:inline;
+}
+
+
+div#event_edit_overlay label
+{
+   width:70px;
+}
+
+div#event_edit_overlay textarea
+{
+    width:500px;
+    height:200px;
 }

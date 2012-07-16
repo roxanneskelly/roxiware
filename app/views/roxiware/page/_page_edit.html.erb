@@ -2,13 +2,12 @@
   <%= form_tag("/") do %>
       <%= text_area_tag :content, nil, :class=>"popup_wysiwyg page_edit_content" %>
       <br/>
-      <%= button_tag "Save", :id=>"save_button", :type=>"button next_form_line" %>
+      <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
   <% end %>
 </div>
 <script>
 $(document).bind("ready", function() {
-
-    $("div.page_edit_button[rel]").overlay( {
+    $("button.page_edit").overlay( {
          onClose: function() { 
          },
          target: '#page_edit_overlay',
@@ -20,7 +19,7 @@ $(document).bind("ready", function() {
                   {
                     canEdit: true,
                     method: method,
-                    complete: function(xhr, status) {
+                    success: function(xhr, status) {
                        window.location.reload();
                     }
                   });

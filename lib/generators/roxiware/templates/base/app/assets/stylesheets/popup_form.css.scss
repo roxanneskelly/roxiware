@@ -4,6 +4,9 @@
 {
    font-size: 1.0em;
    margin-right:auto;
+   color:#fff;
+   background:#333;
+   border:solid 1px #777;
 }
 
 
@@ -19,7 +22,7 @@
 {
    vertical-align:baseline;
    line-height:0.6;
-   margin-top:3px;
+   margin-top:.4em;
    margin-left:50px;
 }
 
@@ -27,19 +30,38 @@
 .popup_form input[type=text] {
    line-height:1.6;
    vertical-align:middle;
-   margin:2px;
+   margin:.4em;
+}
+
+.popup_form input[type=password] {
+   line-height:1.6;
+   vertical-align:middle;
+   margin:.4em;
 }
 
 .popup_form textarea
 {
-   margin:0px;
+   margin:4px;
 }
 
-.popup_form select {
-  margin: 2px;
-  padding:0px;
-  vertical-align:middle;
-} 
+
+.popup_form a.selectBox, 
+.popup_form a.selectBox:visited, 
+.popup_form a.selectBox:link, 
+.popup_form a.selectBox:hover
+{
+   color:#000;
+   background:#fff;
+}
+
+
+.popup_form a.selectBox-options, 
+.popup_form a.selectBox-options:visited, 
+.popup_form a.selectBox-options:link, 
+.popup_form a.selectBox-options:hover
+{
+   color:#000;
+}
 
 .popup_form button
 {
@@ -63,7 +85,8 @@ input.popup_form_error_field {
 }
 
 div.popup_form_alert {
-   background:#ffffff;
+   background:#333;
+   border:1px solid #ccc;
    z-index:20000;
 }
 
@@ -71,11 +94,11 @@ div.popup_form_alert {
 /* the popup_form_alerted element */
 .popup_form_alert {
   display:none;
-  color:#000000;
+  color:#fff;
   padding:50px;
   font-size:15px;
   border:solid 2px black;
-  background:#ffffff;
+  background:#000;
 }
 
 /* default close button positioned on upper right corner */
@@ -116,6 +139,7 @@ div.popup_form_alert {
    -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
    -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   display:inline-block;
 }
 
 div.upload_target_hover
@@ -135,4 +159,5 @@ span.popup_help_text
 {
    clear:both;
    float:right;
+   margin:.3em;
 }

@@ -1,6 +1,6 @@
 
 <% if (can? :create, Roxiware::Blog::Post) && @enable_blog_edit %>
-  <div rel="#overlay_post" id="edit-post-item-new" class="post_add button_add">&nbsp;</div>
+  <%= button_tag "New", :id=>"edit-post-item-new", :class=>"post_edit button_add", :type=>"button"  %>
 <% end %>
 <% unless @posts.nil? %>
     <section class="posts">
@@ -44,13 +44,17 @@ $(document).ready(function() {
           });
 
     $("article.post").on("change", "input[type=checkbox]", function() {
-       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+       $.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
 						type:"PUT",
 				                data: {post_status:$(this).attr("checked")?"publish":"draft"},
+                                               complete: function() { wait_icon.remove();},
 						error: function (jqXHR, textStatus, errorThrown) {
 						    alert(errorThrown);
                                                     window.location.reload();
-						  }
+						  },
+                                                success: function (data, jqXHR, textStatus)
+                                                {
+                                                }
 						});
           });
 });

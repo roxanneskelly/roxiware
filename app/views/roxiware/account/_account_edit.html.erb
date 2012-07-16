@@ -29,7 +29,7 @@
 </div>
 <script>
 $(document).bind("ready", function() {
-    $(".account_delete_button").click(function(event) {
+    $(".account_delete").click(function(event) {
        var account_id = $(this).attr("id").split("-")[2];
        endpoint = "/account/" + account_id + ".json";
        $.ajax({
@@ -41,9 +41,7 @@ $(document).bind("ready", function() {
                    }
                });
         });
-
-
-    $("div[rel=#overlay_account]").overlay( {
+    $("button.account_edit").overlay( {
          onClose: function() { 
          },
          target: '#account_edit_overlay',

@@ -1,12 +1,15 @@
-<h1> Your Logo </h1>
+<%= image_tag("logo.png", :class=>"header_logo") %>
 <% if user_signed_in? %>
-  <div id="session-greeting">Welcome <%= current_user.username %></div>
+  <div id="session-greeting">Welcome <%= current_user.username %>&nbsp;
+  <%= link_to_unless_current( "(Log Out)", destroy_session_path('user'), {:method=>'delete'}) do %>Log&nbsp;Out<% end %>
+</div>
 <% elsif (params[:controller] != "devise/sessions") && (params[:controller] != "devise/passwords") %>
    <div id="session-greeting"><%= link_to(new_session_path('user')) do  %><span>Log&nbsp;In</span><% end %></div>
 <% end %>
 <% if user_signed_in?  || secret_authenticated? %>
-<nav class="ddsmoothmenu" style="width:auto;" id="smoothmenu1">
-  <ul>
+<nav class="ddsmoothmenu" id="smoothmenu1">
+  <div class="transparent_box"></div>
+  <ul id="main_menu">
     <li ><%= link_to_unless_current("Home", "/") do %><span>Home</span><% end %></li>
     <% if Roxiware.enable_services %>
     <li ><%= link_to "Services", "/service/service1" %>
@@ -23,8 +26,8 @@
     <% if Roxiware.enable_portfolio %>
     <li ><%= link_to_unless_current "Portfolio", "/portfolio" %></li>
     <% end %>
-    <% if Roxiware.enable_gallery %>
-    <li ><%= link_to "Galleries", "/galleries" %>
+    <% if Roxiware.enable_gallery  && user_signed_in?%>
+    <li ><%= link_to "Galleries", "/galleries#1" %>
     <% end %>
     <% if Roxiware.enable_events %>
       <li ><%= link_to_unless_current "Events", events_path %></li>
@@ -63,6 +66,17 @@
        </li>
     <% end %>
   </ul>
+  <% if @author && !@author.social_networks.blank? %>
+    <div id="header_social_networks">
+    <% @author.social_networks.each do |network| %>
+       <% if network.network_type != "website" %>
+	 <%= link_to network.network_url, {:target=>"blank", :class=>"social_network_link"} do %>
+	   <%= image_tag("icons/social_networking/"+network.network_type+".png", :class=>"social_network_icon") %>
+	 <% end %>
+       <% end %>
+     <% end %>
+    </div>
+  <% end %>
 </nav>
 <% end %>
 <script>
@@ -75,4 +89,20 @@ ddsmoothmenu.init({
  contentsource: "markup"
 });
 });
+
+setInterval(function() {
+   $("span.boil").each(function(index, element) {
+       if(Math.random() > 0.5)
+       {
+          $(element).attr("heat", "heat");
+          $(element).removeAttr("cool");
+       }
+       else
+       {
+          $(element).attr("cool", "cool");
+          $(element).removeAttr("heat");
+       }
+   });
+}, 200);
+
 </script>

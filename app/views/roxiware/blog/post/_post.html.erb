@@ -10,8 +10,8 @@
 	      <%= select_tag "comment_permissions-#{post.id}", options_for_select(Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS, post.comment_permissions), :post=>post.id %>
 	    </div>
 	    <div class="edit_controls">
-	      <div rel="#overlay_post" id="edit-post-item-<%= post.id %>" class="post_edit button_edit">&nbsp;</div>
-	      <div class="post_delete button_delete" id="delete-post-item-<%= post.id %>" >&nbsp;</div>
+              <%= button_tag "Edit", :id=>"edit-post-item-#{post.id}", :class=>"post_edit button_edit", :type=>"button"  %>
+              <%= button_tag "Delete", :id=>"delete-post-item-#{post.id}", :class=>"post_delete button_delete", :type=>"button"  %>
 	    </div>
 	  </div>
 	<% end %>

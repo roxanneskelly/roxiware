@@ -13,6 +13,5 @@ module Roxiware
 	end
 	error_result
       end
-
   end
 end

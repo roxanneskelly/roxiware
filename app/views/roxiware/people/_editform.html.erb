@@ -1,4 +1,4 @@
-<div class="person_overlay popup_form overlay" id="person_edit_overlay">
+<div class="person_edit_overlay popup_form overlay" id="person_edit_overlay">
   <%= form_tag do%>
       <div id="left_section">
         <%= check_box_tag :show_in_directory%>
@@ -49,12 +49,11 @@
 </div>
 <script>
 $(document).bind("ready", function() {
-    console.log("binding ready");
-    $("div[rel=#person_edit_overlay]").overlay( {
+    $("button.person_edit").overlay( {
          onClose: function() { 
          },
+         target:"#person_edit_overlay",
          onBeforeLoad: function() {
-            console.log("before load");
             var person_id= this.getTrigger().attr("id").split("-")[2];
             var endpoint = "/person";
             var method = "POST";
@@ -62,7 +61,7 @@ $(document).bind("ready", function() {
                endpoint = endpoint + "/" + person_id;
                method = "PUT";
             }
-            $(".person_overlay").popup_form(endpoint,
+            $(".person_edit_overlay").popup_form(endpoint,
                   {
                     canEdit: true,
                     method: method,
@@ -76,7 +75,7 @@ $(document).bind("ready", function() {
         }
     });
    
-       $(".person_delete_button").click(function(event) {
+       $(".person_delete").click(function(event) {
           var person = $(this).attr("id").split("-")[2];
           endpoint = "/person/"+person + ".json";
           $.ajax({

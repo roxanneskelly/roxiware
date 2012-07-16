@@ -35,12 +35,12 @@ article.post
 
 article.post div.post_categories
 {
-   border:solid 1px black;
+   float:right;   
    margin-bottom:5px;
-   background:#ccc;
-   min-width:300px;
-   float:left;
+   font-style:italic;
 }
+
+
 
 article.post div.post_categories a
 {
@@ -52,7 +52,6 @@ article.post div.post_categories a
 article.post div.post_tags
 {
    margin-bottom:5px;
-   background:#ccc;
    padding-left:10px;
    float:left;
 }
@@ -72,8 +71,7 @@ article.post div.post_tags a
 article.post div.post_header
 {
    vertical-align:baseline;
-   margin-bottom:20px;
-   padding-top:20px;
+   margin-bottom:10px;
    margin-left:20px;
    float:right;
    width:170px;
@@ -104,7 +102,7 @@ div.comments img.person_thumbnail
 }
 article.post .post_manage_controls
 {
-    font-size:0.7em;
+    font-size:1.0em;
 }
 
 article.post .post_manage_controls .post_status
@@ -118,14 +116,6 @@ article.post .edit_controls
   display:inline-block;
 }
 
-.post_edit_button {
-  display:inline-block;
-}
-
-.post_delete_button {
-  display:inline-block;
-}
-
 article.post .post_manage_controls .comment_permissions
 {
     display:inline-block;
@@ -134,11 +124,11 @@ article.post .post_manage_controls .comment_permissions
 
 article.post h1.post_title
 {
-   clear:left;
+   clear:right;
    margin-right:auto;
    padding-top:15px;
    padding-bottom:0px;
-   margin-bottom:0px;
+   margin-bottom:5px;
    color:black;
    font-size:1.5em;
 }
@@ -146,12 +136,16 @@ article.post h1.post_title
 div.post_header .post_author
 {
    display:inline-block;
-   margin-top:5px;   
+   margin-top:5px;
+}
+
+div.post_header img.post_author_img
+{
+   float:right;
 }
 
 div.post_header div.post_date
 {
-   clear:both;
    text-align:left;
    margin-top:5px;
    font-size:75%;
@@ -174,14 +168,9 @@ article.post .content
    padding-left:10px;
 }
 
-
-/* the overlayed element */
-.post_item_overlay {
-   width:650px;
-}
-
-.post_item_overlay input#category_name
+article.post .content img
 {
+   margin:10px;
 }
 
 
@@ -217,7 +206,6 @@ div.comment_content
 div.comment_reply
 {
    cursor:pointer;
-   border: solid 1px black;
    margin-right:auto;
    margin-top:8px;
    margin-left:10px;
@@ -296,6 +284,23 @@ div.recent_post_entry
    margin-top:10px;
 }
 
+div.recent_post_entry .post_date
+{
+   margin-left:10px;
+   font-size:0.8em;
+}
+
+div.recent_post_entry .post_author
+{
+   display:inline-block;
+}
+
+div.recent_post_entry .post_snippet
+{
+   margin-left:10px;
+   font-size:0.9em;
+}
+
 .post_unpublished
 {
    color:red !important;
@@ -306,34 +311,34 @@ div.recent_post_entry
    color:red !important;
 }
 
-.post_item_overlay label
+.post_item_edit_overlay label
 {
-   width:70px;
+   width:6em;
 }
 
-input#category_name
+.post_item_edit_overlay input#category_name
 {
-   width:300px;
+   width:30em;
 }
 
-input#post_title
+.post_item_edit_overlay input#post_title
 {
-   width:560px;
+   width:55em;
 }
 
-select#person_id 
+.post_item_edit_overlay select#person_id 
 {
-   width:170px;
+   width:16em;
 }
 
-textarea#post_content
+.post_item_edit_overlay textarea#post_content
 {
-   width:636px;
-   height:400px;
+   width:61.5em;
+   height:33em;
 }
 
-input#tag_csv
+.post_item_edit_overlay input#tag_csv
 {
-   width:500px;
+   width:55em;
 }
 

@@ -1,4 +1,4 @@
-<div class="events_edit_overlay popup_form overlay" id="events_edit_overlay">
+<div class="event_edit_overlay popup_form overlay" id="event_edit_overlay">
 <%= form_tag do%>
     <%= label_tag :start_time, "Start Time:" %>
     <%= text_field_tag :start_date, nil, :class=>"jquerytools_date" %>
@@ -19,15 +19,15 @@
     <%= label_tag :state, "State:"%>
     <%= text_field_tag :state, nil %>
     <br/>
-    <%= text_area_tag :description, nil, :class=>"events_description popup_wysiwyg" %>
+    <%= text_area_tag :description, nil, :class=>"event_description popup_wysiwyg" %>
     <br/>
     <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
 <% end %>
 </div>
 <script>
 $(document).bind("ready", function() {
-    $(".event_delete_button").click(function(event) {
-       var events_id = $(this).attr("id").split("-")[2];
+    $(".event_delete").click(function(event) {
+       var event_id = $(this).attr("id").split("-")[2];
        endpoint = "/events/" + events_id + ".json";
        $.ajax({
                 url: endpoint,
@@ -40,20 +40,20 @@ $(document).bind("ready", function() {
         });
 
 
-    $("div[rel=#overlay_event]").overlay( {
+    $("button.event_edit").overlay( {
          onClose: function() { 
          },
-         target: '#events_edit_overlay',
+         target: '#event_edit_overlay',
          onBeforeLoad: function() {
-            var events_id = this.getTrigger().attr("id").split("-")[2];
+            var event_id = this.getTrigger().attr("id").split("-")[2];
             var endpoint = "/events";
             var method = "POST";
-            if (events_id != "new")
+            if (event_id != "new")
             {
                method = "PUT";
-               endpoint = "/events/"+events_id;
+               endpoint = "/events/"+event_id;
             }
-            $(".events_edit_overlay").popup_form(endpoint,
+            $(".event_edit_overlay").popup_form(endpoint,
                   {
                     canEdit: true,
                     method: method,

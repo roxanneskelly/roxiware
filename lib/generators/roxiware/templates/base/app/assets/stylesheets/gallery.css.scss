@@ -6,8 +6,6 @@
   float:none;
 }
 
-
-
 .gallery div.collection
 {
   text-align:center;
@@ -58,6 +56,10 @@
   float:none;
 }
 
+.gallery_list_scrollable
+{
+    height:680px;
+}
 
 /* root element for scrollable items */
 .gallery_list_pages 
@@ -107,10 +109,16 @@
    height: 100px;
 }
 
-.upload_target .gallery_image
+.gallery_image
 {
    width:100px;
    height:100px;
+}
+
+input.gallery_thumbnail
+{
+    width: 64px;
+    height: 64px;
 }
 
 .gallery div#gallery_name
@@ -130,7 +138,7 @@
   position:relative;
   overflow:hidden;
   height: 680px;
-  width: 710px;
+  width: 680px;
 }
 
 /* root element for scrollable items */
@@ -143,7 +151,7 @@
 /* single scrollable item */
 .gallery_page {
    height:650px;
-   width:710px;
+   width:680px;
    text-align:center;
    align:center;
    display:inline-block;
@@ -168,6 +176,39 @@
 .gallery_edit_controls
 {
   height:14px;
+}
+
+.gallery_overlay div#left_section
+{
+   margin:10px 10px 10px 0px;
+   display:inline-block;
+    vertical-align:top;
+}
+
+.gallery_overlay div#right_section
+{
+   margin:10px 10px 10px 10px;
+   display:inline-block;
+   vertical-align:top;
+}
+
+.gallery_overlay label
+{
+   width:70px;
+}
+
+.gallery_overlay input[type=text]#name
+{
+   width:240px;
+}
+
+
+.gallery_overlay textarea#description
+{
+   clear:both;
+   width:450px;
+   height:200px;
+   
 }
 
 .gallery_item 
@@ -220,46 +261,42 @@
    width:500px;
 }
 
-.gallery_item_overlay img {
-   display:block;
-   text-align:center;
-   margin-left:auto;
-   margin-right:auto;
-   margin-bottom:5px;
-   width:400px;
-   height:400px;
+.gallery_item_edit_overlay
+{
 }
 
-.gallery_item_overlay div#title_field
+.gallery_item_edit_overlay div#left_section
 {
-	margin-left:auto;
-	margin-right:auto;
-	padding:0px;
-	text-align:center;
-}
-.gallery_item_overlay span#name
-{
-   font-weight:600;
+   margin:10px 10px 10px 0px;
    display:inline-block;
+   vertical-align:top;
 }
 
-.gallery_item_overlay span#artist
+.gallery_item_edit_overlay div#right_section
 {
-   font-size:0.7em;
-   font-style:italic;
+   margin:10px 10px 10px 10px;
+   display:inline-block;
+   vertical-align:top;
 }
 
-.gallery_item_overlay div#medium
+.gallery_item_edit_overlay label
 {
-   font-size:0.7em;
-   width:100%;
-   text-align:center;
+   width:70px;
 }
 
-.gallery_item_overlay div#description
+.gallery_item_edit_overlay input[type=text]#name,
+.gallery_item_edit_overlay select#person_id,
+.gallery_item_edit_overlay input[type=text]#medium
 {
-    margin-top:5px;
-    width:100%;
+   width:200px;
+}
+
+
+.gallery_item_edit_overlay textarea#description
+{
+   clear:both;
+   width:450px;
+   height:200px;
 }
 
 input.gallery_item_thumbnail
@@ -270,8 +307,8 @@ input.gallery_item_thumbnail
 
 input.gallery_item_image
 {
-    width: 300px;
-    height: 300px;
+    width: 400px;
+    height: 500px;
 }
 
 .gallery_item_edit_overlay .upload_target
@@ -284,4 +321,16 @@ input.gallery_item_image
     width: 100px;
     height: 100px;
     margin:5px;
+}
+
+.gallery_widget
+{
+   vertical-align:center;
+   text-align:center;
+}
+
+.gallery_widget img
+{
+   margin-left:auto;
+   margin-right:auto;
 }

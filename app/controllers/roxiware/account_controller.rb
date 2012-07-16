@@ -52,7 +52,6 @@ class Roxiware::AccountController < ApplicationController
     @user = Roxiware::User.new({:email => "email@email.com", :username=>"username", :role=>"guest"}, :as=>self.get_role )
     @user.build_person({:first_name=>"First", :last_name=>"Last", :role=>"Guest", :bio=>""}, :as=>self.get_role)
 
-    print @user.ajax_attrs(self.get_role).to_json + "\n\n\n"
     respond_to do |format|
         format.html
         format.json { render :json => @user.ajax_attrs(self.get_role) }
@@ -72,10 +71,8 @@ class Roxiware::AccountController < ApplicationController
          @user.reload
          @user.person.user_id = @user.id
 	 @user.save
-         print "Save Succeeded\n"
          format.json { render :json => @user.ajax_attrs(self.get_role) }
       else
-         print "Save Failed\n" + report_error(@user).to_json
          format.json { render :json=>report_error(@user)}
       end
     end
@@ -91,16 +88,16 @@ class Roxiware::AccountController < ApplicationController
     end
     raise ActiveRecord::RecordNotFound if @user.nil?
     authorize! :edit, @user
+    update_params = params
+    if params.has_key?("user")
+      update_params=params["user"]
+    end
+    if update_params[:password].blank?
+      update_params.delete(:password)
+      update_params.delete(:password_confirmation) if update_params[:password_confirmation].blank?
+    end
 
     respond_to do |format|
-      update_params = params
-      if params.has_key?("user")
-        update_params=params["user"]
-      end
-      if update_params[:password].blank?
-        update_params.delete(:password)
-        update_params.delete(:password_confirmation) if update_params[:password_confirmation].blank?
-      end
       if !@user.update_attributes(update_params, :as=>current_user.role)
          format.html { redirect_to "/account/edit", :notice=>flash_from_object_errors(@user) } 
          format.json { render :json=>report_error(@user)}

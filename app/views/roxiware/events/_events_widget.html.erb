@@ -1,8 +1,8 @@
-
-<% if !@events.blank? %>
-<nav class="widget events_widget">
+Events
+<% if events.present? %>
+<nav class="events_widget">
   <%= link_to("Events",events_path, :class=>"events_widget_title") %>
-  <% @events.each do |event|  %>
+  <% events.each do |event|  %>
     <div id="event-<%= event.id %>" class="event_widget_event">
       <div class="event_widget_date">
 	<%= show_time = event.start.strftime("%b %e")

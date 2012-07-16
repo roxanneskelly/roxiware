@@ -7,6 +7,7 @@ class Ability
     when "admin"
       can :manage, :all
       can :comment, Roxiware::Blog::Comment
+      cannot :delete, Roxiware::User, :id=>user.id
     when "user"
       can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page, Roxiware::Event, Roxiware::GalleryItem, Roxiware::Gallery, Roxiware::Service]
       can :read, Roxiware::Person, :show_in_directory=>true

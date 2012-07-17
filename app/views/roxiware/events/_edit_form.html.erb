@@ -28,7 +28,7 @@
 $(document).bind("ready", function() {
     $(".event_delete").click(function(event) {
        var event_id = $(this).attr("id").split("-")[2];
-       endpoint = "/events/" + events_id + ".json";
+       endpoint = "/events/" + event_id + ".json";
        $.ajax({
                 url: endpoint,
                 type: "DELETE",

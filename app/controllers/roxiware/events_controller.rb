@@ -1,7 +1,7 @@
 
 class Roxiware::EventsController < ApplicationController
   include Roxiware::EventsHelper
-  load_and_authorize_resource :except=>[:index, :new]
+  load_and_authorize_resource :except=>[:index, :new], :class=>"Roxiware::Events"
   
   before_filter do
     @role = "guest"

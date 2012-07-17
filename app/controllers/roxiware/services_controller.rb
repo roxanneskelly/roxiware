@@ -1,5 +1,5 @@
 class Roxiware::ServicesController < ApplicationController
-  load_and_authorize_resource :except => [ :index, :show_seo, :new ]
+  load_and_authorize_resource :except => [ :index, :show_seo, :new ], :class=>"Roxiware::Service"
 
   before_filter do
     @role = "guest"

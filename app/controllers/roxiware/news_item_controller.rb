@@ -1,6 +1,6 @@
 module Roxiware
   class NewsItemController < ApplicationController
-    load_and_authorize_resource  :except=>[:new, :index]
+    load_and_authorize_resource  :except=>[:new, :index], :class=>"Roxiware::NewsItem"
 
   before_filter do
     @role = "guest"

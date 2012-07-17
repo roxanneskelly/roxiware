@@ -1,6 +1,6 @@
 class Roxiware::GalleryItemController < ApplicationController
   include Roxiware::GalleryHelper
-  load_and_authorize_resource :except=>[:new, :create]
+  load_and_authorize_resource :except=>[:new, :create], :class=>"Roxiware::GalleryItem"
 
   before_filter do
     @role = "guest"

@@ -1,5 +1,5 @@
 class Roxiware::PortfolioEntriesController < ApplicationController
-  load_and_authorize_resource :except => [:new]
+  load_and_authorize_resource :except => [:new], :class=>"Roxiware::PortfolioEntry"
 
   before_filter do
     @role = "guest"

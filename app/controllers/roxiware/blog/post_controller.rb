@@ -1,7 +1,7 @@
 module Roxiware
    module Blog
       class PostController < ApplicationController
-         load_and_authorize_resource :only=>[:show, :update, :edit, :destroy]
+         load_and_authorize_resource :only=>[:show, :update, :edit, :destroy], :class=>"Roxiware::Blog::Post"
 
 	 before_filter do
 	   @role = "guest"

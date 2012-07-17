@@ -1,7 +1,7 @@
 module Roxiware
    module Blog
       class CommentController < ApplicationController
-         load_and_authorize_resource :except=>[:create]
+         load_and_authorize_resource :except=>[:create], :class=>"Roxiware::Blog::Comment"
 
 	 before_filter do
            @role = "guest"

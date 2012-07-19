@@ -29,10 +29,10 @@
 <script>
 $(document).bind("ready", function() {
     console.log("binding ready");
-    $("div[rel=#gallery_item_edit_overlay]").overlay( {
+    $("button.gallery_item_edit, div.gallery_new").overlay( {
          closeOnClick: false,
          load: false, 
-         fixed: false,
+         target:"#gallery_item_edit_overlay",
          onClose: function() { 
          },
          onBeforeLoad: function() {
@@ -58,7 +58,7 @@ $(document).bind("ready", function() {
         }
     });
    
-    $(".gallery_delete_item_button").click(function(event) {
+    $(".gallery_item_delete").click(function(event) {
           var gallery_id= $(this).attr("id").split("-")[2];
           var gallery_item_id= $(this).attr("id").split("-")[3];
           var endpoint = "/gallery/"+gallery_id + "/item/"+gallery_item_id;

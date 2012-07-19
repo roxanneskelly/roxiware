@@ -8,6 +8,7 @@
         <div class="book_title"><%= currently_reading['book']['title'] %></div>
      </a>
   </div>
+  <a href="http://www.goodreads.com" style="font-size:0.5em">Data by Goodreads</a>
   <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= AppConfig::amazon_associate_id %>"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= URI.escape(AppConfig::amazon_associate_id) %>&Operation=NoScript">Amazon.com Widgets</A></NOSCRIPT>
   </div>
 <% end %>

@@ -1,6 +1,6 @@
 class Roxiware::PeopleController < ApplicationController
   require 'uri'
-  load_and_authorize_resource :except => [ :show_seo, :new ], :class=>"Roxiware::People"
+  load_and_authorize_resource :except => [ :show_seo, :new ], :class=>"Roxiware::Person"
 
   before_filter do
     @role = "guest"

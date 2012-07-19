@@ -1,0 +1,11 @@
+<div id="flash_section">
+   <% if flash_content[:notice].present? %>
+     <div class="notice-flash"><%= flash_content[:notice] %></div>
+   <% end %>
+   <% if flash_content[:alert].present? %>
+     <div class="alert-flash"><%= flash_content[:alert] %></div>
+   <% end %>
+   <% if flash_content[:error].present? %>
+      <div class="error-flash"><%= flash_content[:error] %></div>
+   <% end %>
+</div>

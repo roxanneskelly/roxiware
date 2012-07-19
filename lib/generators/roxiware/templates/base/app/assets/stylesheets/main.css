@@ -21,10 +21,10 @@ body.application_body  h1, h2, h3, h4, h5, h6 {
    color:#fff;
 }
 
-body.application_body h1 {font-size:2em;line-height:1;margin-bottom:0.5em;}
-body.application_body h2 {font-size:2em;margin-bottom:0.75em;}
-body.application_body h3 {font-size:1.5em;line-height:1;margin-bottom:1em;}
-body.application_body h4 {font-size:1.2em;line-height:1.25;margin-bottom:1.25em;}
+body.application_body h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
+body.application_body h2 {font-size:1.2em;margin-bottom:0.75em;}
+body.application_body h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
+body.application_body h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
 body.application_body h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
 body.application_body h6 {font-size:1em;font-weight:bold;}
 

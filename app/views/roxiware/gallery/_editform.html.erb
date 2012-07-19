@@ -1,4 +1,4 @@
-<div class="gallery_overlay popup_form overlay" id="gallery_edit_overlay">
+<div class="gallery_edit_overlay popup_form overlay" id="gallery_edit_overlay">
   <%= form_tag do%>
       <div id="left_section">
          <%= label_tag :name, "Name" %>
@@ -10,7 +10,7 @@
 	<div class="upload_target gallery_image">
 	   <input type="hidden" name="image_url" class="gallery_image"/>
 	   <input type="hidden" name="thumbnail_url" class="gallery_thumbnail"/>
-	   <img name="image_url" id="overlay_image"/>
+	   <img name="image_url" id="overlay_image" class="gallery_image"/>
 	 </div>
       </div>
     <br/>
@@ -22,12 +22,11 @@
 
 <script>
 $(document).bind("ready", function() {
-    console.log("binding ready");
-    $("div[rel=#gallery_edit_overlay]").overlay( {
+    $("button.gallery_edit, div#edit-gallery-new").overlay( {
          onClose: function() { 
          },
+         target:"#gallery_edit_overlay",
          onBeforeLoad: function() {
-            console.log("before load");
             var gallery_id= this.getTrigger().attr("id").split("-")[2];
             var endpoint = "/gallery";
             var method = "POST";
@@ -35,7 +34,7 @@ $(document).bind("ready", function() {
                endpoint = endpoint + "/" + gallery_id;
                method = "PUT";
             }
-            $(".gallery_overlay").popup_form(endpoint,
+            $(".gallery_edit_overlay").popup_form(endpoint,
                   {
                     canEdit: true,
                     method: method,
@@ -49,7 +48,7 @@ $(document).bind("ready", function() {
         }
     });
    
-    $(".gallery_delete_button").click(function(event) {
+    $(".gallery_delete").click(function(event) {
           var gallery = $(this).attr("id").split("-")[2];
           endpoint = "/gallery/"+gallery + ".json";
           $.ajax({

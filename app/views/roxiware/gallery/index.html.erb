@@ -30,20 +30,20 @@ end
              <td>
                  <% if !gallery.id.nil? %>
 	           <% if can? :edit, gallery %>
-		     <div>
-	               <div rel="#gallery_edit_overlay" id="edit-gallery-<%= gallery.id %>" class="gallery_edit_button edit_button">&nbsp;</div>
-                       <div id="delete-gallery-<%= gallery.id %>" class="gallery_delete_button delete_button">&nbsp;</div>
+		     <div class="gallery_edit_controls">
+                       <%= button_tag "Edit", :id=>"edit-gallery-#{gallery.id}", :class=>"gallery_edit button_edit", :type=>"button"  %>
+                       <%= button_tag "Delete", :id=>"delete-gallery-#{gallery.id}", :class=>"gallery_delete button_delete", :type=>"button"  %>
 		     </div>
 		   <% end %>
 		   <div class="button_box gallery_list_item">
                      <%= link_to({:controller=>"gallery", :action=>"show_seo", :gallery_seo_index=>gallery.seo_index }) do %>
-                       <img src="<%= gallery.thumbnail_url %>" class="gallery_thumbnail"/>
+                       <img src="<%= gallery.image_url %>" />
 	               <div class="gallery_name"><%= gallery.name %></div>
                      <% end %> 
                    </div>
 		 <% else %>
                    <% if can? :create, Roxiware::Gallery %>
-	             <div  rel="#gallery_edit_overlay" id="edit-gallery-new" class="gallery_list_item button_box">
+	             <div rel="#gallery_edit_overlay" id="edit-gallery-new" class="gallery_edit button_box">
 	               <div class="gallery_name"><%= gallery.name %></div>
 		     </div>
 		   <% end %>

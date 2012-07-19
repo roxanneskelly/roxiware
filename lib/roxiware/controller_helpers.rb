@@ -28,18 +28,19 @@ module Roxiware
          widget_map.each do |position, widgets|
 	   widgets.each do |widget|
               if current_page?(widget[:location])
-	        widget[:locals] ||= {}
 		@widgets[position] ||= []
 		new_entry = widget.clone()
-		new_entry[:locals] ||= {}
-		new_entry[:locals].merge!(self.send(widget[:preload])) if :preload.in?(widget)
-	        @widgets[position] << new_entry
+	        new_entry[:locals] ||= {}
+		enable = widget[:preload].blank?
+		enable = self.send(widget[:preload], new_entry[:locals]) unless enable
+                @widgets[position] << new_entry if enable
 	     end
            end
 	end
     end
 
     def configure_page_layout(page_layout)
+      @header_bar_class="header_bar "
       @left_bar_class="left_bar "
       @right_bar_class="right_bar "
       @center_bar_class="center_bar"

@@ -11,7 +11,7 @@
       <div class="edit_controls">
         <%= button_tag "Edit", :id=>"edit-person-#{@person.id}", :class=>"person_edit button_edit", :type=>"button"  %>
 	<% if (!Roxiware.single_person) && (@person.user_id.nil?) %>
-           <%= button_tag "Delete", :id=>"edit-person-#{@person.id}", :class=>"prson_delete button_delete", :type=>"button"  %>
+           <%= button_tag "Delete", :id=>"edit-person-#{@person.id}", :class=>"person_delete button_delete", :type=>"button"  %>
 	<% end %>
       </div>
     <% end %>

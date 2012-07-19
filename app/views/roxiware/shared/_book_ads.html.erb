@@ -1,6 +1,6 @@
 
 <% unless book_ads.blank? %>
-  <div class="widget book_ads">
+  <div class="book_ads">
   <h1>Good Books</h1>
   <% book_ads.each do |review| %>
      <div class="book">
@@ -10,6 +10,7 @@
        </a>
      </div>
   <% end %>
+  <a href="http://www.goodreads.com" style="font-size:0.5em">Data by Goodreads</a>
   <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= AppConfig::amazon_associate_id %>"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= URI.escape(AppConfig::amazon_associate_id) %>&Operation=NoScript">Amazon.com Widgets</A></NOSCRIPT>
   </div>
 <% end %>

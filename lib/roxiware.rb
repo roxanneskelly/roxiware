@@ -76,6 +76,20 @@ module Roxiware
   mattr_accessor :blog_moderate_comments
   @@blog_moderate_comments = false
 
+  mattr_accessor :upload_image_file_type
+  @@upload_image_file_type = ".png"
+
+  mattr_accessor :upload_image_sizes
+  @@upload_image_sizes = {
+                            :thumbnail=>[64, 64],
+			    :xsmall=>[100, 100],
+			    :small=>[150, 150],
+			    :medium=>[250, 250],
+			    :large=>[350, 350],
+			    :xlarge=>[500, 500],
+			    :huge=>[600, 600]
+                         }
+
   def self.setup
     yield self
   end

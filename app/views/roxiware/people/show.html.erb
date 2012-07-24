@@ -27,7 +27,7 @@
        end %>
       <% end %>
     </div>
-    <img src="<%= @person.image_url %>" class="person_portrait"/>
+    <img src="<%= @person.medium_image_url %>" class="person_portrait"/>
     <div>
      <% if user_signed_in? && !@person.user_id.nil? 
        user = Roxiware::User.find(@person.user_id)%>

@@ -13,6 +13,7 @@ require 'roxiware/controller_helpers'
 require 'roxiware/base_model'
 require 'roxiware/goodreads'
 require 'roxiware/seo_string'
+require 'roxiware/image_helpers'
 module Roxiware
   class Engine < ::Rails::Engine
     engine_name "roxiware"
@@ -21,6 +22,7 @@ module Roxiware
        ActiveSupport.on_load(:action_controller) do
            include Roxiware::Util
            include Roxiware::Secret
+           include Roxiware::ImageHelpers
            include Roxiware::JQueryPopupForm
            include Roxiware::Helpers
            before_filter :set_meta_info

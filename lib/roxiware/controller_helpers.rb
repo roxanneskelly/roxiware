@@ -1,6 +1,6 @@
 module Roxiware
-  module ApplicationControllerHelper
 
+  module ApplicationControllerHelper
     PAGE_LAYOUT = []
     private 
     def after_sign_in_path_for(resource_or_scope)

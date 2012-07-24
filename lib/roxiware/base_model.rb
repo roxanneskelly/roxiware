@@ -6,10 +6,13 @@ module Roxiware
     def self.included(base)
         base.extend(BaseClassMethods)
     end
-    
+
+
     module BaseClassMethods
         attr_accessor :can_edit_attrs
         attr_accessor :ajax_attrs
+        attr_accessor :default_image
+
         def edit_attr_accessible(*args)
           if args.last.class == Hash
             options = args.pop
@@ -45,6 +48,21 @@ module Roxiware
             @ajax_attrs[as_option.to_s].merge(args.collect {|arg| arg.to_s})
           end
 	end
+
+
+        def define_upload_image_methods(sizes = %w(thumbnail xsmall small medium large xlarge huge))
+         sizes.each do |size|
+            ajax_attr_accessible "#{size}_image_url".to_sym
+	    define_method("#{size}_image_url".to_sym) do
+	       if(image_thumbprint.present?) 
+	          File.join(AppConfig.upload_url, image_thumbprint + "_#{size.to_s}"+Roxiware.upload_image_file_type)
+	       else
+	          File.join(AppConfig.upload_url, self.class.default_image + "_#{size.to_s}"+Roxiware.upload_image_file_type)
+	       end
+            end
+	 end
+        end
+
       end
 
       def ajax_attrs(role)
@@ -79,5 +97,6 @@ module Roxiware
         attrs["can_edit"] = valid_write_keys.to_a
         attrs
       end
+
   end
 end

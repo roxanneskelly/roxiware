@@ -16,9 +16,21 @@ class Roxiware::GalleryItemController < ApplicationController
 
   # GET - Show the contents of a single gallery item
   def show
+
+    render_attrs = @gallery_item.ajax_attrs(@role)
+    gallery_item_ids = @gallery_item.gallery.gallery_item_ids
+    gallery_item_ids.unshift(nil)
+    gallery_item_ids.push(nil)
+    (0..gallery_item_ids.size).each do |index|
+      if(gallery_item_ids[index+1] == @gallery_item.id)
+         render_attrs[:next_id] = gallery_item_ids[index+2]
+         render_attrs[:prev_id] = gallery_item_ids[index]
+      end
+    end
+    logger.debug("DATA IS " + render_attrs.to_json + "\n\n")
     respond_to do |format|
       format.html { render }
-      format.json { render :json => @gallery_item.ajax_attrs(@role) }
+      format.json { render :json => render_attrs }
     end
   end
 
@@ -47,13 +59,14 @@ class Roxiware::GalleryItemController < ApplicationController
      authorize! :create, Roxiware::GalleryItem
      @gallery = Roxiware::Gallery.find(params[:gallery_id])
      @gallery_item = @gallery.gallery_items.build
-     if cannot? :edit, @gallery_item
+     if cannot?(:edit, @gallery_item) || @gallery_item.person_id.nil?
        @gallery_item.person_id = current_user.person.id
      end
      respond_to do |format|
        if !@gallery_item.update_attributes(params, :as=>@role)
          format.json { render :json=>report_error(@gallery_item) }
        else
+         Roxiware::ImageHelpers.process_uploaded_image(@gallery_item.image_thumbprint, :watermark_person=>@gallery_item.person)
          format.json { render :json=> @gallery_item.ajax_attrs(@role) }
        end
      end
@@ -65,6 +78,7 @@ class Roxiware::GalleryItemController < ApplicationController
        if !@gallery_item.update_attributes(params, :as=>@role)
          format.json { render :json=>report_error(@gallery_item)}
        else
+         Roxiware::ImageHelpers.process_uploaded_image(@gallery_item.image_thumbprint, :watermark_person=>@gallery_item.person)
          format.json { render :json=> @gallery_item.ajax_attrs(@role) }
        end
      end

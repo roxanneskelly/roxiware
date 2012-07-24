@@ -21,8 +21,8 @@ function toTitleCase(str)
 	    },
 	    success: function (data, textStatus, XMLHttpRequest) {},
 	    uploadImagePreview: null,
-	    uploadImageThumbnailTarget: null,
-	    uploadImageUrlTarget: null,
+	    uploadImageThumbprint: null,
+	    uploadImageSizes: ["medium"],
             dataId: "user",
 	    fieldErrorClass: "popup_form_error_field",
 	    errorPopupGenerator: function(data) {
@@ -52,13 +52,10 @@ function toTitleCase(str)
 	    conf.uploadImagePreview = conf.uploadImageTarget + " img";
 	}
 
-	if (!conf.uploadUrlTarget) {
-	    conf.uploadImageUrlTarget = conf.uploadImageTarget + " input[name=image_url]";
+	if (!conf.uploadImageThumbprint) {
+	    conf.uploadImageThumbprint = conf.uploadImageTarget + " input[name=image_thumbprint]";
 	}
 
-	if (!conf.uploadImageThumbnailTarget) {
-	    conf.uploadImageThumbnailTarget = conf.uploadImageTarget + " input[name=thumbnail_url]";
-	}
 	$.extend(self, 
 		 {
 		clear: function() {
@@ -78,8 +75,7 @@ function toTitleCase(str)
 			 self.find("textarea.popup_wysiwyg").wysiwyg('destroy');
 			 // clear images for all popup form uploadable images
 			 self.find(conf.uploadImagePreview).removeAttr("src");
-			 self.find(conf.uploadImageUrlTarget).removeAttr("value");
-			 self.find(conf.uploadImageThumbnailTarget).removeAttr("value");
+			 self.find(conf.uploadImageThumbprint).removeAttr("value");
 			 self.find("button#save_button").css("visibility", "hidden").off("click");
 			 self.find("button#edit_button").css("visibility", "hidden").off("click");
 		     },
@@ -115,13 +111,9 @@ function toTitleCase(str)
 			     });
 
 			 var image_upload_params = {
-			     width: self.find(conf.uploadImageUrlTarget).width(),
-			     height: self.find(conf.uploadImageUrlTarget).height(),
-			     thumbnail_width: self.find(conf.uploadImageThumbnailTarget).width(),
-			     thumbnail_height: self.find(conf.uploadImageThumbnailTarget).height(),
 			     uploadImagePreview: conf.uploadImagePreview,
-			     uploadImageUrlTarget: conf.uploadImageUrlTarget,
-			     uploadImageThumbnailTarget: conf.uploadImageThumbnailTarget
+			     uploadImageThumbprint: conf.uploadImageThumbprint,
+                             uploadImageSizes: conf.uploadImageSizes
 			 };
 
 			 if (conf.watermark) {

@@ -37,7 +37,7 @@ end
 		   <% end %>
 		   <div class="button_box gallery_list_item">
                      <%= link_to({:controller=>"gallery", :action=>"show_seo", :gallery_seo_index=>gallery.seo_index }) do %>
-                       <img src="<%= gallery.image_url %>" />
+                       <img src="<%= gallery.small_image_url %>" />
 	               <div class="gallery_name"><%= gallery.name %></div>
                      <% end %> 
                    </div>

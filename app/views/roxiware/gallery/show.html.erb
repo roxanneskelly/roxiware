@@ -24,29 +24,26 @@ end
 <div id="gallery_scrollable" class="gallery_scrollable">
   <div class="gallery_pages">
    <% gallery_pages.each do |gallery_page| %>
-    <div class="gallery_page"><table>
+    <div class="gallery_page">
+      <table>
       <% gallery_page.each do |gallery_row| %>
         <tr>
 	  <% gallery_row.each do |gallery_item| %>
 	    <td>
                 <% if !gallery_item.id.nil? %>
-		  <% if user_signed_in? %>
-                     <div class="gallery_edit_controls">
-                        <% if can? :edit, gallery_item %>
-			  <div class="gallery_edit_controls">
-			    <%= button_tag "Edit", :id=>"edit-gallery_item-#{gallery_item.gallery_id}-#{gallery_item.id}", :class=>"gallery_item_edit button_edit", :type=>"button"  %>
-			    <%= button_tag "Delete", :id=>"delete-gallery_item-#{gallery_item.gallery_id}-#{gallery_item.id}", :class=>"gallery_item_delete button_delete", :type=>"button"  %>
-			  </div>
-                        <% end %>
-		     </div>
-                  <% end %>
-		  <div class="gallery_item" rel="#gallery_item_overlay" id="gallery-item-<%= gallery_item.gallery_id%>-<%= gallery_item.id %>">
-	            <img src="<%= gallery_item.image_url %>" class="gallery_item_image"/>
+                    <% if can? :edit, gallery_item %>
+                      <div class="gallery_edit_controls">
+			 <%= button_tag "Edit", :id=>"edit-gallery_item-#{gallery_item.gallery_id}-#{gallery_item.id}", :class=>"gallery_item_edit button_edit", :type=>"button"  %>
+			 <%= button_tag "Delete", :id=>"delete-gallery_item-#{gallery_item.gallery_id}-#{gallery_item.id}", :class=>"gallery_item_delete button_delete", :type=>"button"  %>
+		      </div>
+                    <% end %>
+		  <div class="button_box gallery_item" rel="#gallery_item_overlay" id="gallery-item-<%= gallery_item.gallery_id%>-<%= gallery_item.id %>">
+	          <div class="gallery_item_image"><img src="<%= gallery_item.small_image_url %>" /></div>
 	            <div class="gallery_item_name"><%= gallery_item.name %></div>
                   </div>
 		<% else %>
                   <% if can? :create, Roxiware::GalleryItem %>
-	             <div  rel="#gallery_item_edit_overlay" id="edit-gallery_item-<%= gallery_item.gallery_id %>-new" class="gallery_new gallery_item button_box">
+	             <div id="gallery_new_item" class="gallery_new_item gallery_item button_box">
 	               <div class="gallery_item_name"><%= gallery_item.name %></div>
 		     </div>
                   <% end %>
@@ -62,14 +59,63 @@ end
 </section>
 
 <div class="overlay gallery_item_overlay" id="gallery_item_overlay">
-  <img id="image_url" class="gallery_item_overlay_image"/>
-  <div id="title_field"><span id="name">&nbsp;</span><span id="artist">&nbsp;</span></div>
-  <div id="medium">&nbsp;</div>
-  <div id="description">&nbsp;</div>
+  <div id="gallery_overlay_content">
+    <div id="left_content">
+      <img id="image_url" class="gallery_item_overlay_image"/>
+      <div id="img_overlay_panel">
+      </div>
+    </div>
+    <div id="nav_bar"><a id="previous">< previous...</a>&nbsp;&nbsp;&nbsp;<a id="next">...next ></a></div>
+    <div id="right_content">
+      <div id="name">&nbsp;</div>
+      <img id="person_img">
+      <a id="person">&nbsp;</a>
+      <div id="medium">&nbsp;</div>
+      <div id="description">&nbsp;</div>
+    </div>
+  </div>
 </div>
 
 <script>
+
+
  $(document).bind("ready", function() {
+
+    $.fn.load_gallery_item = function(gallery_id, gallery_item_id) {
+         // populate gallery popup
+         if(!gallery_item_id) {
+            return;
+         }
+         $.ajax({
+	    url:"/gallery/"+gallery_id+"/item/"+gallery_item_id+".json",
+            dataType:'json',
+            error: function (jqXHR, textStatus, errorThrown) {
+		alert(errorThrown);
+	    },
+	    success:function(json_data) {
+              if ("error" in json_data) {
+		alert(json_data["error"]);
+	      }
+	      else {
+                  $("#gallery_item_overlay img#image_url").attr("src", json_data["huge_image_url"]);
+		  $("#name").text(json_data["name"]);
+		  $("#person").text(json_data["person_data"]["full_name"]);
+                  $("#person").attr("href", "<%= people_url %>/"+json_data["person_data"]["seo_index"]);
+                  $("#person_img").attr("src", json_data["person_data"]["thumbnail_image_url"]);
+		  $("#medium").text(json_data["medium"]);
+		  $("#description").html(json_data["description"]);
+
+                  $("#nav_bar #previous").data("gallery_item_id", json_data["prev_id"]);
+                  $("#nav_bar #previous").data("gallery_id", gallery_id);
+                  $("#nav_bar #previous").css("visibility", (json_data["prev_id"])?"visible":"hidden");
+                  $("#nav_bar #next").data("gallery_item_id", json_data["next_id"]);
+                  $("#nav_bar #next").data("gallery_id", gallery_id);
+                  $("#nav_bar #next").css("visibility", (json_data["next_id"])?"visible":"hidden");
+		}
+	    }});
+    };
+
+    // configure scrollable
     $("#gallery_scrollable").scrollable( {
         disabledClass: "gallery_nav_disabled",
         onSeek:function() {
@@ -86,40 +132,145 @@ end
     }
     scrollable.seekTo(current_index-1, 0);
 
+
+    // configure gallery item popup navigation
+    $(".gallery_item_overlay div#left_content").hover(
+       function() { 
+          $(".gallery_item_overlay div#img_overlay_panel").fadeTo(200, 0.7); 
+       },
+       function() { $(".gallery_item_overlay div#img_overlay_panel").fadeTo(400, 0); }
+    );
+
+    $(".gallery_item_overlay a#next, .gallery_item_overlay a#previous").click(function() 
+    {
+       $("div#gallery_item_overlay").load_gallery_item($(this).data("gallery_id"), $(this).data("gallery_item_id"));
+    });
+
+
+    // don't show the gallery item popup content until the image has loaded
+
+    $("#gallery_item_overlay img#image_url").load(function() {
+       $("#gallery_item_overlay div#gallery_overlay_content").fadeIn(100);
+    });
+
+
+    // configure gallery item popup
     $("div[rel=#gallery_item_overlay]").overlay( {
         load:false,
         closeOnClick:false,
-        fixed: true,
-        top: 80,
+        fixed:true,
+        top:40,
+        mask: {
+           color: '#000',
+           loadSpeed:200,
+           opacity:0.7
+        },
+
+        onClose: function() {
+          $("div#gallery_overlay_content").css("display", "none");
+          $(document).unbind("keydown.gallery_item_overlay");
+          $("#gallery_scrollable").data("scrollable").getConf().keyboard = true;
+        },
+
         onBeforeLoad: function() {
           var gallery_id = this.getTrigger().attr("id").split("-")[2];
           var gallery_item_id = this.getTrigger().attr("id").split("-")[3];
           // populate gallery popup
-	  
-	  $.ajax({
-		    url:"/gallery/"+gallery_id+"/item/"+gallery_item_id+".json",
-			dataType:'json',
-                        error: function (jqXHR, textStatus, errorThrown) {
-			  alert(errorThrown);
-			},
-		        success:function(json_data) {
-                            if ("error" in json_data) {
-				alert(json_data["error"]);
-			    }
-			    else {
-		               $.each(json_data, function(key, value) {
-			           $("img#image_url").attr("src", json_data["image_url"]);
-			           $("#name").text(json_data["name"]);
-                                   if(json_data["full_name"]) {
-			             $("#artist").text(", by "+json_data["full_name"]);
-                                   }
-			           $("#medium").text(json_data["medium"]);
-			           $("#description").html(json_data["description"]);
-			      });
-			    }
-		    }});
-        }
+          $(this).load_gallery_item(gallery_id, gallery_item_id);
+          $("#gallery_scrollable").data("scrollable").getConf().keyboard = false;
+          $(document).bind("keydown.gallery_item_overlay", function(e) {
+	     var keyCode = e.keyCode || e.which,
+	       arrow = {left: 37, up: 38, right: 39, down: 40 };
+	     switch (keyCode) {
+	       case arrow.up:
+		 e.stopPropagation();
+                 break;
+	       case arrow.down:
+		 e.stopPropagation();
+                 break;
+	       case arrow.left:
+		 e.stopPropagation();
+		 $(".gallery_item_overlay a#previous").click();
+		 break;
+	       case arrow.right:
+		 e.stopPropagation();
+		 $(".gallery_item_overlay a#next").click();
+		 break;
+	     }
+	  });
+        },
+        
     });
+
+    // New item upload
+    new AjaxUpload($("#gallery_new_item"), {
+       action: "/asset/image",
+       autoSubmit: true,
+       responseType: "json",
+       name: "upload_asset",
+       hoverClass: "upload_target_hover",
+       focusClass: "upload_target_focus",
+       onSubmit : function(file, ext) {
+          var upload_wait_icon = $("<img src='/assets/wait30trans.gif'/>");
+          $("body").append(upload_wait_icon);
+          upload_wait_icon.addClass("wait_icon");
+
+          if (! (ext && /^(jpg|png|jpeg|gif)$/i.test(ext))){
+            // extension is not allowed                                                                                                       
+            alert('Error: invalid file extension');
+            // cancel upload                                                                                                                  
+            return false;
+          }
+          // set up the security token so we can authenticate                                                                                   
+          var csrf_token = $('meta[name="csrf-token"]').attr('content');
+          var csrf_param = $('meta[name="csrf-param"]').attr('content');
+          var upload_params = {}
+          if (csrf_param !== undefined && csrf_token !== undefined) {
+                 upload_params[csrf_param] = csrf_token;
+          }
+          upload_params["image_sizes"] = ["thumbnail",
+                                          "xsmall",
+                                          "small",
+                                          "medium",
+                                          "large",
+                                          "xlarge",
+                                          "huge"];
+
+          this.setData(upload_params);
+       },
+
+       onComplete: function(file, json_data) {
+            var new_item_data = {
+               image_thumbprint:json_data["thumbprint"],
+               name:file
+            };
+            var endpoint = "/gallery/<%= @gallery.id %>/item";
+            $.ajax({
+                 url: endpoint,
+                 type: "POST",
+                 processData: false,
+                 dataType: "json",
+                 data: jQuery.param(new_item_data),
+                 complete: function() { 
+                      $(".wait_icon").remove();
+                 },
+                 error: function (jqXHR, textStatus, errorThrown) {
+                      alert(errorThrown);
+                  },
+                  success: function (data, textStatus, jqXHR) {
+                      if ("error" in data) {
+                           alert(data["error"]);
+                      }
+                      else {
+                        window.location.reload();
+                      }
+                  }});
+       },
+       onError: function(file, json_data) {
+         $(".wait_icon").remove();
+       }
+    });
+
  });
 </script>
 <%= render :partial=>"itemedit" if ((can? :edit, Roxiware::GalleryItem) || (can? :create, Roxiware::GalleryItem)) %>

@@ -84,7 +84,7 @@ module Roxiware
 	 # GET /posts/1.json
 	 def show_by_title
 	   @enable_blog_edit = true
-	   @post = Roxiware::Blog::Post.where(:guid=>request.env['REQUEST_PATH']).first
+	   @post = Roxiware::Blog::Post.where(:guid=>request.path).first
 	   raise ActiveRecord::RecordNotFound if @post.nil?
 	   authorize! :read, @post
 

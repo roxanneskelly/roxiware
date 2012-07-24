@@ -4,6 +4,9 @@ class Roxiware::Person < ActiveRecord::Base
    include ActionView::Helpers::AssetTagHelper
    self.table_name=  "people"
 
+
+   self.default_image = "unknown_person"
+
    belongs_to :user, :polymorphic=>true
    has_many :social_networks, :autosave=>true, :dependent=>:destroy
 
@@ -23,20 +26,18 @@ class Roxiware::Person < ActiveRecord::Base
                                  :too_long => "The role must be no more than %{count} characters." 
 				 }
 
-    validates :image_url, :length=>{:maximum=>256,
-                                 :too_long => "The image url must be no more than %{count} characters." 
-				 }
-
-    validates :thumbnail_url, :length=>{:maximum=>256,
-                                 :too_long => "The thumbnail url must be no more than %{count} characters." 
+    validates :image_thumbprint, :length=>{:maximum=>64,
+                                 :too_long => "The image thumbprint must be no more than %{count} characters." 
 				 }
 
     validates :bio, :length=>{:maximum=>32768,
                                  :too_long => "The bio must be no more than %{count} characters." 
 				 }
 
-   edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_url, :thumbnail_url, :bio, :as=>[:admin, :self, nil]
-   ajax_attr_accessible :first_name, :last_name, :role, :email, :image_url, :bio, :show_in_directory
+   edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_thumbprint, :bio, :as=>[:admin, :self, nil]
+   ajax_attr_accessible :first_name, :last_name, :role, :email, :image_thumbprint, :bio, :show_in_directory, :full_name, :seo_index
+
+   define_upload_image_methods(["thumbnail", "medium", "large"])
 
    def self.add_social_networks (*args)
       options = {}
@@ -72,7 +73,6 @@ class Roxiware::Person < ActiveRecord::Base
 
    add_social_networks :twitter, :website, :facebook, :google, :as=>[:admin, :self, nil]
 
-
    def full_name
       return_full_name = self.first_name || ""
       return_full_name = (return_full_name + " "+ self.last_name) unless self.last_name.blank?
@@ -81,7 +81,5 @@ class Roxiware::Person < ActiveRecord::Base
 
     before_validation do
        self.seo_index = self.full_name.to_seo
-       self.image_url ||= "/assets/uploads/unknown_person.png"
-       self.thumbnail_url ||= "/assets/uploads/unknown_person_thumbnail.png"
     end
 end

@@ -18,9 +18,10 @@
 	    uploadType: 'image',
 	    autoSubmit: true,
 	    uploadParams: {},
-	    uploadImageUrlTarget: null,
-	    uploadImageThumbnailTarget: null,
-	    uploadImagePreview: null,
+	    uploadImagePreview: null,           // img element for previewing image
+	    uploadImagePreviewSize: "medium",   // size of preview image
+	    uploadImageSizes: null,     // create images in the given sizes
+	    uploadImageThumbprint: null,         // input element that receives the thumbprint
 	    hoverClass: "upload_target_hover",
 	    focusClass: "upload_target_focus"
 
@@ -59,24 +60,15 @@
 			if (csrf_param !== undefined && csrf_token !== undefined) {
 			    upload_params[csrf_param] = csrf_token;
 			}
-		        if (conf.width != undefined && conf.height != undefined) {
-			    upload_params["width"] = conf.width;
-			    upload_params["height"] = conf.height;
-			}
-		        if (conf.uploadImageThumbnailTarget != undefined && conf.thumbnail_width != undefined && conf.height != undefined) {
-			    upload_params["thumbnail_width"] = conf.thumbnail_width;
-			    upload_params["thumbnail_height"] = conf.thumbnail_height;
-			}
+			upload_params["image_sizes"] = conf.uploadImageSizes;
 			this.setData(upload_params);
 		    },
 
 		    onComplete: function(file, json_data) {
 		    $(".wait_icon").remove();
-			$(conf.uploadImagePreview).attr("src", json_data.image_url);
-			$(conf.uploadImageUrlTarget).val(json_data.image_url);
-			$(conf.uploadImageUrlTarget).change();
-			$(conf.uploadImageThumbnailTarget).val(json_data.thumbnail_url);
-			$(conf.uploadImageThumbnailTarget).change();
+			$(conf.uploadImagePreview).attr("src", json_data.urls[conf.uploadImagePreviewSize]);
+			$(conf.uploadImageThumbprint).val(json_data.thumbprint);
+			$(conf.uploadImageThumbprint).change();
 		    }
 	});
     };

@@ -20,7 +20,6 @@ function toTitleCase(str)
 		conf.alertPopup([["general", textStatus]]); 
 	    },
 	    success: function (data, textStatus, XMLHttpRequest) {},
-	    uploadImagePreview: null,
 	    uploadImageThumbprint: null,
 	    uploadImageSizes: ["medium"],
             dataId: "user",
@@ -48,12 +47,22 @@ function toTitleCase(str)
     function PopupForm(form, url, conf) {
 	var self = form,
 	    endpoint = url;
-	if (!conf.uploadImagePreview) {
-	    conf.uploadImagePreview = conf.uploadImageTarget + " img";
-	}
+
+        var image_upload_params = {
+           uploadImageSizes: conf.uploadImageSizes,
+	};
+        if (conf.watermark) {
+	     image_upload_params["watermark"] = conf.watermark;
+	 };
+	self.find(conf.uploadImageTarget).image_upload({uploadParams:image_upload_params,
+	   complete: function(urls, thumbprint)
+           {
+	        self.find(conf.uploadImageThumbprint).val(thumbprint);
+	   }
+        });
 
 	if (!conf.uploadImageThumbprint) {
-	    conf.uploadImageThumbprint = conf.uploadImageTarget + " input[name=image_thumbprint]";
+	    conf.uploadImageThumbprint = "input[name=image_thumbprint]";
 	}
 
 	$.extend(self, 
@@ -74,8 +83,9 @@ function toTitleCase(str)
 		    
 			 self.find("textarea.popup_wysiwyg").wysiwyg('destroy');
 			 // clear images for all popup form uploadable images
-			 self.find(conf.uploadImagePreview).removeAttr("src");
-			 self.find(conf.uploadImageThumbprint).removeAttr("value");
+			 self.find(conf.uploadImageTarget).each(function(index, item) {
+				 $(item).image_upload().clear();
+			     });
 			 self.find("button#save_button").css("visibility", "hidden").off("click");
 			 self.find("button#edit_button").css("visibility", "hidden").off("click");
 		     },
@@ -110,16 +120,6 @@ function toTitleCase(str)
                                    self.find("textarea[name='"+key+"']").removeAttr("readonly");
 			     });
 
-			 var image_upload_params = {
-			     uploadImagePreview: conf.uploadImagePreview,
-			     uploadImageThumbprint: conf.uploadImageThumbprint,
-                             uploadImageSizes: conf.uploadImageSizes
-			 };
-
-			 if (conf.watermark) {
-			     image_upload_params["watermark"] = conf.watermark;
-			 };
-			 self.find(conf.uploadImageTarget).image_upload(image_upload_params);
 			 self.find("button#edit_button").css("visibility", "hidden").off("click");
 			 self.find("button#save_button").css("visibility", "visible").click(function(){
 				 self.save();
@@ -240,7 +240,10 @@ function toTitleCase(str)
 					   }});
 			           self.find("hidden[name='"+key+"']").val(value);
 			           self.find("textarea[name='"+key+"']").text(value);
-			           self.find("img[name='"+key+"']").attr("src", value);
+				   if(key == "medium_image_url") {
+				       self.find(conf.uploadImageTarget).each(function(index, item) { $(item).image_upload().setImage(value);
+					   });
+				   }
 			           self.find("select[name='"+key+"']").find("option[value="+"admin"+"]").attr("selected", "selected");
 			           self.find("select[name='"+key+"']").selectBox("value", value);
 			      });

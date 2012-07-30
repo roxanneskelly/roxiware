@@ -492,6 +492,11 @@
 			
 		};
 
+		this.hoverHandlers = [
+				      function(wysiwyg) {
+					  $(wysiwyg.editorDoc).find("img").image_attributes_edit(wysiwyg, {});
+				      }];
+
 		this.defaults = {
 html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" style="margin:0"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></head><body style="margin:0;">INITIAL_CONTENT</body></html>',
 			debug: false,
@@ -835,8 +840,16 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 		};
 
 		this.autoSaveFunction = function () {
-			this.saveContent();
+		    this.setHoverHandlers();
+                    this.saveContent();
 		};
+
+		this.setHoverHandlers = function () {
+		    var self=this;
+		    this.hoverHandlers.forEach(function(handler) {
+			    handler(self);
+			});
+		}
 
 		//called after click in wysiwyg "textarea"
 		this.ui.checkTargets = function (element) {
@@ -1288,6 +1301,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 				if (! document.getElementById(proposedId)) {
 					this.editor.attr('id', proposedId);
 				}
+				
 			}
 
 			/**
@@ -1311,7 +1325,6 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 			 */
 			this.initialContent = $(element).val();
 			this.ui.initFrame();
-
 			if (this.options.resizeOptions && $.fn.resizable) {
 				this.element.resizable($.extend(true, {
 					alsoResize: this.editor
@@ -1323,6 +1336,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 			}
 
 			$form.bind("reset.wysiwyg", function () { self.resetFunction(); });
+			$(this.editorDoc).find("body").attr("id", $(this.original).attr("id"));;
 		};
 
 		this.ui.initFrame = function () {
@@ -1359,10 +1373,10 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 			$.wysiwyg.plugin.bind(self);
 
 			$(self.editorDoc).trigger("initFrame.wysiwyg");
-
 			$(self.editorDoc).bind("click.wysiwyg", function (event) {
 				self.ui.checkTargets(event.target ? event.target : event.srcElement);
 			});
+		        self.setHoverHandlers();
 
             /**
              * @link https://github.com/akzhan/jwysiwyg/issues/251
@@ -1652,6 +1666,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 				}
 			}
 
+                        this.setHoverHandlers();
 			this.saveContent();
 			
 			return this;

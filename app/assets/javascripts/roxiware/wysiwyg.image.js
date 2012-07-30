@@ -38,38 +38,23 @@
 				legend	: "Insert Image",
 				preview : "Preview",
 				url     : "URL",
-				title   : "Title",
-				description : "Description",
-				width   : "Width",
-				height  : "Height",
-				original : "Original W x H",
-				"float"	: "Float",
-				floatNone : "None",
-				floatLeft : "Left",
-				floatRight : "Right",
+			        upload  : "Upload a file from your computer",
+				upload_help : "Click to upload.",
 				submit  : "Insert Image",
-				reset   : "Cancel",
-				imageUploadParams : {
-			        }
+				reset   : "Cancel"
 			};
-
-			formImageHtml = '<form class="wysiwyg" id="wysiwyg-addImage"><fieldset>' +
-				'<div class="form-row"><span class="form-row-key">{preview}:</span><div class="form-row-value"><img src="" alt="{preview}" class="wysiwyg_upload_target" style="margin: 2px; padding:5px; max-width: 100%; overflow:hidden; max-height: 100px; border: 1px solid rgb(192, 192, 192);"/></div></div>' +
-				'<div class="form-row"><label for="name">{url}:</label><div class="form-row-value"><input type="text" name="src" value=""/>';
-
-
-			formImageHtml += '</div></div>' +
-				'<div class="form-row"><label for="name">{title}:</label><div class="form-row-value"><input type="text" name="imgtitle" value=""/></div></div>' +
-				'<div class="form-row"><label for="name">{description}:</label><div class="form-row-value"><input type="text" name="description" value=""/></div></div>' +
-				'<div class="form-row"><label for="name">{width} x {height}:</label><div class="form-row-value"><input type="text" name="width" value="" class="width-small"/> x <input type="text" name="height" value="" class="width-small"/></div></div>' +
-				'<div class="form-row"><label for="name">{original}:</label><div class="form-row-value"><input type="text" name="naturalWidth" value="" class="width-small" disabled="disabled"/> x ' +
-				'<input type="text" name="naturalHeight" value="" class="width-small" disabled="disabled"/></div></div>' +
-				'<div class="form-row"><label for="name">{float}:</label><div class="form-row-value"><select name="float">' +
-				'<option value="">{floatNone}</option>' +
-				'<option value="left">{floatLeft}</option>' +
-				'<option value="right">{floatRight}</option></select></div></div>' +
-				'<div class="form-row form-row-last"><label for="name"></label><div class="form-row-value"><input type="submit" class="button" value="{submit}"/> ' +
-				'<input type="reset" value="{reset}"/></div></div></fieldset></form>';
+			var formImageHtml = '<div class="overlay" id="wysiwyg_add_image_overlay">' +
+                                           '<form class="wysiwyg">' +
+	                                   '<div id="upload_target" class="upload_target">' +
+	                                    '</div>' + 
+                                              '<input id="image_source_upload" name="image_source" type="radio" value="upload" checked>{upload}</input>' +
+			                      '<br style="clear:both"/>' +
+                                              '<input id="image_source_url" name="image_source" type="radio" value="url">{url}</input>' +
+			                        '<input name="image_text_url" type="text" disabled/>' +
+			                      '<br/><br/><input type="submit" class="button" value="{submit}" disabled/>' +
+			                      '<input type="reset" class="button" value="{reset}"/>' +
+			                   '</form>' +
+                                         '</div>';
 
 			for (key in dialogReplacements) {
 				if ($.wysiwyg.i18n) {
@@ -87,150 +72,97 @@
 			}
 
 			if (img.self) {
-				img.src    = img.self.src    ? img.self.src    : "";
-				img.alt    = img.self.alt    ? img.self.alt    : "";
-				img.title  = img.self.title  ? img.self.title  : "";
-				img.width  = img.self.width  ? img.self.width  : "";
-				img.height = img.self.height ? img.self.height : "";
-				img.styleFloat = $(img.self).css("float");
+				img.image_source    = img.self.image_source    ? img.self.image_source    : "upload";
+				img.image_url       = img.self.image_url    ? img.self.image_url          : "";
 			}
+			var overlay_dialog = $(formImageHtml);
+			$("body").append(overlay_dialog);
 
-			adialog = new $.wysiwyg.dialog(Wysiwyg, {
-				"title"   : dialogReplacements.legend,
-				"content" : formImageHtml
+			overlay_dialog.find("input[name=image_source]:radio").change(function() {
+			  var new_image_url;
+			  if($(this).val() == "url") {
+				// set the preview image to the image specified in the image_url input
+				new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
+				self.old_image = overlay_dialog.find("div#upload_target").image_upload().getImage();
+				self.old_thumbprint = overlay_dialog.find("div#upload_target").image_upload().getThumbprint();
+				overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url).setThumbprint(null).disable();
+				overlay_dialog.find("input[name=image_text_url]").removeAttr("disabled");
+				
+			    }
+			  else if ($(this).val() == "upload") {
+			      new_image_url = self.old_image;
+			      overlay_dialog.find("div#upload_target").image_upload().setImage(self.old_image).setThumbprint(self.old_thumbprint).enable();
+			      overlay_dialog.find("input[name=image_text_url]").attr("disabled", "disabled");
+			  }
+
+			   if((new_image_url != null) && (new_image_url != "")) {
+			      overlay_dialog.find("input:submit").removeAttr("disabled");
+			    }
+			    else {
+				overlay_dialog.find("input:submit").attr("disabled", "disabled");
+			    }
+
 			});
-
-			$(adialog).bind("afterOpen", function (e, dialog) {
-				dialog.find("form#wysiwyg-addImage").submit(function (e) {
-					e.preventDefault();
-					self.processInsert(dialog.container, Wysiwyg, img);
-
-					adialog.close();
-					return false;
-				});
-
-                                $(".wysiwyg_upload_target").image_upload({uploadImagePreview: $("wysiwyg_upload_target"),
-					    uploadImageUrlTarget: $('input[name=src]')});
-
-				$("input:reset", dialog).click(function (e) {
-					adialog.close();
-
-					return false;
-				});
-
-				$("fieldset", dialog).click(function (e) {
-					e.stopPropagation();
-				});
-
-				self.makeForm(dialog, img);
+                        overlay_dialog.find("input[name=image_text_url]").change(function(e) {
+			   var new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
+			   overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url).setThumbprint(null);
+			   if((new_image_url != null) && (new_image_url != "")) {
+			      overlay_dialog.find("input:submit").removeAttr("disabled");
+			    }
+			    else {
+				overlay_dialog.find("input:submit").attr("disabled", "disabled");
+			    }
+			    
 			});
+			overlay_dialog.overlay({
+				oneInstance:false,
+				top: "center",
+				zIndex:99999,
+				// some mask tweaks suitable for facebox-looking dialogs
+				mask: {
+				    color: '#222',
+				    loadSpeed: 200,
+					opacity: 0.5,
+					zIndex:99998
+				},
+				closeOnClick: false,
+                                load:true,
+			        onClose: function() {
+				    overlay_dialog.remove();
+				},
+				onBeforeLoad: function () {
+                                  overlay_dialog.find("form").submit(function (e) {
+				      e.preventDefault();
+				      self.processInsert(overlay_dialog, Wysiwyg);
+                                      overlay_dialog.find("a.close").click();
+				      return false;
+				   });
+			       
+                                   $("div#wysiwyg_add_image_overlay div#upload_target").image_upload({
+					uploadImagePreviewSize: "medium",
+				       complete: function(urls, thumbprint) {
+					       overlay_dialog.find("input:submit").removeAttr("disabled");
+					   }
+				       });
+                                    overlay_dialog.find("input:reset").click(function (e) {
+                                        overlay_dialog.find("a.close").click();
+				    });
 
-			adialog.open();
-
-			$(Wysiwyg.editorDoc).trigger("editorRefresh.wysiwyg");
-		},
-
-		processInsert: function (context, Wysiwyg, img) {
-			var image,
-				url = $('input[name="src"]', context).val(),
-				title = $('input[name="imgtitle"]', context).val(),
-				description = $('input[name="description"]', context).val(),
-				width = $('input[name="width"]', context).val(),
-				height = $('input[name="height"]', context).val(),
-				styleFloat = $('select[name="float"]', context).val(),
-				styles = [],
-				style = "",
-				found,
-				baseUrl;
-
-			if (Wysiwyg.options.controlImage && Wysiwyg.options.controlImage.forceRelativeUrls) {
-				baseUrl = window.location.protocol + "//" + window.location.hostname
-					+ (window.location.port ? ":" + window.location.port : "");
-				if (0 === url.indexOf(baseUrl)) {
-					url = url.substr(baseUrl.length);
+				    $(Wysiwyg.editorDoc).trigger("editorRefresh.wysiwyg");
 				}
-			}
+		    });
+			
+	    },
+            processInsert: function (context, Wysiwyg) {
+               var url = context.find("div#upload_target").image_upload().getImage();
+	       var image_html = "<img src='" + url + "'/>";
+	       Wysiwyg.insertHtml(image_html);
+	    }
+	}
 
-			if (img.self) {
-				// to preserve all img attributes
-				$(img.self).attr("src", url)
-					.attr("title", title)
-					.attr("alt", description)
-					.css("float", styleFloat);
 
-				if (width.toString().match(/^[0-9]+(px|%)?$/)) {
-					$(img.self).css("width", width);
-				} else {
-					$(img.self).css("width", "");
-				}
 
-				if (height.toString().match(/^[0-9]+(px|%)?$/)) {
-					$(img.self).css("height", height);
-				} else {
-					$(img.self).css("height", "");
-				}
-
-				Wysiwyg.saveContent();
-			} else {
-				found = width.toString().match(/^[0-9]+(px|%)?$/);
-				if (found) {
-					if (found[1]) {
-						styles.push("width: " + width + ";");
-					} else {
-						styles.push("width: " + width + "px;");
-					}
-				}
-
-				found = height.toString().match(/^[0-9]+(px|%)?$/);
-				if (found) {
-					if (found[1]) {
-						styles.push("height: " + height + ";");
-					} else {
-						styles.push("height: " + height + "px;");
-					}
-				}
-
-				if (styleFloat.length > 0) {
-					styles.push("float: " + styleFloat + ";");
-				}
-
-				if (styles.length > 0) {
-					style = ' style="' + styles.join(" ") + '"';
-				}
-
-				image = "<img src='" + url + "' title='" + title + "' alt='" + description + "'" + style + "/>";
-				Wysiwyg.insertHtml(image);
-			}
-		},
-
-		makeForm: function (form, img) {
-			form.find("input[name=src]").val(img.src);
-			form.find("input[name=imgtitle]").val(img.title);
-			form.find("input[name=description]").val(img.alt);
-			form.find('input[name="width"]').val(img.width);
-			form.find('input[name="height"]').val(img.height);
-			form.find('select[name="float"]').val(img.styleFloat);
-			form.find('img').attr("src", img.src);
-
-			form.find('img').bind("load", function () {
-				if (form.find('img').get(0).naturalWidth) {
-					form.find('input[name="naturalWidth"]').val(form.find('img').get(0).naturalWidth);
-					form.find('input[name="naturalHeight"]').val(form.find('img').get(0).naturalHeight);
-				} else if (form.find('img').attr("naturalWidth")) {
-					form.find('input[name="naturalWidth"]').val(form.find('img').attr("naturalWidth"));
-					form.find('input[name="naturalHeight"]').val(form.find('img').attr("naturalHeight"));
-				}
-			});
-
-			form.find("input[name=src]").bind("change", function () {
-				form.find('img').attr("src", this.value);
-			});
-
-			return form;
-		}
-	};
-
-	$.wysiwyg.insertImage = function (object, url, attributes) {
+        $.wysiwyg.insertImage = function (object, url, attributes) {
 		return object.each(function () {
 			var Wysiwyg = $(this).data("wysiwyg"),
 				image,
@@ -272,4 +204,159 @@
 			return this;
 		});
 	};
+
+
+	$.roxiware.image_attributes_edit = {
+
+	    conf: {
+	        onExit: function () { },
+		dialog: '<div class="image_attribute_dialog" style="display:none;position:absolute;">' +
+                            '<div id="float_label">Image Float</div>' +
+		            '<div id="float"><a id="left">left</a> <a id="none">none</a> <a id="right">right</a></div>' +
+		        '</div>',
+		sizes: ['xsmall','small','medium','large','xlarge','huge'],
+		closeTimeout: 300,
+		hoverDelay: 700
+		
+	    }
+	};
+
+        function ImageAttributesEdit(image, wysiwyg, conf)
+	{
+	    var self=$(this);
+	    var Wysiwyg = wysiwyg;
+	    $.extend(self,
+		     {
+			 dialog: null,
+			 launch_dialog: function (image) {
+			     // bring up dialog over center/bottom of image
+			     self.dialog = $(conf.dialog).clone();
+			     var size_regex_string = "("+conf.sizes.join("|")+")";
+
+			     var url_regex_string = new RegExp("^\/.*\/[0-9a-f]{32}_"+size_regex_string+".(png|jpg|gif)$");
+			     var match = url_regex_string.exec(image.attr("src"));
+			     if(match) {
+				 var size_div = $("<div id='size'></div>");
+				 conf.sizes.forEach(function(size) {
+                                     var size_specifier = $("<a id='"+size+"'>"+size+"</a>");
+				     size_specifier.click(function(event) {
+					     var regexp = new RegExp(size_regex_string);
+					     var img_src = image.attr("src").replace(regexp, size);
+					     image.attr("src", img_src);
+					     self.dialog.find("div#size a").removeAttr("disabled");
+					     self.dialog.find("div#size a#"+size).attr("disabled","disabled");
+					     Wysiwyg.saveContent();
+					     
+					 });
+				     size_div.append(size_specifier);
+				 });
+				 self.dialog.append('<div id="size_label">Image Size</div>');
+				 self.dialog.append(size_div);
+			     }
+			     
+                             var textarea_id = image.parents("body").attr("id");
+			     var textarea = $(window.document).find("textarea#"+textarea_id);
+                             // find the textarea pertaining to this image
+                             textarea.before(self.dialog);
+			     var set_dialog_position = function() {
+				 var doc_x = image.parents("body").scrollLeft();
+				 var doc_y = image.parents("body").scrollTop();
+				 var image_center = Math.max(0, Math.min((image.offset().left - doc_x) + image.width()/2, textarea.width()));
+				 var image_bottom = Math.max(0, Math.min(((image.offset().top - doc_y) + image.height()), textarea.height()));
+			     
+				 self.dialog.css("top", (image_bottom - 10)+"px");
+				 self.dialog.css("left", (image_center - self.dialog.width()/2)+"px");
+			     };
+			     set_dialog_position();
+			     image.parents("html").parent().scroll(function(e) {
+				     set_dialog_position();
+				 });
+
+			     self.dialog.find("a#"+image.css("float")).attr("disabled", "disabled");
+			     self.dialog.find("a#left, a#none, a#right").click(function() {
+				     self.dialog.find("a#"+image.css("float")).removeAttr("disabled");
+				     image.css("float", $(this).attr("id"));
+			             self.dialog.find("a#"+image.css("float")).attr("disabled", "disabled");
+                                     Wysiwyg.saveContent();
+				 });
+			     if(match) {
+				 self.dialog.find("div#size a#"+match[1]).attr("disabled","disabled");
+			     }
+			     self.dialog.fadeIn();
+			     $(image).mouseleave(
+				     function(event) {
+					// dialog has been launched, so don't close it unless we mouseexit the image or dialog
+					// for a period of time
+                                        self.imageAttrDialogTimeout = setTimeout( function() {
+						self.dialog.fadeOut(function() { self.cleanup(); });
+					    },
+					    conf.closeTimeout)}).mouseenter(
+				     function(event) {
+					 clearTimeout(self.imageAttrDialogTimeout);
+			             });
+			         $(self.dialog).mouseleave(
+				     function(event) {
+					// dialog has been launched, so don't close it unless we mouseexit the image or dialog
+					// for a period of time
+                                        self.imageAttrDialogTimeout = setTimeout( function() {
+						self.dialog.fadeOut(function() { self.cleanup(); });
+					    },
+					    conf.closeTimeout)}).mouseenter(
+				     function(event) {
+					 clearTimeout(self.imageAttrDialogTimeout);
+			             });
+		         },
+			 cleanup: function() {
+			     if(self.dialog) {
+				 self.dialog.remove();
+				 self.dialog = null;
+  			     }
+			     if(self.imageAttrDialogTimeout) {
+				 clearTimeout(self.imageAttrDialogTimeout); 
+			     }
+			     if(self.imageAttrHoverTimeout) {
+				 clearTimeout(self.imageAttrHoverTimeout);
+			     }
+			     image.parents("html").parent().unbind("scroll");
+			     image.unbind("mouseenter");
+			     image.unbind("mouseleave");
+			     image.mouseenter(function(event) {
+				 // on entry into the image, set up a timer to detect
+				 // a hover operation.
+				 self.imageAttrHoverTimeout =  setTimeout(function() {
+				     // if we've hovered long enough, launch the dialog
+				     self.launch_dialog(image);
+				     // close the timeout
+				     if(self.imageAttrHoverTimeout) {
+					 clearTimeout(self.imageAttrHoverTimeout);
+					 self.imageAttrHoverTimeout = null;
+				     }
+				 },
+			         conf.hoverDelay);
+			     }).mouseleave(
+	                         function(event) {
+				 if(self.imageAttrHoverTimeout) {
+				     clearTimeout(self.imageAttrHoverTimeout);
+				     self.imageAttrHoverTimeout = null;
+				 }
+			     });
+			 }
+		     }
+	     );
+	    self.cleanup();
+
+	}
+
+        $.fn.image_attributes_edit = function(wysiwyg, conf) {
+	    var iae_api = this.data("image_attributes_edit");
+	    if(iae_api) { return iae_api; }
+
+	    conf = $.extend(true, {}, $.roxiware.image_attributes_edit.conf, conf);
+	    this.each(function () {
+		    iae_api = new ImageAttributesEdit($(this), wysiwyg, conf);
+		    $(this).data("image_attributes_edit", iae_api);
+		});
+	    return conf.api?iae_api:this;
+	}
+
 })(jQuery);

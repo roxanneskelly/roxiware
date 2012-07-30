@@ -71,10 +71,8 @@ if (jQuery)(function($) {
 							tmp.find('.selectBox-options').html('<li><a>\u00A0</a></li>');
 							var optionHeight = parseInt(tmp.find('.selectBox-options A:first').html('&nbsp;').outerHeight());
 							tmp.remove();
-							console.log("setting height to " + optionHeight*size);
 							control.height(optionHeight * size);
 						}
-						console.log("size is " + control.height);
 						disableSelection(control);
 					} else {
 						//
@@ -83,7 +81,6 @@ if (jQuery)(function($) {
 						var label = $('<span class="selectBox-label" />'),
 							arrow = $('<span class="selectBox-arrow" />');
 						// Update label
-						console.log("Dropdown\n");
 						label.attr('class', getLabelClass(select)).text(getLabelText(select));
 						options = getOptions(select, 'dropdown');
 						options.appendTo('BODY');

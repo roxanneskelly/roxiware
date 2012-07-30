@@ -25,7 +25,7 @@ class Roxiware::GalleryController < ApplicationController
     @meta_description = @meta_description +" : Gallery : " + @gallery.name
 
     if can? :create, Roxiware::GalleryItem
-       @gallery.gallery_items.create({:name=>"New Item", :person_id=>current_user.id, :image_url=>"foo", :thumbnail_url=>"bar"}, :as=>@role) 
+       @gallery.gallery_items.create({:name=>"New Item", :person_id=>current_user.id}, :as=>@role) 
     end    
     respond_to do |format|
       format.html { render }
@@ -44,7 +44,7 @@ class Roxiware::GalleryController < ApplicationController
     authorize! :read, @gallery
     
     if can? :create, Roxiware::GalleryItem
-       @gallery.gallery_items.build({:name=>"New Item", :person_id=>current_user.id, :image_url=>"/foo", :thumbnail_url=>"/bar", :id=>"new"}, :as=>@role) 
+       @gallery.gallery_items.build({:name=>"New Item", :person_id=>current_user.id}, :as=>@role) 
     end    
     respond_to do |format|
       format.html { render :show }

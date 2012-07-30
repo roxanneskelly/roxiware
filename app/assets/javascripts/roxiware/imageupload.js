@@ -17,69 +17,111 @@
 	    uploadPath: '/asset',
 	    uploadType: 'image',
 	    autoSubmit: true,
-	    uploadParams: {},
-	    uploadImagePreview: null,           // img element for previewing image
+	    uploadParams: {
+		uploadImageSizes: []     // create images in the given sizes
+	    },
+	    uploadImagePreview: "img#preview_image",           // img element for previewing image
 	    uploadImagePreviewSize: "medium",   // size of preview image
-	    uploadImageSizes: null,     // create images in the given sizes
-	    uploadImageThumbprint: null,         // input element that receives the thumbprint
 	    hoverClass: "upload_target_hover",
-	    focusClass: "upload_target_focus"
+	    focusClass: "upload_target_focus",
+	    complete: function(urls, thumbprint) {},
+	    success: function() {},
+	    failure: function() {},
+	    uploadTargetContent:'<span id="upload_help" class="popup_help_text upload-button">Click to upload.</span><br/>' +
+	                         '<img name="image_url" id="preview_image"/>' 
 
 	}
     };
     function ImageUpload(uploadTarget, conf) {
-	$.extend(uploadTarget,
-		 {
-		     submit: function () {
-		     }
-		 });
 
-	new AjaxUpload(uploadTarget, {
+	// set up the security token so we can authenticate                                                                                                                               
+	var self = this;
+	self.uploadTarget = $(uploadTarget);
+	self.uploadTarget.html(conf.uploadTargetContent);
+
+        this.file_upload = new qq.FileUploaderBasic({
 		action: conf.uploadPath + "/" + conf.uploadType,
-		    autoSubmit: conf.autoSubmit,
-		    name: "upload_asset",
-		    responseType: "json",
-		    hoverClass: conf.hoverClass,
-		    focusClass: conf.focusClass,
-		    onSubmit : function(file, ext) {
-                        var upload_wait_icon = $("<img src='/assets/wait30trans.gif'/>");
-                         $("body").append(upload_wait_icon);
-			 upload_wait_icon.addClass("wait_icon");
+		element: uploadTarget,
+		params: conf.uploadParams,
+		debug: true,
+		button: uploadTarget,
+		multiple:false,
+                allowed_extensions: ["jpg", "png", "jpeg", "gif"],
+		onComplete: function(id, file, json_data) {
+		    self.setImage(json_data.urls[conf.uploadImagePreviewSize]);
+		    self.setThumbprint(json_data.thumbprint);
+                    conf.complete(json_data.urls, json_data.thumbprint);
+		}
+	    });
+	this.setImage = function(image_url) {
+	    if(image_url) {
+		this.uploadTarget.find(conf.uploadImagePreview).attr("src", image_url);
+		this.uploadTarget.find(conf.uploadImagePreview).css("display", "inline");
+	    }
+	    else {
+		this.uploadTarget.find(conf.uploadImagePreview).removeAttr("src");
+		this.uploadTarget.find(conf.uploadImagePreview).css("display", "none");
+	    }
+	   this.uploadTarget.image_url = image_url;
+	   return this;
+       }
+       this.setThumbprint = function(image_thumbprint) {
+	   this.uploadTarget.image_thumbprint = image_thumbprint;
+       }
+	this.getImage = function() {
+	    return self.uploadTarget.image_url;
+       }
+
+       this.getThumbprint = function(image_url) {
+	   return self.uploadTarget.image_thumbprint;
+       }
 
 
-		        if (! (ext && /^(jpg|png|jpeg|gif)$/i.test(ext))){
-                            // extension is not allowed
-			    alert('Error: invalid file extension');
-			    // cancel upload
-			    return false;
-			}
-			// set up the security token so we can authenticate
-			var csrf_token = $('meta[name="csrf-token"]').attr('content');
-			var csrf_param = $('meta[name="csrf-param"]').attr('content');
-			var upload_params = conf.uploadParams;
-			if (csrf_param !== undefined && csrf_token !== undefined) {
-			    upload_params[csrf_param] = csrf_token;
-			}
-			upload_params["image_sizes"] = conf.uploadImageSizes;
-			this.setData(upload_params);
-		    },
+       this.enable = function() {
+            self.uploadTarget.find("span#upload_help").css("visibility", "visible");
+  	    self.uploadTarget.find("input[type=file]").removeAttr("disabled");
+	   return self;
+       }
 
-		    onComplete: function(file, json_data) {
-		    $(".wait_icon").remove();
-			$(conf.uploadImagePreview).attr("src", json_data.urls[conf.uploadImagePreviewSize]);
-			$(conf.uploadImageThumbprint).val(json_data.thumbprint);
-			$(conf.uploadImageThumbprint).change();
-		    }
-	});
+	this.disable = function() {
+            self.uploadTarget.find("span#upload_help").css("visibility", "hidden");
+            self.uploadTarget.find("input[type=file]").attr("disabled", "disabled");
+	   return self;
+	}
+	this.clear = function() {
+	    self.setImage(null);
+	    self.setThumbprint(null);
+	}
+	this.setParams = function(upload_params) {
+	    if(this.file_upload) {
+	       this.file_upload.setParams(upload_params);
+	    }
+	   return self;
+	};
     };
     $.fn.image_upload = function(conf) {
+
 	var iu_api = this.data("image_upload");
-	if (iu_api) { return iu_api; }
+	var csrf_token = $('meta[name="csrf-token"]').attr('content');
+	var csrf_param = $('meta[name="csrf-param"]').attr('content');
+	var upload_params = {};
+	if (csrf_param !== undefined && csrf_token !== undefined) {
+	    upload_params[csrf_param] = csrf_token;
+	};
+
+	if (iu_api) { 
+	    iu_api.setParams(upload_params);
+	    return iu_api; 
+	}
+	if(!conf) {
+	    return null;
+	}
 
 	conf = $.extend(true, {}, $.roxiware.image_upload.conf, conf);
 
 	this.each(function() {
-		iu_api = new ImageUpload($(this), conf);
+		iu_api = new ImageUpload(this, conf);
+		iu_api.setParams(upload_params);
 		$(this).data("image_upload", iu_api);
 	    });
 	return conf.api ? iu_api: this;

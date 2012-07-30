@@ -5,6 +5,7 @@ module Roxiware
 
       result = {:thumbprint=>thumbprint, :urls=>{}}
       requested_sizes = options[:image_sizes] ||= Roxiware.upload_image_sizes.keys
+      print "requested sizes " + requested_sizes.to_json + "\n\n"
       base_image = File.join(Rails.root.join(AppConfig.raw_upload_path), thumbprint+Roxiware.upload_image_file_type)
       processed_image_root = File.join(Rails.root.join(AppConfig.processed_upload_path), thumbprint)
 
@@ -41,6 +42,7 @@ module Roxiware
 
 	    resize_image.write( processed_image_root + "_#{name}"+Roxiware.upload_image_file_type)
 	    result[:urls][name] = File.join(AppConfig.upload_url, thumbprint + "_#{name}"+Roxiware.upload_image_file_type)
+	    result[:success] = true;
 	 end
       end
       result

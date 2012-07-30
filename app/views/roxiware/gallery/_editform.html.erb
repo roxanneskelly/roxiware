@@ -3,17 +3,14 @@
       <div id="left_section">
          <%= label_tag :name, "Name" %>
          <%= text_field_tag :name, nil %>
+         <br/>
+        <%= text_area_tag :description, nil, :class=>"popup_wysiwyg gallery_description" %>
       </div>
       <div id="right_section">
-        <span class="popup_help_text">Click to upload.</span>
-	<br/>
-	<div class="upload_target gallery_image">
-	   <input type="hidden" name="image_thumbprint"/>
-	   <img name="medium_image_url" id="overlay_image" class="gallery_image"/>
+	<div class="upload_target">
 	 </div>
+         <input type="hidden" name="image_thumbprint"/>
       </div>
-    <br/>
-    <%= text_area_tag :description, nil, :class=>"popup_wysiwyg gallery_description" %>
     <br/>
     <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
   <% end %>

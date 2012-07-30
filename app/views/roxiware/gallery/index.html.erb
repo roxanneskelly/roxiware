@@ -70,13 +70,11 @@ end
     var scrollable = $("#gallery_list_scrollable").data("scrollable");
     if (scrollable) {
       var current_index = parseInt(location.hash.substring(1));
-      if(current_index == NaN)
+      if(isNaN(current_index))
       {
-        scrollable.begin(0);
+          current_index=1;
       }
-      else {
-         scrollable.seekTo(current_index-1, 0);
-      }
+      scrollable.seekTo(current_index-1, 0);
    }
  });
 </script>

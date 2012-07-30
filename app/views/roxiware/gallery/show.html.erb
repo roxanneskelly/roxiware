@@ -201,76 +201,49 @@ end
         },
         
     });
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    var csrf_param = $('meta[name="csrf-param"]').attr('content');
+    var upload_params = {}
+    if (csrf_param !== undefined && csrf_token !== undefined) {
+           upload_params[csrf_param] = csrf_token;
+    }
+    upload_params["image_sizes"] = "thumbnail,xsmall,small,medium,large,xlarge,huge";
 
-    // New item upload
-    new AjaxUpload($("#gallery_new_item"), {
+    var file_upload = new qq.FileUploaderBasic({
        action: "/asset/image",
-       autoSubmit: true,
-       responseType: "json",
-       name: "upload_asset",
-       hoverClass: "upload_target_hover",
-       focusClass: "upload_target_focus",
-       onSubmit : function(file, ext) {
-          var upload_wait_icon = $("<img src='/assets/wait30trans.gif'/>");
-          $("body").append(upload_wait_icon);
-          upload_wait_icon.addClass("wait_icon");
-
-          if (! (ext && /^(jpg|png|jpeg|gif)$/i.test(ext))){
-            // extension is not allowed                                                                                                       
-            alert('Error: invalid file extension');
-            // cancel upload                                                                                                                  
-            return false;
-          }
-          // set up the security token so we can authenticate                                                                                   
-          var csrf_token = $('meta[name="csrf-token"]').attr('content');
-          var csrf_param = $('meta[name="csrf-param"]').attr('content');
-          var upload_params = {}
-          if (csrf_param !== undefined && csrf_token !== undefined) {
-                 upload_params[csrf_param] = csrf_token;
-          }
-          upload_params["image_sizes"] = ["thumbnail",
-                                          "xsmall",
-                                          "small",
-                                          "medium",
-                                          "large",
-                                          "xlarge",
-                                          "huge"];
-
-          this.setData(upload_params);
-       },
-
-       onComplete: function(file, json_data) {
-            var new_item_data = {
-               image_thumbprint:json_data["thumbprint"],
-               name:file
-            };
-            var endpoint = "/gallery/<%= @gallery.id %>/item";
-            $.ajax({
-                 url: endpoint,
-                 type: "POST",
-                 processData: false,
-                 dataType: "json",
-                 data: jQuery.param(new_item_data),
-                 complete: function() { 
-                      $(".wait_icon").remove();
-                 },
-                 error: function (jqXHR, textStatus, errorThrown) {
-                      alert(errorThrown);
-                  },
-                  success: function (data, textStatus, jqXHR) {
-                      if ("error" in data) {
-                           alert(data["error"]);
-                      }
-                      else {
-                        window.location.reload();
-                      }
-                  }});
-       },
-       onError: function(file, json_data) {
-         $(".wait_icon").remove();
-       }
+       element: $("#gallery_new_item").get()[0],
+       button: $("#gallery_new_item").get()[0],
+       multiple:true,
+       debug:true,
+       params: upload_params,
+       allowed_extensions:["jpg", "png", "jpeg", "gif"],
+       onComplete: function(id, file, json_data) {
+	  var new_item_data = {
+	     image_thumbprint:json_data["thumbprint"],
+	     name:file
+	  };
+	  var endpoint = "/gallery/<%= @gallery.id %>/item";
+	  $.ajax({
+	       url: endpoint,
+	       type: "POST",
+	       processData: false,
+	       dataType: "json",
+	       data: jQuery.param(new_item_data),
+	       complete: function() {
+                 if(file_upload.getInProgress() == 0) {
+                   window.location.reload();
+                 }
+	       },
+	       error: function (jqXHR, textStatus, errorThrown) {
+		    alert(errorThrown);
+		},
+		success: function (data, textStatus, jqXHR) {
+		   if ("error" in data) {
+			 alert(data["error"]);
+		   }
+		}});
+         }
     });
-
  });
 </script>
 <%= render :partial=>"itemedit" if ((can? :edit, Roxiware::GalleryItem) || (can? :create, Roxiware::GalleryItem)) %>

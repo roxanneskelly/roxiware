@@ -33,12 +33,9 @@
 	<%= text_field_tag :google, nil %>
       </div>
       <div id="right_section">
-        <span class="popup_help_text">Click to upload.</span>
-	<br/>
 	<div class="upload_target">
-	   <input type="hidden" name="image_thumbprint"/>
-	   <img name="medium_image_url" id="overlay_image"/>
 	 </div>
+         <input type="hidden" name="image_thumbprint"/>
        </div>
        <br/>
        <%= text_area_tag :bio, nil, :class=>"popup_wysiwyg bio_content" %>

@@ -11,8 +11,8 @@ module Roxiware
      belongs_to :person
      belongs_to :gallery
      validates_presence_of :name
-     validates_uniqueness_of :name
-     validates_uniqueness_of :seo_index
+     validates_uniqueness_of :name, :scope=>:gallery_id
+     validates_uniqueness_of :seo_index, :scope=>:gallery_id
 
 
      define_upload_image_methods
@@ -27,7 +27,18 @@ module Roxiware
      ajax_attr_accessible :person_data, :as=>[nil, :guest, :admin, :user]
 
     before_validation() do
-       self.seo_index = self.name.downcase.gsub(/[^a-z0-9]+/i, '-')
+       postfix = 1
+       begin
+          new_name = self.name
+          if(postfix > 1)
+            new_name += "(#{postfix})"
+          end
+          seo_index = new_name.to_seo
+	  postfix = postfix + 1
+       end while(GalleryItem.where(:seo_index=>new_name.to_seo, :gallery_id=>self.gallery_id).present?)
+       self.name = new_name
+       self.seo_index = new_name.to_seo
+
        self.description ||= ""
        self.medium ||= ""
     end

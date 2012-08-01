@@ -1666,7 +1666,6 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 				}
 			}
 
-                        this.setHoverHandlers();
 			this.saveContent();
 			
 			return this;
@@ -1766,6 +1765,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 					this.options.events.save.call(this);
 				}
 			}
+                        this.setHoverHandlers();
 
 			return this;
 		};

@@ -6,10 +6,17 @@ module Roxiware
 
 
      has_many :gallery_items
-     validates_presence_of :name
-     validates_uniqueness_of :name
-     validates_uniqueness_of :seo_index, :message=>"Name not sufficiently unique"
-     validates_presence_of :seo_index
+
+     validates :name, :length=>{:minimum=>3,
+                                  :to_short => "The name must be at least %{count} characters.",
+				  :maximum=>256,
+				  :to_long => "The name must be no more than %{count} characters."
+				  }
+     validates_uniqueness_of :seo_index, :message=>"The name has already been taken"
+
+     validates :image_thumbprint, :length=>{:maximum=>64,
+                                 :too_long => "The image thumbprint must be no more than %{count} characters." 
+				 }
 
      define_upload_image_methods
 

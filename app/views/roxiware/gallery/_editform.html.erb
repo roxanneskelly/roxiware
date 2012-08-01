@@ -2,7 +2,7 @@
   <%= form_tag do%>
       <div id="left_section">
          <%= label_tag :name, "Name" %>
-         <%= text_field_tag :name, nil %>
+         <%= text_field_tag :name, nil, :altname=>:seo_index %>
          <br/>
         <%= text_area_tag :description, nil, :class=>"popup_wysiwyg gallery_description" %>
       </div>
@@ -39,6 +39,9 @@ $(document).bind("ready", function() {
                     },
                     error: function(xhr, status) {
                       window.location = "/galleries/";
+                    },
+                    uploadImageParams: {
+                       image_sizes: ["small", "medium"]
                     }
                   });
         }

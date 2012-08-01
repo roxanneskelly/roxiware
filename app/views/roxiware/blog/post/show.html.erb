@@ -45,7 +45,7 @@ $(document).ready(function() {
 						type:"PUT",
 				                data: {comment_status:$(this).attr("checked")?"publish":"moderate"},
 						error: function (jqXHR, textStatus, errorThrown) {
-						    alert(errorThrown);
+						    $.error(errorThrown);
                                                     window.location.reload();
 						  }
 		  });
@@ -55,7 +55,7 @@ $(document).ready(function() {
 						type:"PUT",
 				                data: {comment_permissions:$(this).val()},
 						error: function (jqXHR, textStatus, errorThrown) {
-						    alert(errorThrown);
+						    $.error(errorThrown);
                                                     window.location.reload();
 						  }
 						});

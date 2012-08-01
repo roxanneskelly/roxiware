@@ -17,30 +17,12 @@ function toTitleCase(str)
 	    complete: function(XMLHttpRequest, textStatus) { },
 	    error: function (XMLHttpRequest, textStatus, errorThrown) 
 	    {
-		conf.alertPopup([["general", textStatus]]); 
 	    },
 	    success: function (data, textStatus, XMLHttpRequest) {},
 	    uploadImageThumbprint: null,
-	    uploadImageSizes: ["medium"],
+	    uploadImageParams: {},
             dataId: "user",
-	    fieldErrorClass: "popup_form_error_field",
-	    errorPopupGenerator: function(data) {
-		result = "<div class='overlay popup_form_alert'><table>";
-	        $.each(data, function(key, value) {
-			if (value[0]) {
-                            result +="<tr><td>"+toTitleCase(value[0])+"</td><td>"+value[1]+"</td></tr>";
-                        }
-                        else {
-                          result +="<tr><td>System Error</td><td>"+value[1]+"</td></tr>";
-			}
-		       
-		    });
-                result += "</table></div>";
-		return $(result);
-
-            },
-	    alertPopup: function (data) {
-                }
+	    fieldErrorClass: "popup_form_error_field"
         }
     };
 
@@ -48,17 +30,14 @@ function toTitleCase(str)
 	var self = form,
 	    endpoint = url;
 
-        var image_upload_params = {
-           uploadImageSizes: conf.uploadImageSizes,
-	};
-        if (conf.watermark) {
-	     image_upload_params["watermark"] = conf.watermark;
-	 };
-	self.find(conf.uploadImageTarget).image_upload({uploadParams:image_upload_params,
-	   complete: function(urls, thumbprint)
-           {
-	        self.find(conf.uploadImageThumbprint).val(thumbprint);
-	   }
+        var image_upload_params = conf.uploadImageParams;
+	self.find(conf.uploadImageTarget).image_upload(
+	   {
+	       uploadImageParams:conf.uploadImageParams,
+	       complete: function(urls, thumbprint)
+	       {
+	           self.find(conf.uploadImageThumbprint).val(thumbprint);
+	       }
         });
 
 	if (!conf.uploadImageThumbprint) {
@@ -74,10 +53,10 @@ function toTitleCase(str)
 		 
 			 // disable inputs 
 			 self.find("input").attr("readonly","").removeClass(conf.fieldErrorClass);
+			 self.find("textarea").attr("readonly","").removeClass(conf.fieldErrorClass);
+			 self.find("textarea").attr("readonly","").removeClass(conf.fieldErrorClass);
 			 self.find("input[type=text]").val("");
 			 self.find("input:checkbox").attr("disabled", "").removeAttr("checked").val("false");
-			 self.find("textarea").attr("readonly","").removeClass(conf.fieldErrorClass);
-			 self.find("textarea").text("").removeClass(conf.fieldErrorClass);
 			 self.find("select").attr("disabled", "").removeClass(conf.fieldErrorClass);
 			 self.find("select").selectBox("disable");
 		    
@@ -137,9 +116,6 @@ function toTitleCase(str)
 					 name: $(element).attr("name"),
 					     value:"false"});
 			     });
-			 var wait_icon = $("<img src='/assets/wait30trans.gif'/>");
-                         self.prepend(wait_icon);
-			 wait_icon.addClass("wait_icon");
 
 			 $.ajax({
 				 url: endpoint +".json",
@@ -147,47 +123,30 @@ function toTitleCase(str)
 				     processData: false,
 				     dataType: "json",
 				     data: jQuery.param(form_data),
-				     complete: function() { wait_icon.remove(); conf.complete },
+				     complete: function() { conf.complete },
 				     error: function (jqXHR, textStatus, errorThrown) {
-				     self.alert([[null, errorThrown]], false);
+				     if(errorThrown) {$.error(errorThrown); }
 				     },
-				     success: function (data, textStatus, jqXHR) 
+				     success: function (json_data, textStatus, jqXHR) 
 				     {
-				       if ("error" in data) {
-					   self.alert(data["error"], false);
+				       if ("error" in json_data) {
+					   $.each(json_data["error"], function(key, value) {
+					       if(value[0]) {
+						    self.find("input[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+						    self.find("textarea[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+						    self.find("select[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+						    self.find("input[altname="+value[0]+"]").addClass(conf.fieldErrorClass);
+						    self.find("textarea[altname="+value[0]+"]").addClass(conf.fieldErrorClass);
+						    self.find("select[altname="+value[0]+"]").addClass(conf.fieldErrorClass);
+					       }
+					       $.alert(value[1]);
+					       });
 				       }
                                        else {
-				         conf.success(data, textStatus, jqXHR);
+				         conf.success(json_data, textStatus, jqXHR);
                                        }
 				 }
 				  });
-		     },
-          	 alert: function(data, closeOverlay) {
-		   $.each(data, function(key, value) {
-			   if(value[0]) { 
-                              self.find("input[name="+value[0]+"]").addClass(conf.fieldErrorClass);
-                           }
-		      });
-		      result =conf.errorPopupGenerator(data);
-		      self.before(result);
-		      result.overlay({
-			      top: 260,
-				  oneInstance: false,
-				  load: true,
-				  zIndex: 99999,
-                                  closeOnClick: false,
-				  mask: {
-				  zIndex: 99998,
-				      color: "#777",
-				      loadSpeed: 200,
-				      opacity: 0.6
-				      },
-                                  onClose: function() {
-				     result.remove();
-				     if(closeOverlay) {
-                                        self.find(".close").click();
-				     }
-			      }});
 		     },
              delete: function() {
 			 $.ajax({
@@ -196,7 +155,7 @@ function toTitleCase(str)
 				     processData: false,
 				     complete: conf.complete,
 				     error: function (jqXHR, textStatus, errorThrown) {
-                                        self.alert([[null, errorThrown]], false);
+				        if(errorThrown) {$.error(errorThrown); }
 				     },
 				     success: conf.success
 				     });
@@ -210,21 +169,25 @@ function toTitleCase(str)
 	}
         self.find("button").button();
 
-	var wait_icon = $("<img src='/assets/wait30trans.gif'/>");
-	self.prepend(wait_icon);
-	wait_icon.addClass("wait_icon");
 	get_endpoint += ".json"
 	    $.ajax({
 		    url:get_endpoint,
 			dataType:'json',
 			
                         error: function (jqXHR, textStatus, errorThrown) {
-			self.alert([[null, errorThrown]], true);
+		          if(errorThrown) {$.error(errorThrown); }
 			},
-                        complete: function() { wait_icon.remove(); conf.complete },
+                        complete: function() { conf.complete },
 		        success:function(json_data) {
-                            if ("error" in json_data) {
-				self.alert(json_data["error"], true);
+                           if ("error" in json_data) {
+			          $.each(json_data["error"], function(key, value) {
+                                  if(value[0]) { 
+				      self.find("input[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+				      self.find("textarea[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+				      self.find("select[name="+value[0]+"]").addClass(conf.fieldErrorClass);
+				     }						   
+				     $.alert(value[1]);
+				   });
 			    }
 			    else {
 		               $.each(json_data, function(key, value) {

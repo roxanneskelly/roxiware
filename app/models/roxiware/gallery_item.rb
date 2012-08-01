@@ -2,17 +2,31 @@ module Roxiware
    class GalleryItem < ActiveRecord::Base
      include Roxiware::BaseModel
      self.table_name="gallery_items"
-     @@default_image = "unknown_picture"
-
-
+     self.default_image = "unknown_picture"
 
      validates_presence_of :person_id
      validates_presence_of :gallery_id
      belongs_to :person
      belongs_to :gallery
-     validates_presence_of :name
-     validates_uniqueness_of :name, :scope=>:gallery_id
-     validates_uniqueness_of :seo_index, :scope=>:gallery_id
+
+     validates :name, :length=>{:minimum=>3,
+                                  :to_short => "The name must be at least %{count} characters.",
+				  :maximum=>256,
+				  :to_long => "The name must be no more than %{count} characters."
+				  }
+     validates_uniqueness_of :seo_index, :scope=>:gallery_id, :message=>"The name has already been taken"
+
+     validates :description, :length=>{:maximum=>32768,
+                                 :too_long => "The description must be no more than %{count} characters." 
+				 }
+
+     validates :medium, :length=>{:maximum=>1024,
+                                 :too_long => "The medium must be no more than %{count} characters." 
+				 }
+
+     validates :image_thumbprint, :length=>{:maximum=>64,
+                                 :too_long => "The image thumbprint must be no more than %{count} characters." 
+				 }
 
 
      define_upload_image_methods

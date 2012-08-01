@@ -90,11 +90,13 @@ end
 	    url:"/gallery/"+gallery_id+"/item/"+gallery_item_id+".json",
             dataType:'json',
             error: function (jqXHR, textStatus, errorThrown) {
-		alert(errorThrown);
+             if(errorThrown) {
+		$.error(errorThrown);
+             }
 	    },
 	    success:function(json_data) {
               if ("error" in json_data) {
-		alert(json_data["error"]);
+		$.alert(json_data["error"]);
 	      }
 	      else {
                   $("#gallery_item_overlay img#image_url").attr("src", json_data["huge_image_url"]);
@@ -207,7 +209,7 @@ end
     if (csrf_param !== undefined && csrf_token !== undefined) {
            upload_params[csrf_param] = csrf_token;
     }
-    upload_params["image_sizes"] = "thumbnail,xsmall,small,medium,large,xlarge,huge";
+    upload_params["image_sizes"] = ["small","medium","huge"];
 
     var file_upload = new qq.FileUploaderBasic({
        action: "/asset/image",
@@ -217,11 +219,19 @@ end
        debug:true,
        params: upload_params,
        allowed_extensions:["jpg", "png", "jpeg", "gif"],
-       onComplete: function(id, file, json_data) {
+       onSubmit: function(id, filename) {
+          $.progressbar().updateProgress(id, filename, 0, "uploading");
+       },
+       onProgress: function(id, filename, loaded, total) {
+         $.progressbar().updateProgress(id, filename, (loaded*70)/total, "uploading");
+       },
+       onComplete: function(id, filename, json_data) {
 	  var new_item_data = {
 	     image_thumbprint:json_data["thumbprint"],
-	     name:file
+	     name:filename,
+             image_sizes:["small", "huge"]
 	  };
+          $.progressbar().updateProgress(id, filename, 70, "creating item");
 	  var endpoint = "/gallery/<%= @gallery.id %>/item";
 	  $.ajax({
 	       url: endpoint,
@@ -230,16 +240,20 @@ end
 	       dataType: "json",
 	       data: jQuery.param(new_item_data),
 	       complete: function() {
+                 $.progressbar().updateProgress(id, filename, 100, "complete");
                  if(file_upload.getInProgress() == 0) {
+                   $.progressbar().close();
                    window.location.reload();
                  }
 	       },
 	       error: function (jqXHR, textStatus, errorThrown) {
-		    alert(errorThrown);
+                 if(errorThrown) {
+		    $.error(errorThrown);
+                 }
 		},
 		success: function (data, textStatus, jqXHR) {
 		   if ("error" in data) {
-			 alert(data["error"]);
+			 $.alert(data["error"]);
 		   }
 		}});
          }

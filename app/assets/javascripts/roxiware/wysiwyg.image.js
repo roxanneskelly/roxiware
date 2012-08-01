@@ -26,13 +26,7 @@
 		tags: ["img"],
 		tooltip: "Insert image",
 		init: function (Wysiwyg) {
-			var self = this, elements, adialog, dialog, formImageHtml, regexp, dialogReplacements, key, translation,
-				img = {
-					alt: "",
-					self: Wysiwyg.dom ? Wysiwyg.dom.getElement("img") : null, // link to element node
-					src: "http://",
-					title: ""
-				};
+		var self = this, elements, adialog, dialog, formImageHtml, regexp, dialogReplacements, key, translation;
 
 			dialogReplacements = {
 				legend	: "Insert Image",
@@ -71,10 +65,6 @@
 				formImageHtml = formImageHtml.replace(regexp, dialogReplacements[key]);
 			}
 
-			if (img.self) {
-				img.image_source    = img.self.image_source    ? img.self.image_source    : "upload";
-				img.image_url       = img.self.image_url    ? img.self.image_url          : "";
-			}
 			var overlay_dialog = $(formImageHtml);
 			$("body").append(overlay_dialog);
 
@@ -117,13 +107,12 @@
 			overlay_dialog.overlay({
 				oneInstance:false,
 				top: "center",
-				zIndex:99999,
 				// some mask tweaks suitable for facebox-looking dialogs
 				mask: {
 				    color: '#222',
 				    loadSpeed: 200,
 					opacity: 0.5,
-					zIndex:99998
+					zIndex:2999
 				},
 				closeOnClick: false,
                                 load:true,
@@ -254,18 +243,18 @@
 				 self.dialog.append(size_div);
 			     }
 			     
-                             var textarea_id = image.parents("body").attr("id");
-			     var textarea = $(window.document).find("textarea#"+textarea_id);
-                             // find the textarea pertaining to this image
-                             textarea.before(self.dialog);
+                             var iframe_id = image.parents("body").attr("id");
+			     var iframe = $(window.document).find("iframe#"+iframe_id+"-wysiwyg-iframe");
+                             // find the iframe pertaining to this image
+                             iframe.after(self.dialog);
 			     var set_dialog_position = function() {
 				 var doc_x = image.parents("body").scrollLeft();
 				 var doc_y = image.parents("body").scrollTop();
-				 var image_center = Math.max(0, Math.min((image.offset().left - doc_x) + image.width()/2, textarea.width()));
-				 var image_bottom = Math.max(0, Math.min(((image.offset().top - doc_y) + image.height()), textarea.height()));
+				 var image_center = Math.max(0, Math.min(image.offset().left + image.width()/2 - doc_x, iframe.width()));
+				 var dialog_bottom = Math.max(0, Math.min(image.offset().top + image.height() - doc_y, iframe.height()));
 			     
-				 self.dialog.css("top", (image_bottom - 10)+"px");
-				 self.dialog.css("left", (image_center - self.dialog.width()/2)+"px");
+				 self.dialog.css("top", dialog_bottom+"px");
+				 self.dialog.css("left", (image_center-(self.dialog.width()/2))+"px");
 			     };
 			     set_dialog_position();
 			     image.parents("html").parent().scroll(function(e) {

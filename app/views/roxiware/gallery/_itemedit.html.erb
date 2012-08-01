@@ -5,18 +5,15 @@
       <%= select_tag(:person_id, options_from_collection_for_select(Roxiware::Person.all, :id, :full_name ))%> 
       <br/>
       <%= label_tag :name, "Name" %>
-      <%= text_field_tag :name, nil %>
+      <%= text_field_tag :name, nil, :altname=>:seo_index %>
       <br/>
       <%= label_tag :medium, "Medium"%>
       <%= text_field_tag :medium, nil %>
     </div>
     <div id="right_section">
-      <span class="popup_help_text">Click to upload.</span>
-      <br/>
       <div class="upload_target">
-	   <input type="hidden" name="image_thumbprint"/>
-	   <img name="small_image_url" id="overlay_image"/>
       </div>
+      <input type="hidden" name="image_thumbprint"/>
     </div>
     <br/>
     <%= text_area_tag :description, nil, :class=>"popup_wysiwyg gallery_item_description" %>
@@ -27,7 +24,6 @@
 
 <script>
 $(document).bind("ready", function() {
-    console.log("binding ready");
     $("button.gallery_item_edit, div.gallery_new").overlay( {
          closeOnClick: false,
          load: false, 
@@ -47,7 +43,9 @@ $(document).bind("ready", function() {
                   {
                     canEdit: true,
                     method: method,
-                    uploadImageSizes: ["medium"],
+                    uploadImageParams: {
+                        image_sizes: ["small", "medium", "huge"]
+                    },
                     success: function(xhr, status) {
                        window.location = "/galleries/<%= params[:gallery_seo_index] %>";
                     },

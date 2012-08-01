@@ -8,7 +8,7 @@
         <%= select_tag(:person_id, options_from_collection_for_select(Roxiware::Person.where(:show_in_directory=>true), :id, :full_name ))%> 
 	<br/>
         <%= label_tag :post_title, "Title"%>
-        <%= text_field_tag :post_title, nil%>
+        <%= text_field_tag :post_title, nil, :altname=>:post_link %>
 	<br/>
         <%= text_area_tag :post_content, nil, :class=>"popup_wysiwyg post_item_content" %>
 	<br/>

@@ -44,8 +44,10 @@ class Roxiware::GalleryController < ApplicationController
     authorize! :read, @gallery
     
     if can? :create, Roxiware::GalleryItem
+       logger.debug("adding new gallery item");
        @gallery.gallery_items.build({:name=>"New Item", :person_id=>current_user.id}, :as=>@role) 
     end    
+   logger.debug("items" + @gallery.gallery_items.to_json);
     respond_to do |format|
       format.html { render :show }
       format.json { render :json => @gallery.ajax_attrs(@role) }

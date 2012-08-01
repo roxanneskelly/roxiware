@@ -210,7 +210,7 @@
 					self.bindHover();
 					self.bindBrowse();
 				} else {
-					alert(json.error);
+					$.error(json.error);
 				}
 			});
 		};
@@ -267,9 +267,9 @@
 			var self = this;
 			$.getJSON(self.remove.handler, { "action": "remove", "type": type, "dir": self.curDir, "file": self.selectedFile  }, function (json) {
 				if (json.success) {
-					alert(json.data);
+					$.notice(json.data);
 				} else {
-					alert(json.error);
+					$.error(json.error);
 				}
 				callback(json);
 			});
@@ -283,9 +283,9 @@
 			var self = this;
 			$.getJSON(self.rename.handler, { "action": "rename", "type": type, "dir": self.curDir, "file": self.selectedFile, "newName": newName  }, function (json) {
 				if (json.success) {
-					alert(json.data);
+					$.notice(json.data);
 				} else {
-					alert(json.error);
+					$.error(json.error);
 				}
 				callback(json);
 			});
@@ -299,9 +299,9 @@
 			var self = this;
 			$.getJSON(self.mkdir.handler, { "action": "mkdir", "dir": self.curDir, "newName": newName  }, function (json) {
 				if (json.success) {
-					alert(json.data);
+					$.notice(json.data);
 				} else {
-					alert(json.error);
+					$.error(json.error);
 				}
 				callback(json);
 			});

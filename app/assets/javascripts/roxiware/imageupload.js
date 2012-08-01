@@ -17,8 +17,8 @@
 	    uploadPath: '/asset',
 	    uploadType: 'image',
 	    autoSubmit: true,
-	    uploadParams: {
-		uploadImageSizes: []     // create images in the given sizes
+	    uploadImageParams: {
+		image_sizes: []     // create images in the given sizes
 	    },
 	    uploadImagePreview: "img#preview_image",           // img element for previewing image
 	    uploadImagePreviewSize: "medium",   // size of preview image
@@ -42,15 +42,22 @@
         this.file_upload = new qq.FileUploaderBasic({
 		action: conf.uploadPath + "/" + conf.uploadType,
 		element: uploadTarget,
-		params: conf.uploadParams,
+		params: conf.uploadImageParams,
 		debug: true,
 		button: uploadTarget,
 		multiple:false,
                 allowed_extensions: ["jpg", "png", "jpeg", "gif"],
-		onComplete: function(id, file, json_data) {
+		onSubmit: function(id, filename) {
+		},
+		onProgress: function(id, filename, current, total) {
+		   $.wait();
+		},
+		onComplete: function(id, filename, json_data) {
+		    $.resume();
 		    self.setImage(json_data.urls[conf.uploadImagePreviewSize]);
 		    self.setThumbprint(json_data.thumbprint);
                     conf.complete(json_data.urls, json_data.thumbprint);
+
 		}
 	    });
 	this.setImage = function(image_url) {
@@ -93,6 +100,8 @@
 	    self.setThumbprint(null);
 	}
 	this.setParams = function(upload_params) {
+	    console.log("set params ");
+	    console.log(upload_params);
 	    if(this.file_upload) {
 	       this.file_upload.setParams(upload_params);
 	    }
@@ -102,23 +111,19 @@
     $.fn.image_upload = function(conf) {
 
 	var iu_api = this.data("image_upload");
+	if (iu_api) { 
+	    return iu_api; 
+	}
+
+	console.log("image upload conf");
+	console.log(conf);
+	conf = $.extend(true, {}, $.roxiware.image_upload.conf, conf);
 	var csrf_token = $('meta[name="csrf-token"]').attr('content');
 	var csrf_param = $('meta[name="csrf-param"]').attr('content');
-	var upload_params = {};
+	var upload_params = conf.uploadImageParams
 	if (csrf_param !== undefined && csrf_token !== undefined) {
 	    upload_params[csrf_param] = csrf_token;
 	};
-
-	if (iu_api) { 
-	    iu_api.setParams(upload_params);
-	    return iu_api; 
-	}
-	if(!conf) {
-	    return null;
-	}
-
-	conf = $.extend(true, {}, $.roxiware.image_upload.conf, conf);
-
 	this.each(function() {
 		iu_api = new ImageUpload(this, conf);
 		iu_api.setParams(upload_params);

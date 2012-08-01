@@ -32,6 +32,7 @@
 <%= render :partial=>"edit_post", :locals=>{:index=>true} if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) %>
 <script>
 $(document).ready(function() {
+
     $("div.comment_permissions").on("change", "input[type=radio]", function() {
        jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
 						type:"PUT",

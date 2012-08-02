@@ -1,5 +1,12 @@
+/* imageupload.js
+   requires jquery, fileuploader.js
+   creates an image upload control on a div,
+   including a preview image.
+   Assumes the server side is a roxiware
+   rails server.
 
-
+   Copyright (c) 2012 Roxiware
+*/
 
 // set up an div surrounding an image as an upload target.
 // when the image within the div is clicked, an upload dialog will come up
@@ -100,8 +107,6 @@
 	    self.setThumbprint(null);
 	}
 	this.setParams = function(upload_params) {
-	    console.log("set params ");
-	    console.log(upload_params);
 	    if(this.file_upload) {
 	       this.file_upload.setParams(upload_params);
 	    }
@@ -115,8 +120,6 @@
 	    return iu_api; 
 	}
 
-	console.log("image upload conf");
-	console.log(conf);
 	conf = $.extend(true, {}, $.roxiware.image_upload.conf, conf);
 	var csrf_token = $('meta[name="csrf-token"]').attr('content');
 	var csrf_param = $('meta[name="csrf-param"]').attr('content');

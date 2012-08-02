@@ -1,4 +1,4 @@
-
+/* Copyright (c) 2012 Roxiware */
 function formatTime(time)
 {
     var hour = time.getHours();

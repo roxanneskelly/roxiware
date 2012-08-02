@@ -1,3 +1,17 @@
+/* jquery_popup_form.js
+   
+   Ajax jquery code to automatically populate
+   a form.  Has the following features:
+    * Checks server to determine which fields can be edited.
+    * Reports errors, and colors the fields in error based on
+      server response.
+    * Saves content on select button press.
+
+   requires: jquerytools, roxiware.uitools.js
+   assumes server is a roxiware based server.
+
+   Copyright (c) 2012 Roxiware
+*/
 
 function toTitleCase(str)
 {

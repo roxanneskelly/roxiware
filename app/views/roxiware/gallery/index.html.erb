@@ -35,12 +35,12 @@ end
                        <%= button_tag "Delete", :id=>"delete-gallery-#{gallery.id}", :class=>"gallery_delete button_delete", :type=>"button"  %>
 		     </div>
 		   <% end %>
-		   <div class="button_box gallery_list_item">
                      <%= link_to({:controller=>"gallery", :action=>"show_seo", :gallery_seo_index=>gallery.seo_index }) do %>
+		   <div class="button_box gallery_list_item">
                        <img src="<%= gallery.small_image_url %>" />
 	               <div class="gallery_name"><%= gallery.name %></div>
-                     <% end %> 
                    </div>
+                     <% end %> 
 		 <% else %>
                    <% if can? :create, Roxiware::Gallery %>
 	             <div rel="#gallery_edit_overlay" id="edit-gallery-new" class="gallery_edit button_box">

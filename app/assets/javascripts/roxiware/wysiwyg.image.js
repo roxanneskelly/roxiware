@@ -1,7 +1,22 @@
 /**
- * Controls: Image plugin
- *
- * Depends on jWYSIWYG
+  Controls: Image plugin
+ 
+  Depends on jWYSIWYG
+  Image upload plugin for wysiwyg editor 
+    https://github.com/akzhan/jwysiwyg Juan M Martinez, Akzhan Abdulin, and contributors
+    Modified from the wysiwyg.image.js plugin supplied with the wysiwyg editor
+
+   includes:
+   * tooltip style dialog to change the float/size properties of an image
+   * simplified upload dialog with just upload or URL specification
+   
+   requires: wysiwyg, jquery, roxiware.uitools.js, imageupload.js 
+
+   Copyright (c) 2012 Roxiware
+
+    Dual licensed under the MIT and GPL licenses:   
+      http://www.opensource.org/licenses/mit-license.php
+      http://www.gnu.org/licenses/gpl.html 
  */
 (function ($) {
 	"use strict";

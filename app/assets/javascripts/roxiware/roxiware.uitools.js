@@ -1,4 +1,12 @@
+/* roxiware.uitools.js 
+   Various UI tools, including an alert popup dialog,
+   a wait spinner,
+   and a progress bar control.
 
+   requires jquerytools
+
+   Copyright (c) 2012 Roxiware
+*/
 (function($) {
 
     $.roxiware = $.roxiware || {version: '@VERSION'};

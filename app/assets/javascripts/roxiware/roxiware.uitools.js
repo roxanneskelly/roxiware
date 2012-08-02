@@ -132,7 +132,7 @@
 		closeOnClick:false,
 		closeOnEsc:false,
 		color:null,
-		maskId: "wait_mask",
+		maskId: "progress_mask",
 		zIndex:99999,
 		opacity:0.8
 	    },
@@ -155,12 +155,7 @@
 		    load: true,
 		    zIndex: 99999,
                     closeOnClick: false,
-	            mask: {
-			      zIndex: 99998,
-				 color: "#222",
-				 loadSpeed: 200,
-				 opacity: 0.6
-		    }
+	            mask: conf.mask
 	    });
 
 	this.progressBarDialog.css("top", ( $(window).height() - this.progressBarDialog.height() ) / 2+$(window).scrollTop() + "px");

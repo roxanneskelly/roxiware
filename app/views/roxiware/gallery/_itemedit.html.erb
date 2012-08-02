@@ -28,6 +28,12 @@ $(document).bind("ready", function() {
          closeOnClick: false,
          load: false, 
          target:"#gallery_item_edit_overlay",
+        mask: {
+           color: '#000',
+           maskId: "gallery_item_edit_mask",
+           loadSpeed:200,
+           opacity:0.7
+        },
          onClose: function() { 
          },
          onBeforeLoad: function() {

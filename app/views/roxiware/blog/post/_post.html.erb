@@ -55,7 +55,7 @@
 	     <% end %>
 	   </div>
           <% end %>
-	  <%= render :partial=>"roxiware/shared/share", :locals=>{:share_link => url_for(:only_path=>false)} %>
+	  <%= render :partial=>"roxiware/shared/share", :locals=>{:share_link => (request.protocol + request.raw_host_with_port + post.post_link)} %>
         <% end %>
 	<div style="clear:both">&nbsp;</div>
       </article>

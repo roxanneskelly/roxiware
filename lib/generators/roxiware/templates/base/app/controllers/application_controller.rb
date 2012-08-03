@@ -11,6 +11,10 @@ class ApplicationController < ActionController::Base
    PAGE_LAYOUT = [{:location=>{:controller=>"home"}, :left_bar_class=>"home_left_bar"}]
    WIDGETS = {}
 
+   WIDGETS["header_bar"] = [
+      {:location=>{}, :view=>"roxiware/shared/flash", :locals=>{}, :preload=>"flash_widget"}
+   ]
+
    # home page layout
    WIDGETS["left"] =  [
       {:location=>{:controller=>"home"}, :view=>"roxiware/page/page_widget", :locals=>{:page_type=>"home_left"}}
@@ -40,33 +44,33 @@ class ApplicationController < ActionController::Base
 
    before_filter do |controller|
      configure_widgets(WIDGETS) if controller.request.format.html?
-     print "gonna configure layout"
      configure_page_layout(PAGE_LAYOUT) if controller.request.format.html?
    end
 
+   def flash_widget(locals)
+      locals[:flash_content] = nil
+      locals[:flash_content] = flash if flash[:notice].present? || flash[:alert].present? || flash[:error].present?
+      locals[:flash_content].present?
+   end
 
-
-   def currently_reading
+   def currently_reading(locals)
       goodreads = Roxiware::Goodreads::Review.new()
-      {
-        :currently_reading => goodreads.list(:sort=>"random", :page=>1, :per_page=>1, :shelf=>"currently-reading")
-      }
+      locals[:currently_reading] =  goodreads.list(:sort=>"random", :page=>1, :per_page=>1, :shelf=>"currently-reading")
+      locals[:currently_reading].present?
    end
   
-   def book_ads
+   def book_ads(locals)
       goodreads = Roxiware::Goodreads::Review.new()
-      {
-	  :book_ads => goodreads.list(:sort=>"random", :page=>1, :per_page=>2, :shelf=>AppConfig::goodreads_favorites_shelf)
-      }
+      locals[:book_ads] = goodreads.list(:sort=>"random", :page=>1, :per_page=>2, :shelf=>AppConfig::goodreads_favorites_shelf)
+      locals[:book_ads].present?
    end
 
-   def recent_posts
-     {
-        :recent_posts => Roxiware::Blog::Post.published().order("post_date DESC").limit(8).collect{|post| post}
-     }
+   def recent_posts(locals)
+     locals[:recent_posts] = Roxiware::Blog::Post.published().order("post_date DESC").limit(8).collect{|post| post}
+     locals[:recent_posts].present?
    end
 
-   def categories_nav
+   def categories_nav(locals)
      @categories ||= Hash[Roxiware::Terms::Term.categories().map {|category| [category.id, category]  }]
 
      category_counts = {}
@@ -76,13 +80,13 @@ class ApplicationController < ActionController::Base
        category_counts[relationship.term_id] ||= 0
        category_counts[relationship.term_id] += 1
      end
-     {
-	 :categories => @categories,
-         :category_counts => category_counts
-     }
+     locals[:categories] = @categories
+     locals[:category_counts] = category_counts
+
+     category_counts.present?
    end
 
-   def calendar_nav     
+   def calendar_nav(locals)     
      calendar_posts = {}
      raw_calendar_posts = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
 
@@ -102,20 +106,18 @@ class ApplicationController < ActionController::Base
          calendar_posts[year][:monthly][post.post_date.month][:unpublished_count] += 1
        end
      end
-     {:calendar_posts=>calendar_posts}
+     locals[:calendar_posts] = calendar_posts
+     return calendar_posts.present?
    end
 
-   def author
-     {
-       :author => Roxiware::Person.order("id ASC").where(:show_in_directory=>true).limit(1).first
-     }
+   def author(locals)
+       locals[:person] =  Roxiware::Person.order("id ASC").where(:show_in_directory=>true).limit(1).first
+       locals[:person].present?
    end
   
-   def events_widget
-     print "LOADING EVENTS \n\n"
-     {
-       :events => Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight).order("start ASC").limit(3)
-     }
+   def events_widget(locals)
+     locals[:events] = Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight).order("start ASC").limit(3)
+     locals[:events].present? 
    end
 
   rescue_from CanCan::AccessDenied do |exception|

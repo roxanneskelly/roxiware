@@ -1,0 +1,113 @@
+.button_box
+{
+   display:inline-block;
+   o-border-radius: 5px;
+   -icab-border-radius: 5px;
+   -khtml-border-radius: 5px;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   border-radius: 5px;
+   -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -moz-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   -webkit-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+   padding:5px;
+   margin:5px;
+   align:center;
+   text-align:center;
+   vertical-align:top;
+}
+
+.button_box:hover
+{
+   border:solid 1px #000000;
+   padding:4px;
+}
+
+.button_box:active,.button_box_pressed
+{
+   -o-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+   -icab-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+   -khtml-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+   -moz-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+   -webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+   box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.7);
+   margin-top:6px;
+   margin-left:6px;
+   margin-bottom:4px;
+   margin-right:4px;
+}
+
+.button_box_selected
+{
+   display:inline-block;
+   border:solid 1px #000000;
+   padding:4px;
+   margin:5px;
+   align:center;
+   text-align:center;
+   vertical-align:center;
+   -o-box-shadow: none;
+   -icab-box-shadow: none;
+   -khtml-box-shadow: none;
+   -moz-box-shadow: none;
+   -webkit-box-shadow: none;
+   box-shadow: none;
+}
+
+ui-widget, ui-state-default
+{
+   color:#fff;
+}
+
+button
+{
+ padding-top:0.2em;
+ padding-bottom:0.2em;
+ border:1px solid #777;
+   o-border-radius: 5px;
+   -icab-border-radius: 5px;
+   -khtml-border-radius: 5px;
+   -moz-border-radius: 5px;
+   -webkit-border-radius: 5px;
+   border-radius: 5px;
+   background:#333;
+  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+  font-weight:bold;
+  padding-left:0.4em;
+  padding-right:0.4em;
+}
+
+button, button.ui-widget, ui-button-text-only
+{
+  display:inline-block;
+  margin:0.1em;
+  height:1.9em;
+  font-size:0.8em;
+  vertical-align:top;
+  background:#333;
+  color:#fff;
+ }
+
+
+button.button_delete, button.button_edit, button.button_add
+{
+  color:#fff;
+}
+
+select
+{
+   line-height: 1.4em !important;
+   font-size:100%;
+   padding:0px 10px 0px 2px!important;
+   margin:1px 10px 0px 1px!important;
+   min-width: 80px;
+   border: solid 0px transparent;
+   height:1.6em;
+   margin: 0px;
+   color: 3000;
+   background: #fff;
+  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+}

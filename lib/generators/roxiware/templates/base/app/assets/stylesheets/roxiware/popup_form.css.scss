@@ -1,0 +1,234 @@
+
+
+.popup_form 
+{
+}
+
+
+.popup_form label {
+   text-align:right;
+   vertical-align:middle;
+   line-height:1.6;
+   display:inline-block;
+}
+
+
+.popup_form input[type=checkbox]
+{
+   vertical-align:baseline;
+   line-height:0.6;
+   margin-top:.4em;
+   margin-left:50px;
+}
+
+
+.popup_form input[type=text] {
+   line-height:1.6;
+   vertical-align:middle;
+   margin:.4em;
+}
+
+.popup_form input[type=password] {
+   line-height:1.6;
+   vertical-align:middle;
+   margin:.4em;
+}
+
+
+.popup_form textarea
+{
+   margin:4px;
+}
+
+
+.popup_form a.selectBox, 
+.popup_form a.selectBox:visited, 
+.popup_form a.selectBox:link, 
+.popup_form a.selectBox:hover
+{
+   color:#000;
+   background:#fff;
+}
+
+
+.popup_form a.selectBox-options, 
+.popup_form a.selectBox-options:visited, 
+.popup_form a.selectBox-options:link, 
+.popup_form a.selectBox-options:hover
+{
+   color:#000;
+}
+
+.popup_form button
+{
+  display:block;
+  margin:2px;
+  height:2.2em;
+  font-size:0.9em;
+  vertical-align:middle;
+  position:relative;
+  top:3px;
+
+}
+
+.popup_form input[type=submit]
+{
+  display:block;
+}
+
+input.popup_form_error_field {
+  background: #FFDDDD !important;
+}
+
+.wait_icon
+{
+     position:fixed;
+     z-index: 99999;
+     left:45%;
+     top:40%;
+     width:30px;
+     height:30px;
+}
+
+.upload_target
+{
+   padding:3px;
+   -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -icab-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -khtml-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
+   display:inline-block;
+}
+
+div.qq-upload-button-hover
+{
+   padding:2px;
+   border:solid 1px #000000;
+}
+
+
+span.popup_help_text
+{
+   font-size:0.7em;
+   color:#777;
+}
+
+.popup_form button#save_button
+{
+   clear:both;
+   float:right;
+   margin:.3em;
+}
+
+body.wysiwyg
+{
+  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+  color:#000000;
+  background-color:#fff;
+}
+
+#wysiwyg_add_image_overlay
+{
+  width:400px;
+  z-index:2000;
+}
+
+
+#wysiwyg_add_image_overlay div#upload_target
+{
+  float:right;
+}
+
+#wysiwyg_add_image_overlay input#image_source_url
+{
+   clear:both;
+}
+
+#wysiwyg_add_image_overlay input[name=image_text_url]
+{
+   width:31em;
+   margin-left:1em;
+}
+#wysiwyg_add_image_overlay input[disabled]
+{
+   background:#333;
+}
+
+
+div.image_attribute_dialog
+{
+   background:#fff;
+   font-size:0.8em;
+   border:solid 1px black;
+   text-align:center;
+   cursor:default;
+}
+
+div.image_attribute_dialog div#float_label
+{
+   font-style:italic;
+   color:#777;
+}
+div.image_attribute_dialog div#float
+{
+   padding:.2em 2em .2em 2em;
+   font-weight:200;
+}
+
+div.image_attribute_dialog div#float a
+{
+  cursor:pointer;
+  padding:0.2em;
+}
+
+div.image_attribute_dialog div#float a[disabled]
+{
+   font-weight:bold;
+   color:#000;
+   cursor:default;
+}
+
+
+div.image_attribute_dialog div#float a#left
+{
+}
+
+div.image_attribute_dialog div#float a#right
+{
+}
+
+div.image_attribute_dialog div#size_label
+{
+   font-style:italic;
+   color:#777;
+}
+
+div.image_attribute_dialog div#size
+{
+  padding:0.2em 1em 1em 1em;
+}
+div.image_attribute_dialog div#size a
+{
+   cursor:pointer;
+   padding:0.2em;
+}
+
+div.image_attribute_dialog div#size a[disabled]
+{
+   cursor:default;
+   font-weight:bold;
+   color:#000;
+}
+
+
+input[type=file]
+{
+   height:100%;
+}
+
+.popup_form div.wysiwyg
+{
+   position:relative;
+}

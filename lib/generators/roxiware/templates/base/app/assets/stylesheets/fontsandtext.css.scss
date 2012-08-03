@@ -1,0 +1,46 @@
+body.application_body
+{
+  font-size:12px;
+  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+}
+
+body.application_body  h1, h2, h3, h4, h5, h6 {
+   font-family:Georgia, serif;
+   color:#fff;
+}
+
+pre
+{
+   white-space:pre-wrap;
+}
+
+
+body.application_body h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
+body.application_body h2 {font-size:1.2em;margin-bottom:0.75em;}
+body.application_body h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
+body.application_body h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
+body.application_body h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+body.application_body h6 {font-size:1em;font-weight:bold;}
+
+body.application_body b
+{
+    text-shadow:2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+
+body.application_body a,
+body.application_body a:visited, 
+body.application_body a:link, 
+body.application_body a:hover 
+{
+    color: #A8988E;
+    text-decoration:none;
+    font-style:none;
+    background:inherit;
+    
+}
+body.application_body a:hover
+{
+   color: #C9B6A9;
+}
+

@@ -1,0 +1,93 @@
+.timeHolder{
+	background-color: #2d2d2d;
+	border: inset 1px #404040;
+	font-family: Arial, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+	height: 30px;
+	position: relative;
+	width: 90px;
+        display:inline-block;
+}
+
+.timeSelector{
+	background-color: #2d2d2d;
+	display: block;
+	height: 30px;
+	left: 0;
+	line-height: 30px;
+	outline: none;
+	overflow: hidden;
+	position: absolute;
+	text-indent: 10px;
+	top: 0;
+	width: 70px;
+}
+
+.timeSelector:link, .timeSelector:visited, .timeSelector:hover{
+		  color: #ffffff;
+		  outline: none;
+		  text-decoration: none;
+}
+
+.timeOptions{
+	background-color: #212121;
+	border: solid 1px #515151;
+	list-style: none;
+	left: -1px;
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 30px;
+	width: 90px;
+	z-index: 1;
+	overflow-y: auto;
+}
+.timeOptions li{
+	   padding: 0 7px;
+}
+.timeOptions a{
+	   border-bottom: dotted 1px #515151;
+	   display: block;
+	   outline: none;
+	   padding: 7px 0 7px 3px;
+}
+.timeOptions a:link, .timeOptions a:visited{
+	   color: #ddd;
+	   text-decoration: none;
+}
+.timeOptions a:hover{
+	   color: #EBB52D;
+}
+.timeOptions li.last a{
+	   border-bottom: none;
+}
+.timeOptions .timeDisabled{
+	   border-bottom: dotted 1px #515151;
+	   color: #999;
+	   display: block;
+	   padding: 7px 0 7px 3px;
+}
+.timeOptions .timeGroup{
+	   border-bottom: dotted 1px #515151;
+	   color: #EBB52D;
+	   display: block;
+	   font-weight: bold;
+	   padding: 7px 0 7px 3px;
+}
+.timeOptions .timeSub {
+	   padding-left: 17px;
+}
+
+
+
+div#event_edit_overlay label
+{
+   width:70px;
+}
+
+div#event_edit_overlay textarea
+{
+    width:500px;
+    height:200px;
+}

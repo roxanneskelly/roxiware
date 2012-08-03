@@ -139,7 +139,7 @@ left: 0;
 top: 0;
 width: 0;
 height: 0;
-background: silver;
+background: black;
 }
 
 .toplevelshadow{ /*shadow opacity for NON CSS3 capable browsers. Doesn't work in IE*/

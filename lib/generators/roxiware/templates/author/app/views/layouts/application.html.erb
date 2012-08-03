@@ -27,57 +27,45 @@
     <header class="main_header">
       <%= render :partial => 'shared/header' %>
     </header>
+	<% if @widgets["header_bar"].present? %>
+	  <div id="header_bar" class="<%= @header_bar_class %>">
+            <% @widgets["header_bar"].each do |widget| %>
+              <%= render (:partial => widget[:view], :locals=>widget[:locals], :layout=>"layouts/widget") %>
+	    <% end %>
+	  </div>
+	<% end %>
     <div id="layout_body">
-      <div id="flash_section">
-	<% if (!flash[:notice].nil?) && (flash[:notice].length > 0) %>
-	  <div class="notice-flash"><%= flash[:notice] %></div>
-	<% end %>
-	<% if (!flash[:alert].nil?) && (flash[:alert].length > 0) %>
-	  <div class="alert-flash"><%= flash[:alert] %></div>
-	<% end %>
-	<% if (!flash[:error].nil?) && (flash[:error].length > 0) %>
-	<div class="error-flash"><%= flash[:error] %></div>
-	<% end %>
-      </div>
       <div id="content_section">
-	<% unless @left_widgets.blank? %>
+	<% if @widgets["left"].present? %>
 	  <div id="left_bar" class="<%= @left_bar_class %>">
-	    <% @left_widgets.each do |widget| %>
-	      <div class="transparent_box_container">
-		<div class="transparent_box"></div>
-	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
-	      </div>
+	    <% @widgets["left"].each do |widget| %>
+              <%= render (:partial => widget[:view], :locals=>widget[:locals], :layout=>"layouts/widget") %>
 	    <% end %>
 	  </div>
 	<% end %>
 	<div id="center_bar" class="<%= @center_bar_class %>">
-          <% @top_widgets.each do |widget| %>
-	      <div class="transparent_box_container">
-		<div class="transparent_box"></div>
-	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
-	      </div>
-	  <% end %>
-	  <div class="transparent_box_container">
+          <% if @widgets["top"].present? %>
+             <% @widgets["top"].each do |widget| %>
+	        <%= render (:partial => widget[:view], :locals=>widget[:locals], :layout=>"layouts/widget")  %>
+	     <% end %>
+          <% end %>
+          <div class="transparent_box_container">
 	     <div class="transparent_box"></div>
-	      <div id="center_content" class="<%= @center_content_class %>">
-	      <%= yield %>
-	    </div>
+	     <div id="center_content" class="<%= @center_content_class %>">
+	       <%= yield %>
+	     </div>
 	  </div>
-	  <% @bottom_widgets.each do |widget| %>
-	      <div class="transparent_box_container">
-		<div class="transparent_box"></div>
-	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
-	      </div>
-	  <% end %>
+          <% if @widgets["bottom"].present? %>
+             <% @widgets["bottom"].each do |widget| %>
+	        <%= render (:partial => widget[:view], :locals=>widget[:locals], :layout=>"layouts/widget")  %>
+	     <% end %>
+          <% end %>
 	</div>
-	<% unless @right_widgets.blank? %>
+        <% if @widgets["right"].present? %>
 	  <div id="right_bar" class="<%= @right_bar_class %>">
-	    <% @right_widgets.each do |widget| %>
-	      <div class="transparent_box_container">
-		<div class="transparent_box"></div>
-	        <%= render :partial => widget[:view], :locals=>widget[:locals] %>
-	      </div>
-	    <% end %>
+             <% @widgets["right"].each do |widget| %>
+	        <%= render (:partial => widget[:view], :locals=>widget[:locals], :layout=>"layouts/widget")  %>
+	     <% end %>
 	  </div>
 	<% end %>
       </div>
@@ -91,7 +79,13 @@
   <% end %>
   <script>
   $(document).bind("ready", function() {
-     $("SELECT").selectBox();
+     $("BUTTON").button();
+
+     var bottom_pos = 0;
+     $("#left_bar:last-child, #center_bar:last-child, #right_bar:last-child").each(function(index, elem){
+        bottom_pos = Math.max(bottom_pos, $(elem).position() + $(elem).height());
+     });
+
   });
   </script>
   <!--[if IE]> 

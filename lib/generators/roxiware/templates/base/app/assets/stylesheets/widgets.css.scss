@@ -3,6 +3,7 @@
 {
   position:relative;
   margin-bottom:10px;
+  width:100%;
 }
 
 .widget_content
@@ -19,12 +20,46 @@
 
 .widget_content div.book
 {
-   padding-bottom:20px;
+   padding-bottom:10px;
 }
 
 .widget_content div.book div.book_title
 {
   font-size:0.7em;
+}
+
+
+div.featured_blurb
+{
+   padding:10px;
+   padding-bottom:10px;
+   margin-bottom:10px;
+   border-bottom:solid 2px #000000;
+   vertical-align:top;
+}
+
+div.featured_blurb q
+{
+   font-size:0.8em;
+   color:#333;
+   font-style:italic;
+   display:block;
+   padding:10px;
+}
+
+
+div.sidebar_portfolio_entries 
+{
+   padding:10px;
+   text-align:center;
+}
+
+div.sidebar_portfolio_entries h1
+{
+   font-size:1.2em;
+   text-shadow:2px 2px 4px #888;
+   margin-bottom:10px;
+   margin-top:20px;
 }
 
 

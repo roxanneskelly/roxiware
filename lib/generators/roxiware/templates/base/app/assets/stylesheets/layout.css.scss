@@ -1,0 +1,137 @@
+
+/* Document layout */
+body.application_body
+{
+  width:950px;
+  margin-left:auto;
+  margin-right:auto;
+  margin-bottom:0px;
+
+}
+
+/* Header layout */
+header.main_header {
+   height:200px;
+   position:relative; 
+}
+
+div#session-greeting
+{
+  position:absolute;
+  top:10px;
+  right:20px;
+}
+
+div#header_social_networks
+{
+   position:relative;
+   float:left;
+   text-align:left;
+   margin-left:3px;
+   margin-top:3px;
+   vertical-align:center;
+   height:35px;
+}
+
+/* Header based navigation menu layout */
+nav#smoothmenu1
+{
+  position:absolute;
+  bottom:0px;
+  right:0px;
+  text-align:right;
+  margin-bottom:10px;
+  height:35px;
+  width:100%;
+}
+
+ul#main_menu
+{
+   position:absolute;
+   right:20px;
+   top:5px;
+}
+
+/* Section layout */
+div#mainBody
+{
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top:0px;
+    margin-bottom:20px;
+}
+
+#layout_body
+{
+   display:table;
+   margin:0px;
+   width:100%;
+}
+
+
+#header_bar
+{
+   position:relative;
+   display:block;
+   vertical-align:top;
+   width:100%;
+   text-align:center;
+}
+
+
+
+#flash_section, #content_section
+{
+   display:table-row;
+}
+
+#flash_section
+{
+  padding:10px;
+}
+
+
+.left_bar, .right_bar, .center_bar
+{
+   position:relative;
+   display:table-cell;
+   vertical-align:top;
+}
+
+
+
+
+.right_bar
+{
+   width:120px;
+   padding-left:10px;
+}
+
+.left_bar
+{
+   width:250px;
+   padding-right:10px;
+}
+
+.center_bar
+{ 
+}
+
+.center_content
+{
+   position:relative;
+   padding:10px;
+}
+
+.home_left_bar
+{
+   width:300px;
+}
+
+/* footer layout */
+footer.main_footer { 
+ width:950px;
+ height:50px; 
+ padding: 10px 20px 10px 20px;
+ margin:0px;
+}

@@ -1,0 +1,36 @@
+.account_edit
+{
+  margin-left: 40px;
+}
+
+.account_edit_overlay label
+{
+   width:7em;
+}
+
+input#role
+{
+   width:10em;
+}
+
+input#username
+{
+    width:24em;
+}
+
+input[type=text]#first_name, 
+input[type=text]#last_name
+{
+     width:11.4em;
+}
+
+input#password,
+input#password_confirmation
+{
+    width:24em;
+}
+
+input[type=text]#email
+{
+    width:24em;
+}

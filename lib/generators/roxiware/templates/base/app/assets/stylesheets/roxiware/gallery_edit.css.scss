@@ -1,0 +1,86 @@
+.gallery_edit_overlay
+{
+}
+
+.gallery_edit_overlay label
+{
+   width:5em;
+}
+
+.gallery_edit_overlay div#left_section
+{
+   margin:10px 10px 10px 0px;
+   padding-top:10px;
+   display:inline-block;
+   vertical-align:baseline;
+}
+
+.gallery_edit_overlay div#right_section
+{
+   margin:10px 10px 10px 10px;
+   display:inline-block;
+   vertical-align:top;
+}
+
+.gallery_edit_overlay .upload_target
+{
+    margin-top:3em;
+}
+.gallery_edit_overlay input[type=text]#name
+{
+    width:23em;
+}
+
+.gallery_edit_overlay textarea#description
+{
+    width:30em;
+    height:21em;
+}
+
+.gallery_item_edit_overlay
+{
+   font-size:1em;
+}
+
+.gallery_item_edit_overlay div#left_section
+{
+   margin:2em 1em 1em 0em;
+   display:inline-block;
+   vertical-align:top;
+}
+
+.gallery_item_edit_overlay div#right_section
+{
+   margin:1em 1em 1em 1em;
+   display:inline-block;
+   vertical-align:top;
+}
+
+.gallery_item_edit_overlay label
+{
+   width:6em;
+}
+
+.gallery_item_edit_overlay input[type=text]#name,
+.gallery_item_edit_overlay input[type=text]#medium
+{
+   width:20em;
+}
+
+.gallery_item_edit_overlay select#person_id
+{
+  width:19em;
+}
+
+
+.gallery_item_edit_overlay textarea#description
+{
+   clear:both;
+   width:54em;
+   height:20em;
+}
+
+
+.gallery_item_edit_overlay .upload_target
+{
+}

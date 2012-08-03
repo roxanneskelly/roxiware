@@ -1,4 +1,43 @@
 <%= image_tag("logo.png", :class=>"header_logo") %>
+<span class="cuneiform" style="bottom:30px;left:30px;">&#xE2D5;</span>
+<span class="cuneiform boil" style="bottom:30px;left:30px">&#xE2D5;</span>
+
+<span class="cuneiform" style="bottom:60px;left:100px;">&#xE090;</span>
+<span class="cuneiform boil" style="bottom:60px;left:100px">&#xE090;</span>
+
+<span class="cuneiform" style="bottom:145px;left:25px;">&#xE0BE;</span>
+<span class="cuneiform boil" style="bottom:145px;left:25px">&#xE0BE;</span>
+
+<span class="cuneiform" style="bottom:125px;left:100px;">&#xE0F8;</span>
+<span class="cuneiform boil" style="bottom:125px;left:100px">&#xE0F8;</span>
+
+<span class="cuneiform" style="bottom:140px;left:150px;">&#xE111;</span>
+<span class="cuneiform boil" style="bottom:140px;left:150px">&#xE111;</span>
+
+<span class="cuneiform" style="bottom:70px;left:200px;">&#xE1AF;</span>
+<span class="cuneiform boil" style="bottom:70px;left:200px">&#xE1AF;</span>
+
+<span class="cuneiform" style="bottom:137px;left:350px;">&#xE1DE;</span>
+<span class="cuneiform boil" style="bottom:137px;left:350px">&#xE1DE;</span>
+
+<span class="cuneiform" style="bottom:50px;left:370px;">&#xE200;</span>
+<span class="cuneiform boil" style="bottom:50px;left:370px">&#xE200;</span>
+
+<span class="cuneiform" style="bottom:40px;left:520px;">&#xE273;</span>
+<span class="cuneiform boil" style="bottom:40px;left:520px">&#xE273;</span>
+
+<span class="cuneiform" style="bottom:70px;left:300px;">&#xE32D;</span>
+<span class="cuneiform boil" style="bottom:70px;left:300px">&#xE32D;</span>
+
+<span class="cuneiform" style="bottom:140px;left:500px;">&#xE35C;</span>
+<span class="cuneiform boil" style="bottom:140px;left:500px">&#xE35C;</span>
+
+<span class="cuneiform" style="bottom:100px;left:550px;">&#xE370;</span>
+<span class="cuneiform boil" style="bottom:100px;left:550px">&#xE370;</span>
+
+<span class="cuneiform" style="bottom:135px;left:600px;">&#xE414;</span>
+<span class="cuneiform boil" style="bottom:135px;left:600px">&#xE414;</span>
+
 <% if user_signed_in? %>
   <div id="session-greeting">Welcome <%= current_user.username %>&nbsp;
   <%= link_to_unless_current( "(Log Out)", destroy_session_path('user'), {:method=>'delete'}) do %>Log&nbsp;Out<% end %>
@@ -26,8 +65,8 @@
     <% if Roxiware.enable_portfolio %>
     <li ><%= link_to_unless_current "Portfolio", "/portfolio" %></li>
     <% end %>
-    <% if Roxiware.enable_gallery  && user_signed_in?%>
-    <li ><%= link_to "Galleries", "/galleries#1" %>
+    <% if Roxiware.enable_gallery%>
+    <li ><%= link_to "Media", "/galleries#1" %>
     <% end %>
     <% if Roxiware.enable_events %>
       <li ><%= link_to_unless_current "Events", events_path %></li>

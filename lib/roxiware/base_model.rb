@@ -57,7 +57,7 @@ module Roxiware
 	       if(image_thumbprint.present?) 
 	          File.join(AppConfig.upload_url, image_thumbprint + "_#{size.to_s}"+Roxiware.upload_image_file_type)
 	       else
-	          File.join(AppConfig.upload_url, self.class.default_image + "_#{size.to_s}"+Roxiware.upload_image_file_type)
+	          "/assets/"+self.class.default_image + "_#{size.to_s}"+Roxiware.upload_image_file_type
 	       end
             end
 	 end

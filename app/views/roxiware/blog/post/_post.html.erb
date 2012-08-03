@@ -25,7 +25,7 @@
         <% end %>
         <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
 	<div class="post_header">
-          <img class="post_author_img" src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/>
+          <img class="post_author_img" src="<%= post.person.thumbnail_image_url %>" class="person_thumbnail"/>
 	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%D %I:%M %p") %></div>
 	  <div class="post_author">
 	      by <a href="<%= people_url %>/<%= post.person.seo_index %>">
@@ -55,15 +55,7 @@
 	     <% end %>
 	   </div>
           <% end %>
-          <div class="post_share">Share: 
-	    <span class='st_facebook'></span>
-	    <span class='st_twitter'></span>
-	    <span class='st_googleplus'></span>
-	    <span class='st_google_reader'></span>
-	    <span class='st_tumblr'></span>
-	    <span class='st_email'></span>
-	    <span class='st_fblike'></span>
-	  </div>
+	  <%= render :partial=>"roxiware/shared/share", :locals=>{:share_link => url_for(:only_path=>false)} %>
         <% end %>
 	<div style="clear:both">&nbsp;</div>
       </article>

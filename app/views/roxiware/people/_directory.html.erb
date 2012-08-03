@@ -1,11 +1,12 @@
-<nav class="span-3">
-  <% @people.each do |person|
-     if ((params[:controller] == "roxiware/people") && (params[:action]=="show_seo") && (params[:seo_index] == person.seo_index )) %>
-       <div class="person_directory_entry span-3 button_box button_box_selected">
-         <div class="person_name"><%= person.first_name + " " + person.last_name %></div>
-         <div class="role"><%= person.role %></div>
-      </div>
-   <% else %>
+<% if @people.present? %>
+  <nav class="people_list">
+     <% @people.each do |person|
+       if ((params[:controller] == "roxiware/people") && (params[:action]=="show_seo") && (params[:seo_index] == person.seo_index )) %>
+         <div class="person_directory_entry span-3 button_box button_box_selected">
+           <div class="person_name"><%= person.first_name + " " + person.last_name %></div>
+           <div class="role"><%= person.role %></div>
+         </div>
+     <% else %>
        <%= link_to({:action=>"show_seo", :seo_index=>person.seo_index}) do %>
         <div class="person_directory_entry span-3 button_box">
           <div class="person_name"><%= person.first_name + " " + person.last_name %></div>
@@ -20,3 +21,4 @@
     </div>
   <% end %>
 </nav>
+<% end %>

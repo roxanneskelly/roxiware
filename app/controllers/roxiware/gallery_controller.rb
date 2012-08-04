@@ -14,7 +14,7 @@ class Roxiware::GalleryController < ApplicationController
     @meta_description = @meta_description +" : Galleries"
     @galleries = @galleries.collect {|x| x}
     if can? :create, Roxiware::Gallery
-      @galleries << Roxiware::Gallery.new({:name=>"New Item", :image_url=>"bar"}, :as=>@role) 
+      @galleries << Roxiware::Gallery.new({:name=>"Create New Gallery"}, :as=>@role) 
     end    
   end
 
@@ -25,7 +25,7 @@ class Roxiware::GalleryController < ApplicationController
     @meta_description = @meta_description +" : Gallery : " + @gallery.name
 
     if can? :create, Roxiware::GalleryItem
-       @gallery.gallery_items.create({:name=>"New Item", :person_id=>current_user.id}, :as=>@role) 
+       @gallery.gallery_items.create({:name=>"Upload New Picture", :person_id=>current_user.id}, :as=>@role) 
     end    
     respond_to do |format|
       format.html { render }
@@ -45,7 +45,7 @@ class Roxiware::GalleryController < ApplicationController
     
     if can? :create, Roxiware::GalleryItem
        logger.debug("adding new gallery item");
-       @gallery.gallery_items.build({:name=>"New Item", :person_id=>current_user.id}, :as=>@role) 
+       @gallery.gallery_items.build({:name=>"Upload New Picture", :person_id=>current_user.id}, :as=>@role) 
     end    
    logger.debug("items" + @gallery.gallery_items.to_json);
     respond_to do |format|
@@ -98,7 +98,7 @@ class Roxiware::GalleryController < ApplicationController
   def destroy
     @robots="noindex,nofollow"
     respond_to do |format|
-      if !@gallery.delete
+      if !@gallery.destroy
         format.json { render :json=>report_error(@gallery)}
       else
         format.json { render :json=>{}}

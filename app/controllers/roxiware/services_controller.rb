@@ -118,7 +118,7 @@ class Roxiware::ServicesController < ApplicationController
 
   def destroy
     respond_to do |format|
-       if !@service.delete
+       if !@service.destroy
          format.json { render :json=>report_error(@user)}
        else
          format.json { render :json=>{}}

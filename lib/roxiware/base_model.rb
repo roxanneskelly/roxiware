@@ -7,7 +7,6 @@ module Roxiware
         base.extend(BaseClassMethods)
     end
 
-
     module BaseClassMethods
         attr_accessor :can_edit_attrs
         attr_accessor :ajax_attrs
@@ -49,9 +48,9 @@ module Roxiware
           end
 	end
 
-
-        def define_upload_image_methods(sizes = %w(thumbnail xsmall small medium large xlarge huge))
-         sizes.each do |size|
+        
+        def configure_image_handling(sizes = Roxiware.upload_image_sizes.keys)
+          sizes.each do |size|
             ajax_attr_accessible "#{size}_image_url".to_sym
 	    define_method("#{size}_image_url".to_sym) do
 	       if(image_thumbprint.present?) 
@@ -61,9 +60,24 @@ module Roxiware
 	       end
             end
 	 end
-        end
+       end
+    end
 
-      end
+        def destroy_images
+	   if(image_thumbprint.present?)
+	      image_path = File.join(AppConfig.raw_upload_path, image_thumbprint + Roxiware.upload_image_file_type)
+	         print "DELETE #{image_path}\n\n"
+              File.delete(image_path) if File.exists?(image_path)
+              print Roxiware.upload_image_sizes.keys.to_json + "\n\n"
+	      Roxiware.upload_image_sizes.keys.each do |size|
+	         print "size is #{size}\n\n"
+	         image_path = File.join(AppConfig.processed_upload_path, image_thumbprint + "_#{size.to_s}"+Roxiware.upload_image_file_type)
+	         print "DELETE #{image_path}\n\n"
+	         File.delete(image_path) if File.exists?(image_path)
+	      end
+           end
+        end
+        
 
       def ajax_attrs(role)
 	role ||= "default"

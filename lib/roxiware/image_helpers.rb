@@ -5,11 +5,10 @@ module Roxiware
 
       result = {:thumbprint=>thumbprint, :urls=>{}}
       requested_sizes = options[:image_sizes] ||= Roxiware.upload_image_sizes.keys
-      print "requested sizes " + requested_sizes.to_json + "\n\n"
-      base_image = File.join(Rails.root.join(AppConfig.raw_upload_path), thumbprint+Roxiware.upload_image_file_type)
+      image_path = File.join(Rails.root.join(AppConfig.raw_upload_path), thumbprint+Roxiware.upload_image_file_type)
       processed_image_root = File.join(Rails.root.join(AppConfig.processed_upload_path), thumbprint)
 
-      image = options[:image] || Magick::Image::read(base_image).first
+      image = options[:image] || Magick::Image::read(image_path).first
       requested_sizes.each do |name|
 	 sizes = Roxiware.upload_image_sizes[name.to_sym]
 	 if sizes
@@ -21,7 +20,6 @@ module Roxiware
 	       end
 	    end
 	    
-	    print "RESIZING TO " + sizes.to_json + "\n\n"
 	    resize_image = image.resize_to_fit(sizes[0], sizes[1])
 	    if image_watermark.present?
 	        print "WATERMARKING WITH " + image_watermark + " to " + resize_image.columns.to_s, resize_image.rows.to_s + "\n\n"
@@ -41,6 +39,7 @@ module Roxiware
 	    end
 
 	    resize_image.write( processed_image_root + "_#{name}"+Roxiware.upload_image_file_type)
+	    resize_image.destroy!
 	    result[:urls][name] = File.join(AppConfig.upload_url, thumbprint + "_#{name}"+Roxiware.upload_image_file_type)
 	    result[:success] = true;
 	 end

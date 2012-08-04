@@ -1,0 +1,8 @@
+<% if section.present? %>
+  <div id="<%= section_id %>" class="<%= section_class %>">
+     <% section.each do |widget| %>
+       <%= render (:partial => widget[:view], :locals=>widget[:locals], :layout=>"layouts/widget") %>
+     <% end %>
+   </div>
+<% end %>
+

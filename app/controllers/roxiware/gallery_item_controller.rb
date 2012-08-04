@@ -85,7 +85,7 @@ class Roxiware::GalleryItemController < ApplicationController
   def destroy
     @robots="noindex,nofollow"
     respond_to do |format|
-      if !@gallery_item.delete
+      if !@gallery_item.destroy
         format.json { render :json=>report_error(@gallery)}
       else
         format.json { render :json=>{}}

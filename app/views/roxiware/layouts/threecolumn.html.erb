@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+  <meta name="description" content="<%= @meta_description %>"/>
+  <meta name="keywords" content="<%= @meta_keywords %>"/>
+  <meta name="robots" content="<%= @robots %>" />
+  <title><%= @title %></title>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <!--[if lt IE 9]> 
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> 
+  <![endif]-->
+
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag "/assets/icons/favicon.ico"%>
+  <%= render :partial=>'roxiware/layouts/ga' %>
+
+</head>
+<body class="application_body">
+  <%= render :partial=>'roxiware/shared/socialheader' %>
+  <div id="mainBody">
+    <header class="main_header">
+    <%= render :partial => 'shared/header' %>
+    </header>
+    <%= render (:partial => 'roxiware/layouts/section', :locals=>{:section=> @widgets["header_bar"], :section_id=>"header_bar", :section_class=>@header_bar_class })%>
+    <div id="layout_body">
+      <div id="content_section">
+        <%= render (:partial => 'roxiware/layouts/section', :locals=>{:section=> @widgets["left"], :section_id=>"left_bar", :section_class=>@left_bar_class })%>
+	<div id="center_bar" class="<%= @center_bar_class %>">
+          <%= render (:partial => 'roxiware/layouts/section', :locals=>{:section=> @widgets["top"], :section_id=>"top_bar", :section_class=>@top_bar_class })%>
+          <div class="transparent_box_container">
+	     <div class="transparent_box"></div>
+	     <div id="center_content" class="<%= @center_content_class %>">
+	       <%= yield %>
+	     </div>
+	  </div>
+          <%= render (:partial => 'roxiware/layouts/section', :locals=>{:section=> @widgets["bottom"], :section_id=>"bottom_bar", :section_class=>@bottom_bar_class })%>
+	</div>
+          <%= render (:partial => 'roxiware/layouts/section', :locals=>{:section=> @widgets["right"], :section_id=>"right_bar", :section_class=>@right_bar_class })%>
+      </div>
+    </div>
+    <footer class="main_footer">
+      <%= render :partial => 'shared/footer' %>
+    </footer>
+  </div>
+  <% if can? :edit, Roxiware::Page %>
+     <%= render :partial=>"roxiware/page/page_edit" %>
+  <% end %>
+  <script>
+  $(document).bind("ready", function() {
+     $("BUTTON").button();
+
+     var bottom_pos = 0;
+     $("#left_bar:last-child, #center_bar:last-child, #right_bar:last-child").each(function(index, elem){
+        bottom_pos = Math.max(bottom_pos, $(elem).position() + $(elem).height());
+     });
+
+  });
+  </script>
+  <!--[if IE]> 
+  <script>
+  /* IE bug where clicks on contained elements don't set container to 'active' */
+  $(document).bind("ready", function() {
+     $(".button_box").bind("mousedown", function() {
+	$(this).addClass("button_box_pressed");
+     });
+     $(".button_box").bind("mouseleave", function() {
+	$(this).removeClass("button_box_pressed");
+     });
+     $(".button_box").bind("mouseup", function() {
+	$(this).removeClass("button_box_pressed");
+     });
+  });
+  </script>
+  <![endif]-->
+</body>
+
+</html>

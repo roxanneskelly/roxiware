@@ -122,7 +122,7 @@ class Roxiware::AccountController < ApplicationController
       end
       @user.person.user_id=nil
       @user.person.save
-      if !@user.delete
+      if !@user.destroy
         format.json { render :json=>report_error(@user)}
       else
         format.json { render :json=>{}}

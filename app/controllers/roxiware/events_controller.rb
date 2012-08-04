@@ -75,7 +75,7 @@ class Roxiware::EventsController < ApplicationController
   def destroy
     @robots="noindex,nofollow"
     respond_to do |format|
-      if !@event.delete
+      if !@event.destroy
         format.json { render :json=>report_error(@event)}
       else
         format.json { render :json=>{}}

@@ -5,7 +5,7 @@ module Roxiware
      self.default_image = "unknown_picture"
 
 
-     has_many :gallery_items
+     has_many :gallery_items, :dependent=>:destroy
 
      validates :name, :length=>{:minimum=>3,
                                   :to_short => "The name must be at least %{count} characters.",
@@ -18,7 +18,8 @@ module Roxiware
                                  :too_long => "The image thumbprint must be no more than %{count} characters." 
 				 }
 
-     define_upload_image_methods
+     before_destroy :destroy_images
+     configure_image_handling(%w(small medium))
 
      edit_attr_accessible :name, :description, :image_thumbprint, :as=>[:admin, :user]
      edit_attr_accessible :seo_index, :as=>[nil]

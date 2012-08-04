@@ -241,7 +241,6 @@ end
                  $.progressbar().updateProgress(id, filename, 100, "complete");
                  if(file_upload.getInProgress() == 0) {
                    $.progressbar().close();
-                   window.location.reload();
                  }
 	       },
 	       error: function (jqXHR, textStatus, errorThrown) {
@@ -253,6 +252,9 @@ end
 		   if ("error" in data) {
 			 $.alert(data["error"]);
 		   }
+                   else if ( file_upload.getInProgress() == 0 ){
+                      window.location.reload();
+                  }
 		}});
          }
     });

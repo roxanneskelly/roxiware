@@ -41,7 +41,7 @@ $(document).ready(function() {
      });
     $("div.comment").on("change", "input[type=checkbox]", function() {
        var blog_comment_id = $(this).attr("comment");
-       jQuery.ajax("<%= blog_post_comment_index_path(@post.id) %>" + "/"+blog_comment_id, {
+       $.ajax("<%= blog_post_comment_index_path(@post.id) %>" + "/"+blog_comment_id, {
 						type:"PUT",
 				                data: {comment_status:$(this).attr("checked")?"publish":"moderate"},
 						error: function (jqXHR, textStatus, errorThrown) {
@@ -51,7 +51,7 @@ $(document).ready(function() {
 		  });
     });
     $("div.comment_permissions").on("change", "input[type=radio]", function() {
-       jQuery.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
+       $.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
 						type:"PUT",
 				                data: {comment_permissions:$(this).val()},
 						error: function (jqXHR, textStatus, errorThrown) {

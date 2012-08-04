@@ -6,7 +6,7 @@
                 <%= label_tag :post_status, "Publish" %>
 	    </div>
 	    <div class="comment_permissions">
-              <%= label_tag :post_status, "Comments:" %>
+              <%= label_tag :comment_permissions, "Comments:" %>
 	      <%= select_tag "comment_permissions-#{post.id}", options_for_select(Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS, post.comment_permissions), :post=>post.id %>
 	    </div>
 	    <div class="edit_controls">

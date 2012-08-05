@@ -1,5 +1,5 @@
 <section class="post">
-   <%= render :partial=>"post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true} %>
+   <%= render :partial=>"post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header} %>
    <% if can? :read_comments, @post %>
        <% can_reply = can? :comment, @post 
 	  can_manage = can? :edit, @post %>
@@ -50,7 +50,7 @@ $(document).ready(function() {
 						  }
 		  });
     });
-    $("div.comment_permissions").on("change", "input[type=radio]", function() {
+    $("div.comment_permissions").on("change", "select", function() {
        $.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
 						type:"PUT",
 				                data: {comment_permissions:$(this).val()},

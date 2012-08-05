@@ -155,7 +155,8 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.new({:person_id=>current_user.person.id, 
 					     :post_date=>DateTime.now.utc, 
 					     :post_content=>"Content",
-					     :post_title=>"Title"}, :as=>"")
+					     :post_title=>"Title", :category_name=>"News"}, :as=>"")
+
 
 	   respond_to do |format|
 	     format.html # new.html.erb
@@ -184,7 +185,6 @@ module Roxiware
 	       end
 	   end
 	 end
-
 
 	 # PUT /posts/1
 	 # PUT /posts/1.json

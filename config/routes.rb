@@ -8,12 +8,6 @@ Roxiware::Engine.routes.draw do
 
   post   "asset/:upload_type" => "asset#upload"
 
-  if Roxiware.enable_news
-    resources :news_item
-    get "news/" =>   "news_item#index"
-    get  "news/:year/:month/:day/:seo_index" => "news_items#show_seo"
-  end
-
   if Roxiware.enable_portfolio
     resources :portfolio_entries
     get "/portfolio" =>"portfolio_entries#index"
@@ -51,7 +45,7 @@ Roxiware::Engine.routes.draw do
     end
   end
 
-  if Roxiware.enable_blog
+  if Roxiware.enable_blog || Roxiware.enable_news
     namespace :blog do
       resources :post do
          resources :comment
@@ -62,5 +56,10 @@ Roxiware::Engine.routes.draw do
       put ":year/:month/:day/:title" => "post#update_by_title"
       delete ":year/:month/:day/:title" => "post#destroy_by_title"
     end
+  end
+
+  if Roxiware.enable_news
+      get "news/(:year(/:month(/:day)))" => "blog/post#index_by_date"
+      get "news/:year/:month/:day/:title"=> "blog/post#show_by_title"
   end
 end

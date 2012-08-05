@@ -16,7 +16,7 @@
 	  </div>
 	<% end %>
 
-        <% if !post.categories.nil? %>
+        <% if show_full_header && !post.categories.nil? %>
           <div class="post_categories">
 	   <%  post.category_ids.each do |category_id| %>
 	     <%= link_to @categories[category_id].name, blog_path(:category=>@categories[category_id].seo_index), :class=>"post_category"  %>
@@ -25,8 +25,11 @@
         <% end %>
         <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
 	<div class="post_header">
+         <% if show_full_header %>
           <img class="post_author_img" src="<%= post.person.thumbnail_image_url %>" class="person_thumbnail"/>
+         <% end %>
 	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%D %I:%M %p") %></div>
+         <% if show_full_header %>
 	  <div class="post_author">
 	      by <a href="<%= people_url %>/<%= post.person.seo_index %>">
 		<%= post.person.full_name %>
@@ -38,6 +41,7 @@
 	        <span class="pending_comments">(<%= post.pending_comment_count %>)</span>
 	      <% end %>
           </div>
+         <% end %>
 	</div>
         <div class="content">
 	    <% if show_full_content %>

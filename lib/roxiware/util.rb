@@ -15,17 +15,6 @@ module Roxiware
       session[:return_to] || default
     end
 
-    def set_meta_info
-      @meta_keywords=::AppConfig.meta_keywords
-      @meta_description=::AppConfig.meta_description
-      @title=::AppConfig.title
-      if params[:format] != "json"
-        @robots="index,follow"
-      else
-        @robots="noindex,nofollow"
-      end
-    end
-
     def swap_objects(object, other)
        begin
          ActiveRecord::Base.transaction do

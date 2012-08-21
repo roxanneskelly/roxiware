@@ -23,6 +23,41 @@ module Roxiware
        return false
     end
 
+    def load_layout
+       @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>Roxiware.layout).first
+       @page_layout = @@current_layout.find_page_layout(params[:controller], params[:action])
+       if(request.format == :html)
+         @layout_styles = @@current_layout.get_styles(params[:controller], params[:action])
+       end
+    end
+
+    def resolve_layout
+       # we need to ultimately cache this infor in-memory
+       if(request.format == :html)
+          @page_layout.render_layout
+       else
+          false
+       end
+    end
+
+    def populate_layout_params
+      print "Populating layout param\n\n"
+      @@current_layout.resolve_layout_params(params[:controller], params[:action]).each do |key, value|
+        self.instance_variable_set("@#{key}".to_sym, value)
+      end
+    end
+
+    def self.resolve_widget_locals(widget_instance)
+       locals = {}
+       widget_instance.layout_params.where(:layout_type=>:render).each do |param|
+          locals[param.name] = param.value
+       end
+
+       eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1)
+       locals
+    end
+
+    
     def configure_widgets(widget_map)
          @widgets = {}
          widget_map.each do |position, widgets|
@@ -40,6 +75,8 @@ module Roxiware
     end
 
     def configure_page_layout(page_layout)
+      @layout = {}
+      
       @header_bar_class="header_bar "
       @left_bar_class="left_bar "
       @right_bar_class="right_bar "

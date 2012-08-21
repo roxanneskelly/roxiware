@@ -10,14 +10,6 @@ AppConfig = OpenStruct.new(app_config)
 class ApplicationController < ActionController::Base
   def set_meta_info
     logger.debug("Set Meta Info")
-    @meta_keywords=::AppConfig.meta_keywords
-    @meta_description=::AppConfig.meta_description
-    @title=::AppConfig.title
-    if params[:format] != "json"
-      @robots="index,follow"
-    else
-      @robots="noindex,nofollow"
-    end
   end
 
   before_filter :set_meta_info

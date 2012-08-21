@@ -1,5 +1,5 @@
 <section class="post">
-   <%= render :partial=>"post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header} %>
+   <%= render :partial=>"post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header=>true} %>
    <% if can? :read_comments, @post %>
        <% can_reply = can? :comment, @post 
 	  can_manage = can? :edit, @post %>

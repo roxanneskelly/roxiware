@@ -90,6 +90,9 @@ module Roxiware
 			    :huge=>[600, 600]
                          }
 
+  mattr_accessor :layout
+  @@layout = ""
+
   def self.setup
     yield self
   end

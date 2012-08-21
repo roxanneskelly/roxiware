@@ -1,8 +1,33 @@
-<% if section.present? %>
-  <div id="<%= section_id %>" class="<%= section_class %>">
-     <% section.each do |widget| %>
-       <%= render (:partial => widget[:view], :locals=>widget[:locals], :layout=>"layouts/widget") %>
-     <% end %>
-   </div>
-<% end %>
+<% layout_section = @page_layout.section(section) %>
+<% if layout_section.present? && layout_section.widget_instances.present?  %>
+  <div id="<%= section %>_section" class="<%= section %>_class">
+    <% layout_section.widget_instances.each do |widget_instance| %>
+       <% begin %>
+         <% show_widget = true %>
+         <% locals = widget_instance.get_params %>
+	 <% show_widget = eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1) %>
+	 <% if show_widget %>
+	   <div class="widget"><div class="widget_background"></div><div class="widget_content">
+	     <%= render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
+	   </div></div>
+         <% end %>
+       <% rescue Exception => e  %>
+	  <div class="widget_exception"><div>
+	    <h1>Error in <%= widget_instance.widget.name %></h1>
+	    <pre>
+Error in <%= widget_instance.widget.name %>
+<%= e.message %>:<%=e.backtrace[0].inspect%>
 
+<%= widget_instance.widget.preload %>
+
+Locals: <%= locals.inspect %>
+
+<%= widget_instance.widget.render_view %>
+
+
+<%= e.backtrace.inspect %></pre></div>
+	  </div>
+     <% end %>
+    <% end %>
+  </div>
+<% end %>

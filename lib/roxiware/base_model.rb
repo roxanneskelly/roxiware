@@ -113,5 +113,9 @@ module Roxiware
         attrs
       end
 
+      def style_replace(style_string, params)
+        params.each {|param| style_string.gsub!("$("+param[:key]+")", param[:value])}
+	style_string
+      end
   end
 end

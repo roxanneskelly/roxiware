@@ -25,7 +25,6 @@ module Roxiware
            include Roxiware::ImageHelpers
            include Roxiware::JQueryPopupForm
            include Roxiware::Helpers
-           before_filter :set_meta_info
            after_filter :store_location
            helper :all
        end

@@ -60,15 +60,15 @@ module Roxiware
 	   end
 	      
 
-	   @title = @title + " : Blog"
-	   @meta_description = @title
-	   @posts.each do |post| 
-	     @meta_keywords = @meta_keywords + ", " + post.post_title
-	   end 
-	   
-
 	   respond_to do |format|
-	     format.html {render :action=>"index"}
+	     format.html do 
+               @title = "Blog"
+	       @meta_description = @title
+	       @posts.each do |post| 
+	         @meta_keywords = @meta_keywords + ", " + post.post_title
+	       end 
+	        render :action=>"index"
+             end
 	     format.json do
                 clean_posts = []
                 @posts.each do |post| 

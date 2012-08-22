@@ -6,7 +6,7 @@ module Roxiware
 	  include Roxiware::BaseModel
 	  self.table_name= "layouts"
 
-	  has_many        :layout_params, :as=>:layout_object, :autosave=>true, :dependent=>:destroy
+	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  has_many        :page_layouts, :autosave=>true, :dependent=>:destroy
 	  attr_accessible :name               # name of the layout
 	  attr_accessible :description        # description of the layout
@@ -27,8 +27,8 @@ module Roxiware
 	     end
 	     params = layout_node.find("params/param")
 	     params.each do |param|
-               widget_param = self.layout_params.build
-               widget_param.import(param)
+               widget_param = self.params.build
+               widget_param.import(param, true)
 	     end
 	     page_layout_nodes = nil
 	  end
@@ -43,9 +43,9 @@ module Roxiware
 		    page_layout.export(xml_page_layouts)
 		 end
 	       end
-	       xml_layout.params do |xml_layout_params|
-	          self.layout_params.each do |layout_param|
-		     layout_param.export(xml_layout_params)
+	       xml_layout.params do |xml_params|
+	          self.params.each do |param|
+		     param.export(xml_params, true)
 		  end
 	       end
 	    end 
@@ -70,7 +70,7 @@ module Roxiware
 	  end
 
 	  def get_styles(controller, action)
-	     @style_params ||= self.layout_params.where(:layout_type=>:style).collect {|param| param}
+	     @style_params ||= self.params.where(:param_class=>:style).collect {|param| param}
 	     style_replace(self.style + self.find_page_layout(controller, action).get_styles, @style_params)
 	  end
 
@@ -78,7 +78,7 @@ module Roxiware
 	     if @layout_params.nil?
                 print "layout resolving params\n\n"
 	        @layout_params = {}
-	        self.layout_params.where(:layout_type=>:local).each do |param|
+	        self.params.where(:param_class=>:local).each do |param|
 	           print "#{param.name} == #{param.value}\n\n"
 	           @layout_params[param.name] = param.value
 	        end
@@ -97,7 +97,7 @@ module Roxiware
           include Roxiware::BaseModel
           self.table_name= "page_layouts"
 
-	  has_many        :layout_params, :as=>:layout_object, :autosave=>true, :dependent=>:destroy
+	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
           has_many        :layout_sections, :autosave=>true, :dependent=>:destroy
           belongs_to      :layout
 
@@ -119,8 +119,8 @@ module Roxiware
 	     end
 	     params = page_layout_node.find("params/param")
 	     params.each do |param|
-               layout_param = self.layout_params.build
-               layout_param.import(param)
+               param = self.params.build
+               param.import(param, true)
 	     end
 	     layout_section_nodes = nil
 	  end
@@ -134,16 +134,16 @@ module Roxiware
 		     layout_section.export(xml_layout_sections)
 		  end
 	       end
-	       xml_page_layout.params do |xml_layout_params|
-	          self.layout_params.each do |layout_param|
-		     layout_param.export(xml_layout_params)
+	       xml_page_layout.params do |xml_params|
+	          self.params.each do |param|
+		     param.export(xml_params, true)
 		  end
 	       end
 	     end
           end
 	  
 	  def get_styles
-	     @style_cache ||= style_replace(self.style + self.layout_sections.collect{|section| section.get_styles}.join(" "), self.layout_params.where(:layout_type=>:style))
+	     @style_cache ||= style_replace(self.style + self.layout_sections.collect{|section| section.get_styles}.join(" "), self.params.where(:param_class=>:style))
 	     @style_cache
 	  end
 
@@ -151,7 +151,7 @@ module Roxiware
 	     if @layout_params.nil?
                 print "page resolving params\n\n"
 	        @layout_params = {}
-	        self.layout_params.where(:layout_type=>:local).each do |param|
+	        self.params.where(:param_class=>:local).each do |param|
 	           @layout_params[param.name] = param.value
 	        end
              end
@@ -194,8 +194,8 @@ module Roxiware
 	     end
 	     params = layout_section_node.find("params/param")
 	     params.each do |param|
-               layout_param = self.layout_params.build
-               layout_param.import(param)
+               param = self.params.build
+               param.import(param)
 	     end
 	  end
 
@@ -221,6 +221,7 @@ module Roxiware
       class Widget < ActiveRecord::Base
           include Roxiware::BaseModel
           self.table_name= "widgets"
+	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 
 	  attr_accessible :name              # display name of the widget
 	  attr_accessible :version           # version of the widget
@@ -230,14 +231,19 @@ module Roxiware
 	  attr_accessible :guid              # unique identifier for this widget
 	  attr_accessible :style             # style for the widget
 
-          def import(widget)
-	     self.version = widget["version"]
-	     self.guid = widget["guid"]
-	     self.name = widget.find_first("name").content
-	     self.description = widget.find_first("description").content    
-	     self.preload     = widget.find_first("preload").content    
-	     self.render_view = widget.find_first("render_view").content    
-	     self.style = widget.find_first("style").content    
+          def import(widget_node)
+	     self.version = widget_node["version"]
+	     self.guid = widget_node["guid"]
+	     self.name = widget_node.find_first("name").content
+	     self.description = widget_node.find_first("description").content    
+	     self.preload     = widget_node.find_first("preload").content    
+	     self.render_view = widget_node.find_first("render_view").content    
+	     self.style = widget_node.find_first("style").content    
+	     params = widget_node.find("params/param")
+	     params.each do |param|
+               widget_param = self.params.build
+               widget_param.import(param, true)
+	     end
 	  end
 
           def export(xml_widgets)
@@ -247,6 +253,11 @@ module Roxiware
 	        xml_widget.preload {|s| s.cdata!(self.preload)}
 	        xml_widget.render_view {|s| s.cdata!(self.render_view)}
 	        xml_widget.style {|s| s.cdata!(self.style)}
+		xml_widget.params do |xml_params|
+		    self.params.each do |param|
+		       param.export(xml_params, true)
+		    end
+		end
               end
           end
       end
@@ -257,7 +268,7 @@ module Roxiware
           include Roxiware::BaseModel
           self.table_name= "widget_instances"
 
-	  has_many   :layout_params, :as=>:layout_object, :autosave=>true, :dependent=>:destroy
+	  has_many   :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  belongs_to :layout_section
 
 	  attr_accessible :layout_section_id  # the layout this widget instancebelongs to
@@ -274,67 +285,41 @@ module Roxiware
 	     self.widget_guid = newwidget.guid
 	  end
 
-	  def import(widget_instance)
+	  def import(widget_instance_node)
 
              # find widget instance here
 	     #
-	     self.widget_guid = widget_instance["widget_guid"]
-	     self.section_order = widget_instance["order"]
-	     params = widget_instance.find("params/param")
-	     params.each do |param|
-               layout_param = self.layout_params.build
-               layout_param.import(param)
+	     self.widget_guid = widget_instance_node["widget_guid"]
+	     self.section_order = widget_instance_node["order"]
+	     param_nodes = widget_instance_node.find("params/param")
+	     param_nodes.each do |param_node|
+               param = self.params.build
+               param.import(param_node, false)
 	     end
 	  end
 
           def export(xml_widget_instances)
 	     xml_widget_instances.instance(:order=>self.section_order, :widget_guid=>self.widget_guid) do |xml_widget_instance|
-	       xml_widget_instance.params do |xml_layout_params|
-	          self.layout_params.each do |layout_param|
-		     layout_param.export(xml_layout_params)
+	       xml_widget_instance.params do |xml_params|
+	          self.params.each do |param|
+		     param.export(xml_params, false)
 		  end
 	       end
 	     end
           end
 	  
 	  def get_styles
-	     return style_replace(self.widget.style, self.layout_params.where(:layout_type=>:style))
+	     return style_replace(self.widget.style, self.params.where(:param_class=>:style))
 	  end
 
 	  def get_params
 	     if @params.nil?
 	        @params = {}
-	        layout_params.where(:layout_type=>:local).each do |param|
+	        params.where(:param_class=>:local).each do |param|
                    @params[param.name.to_sym] = param.value
                 end
              end
 	     @params
-          end
-      end
-
-      class LayoutParam < ActiveRecord::Base
-          include Roxiware::BaseModel
-          self.table_name= "layout_params"
-
-	  belongs_to :layout_object, :polymorphic=>true
-
-	  attr_accessible :layout_type        # type of the param
-	  attr_accessible :name               # name of the param
-	  attr_accessible :value              # value of the param
-	  attr_accessible :widget_instance_id # parent widget instance
-
-	  def import(param)
-	     self.layout_type = param.find_first("type").content
-	     self.name = param.find_first("name").content
-	     self.value = param.find_first("value").content
-	  end
-
-          def export(xml_layout_params)
-	     xml_layout_params.param do |xml_layout_param|
-  	       xml_layout_param.layout_type   self.type
-  	       xml_layout_param.name   self.name
-	       xml_layout_param.value  self.value
-	     end
           end
       end
    end

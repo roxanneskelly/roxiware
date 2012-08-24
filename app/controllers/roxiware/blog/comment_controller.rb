@@ -18,8 +18,9 @@ module Roxiware
 	     clean_comments << comment.ajax_attrs(@role)
 	   end 
 	   
+	   @post = Roxiware::Blog::Post.find(params[:post_id])
 	   respond_to do |format|
-	     format.html # index.html.erb
+	     format.html { redirect_to @post.post_link }
 	     format.json { render :json => clean_comments }
              format.rss { render :layout => false }
 	   end

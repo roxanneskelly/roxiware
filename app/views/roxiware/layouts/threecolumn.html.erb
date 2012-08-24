@@ -1,24 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
-  <meta name="description" content="<%= @meta_description %>"/>
-  <meta name="keywords" content="<%= @meta_keywords %>"/>
-  <meta name="robots" content="<%= @robots %>" />
-  <meta name="google-site-verification" content="<%= @google_site_verification_key %>" />
-  <title><%= @title %></title>
-  <%= stylesheet_link_tag    "application" %>
-  <style><%= @layout_styles %></style>
-  <%= javascript_include_tag "application" %>
-  <!--[if lt IE 9]> 
-  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> 
-  <![endif]-->
-
-  <%= csrf_meta_tags %>
-  <%= favicon_link_tag "/assets/icons/favicon.ico"%>
-  <%= render :partial=>'roxiware/layouts/ga' %>
-
+<%= render :partial=>'roxiware/shared/head' %>
 </head>
 <body class="application_body">
   <%= render :partial=>'roxiware/shared/socialheader' %>

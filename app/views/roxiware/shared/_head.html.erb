@@ -1,0 +1,18 @@
+<meta content="text/html; charseUTF-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+<meta name="generator" content="roxiware">
+<meta name="description" content="<%= @meta_description %>"/>
+<meta name="keywords" content="<%= @meta_keywords %>"/>
+<meta name="robots" content="<%= @robots %>" />
+<meta name="google-site-verification" content="<%= @google_site_verification_key %>" />
+<title><%= @title %></title>
+<%= stylesheet_link_tag    "application" %>
+<style type="text/css" id="templace-css"><%= @layout_styles %></style>
+<%= javascript_include_tag "application" %>
+<!--[if lt IE 9]> 
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> 
+<![endif]-->
+
+<%= csrf_meta_tags %>
+<%= favicon_link_tag "/assets/icons/favicon.ico"%>
+<%= render :partial=>'roxiware/layouts/ga' %>

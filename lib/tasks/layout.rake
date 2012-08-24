@@ -62,8 +62,7 @@ namespace :layout do
 	 layout_nodes.each do |layout_node|
 	    layout = Roxiware::Layout::Layout.new
 	    old_layout = Roxiware::Layout::Layout.where(:guid=>layout_node["guid"]).first
-	    print "destroying #{old_layout.guid}\n\n" if old_layout.present?
-	    old_layout.delete if old_layout.present?
+	    old_layout.destroy if old_layout.present?
 	    layout.import(layout_node)
 	    layout.save!
 	 end

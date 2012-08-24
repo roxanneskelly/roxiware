@@ -1,5 +1,9 @@
 Roxiware::Engine.routes.draw do
 
+  constraints :format=>"xml" do 
+    get "/sitemap" => "sitemap#index", :format=>"xml" 
+  end
+
   get "/account/edit" => "account#edit", :id => 0, :as=>"edit_self"
   put "/account/edit" => "account#update", :id => 0, :as=>"edit_self"
   resources :account

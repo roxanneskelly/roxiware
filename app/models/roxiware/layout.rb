@@ -8,6 +8,7 @@ module Roxiware
 
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  has_many        :page_layouts, :autosave=>true, :dependent=>:destroy
+
 	  attr_accessible :name               # name of the layout
 	  attr_accessible :description        # description of the layout
 	  attr_accessible :style              # general style for this layout
@@ -38,15 +39,15 @@ module Roxiware
 	       xml_layout.name self.name
 	       xml_layout.description self.description
 	       xml_layout.style {|s| s.cdata!(self.style) }
-	       xml_layout.pages do |xml_page_layouts|
-	         self.page_layouts.each do |page_layout|
-		    page_layout.export(xml_page_layouts)
-		 end
-	       end
 	       xml_layout.params do |xml_params|
 	          self.params.each do |param|
 		     param.export(xml_params, true)
 		  end
+	       end
+	       xml_layout.pages do |xml_page_layouts|
+	         self.page_layouts.each do |page_layout|
+		    page_layout.export(xml_page_layouts)
+		 end
 	       end
 	    end 
  	  end
@@ -107,6 +108,7 @@ module Roxiware
           attr_accessible :style            # per_page style for this layout
 	  attr_accessible :layout_id
 
+
 	  def import(page_layout_node)
 	     self.controller    = page_layout_node["controller"]
 	     self.action        = page_layout_node["action"]
@@ -129,14 +131,14 @@ module Roxiware
 	     xml_page_layouts.page(:controller=>self.controller, :action=>self.action) do |xml_page_layout|
 	       xml_page_layout.render_layout self.render_layout
 	       xml_page_layout.style {|s| s.cdata!(self.style)}
-	       xml_page_layout.sections do |xml_layout_sections|
-	          self.layout_sections.each do |layout_section|
-		     layout_section.export(xml_layout_sections)
-		  end
-	       end
 	       xml_page_layout.params do |xml_params|
 	          self.params.each do |param|
 		     param.export(xml_params, true)
+		  end
+	       end
+	       xml_page_layout.sections do |xml_layout_sections|
+	          self.layout_sections.each do |layout_section|
+		     layout_section.export(xml_layout_sections)
 		  end
 	       end
 	     end
@@ -185,7 +187,7 @@ module Roxiware
 	  attr_accessible :page_layout_id     # page layout
 
 	  def import(layout_section_node)
-	     self.name = layout_section_node.find_first("name").content
+	     self.name = layout_section_node["name"]
 	     self.style = layout_section_node.find_first("style").content
 	     widget_instance_nodes = layout_section_node.find("widget_instances/instance")
 	     widget_instance_nodes.each do |widget_instance_node|
@@ -200,8 +202,7 @@ module Roxiware
 	  end
 
           def export(xml_layout_sections)
-	     xml_layout_sections.section do |xml_layout_section|
-	       xml_layout_section.name        self.name
+	     xml_layout_sections.section(:name=>self.name) do |xml_layout_section|
 	       xml_layout_section.style {|s| s.cdata!(self.style)}
 	       xml_layout_section.widget_instances do |xml_widget_instances|
 	          self.widget_instances.each do |widget_instance|

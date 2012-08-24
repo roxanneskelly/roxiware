@@ -60,6 +60,7 @@ module Roxiware
 	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.present?})
 	     end
 
+
 	     @page_layout_cache.each do |page_layout|
 	        if((page_layout.controller == controller) || page_layout.controller.blank?)
 		   if ((page_layout.action == action) || page_layout.action.blank?)
@@ -77,10 +78,8 @@ module Roxiware
 
 	  def resolve_layout_params(controller, action)
 	     if @layout_params.nil?
-                print "layout resolving params\n\n"
 	        @layout_params = {}
 	        self.params.where(:param_class=>:local).each do |param|
-	           print "#{param.name} == #{param.value}\n\n"
 	           @layout_params[param.name] = param.value
 	        end
              end
@@ -151,7 +150,6 @@ module Roxiware
 
 	  def resolve_layout_params
 	     if @layout_params.nil?
-                print "page resolving params\n\n"
 	        @layout_params = {}
 	        self.params.where(:param_class=>:local).each do |param|
 	           @layout_params[param.name] = param.value

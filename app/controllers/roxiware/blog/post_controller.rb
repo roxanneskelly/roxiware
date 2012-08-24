@@ -7,6 +7,7 @@ module Roxiware
 	   @role = "guest"
 	   @role = current_user.role unless current_user.nil?
            @categories = Hash[Roxiware::Terms::Term.categories().map {|category| [category.id, category]  }]
+	   @person_id = (current_user && current_user.person)?current_user.person.id : -1
 	 end
 	 
 
@@ -17,7 +18,6 @@ module Roxiware
 	   authorize! :read, Roxiware::Blog::Post
 	   page = (params[:page] || 1).to_i
 	   conditions = {}
-	   person_id = (current_user && current_user.person)?current_user.person.id : -1
 	   if params[:format] == "rss"
               num_posts = [(params[:max] || Roxiware.blog_posts_per_feed).to_i, Roxiware.max_blog_posts_per_feed].min
 	   else
@@ -44,9 +44,9 @@ module Roxiware
               conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy::TAG_ID, :seo_index=>params[:tag]}
 	   end
 	   if conditions.has_key?(:terms)
-	     @posts = Roxiware::Blog::Post.joins(:terms).visible(@role, person_id)
+	     @posts = Roxiware::Blog::Post.joins(:terms).visible(@role, @person_id)
 	   else 
-	     @posts = Roxiware::Blog::Post.visible(@role, person_id)
+	     @posts = Roxiware::Blog::Post.visible(@role, @person_id)
 	   end
 
            @posts = @posts.includes(:term_relationships, :terms).where(conditions).order("post_date DESC").limit(num_posts+1).offset(num_posts*(page-1))
@@ -87,6 +87,20 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.where(:guid=>request.path).first
 	   raise ActiveRecord::RecordNotFound if @post.nil?
 	   authorize! :read, @post
+
+           @calendar_posts_index ||= Roxiware::Blog::Post.visible(@role, @person_id).order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
+	   @prev_post_link = nil
+	   @next_post_link = nil
+	   @calendar_posts_index.each do |post|
+	      if post.id != @post.id
+	        if(post.post_date > @post.post_date)
+	          @next_post_link = post.post_link
+	        elsif post.post_date < @post.post_date
+	          @prev_post_link = post.post_link
+		  break
+	        end
+              end
+	   end
 
 	   conditions = {}
 	   person_id = ((current_user && current_user.person)?current_user.person.id : -1)

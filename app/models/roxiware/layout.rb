@@ -79,8 +79,11 @@ module Roxiware
 	  def resolve_layout_params(controller, action)
 	     if @layout_params.nil?
 	        @layout_params = {}
-	        self.params.where(:param_class=>:local).each do |param|
-	           @layout_params[param.name] = param.value
+	        Roxiware::Param::Param.settings.each do |param|
+	           @layout_params[param.name] = param.conv_value
+	        end
+	        self.params.where(:param_class=>"local").each do |param|
+	           @layout_params[param.name] = param.conv_value
 	        end
              end
 
@@ -152,7 +155,7 @@ module Roxiware
 	     if @layout_params.nil?
 	        @layout_params = {}
 	        self.params.where(:param_class=>:local).each do |param|
-	           @layout_params[param.name] = param.value
+	           @layout_params[param.name] = param.conv_value
 	        end
              end
 	     @layout_params
@@ -274,6 +277,11 @@ module Roxiware
 	  attr_accessible :section_order      # the order in which this widget should be rendered
 	  attr_accessible :widget_guid        # the widget this instance references
 
+	  def globals
+	    @globals ||= {}
+	    @globals
+	  end
+
 	  def widget
 	     @widget ||= Roxiware::Layout::Widget.where(:guid=>self.widget_guid).first
 	     @widget
@@ -314,8 +322,12 @@ module Roxiware
 	  def get_params
 	     if @params.nil?
 	        @params = {}
+		widget.params.where(:param_class=>:local).each do |param|
+                   @params[param.name.to_sym] = param.conv_value
+                end
+		
 	        params.where(:param_class=>:local).each do |param|
-                   @params[param.name.to_sym] = param.value
+                   @params[param.name.to_sym] = param.conv_value
                 end
              end
 	     @params

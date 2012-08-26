@@ -5,6 +5,7 @@
        <% begin %>
          <% show_widget = true %>
          <% locals = widget_instance.get_params %>
+	 <% globals = widget_instance.globals %>
 	 <% show_widget = eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1) %>
 	 <% if show_widget %>
 	   <div class="widget"><div class="widget_background"></div><div class="widget_content">
@@ -21,6 +22,8 @@ Error in <%= widget_instance.widget.name %>
 <%= widget_instance.widget.preload %>
 
 Locals: <%= locals.inspect %>
+
+Globals: <%= globals.inspect %>
 
 <%= widget_instance.widget.render_view %>
 

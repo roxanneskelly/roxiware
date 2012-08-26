@@ -12,6 +12,9 @@ module Roxiware
 	  attr_accessible :name               # name of the param
 	  attr_accessible :value              # value of the param
 	  attr_accessible :widget_instance_id # parent widget instance
+	  belongs_to :param_description, :autosave=>true, :foreign_key=>:description_guid, :primary_key=>:guid
+
+	  scope :settings, where(:param_class=>"setting")
 
 	  def description
 	     @description ||= Roxiware::Param::ParamDescription.where(:guid=>self.description_guid).first || Roxiware::Param::ParamDescription.new(:guid=>self.description_guid)
@@ -19,25 +22,38 @@ module Roxiware
 	     @description
 	  end
 
+	  def conv_value
+	     case description.field_type
+	       when "integer"
+	         value.to_i
+	       when "string"
+	         value.to_s
+	       when "float"
+	         value.to_f
+	       else
+	         return value
+	     end
+	  end
 	  
 
 	  def import(xml_param, include_description)
-	     self.param_class = xml_param.find_first("class").content
-	     self.name = xml_param.find_first("name").content
+	     self.param_class = xml_param["class"]
+	     self.name = xml_param["name"]
 	     self.value = xml_param.find_first("value").content
 	     if include_description
 	        xml_param_description = xml_param.find_first("param_description")
 		if xml_param_description.present?
 		   self.description_guid = xml_param_description["guid"]
-	  	   self.description.import(xml_param_description)
+		   if self.param_description.blank?
+		      self.build_param_description
+		   end
+	  	   self.param_description.import(xml_param_description)
 		end
 	     end
 	  end
 
           def export(xml_params, include_description)
-	     xml_params.param do |xml_param|
-  	       xml_param.class   self.param_class
-  	       xml_param.name   self.name
+	     xml_params.param(:class=>self.param_class, :name=>self.name) do |xml_param|
 	       xml_param.value  self.value
 	       if include_description
 		   self.description.export(xml_param)

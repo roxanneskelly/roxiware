@@ -1,11 +1,50 @@
 require 'builder'
 require 'xml'
 
+namespace :settings do
+      desc "list"
+      task :list =>:environment do |t|
+         Roxiware::Param::Param.settings.each do |param|
+	    print "#{param.name} : #{param.value}\n#{param.description.description}\n"
+	 end
+      end
+
+      desc "Import settings"
+      task :import, [:settings_file]=>:environment do |t, args|
+	 parser = XML::Parser.file(args[:settings_file])
+	 doc_obj = parser.parse
+	 param_nodes = doc_obj.find("/settings/param")
+	 param_nodes.each do |param_node|
+	    param = Roxiware::Param::Param.new
+	    old_param = Roxiware::Param::Param.where(:name=>param_node["name"], :param_class=>param_node["class"]).first
+	    old_param.destroy if old_param.present?
+	    param.import(param_node, true)
+	    param.save!
+	 end
+      end
+
+      desc "Export a setting"
+      task :export, [:setting]=>:environment do |t,args|
+          xml = ::Builder::XmlMarkup.new(:indent=>2, :target=>$stdout)
+          xml.instruct! :xml, :version => "1.0"
+          if args[:setting].present? 
+	     params = Roxiware::Param::Param.settings.where(:name=>args[:setting])
+	  else
+	     params = Roxiware::Param::Param.settings
+	  end
+          xml.settings do |xml_params|
+	     params.each do |param|
+	        param.export(xml_params, true)
+             end
+	  end
+     end
+end
+
 namespace :widget do
       desc "list"
       task :list =>:environment do |t|
          Roxiware::Layout::Widget.all.each do |widget|
-	    print "#{widget.name} : #{widget.guid}\n#{widget.description}\n\n"
+	    print "#{widget.name} : #{widget.guid}\n#{widget.description}\n"
 	 end
       end
 

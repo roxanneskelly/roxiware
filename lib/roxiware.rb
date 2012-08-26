@@ -93,6 +93,12 @@ module Roxiware
   mattr_accessor :layout
   @@layout = ""
 
+  mattr_accessor :goodreads_key
+  @@goodreads_key = "351iVqrxyMaH4RKryyA"
+
+  mattr_accessor :goodreads_secret
+  @@goodreads_secret = "30bD292eiwGB8tS08TdQdDnkeWpWHzgMtLS5labOk"
+
   def self.setup
     yield self
   end

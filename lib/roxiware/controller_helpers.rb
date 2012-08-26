@@ -1,7 +1,6 @@
 module Roxiware
-
   module ApplicationControllerHelper
-    PAGE_LAYOUT = []
+
     private 
     def after_sign_in_path_for(resource_or_scope)
       "/"
@@ -41,8 +40,8 @@ module Roxiware
     end
 
     def populate_layout_params
-      print "Populating layout param\n\n"
       @@current_layout.resolve_layout_params(params[:controller], params[:action]).each do |key, value|
+        print "INSTANCE VARIABLE: @#{key} : #{value}\n"
         self.instance_variable_set("@#{key}".to_sym, value)
       end
     end

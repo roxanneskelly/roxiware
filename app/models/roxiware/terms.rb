@@ -44,7 +44,6 @@ module Roxiware::Terms
 
     def self.categories
        @@categories ||= Hash[Term.where(:term_taxonomy_id=>TermTaxonomy::CATEGORY_ID).map {|category| [category.id, category]  }]
-       print "GOT CATEGORIES " + @@categories.inspect
        @@categories
     end
   end

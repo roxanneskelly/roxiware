@@ -25,6 +25,7 @@ module Roxiware::Terms
     edit_attr_accessible :name, :seo_index, :term_taxonomy_id, :as=>[nil]
     ajax_attr_accessible :name, :seo_index, :term_taxonomy_id, :as=>[:admin, :user, :guest]
 
+    @@categories = nil
 
     def self.get_or_create(term_strings, term_taxonomy_id)
        term_string_set = Set.new(term_strings)
@@ -42,7 +43,9 @@ module Roxiware::Terms
     end
 
     def self.categories
-       Term.where(:term_taxonomy_id=>TermTaxonomy::CATEGORY_ID)
+       @@categories ||= Hash[Term.where(:term_taxonomy_id=>TermTaxonomy::CATEGORY_ID).map {|category| [category.id, category]  }]
+       print "GOT CATEGORIES " + @@categories.inspect
+       @@categories
     end
   end
 

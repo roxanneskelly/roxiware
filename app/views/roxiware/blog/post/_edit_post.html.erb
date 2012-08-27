@@ -21,7 +21,7 @@
    </div>
 <script>
 $(document).ready(function() {
-    var categories = [<%= raw @categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]
+    var categories = [<%= raw Roxiware::Terms::Term.categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]
     $("#category_name").autocomplete({source:categories});
 
     $("button.post_edit").overlay( {

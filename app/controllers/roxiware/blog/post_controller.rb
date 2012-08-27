@@ -6,7 +6,6 @@ module Roxiware
 	 before_filter do
 	   @role = "guest"
 	   @role = current_user.role unless current_user.nil?
-           @categories = Hash[Roxiware::Terms::Term.categories().map {|category| [category.id, category]  }]
 	   @person_id = (current_user && current_user.person)?current_user.person.id : -1
 	 end
 	 

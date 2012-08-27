@@ -16,10 +16,10 @@
 	  </div>
 	<% end %>
 
-        <% if show_full_header && !post.categories.nil? %>
+        <% if show_full_header && !post.category_ids.nil? %>
           <div class="post_categories">
 	   <%  post.category_ids.each do |category_id| %>
-	     <%= link_to @categories[category_id].name, blog_path(:category=>@categories[category_id].seo_index), :class=>"post_category"  %>
+	     <%= link_to Roxiware::Terms::Term.categories()[category_id].name, blog_path(:category=>Roxiware::Terms::Term.categories()[category_id].seo_index), :class=>"post_category"  %>
 	   <% end %>
           </div>
         <% end %>

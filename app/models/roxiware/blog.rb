@@ -2,6 +2,12 @@ require 'devise'
 require 'acts_as_tree_rails3'
 module Roxiware
  module Blog
+
+  @last_update = DateTime.now
+  def self.last_update
+    @last_update
+  end
+
   class Post < ActiveRecord::Base
     include ActionView::Helpers::TextHelper
     include Roxiware::BaseModel
@@ -42,6 +48,10 @@ module Roxiware
     
     scope :published, where(:post_status=>"publish")
     scope :visible, lambda{|role, person_id| where(role=="admin"?"":["person_id = ? OR post_status='publish'", person_id])}
+
+    after_save do
+      @@last_update = DateTime.now
+    end
 
     def set_term_ids(term_ids, taxonomy_id)
         print "SET TERM IDS for #{taxonomy_id} " + term_ids.to_json + "\n\n"

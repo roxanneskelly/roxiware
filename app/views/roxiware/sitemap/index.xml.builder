@@ -13,7 +13,7 @@ xml.urlset(:xmlns=>"http://www.sitemaps.org/schemas/sitemap/0.9") do
       xml.url do
         xml.lastmod  post.updated_at.strftime("%Y-%m-%d")
         xml.changefreq "weekly"
-        xml.priority "0.5"
+        xml.priority "0.7"
 	xml.loc "http://#{request.host_with_port}#{post.post_link}"
       end
     end

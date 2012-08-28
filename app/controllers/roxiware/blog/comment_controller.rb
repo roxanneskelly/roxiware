@@ -30,7 +30,7 @@ module Roxiware
 	 # GET /posts/1.json
 	 def show
 	   respond_to do |format|
-	     format.html # index.html.erb
+	     format.html { redirect_to @post.post_link }
 	     format.json { render :json => @comment.ajax_attrs(@role) }
 	   end
 	 end
@@ -40,7 +40,7 @@ module Roxiware
 	 # GET /posts/1.json
 	 def edit
 	   respond_to do |format|
-	     format.html # index.html.erb
+	     format.html { redirect_to @post.post_link }
 	     format.json { render :json => @comment.ajax_attrs(@role) }
 	   end
 	 end
@@ -49,7 +49,7 @@ module Roxiware
 	 # GET /posts/new.json
 	 def new
 	   respond_to do |format|
-	     format.html # index.html.erb
+	     format.html { redirect_to @post.post_link }
 	     format.json { render :json => @comment.ajax_attrs(@role) }
 	   end
 	 end

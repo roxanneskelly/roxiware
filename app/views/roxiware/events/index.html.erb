@@ -1,2 +1,2 @@
 <%= render :partial => "directory" %>
-<%= render :partial=>"edit_form" %>
+ <%= render(:partial=>"edit_form") if ((can? :edit, Roxiware::Event) || (can? :create, Roxiware::Event)) %>

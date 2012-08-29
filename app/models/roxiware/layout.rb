@@ -278,8 +278,8 @@ module Roxiware
 	  attr_accessible :widget_guid        # the widget this instance references
 
 	  def globals
-	    @globals ||= {}
-	    @globals
+	    @@globals ||= {}
+	    @@globals
 	  end
 
 	  def widget

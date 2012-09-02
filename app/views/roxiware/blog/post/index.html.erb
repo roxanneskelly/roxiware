@@ -32,11 +32,17 @@
 <%= render :partial=>"edit_post", :locals=>{:index=>true} if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) %>
 <script>
 $(document).ready(function() {
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    var csrf_param = $('meta[name="csrf-param"]').attr('content');
 
     $("div.comment_permissions").on("change", "select", function() {
+        var upload_params = {comment_permissions:$(this).val()};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
        $.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
 						type:"PUT",
-				                data: {comment_permissions:$(this).val()},
+				                data: upload_params,
 						error: function (jqXHR, textStatus, errorThrown) {
 						    alert(errorThrown);
                                                     window.location.reload();
@@ -45,9 +51,13 @@ $(document).ready(function() {
           });
 
     $("article.post").on("change", "input[type=checkbox]", function() {
+       var upload_params = {post_status:$(this).attr("checked")?"publish":"draft"};
+       if (csrf_param !== undefined && csrf_token !== undefined) {
+           upload_params[csrf_param] = csrf_token;
+       };
        $.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
 						type:"PUT",
-				                data: {post_status:$(this).attr("checked")?"publish":"draft"},
+				                data: upload_params,
                                                complete: function() {},
 						error: function (jqXHR, textStatus, errorThrown) {
 						    alert(errorThrown);

@@ -34,6 +34,9 @@
 
 <script>
 $(document).ready(function() {
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    var csrf_param = $('meta[name="csrf-param"]').attr('content');
+
     $("div.comment_reply").click(function() {
         $(".comment_form").remove();
         var blog_comment_id = $(this).attr("id").split("-")[2];
@@ -44,10 +47,15 @@ $(document).ready(function() {
         });
      });
     $("div.comment").on("change", "input[type=checkbox]", function() {
-       var blog_comment_id = $(this).attr("comment");
+        var blog_comment_id = $(this).attr("comment");
+        var upload_params = {comment_status:$(this).attr("checked")?"publish":"moderate"};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
+
        $.ajax("<%= blog_post_comment_index_path(@post.id) %>" + "/"+blog_comment_id, {
 						type:"PUT",
-				                data: {comment_status:$(this).attr("checked")?"publish":"moderate"},
+				                data: upload_params
 						error: function (jqXHR, textStatus, errorThrown) {
 						    $.error(errorThrown);
                                                     window.location.reload();
@@ -55,9 +63,13 @@ $(document).ready(function() {
 		  });
     });
     $("div.comment_permissions").on("change", "select", function() {
+        var upload_params = {comment_permissions:$(this).val()};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
        $.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
 						type:"PUT",
-				                data: {comment_permissions:$(this).val()},
+				                data: upload_params,
 						error: function (jqXHR, textStatus, errorThrown) {
 						    $.error(errorThrown);
                                                     window.location.reload();

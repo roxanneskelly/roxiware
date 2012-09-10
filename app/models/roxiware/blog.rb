@@ -54,7 +54,6 @@ module Roxiware
     end
 
     def set_term_ids(term_ids, taxonomy_id)
-        print "SET TERM IDS for #{taxonomy_id} " + term_ids.to_json + "\n\n"
         current_term_ids_for_taxonomy = self.terms.select {|term| term.term_taxonomy_id == taxonomy_id }.collect{|term| term.id}
 
         term_ids_not_for_taxonomy = self.term_ids.to_set - current_term_ids_for_taxonomy

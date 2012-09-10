@@ -30,6 +30,10 @@ module Roxiware
        end
     end
 
+    def refresh_layout
+       @@current_layout = nil
+    end
+
     def resolve_layout
        # we need to ultimately cache this infor in-memory
        if(request.format == :html)

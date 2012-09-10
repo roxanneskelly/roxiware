@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency "devise"
   s.add_dependency "cancan"
   s.add_dependency "railties"
+  s.add_dependency "jquery-rails"
   s.add_dependency "uuid"
   s.add_dependency "sanitize"
   s.add_dependency "acts_as_tree_rails3"

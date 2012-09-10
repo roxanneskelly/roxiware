@@ -1,0 +1,103 @@
+
+<style>
+#page_layout_edit {
+  width:34em;
+}
+
+#page_layout_edit label
+{
+  width: 7em;
+}
+
+#page_layout_edit .page_layout_name
+{
+ width: 20em;
+}
+
+#page_layout_edit .panes
+{
+ width: 100%;
+ color:#000;
+}
+
+#page_layout_edit .panes > div
+{
+ height: 20em;
+}
+
+#page_layout_edit textarea.page_layout_style
+{
+  width:100%;
+  height:26em;
+  padding:0px;
+  margin:0px;
+}
+
+#page_layout_edit textarea.page_layout_description
+{
+  width:100%;
+  height:10em;
+  padding:0px;
+  margin:0px;
+}
+
+
+</style>
+
+<div class="page_layout_edit" id="page_layout_edit">
+   <%= form_tag(layout_page_path(@layout.guid, url_encode("#{@page.controller}\##{@page.action}")), :method=>"put") do%>
+     <h3>Edit Page Layout: <%= @page.controller %> # <%= @page.action %></h3>
+     <ul class="tabs">
+       <li><a href="#">Settings</a></li>
+       <li><a href="#">Style</a></li>
+     </ul>
+     <div class="panes">
+       <div>
+          <div title="Select the form of layout for the page" style="display:inline-block">
+	    <%= label_tag :render_layout, "Page Layout" %>
+	    <%=  select_tag :render_layout, options_for_select({"Three Column"=> "roxiware/layouts/threecolumn", "Two Column Left"=>"roxiware/layouts/twocolumn_left"}, @page.render_layout) %>
+	  </div>
+ 	  <% @page.params.each do |page_layout_param| %>
+	    <div title="<%=page_layout_param.description.description%>" style="display:inline-block">
+            <%= label_tag page_layout_param.name.to_sym, page_layout_param.description.name %>
+            <%= text_field_tag page_layout_param.name.to_sym, page_layout_param.value %>
+	    </div>
+	 <% end %>
+       </div>
+       <div>
+          <%= text_area_tag :style, @page.style, :class=>"page_layout_style" %>
+       </div>
+     </div>
+      
+     <%= button_tag "Save", :id=>"save_button", :type=>"submit" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      $("#page_layout_edit").find("ul.tabs").tabs($("div.panes > div"));
+      $("#page_layout_edit [title]").tooltip({
+        predelay:500,
+        position: "center right"
+      });
+      $("#page_layout_edit").find("button").button().click(function() {
+         
+      });
+
+             var wysiwyg_params = {
+                controls: {
+                   undo: { visible: false },
+                   redo: { visible: false},
+                   insertHorizontalRule: { visible: true},
+                   html: { visible: true},
+                   insertTable: {visible: true},
+                   'fileManager': {
+                         visible: true,
+                         tooltip: "File Manager"
+                    }
+              }
+         }
+         // $("#page_layout_edit textarea.popup_wysiwyg").wysiwyg(wysiwyg_params);
+
+
+   });
+</script>

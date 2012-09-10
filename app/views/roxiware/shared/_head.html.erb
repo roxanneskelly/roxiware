@@ -3,14 +3,15 @@
 <meta name="generator" content="roxiware">
 <meta name="description" content="<%= @meta_description %>"/>
 <meta name="keywords" content="<%= @meta_keywords %>"/>
-<meta name="robots" content="<%= @robots %>" />
+<% if @robots.present? %>
+  <meta name="robots" content="<%= @robots %>" />
+<% end %>
 <meta name="google-site-verification" content="<%= @google_site_verification_key %>" />
 <title><%= @title %></title>
 <%= stylesheet_link_tag    "application" %>
 <style type="text/css" id="templace-css"><%= @layout_styles %></style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js"></script>
 <%= javascript_include_tag "application" %>
 <!--[if lt IE 9]> 
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> 

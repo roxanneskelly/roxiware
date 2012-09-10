@@ -16,6 +16,10 @@ module Roxiware
 
 	  scope :settings, where(:param_class=>"setting")
 
+          edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[nil]
+	  edit_attr_accessible :value, :as=>[:admin, nil]
+	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[:admin]
+
 	  def description
 	     @description ||= Roxiware::Param::ParamDescription.where(:guid=>self.description_guid).first || Roxiware::Param::ParamDescription.new(:guid=>self.description_guid)
 

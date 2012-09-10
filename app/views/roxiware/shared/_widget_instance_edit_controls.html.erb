@@ -1,0 +1,4 @@
+<div class="widget_instance_edit_controls">
+  <%= button_tag "Settings", :rel=>"/layout/#{@current_layout.guid}/page/"+url_encode("#{@page_layout.controller}\##{@page_layout.action}")+"/section/#{layout_section.name}/widget/#{widget_instance.id}", :id=>"edit-layout-page", :class=>"overlay_form layout_page_edit button_edit", :type=>"button"  %>
+  <a class="widget_instance_delete">x</a>
+</div>

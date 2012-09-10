@@ -9,12 +9,23 @@ module Roxiware
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  has_many        :page_layouts, :autosave=>true, :dependent=>:destroy
 
-	  attr_accessible :name               # name of the layout
-	  attr_accessible :description        # description of the layout
-	  attr_accessible :style              # general style for this layout
-	  attr_accessible :guid               # unique id for this layout
           attr_accessor :page_layout_cache
 	  @page_layout_cache = nil
+
+	  validates_presence_of :guid, :message=>"The layout guid is missing."
+          validates :name, :length=>{:minimum=>5,
+                                      :too_short => "The layout name must be at least  %{count} characters.",
+				      :maximum=>256,
+				      :too_long => "The layout name can be no larger than ${count} characters."
+				      }
+
+         validates :description, :length=>{
+				      :maximum=>100000,
+				      :too_long => "The description can be no larger than ${count} characters."
+				      }
+
+	  edit_attr_accessible :description, :style, :name, :as=>[:admin, nil]
+	  ajax_attr_accessible :guid, :as=>[:admin, nil]
 
 	  def import(layout_node)
 	     self.guid = layout_node["guid"]
@@ -49,10 +60,11 @@ module Roxiware
 		    page_layout.export(xml_page_layouts)
 		 end
 	       end
-	    end 
+	    end
  	  end
 
-          def find_page_layout(controller, action)
+          def find_page_layout(current_controller, action)
+	     controller = current_controller.clone
 	     if @page_layout_cache.blank?
 	         page_layout_list = self.page_layouts.collect {|page_layout| page_layout}
 	         @page_layout_cache = self.page_layouts.reject {|page_layout| page_layout.controller.blank? || page_layout.action.blank?}
@@ -104,11 +116,9 @@ module Roxiware
           has_many        :layout_sections, :autosave=>true, :dependent=>:destroy
           belongs_to      :layout
 
-	  attr_accessible :render_layout    # location of the rendering file for the layout
-          attr_accessible :controller       # controller determining when to render this layout
-          attr_accessible :action           # action determining when to render this layout
-          attr_accessible :style            # per_page style for this layout
-	  attr_accessible :layout_id
+	  edit_attr_accessible :render_layout, :style, :as=>[:admin, nil]
+	  edit_attr_accessible :controller, :action, :layout_id, :as=>[nil]
+	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:admin, nil]
 
 
 	  def import(page_layout_node)
@@ -213,6 +223,15 @@ module Roxiware
 	     end
           end
 
+	  def get_widget_instances
+	     @ordered_instances ||= self.widget_instances.order(:section_order)
+	     @ordered_instances
+	  end
+
+	  def refresh
+	    @ordered_instances = nil
+	  end
+
 	  def get_styles
 	     return self.style + self.widget_instances.collect{|instance| instance.get_styles}.join(" ")
 	  end
@@ -225,19 +244,15 @@ module Roxiware
           self.table_name= "widgets"
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 
-	  attr_accessible :name              # display name of the widget
-	  attr_accessible :version           # version of the widget
-	  attr_accessible :description       # text description of the widget
-	  attr_accessible :preload           # code run to generate active locals, and determine whether to show the widget
-	  attr_accessible :render_view       # code to render the view
-	  attr_accessible :guid              # unique identifier for this widget
-	  attr_accessible :style             # style for the widget
+	  edit_attr_accessible :name, :version, :description, :preload, :render_view, :style, :editform, :as=>[:admin, nil]
+	  ajax_attr_accessible :guid, :as=>[:admin, nil]
 
           def import(widget_node)
 	     self.version = widget_node["version"]
 	     self.guid = widget_node["guid"]
 	     self.name = widget_node.find_first("name").content
 	     self.description = widget_node.find_first("description").content    
+	     self.editform = widget_node.find_first("editform").content    
 	     self.preload     = widget_node.find_first("preload").content    
 	     self.render_view = widget_node.find_first("render_view").content    
 	     self.style = widget_node.find_first("style").content    
@@ -252,6 +267,7 @@ module Roxiware
 	     xml_widgets.widget(:version=>self.version, :guid=>self.guid) do |xml_widget|
 	        xml_widget.name        self.name
 	        xml_widget.description self.description
+	        xml_widget.editform self.editform
 	        xml_widget.preload {|s| s.cdata!(self.preload)}
 	        xml_widget.render_view {|s| s.cdata!(self.render_view)}
 	        xml_widget.style {|s| s.cdata!(self.style)}
@@ -273,13 +289,16 @@ module Roxiware
 	  has_many   :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  belongs_to :layout_section
 
-	  attr_accessible :layout_section_id  # the layout this widget instancebelongs to
-	  attr_accessible :section_order      # the order in which this widget should be rendered
-	  attr_accessible :widget_guid        # the widget this instance references
+	  edit_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:admin, nil]
+	  ajax_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:admin, nil]
 
 	  def globals
 	    @@globals ||= {}
 	    @@globals
+	  end
+
+	  def clear_globals
+	    @@globals = {}
 	  end
 
 	  def widget
@@ -331,6 +350,20 @@ module Roxiware
                 end
              end
 	     @params
+          end
+
+	  def get_param_objs
+	     if @param_objs.nil?
+	        @param_objs = {}
+		widget.params.where(:param_class=>:local).each do |param|
+                   @param_objs[param.name.to_sym] =  param
+                end
+		
+	        params.where(:param_class=>:local).each do |param|
+                   @param_objs[param.name.to_sym] =  param
+                end
+             end
+	     @param_objs.values
           end
       end
    end

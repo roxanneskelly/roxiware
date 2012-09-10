@@ -1,0 +1,74 @@
+
+<style>
+#widget_instance_edit {
+  width:34em;
+}
+
+#widget_instance_edit label
+{
+  width: 10em;
+}
+
+#widget_instance_edit .widget_instance_name
+{
+ width: 20em;
+}
+
+#widget_instance_edit .panes
+{
+ width: 100%;
+ color:#000;
+}
+
+#widget_instance_edit .panes > div
+{
+ height: 20em;
+}
+
+#widget_instance_edit textarea.widget_instance_style
+{
+  width:100%;
+  height:26em;
+  padding:0px;
+  margin:0px;
+}
+
+</style>
+
+<div class="widget_instance_edit" id="widget_instance_edit">
+   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}"), @layout_section.name, @widget_instance.id), :method=>"put") do%>
+     <h3><%= @widget_instance.widget.name %> settings</h3>
+     <ul class="tabs">
+       <li><a href="#">Settings</a></li>
+     </ul>
+     <div class="panes">
+       <div>
+         <% if @widget_instance.widget.editform.present? %>
+            format.html { render :inline => @widget_instance.widget.editform }
+         <% else %> 
+ 	  <% @widget_instance.get_param_objs.each do |widget_instance_param| %>
+	    <% print widget_instance_param.inspect %>
+	    <div title="<%=widget_instance_param.description.description %>" style="display:inline-block">
+            <%= label_tag widget_instance_param.name.to_sym, widget_instance_param.description.name %>
+            <%= text_field_tag widget_instance_param.name.to_sym, widget_instance_param.value %>
+	    </div>
+	 <% end %>
+	<% end %>
+       </div>
+     </div>
+      
+     <%= button_tag "Save", :id=>"save_button", :type=>"submit" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      $("#widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
+      $("#widget_instance_edit [title]").tooltip({
+        predelay:500,
+        position: "center right"
+      });
+      $("#widget_instance_edit").find("button").button().click(function() {
+         
+      });
+   });
+</script>

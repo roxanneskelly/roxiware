@@ -4,6 +4,24 @@ Roxiware::Engine.routes.draw do
     get "/sitemap" => "sitemap#index", :format=>"xml" 
   end
 
+  if false
+     get "/:layout_guid/:page_controller/:page_action" => "layout#show_page"
+     get "/:layout_guid/:page_controller/:page_action/:section_name" => "layout#show_section"
+     get "/:layout_guid/:page_controller/:page_action/:section_name/:instance_order" => "layout#show_instance"
+  end
+  resources :layout, :module=>"layouts" do
+    resources :page do
+       resources :section do
+          resources :widget do
+            put "move" => "widget#move", :on=>:member
+	  end
+       end
+    end
+  end
+
+  # resources for managing widgets
+  resources :widget
+
   get "/account/edit" => "account#edit", :id => 0, :as=>"edit_self"
   put "/account/edit" => "account#update", :id => 0, :as=>"edit_self"
   resources :account
@@ -60,6 +78,7 @@ Roxiware::Engine.routes.draw do
       put ":year/:month/:day/:title" => "post#update_by_title"
       delete ":year/:month/:day/:title" => "post#destroy_by_title"
     end
+    get ":year/:month/:title" => "blog/post#redirect_by_title", :constraints => {:year => /\d{4}/}
   end
 
   if Roxiware.enable_news

@@ -1,0 +1,101 @@
+
+<style>
+#layout_edit {
+  width:34em;
+}
+
+#layout_edit label
+{
+  width: 7em;
+}
+
+#layout_edit .layout_name
+{
+ width: 20em;
+}
+
+#layout_edit .panes
+{
+ width: 100%;
+ color:#000;
+}
+
+#layout_edit .panes > div
+{
+ height: 20em;
+}
+
+#layout_edit textarea.layout_style
+{
+  width:100%;
+  height:26em;
+  padding:0px;
+  margin:0px;
+}
+
+#layout_edit textarea.layout_description
+{
+  width:100%;
+  height:10em;
+  padding:0px;
+  margin:0px;
+}
+
+
+</style>
+
+<div class="layout_edit" id="layout_edit">
+   <%= form_tag(layout_path(@layout.guid), :method=>"put") do%>
+     <%= label_tag :name, "Name" %>
+     <%= text_field_tag(:name, @layout.name, :class=>"layout_name") %>
+     <ul class="tabs">
+       <li><a href="#">Settings</a></li>
+       <li><a href="#">Style</a></li>
+     </ul>
+     <div class="panes">
+       <div>
+          <%= text_area_tag :description, @layout.description, :class=>"popup_wysiwyg layout_description" %>
+	 <% @layout.params.each do |layout_param| %>
+	    <div title="<%=layout_param.description.description%>" style="display:inline-block">
+            <%= label_tag layout_param.name.to_sym, layout_param.description.name %>
+            <%= text_field_tag layout_param.name.to_sym, layout_param.value %>
+	    </div>
+	 <% end %>
+       </div>
+       <div>
+          <%= text_area_tag :style, @layout.style, :class=>"layout_style" %>
+       </div>
+     </div>
+      
+     <%= button_tag "Save", :id=>"save_button", :type=>"submit" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      $("#layout_edit").find("ul.tabs").tabs($("div.panes > div"));
+      $("#layout_edit [title]").tooltip({
+        predelay:500,
+        position: "center right"
+      });
+      $("#layout_edit").find("button").button().click(function() {
+         
+      });
+
+             var wysiwyg_params = {
+                controls: {
+                   undo: { visible: false },
+                   redo: { visible: false},
+                   insertHorizontalRule: { visible: true},
+                   html: { visible: true},
+                   insertTable: {visible: true},
+                   'fileManager': {
+                         visible: true,
+                         tooltip: "File Manager"
+                    }
+              }
+         }
+         // $("#layout_edit textarea.popup_wysiwyg").wysiwyg(wysiwyg_params);
+
+
+   });
+</script>

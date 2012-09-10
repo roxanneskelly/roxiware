@@ -6,6 +6,9 @@
 <body class="application_body">
   <%= render :partial=>'roxiware/shared/socialheader' %>
   <div id="mainBody">
+    <% if can? :edit, @current_layout %>
+       <%= render :partial=>"roxiware/shared/layout_edit_controls" %>
+    <% end %>
     <header class="main_header">
     <%= render :partial => 'shared/header' %>
     </header>
@@ -32,33 +35,6 @@
   <% if can? :edit, Roxiware::Page %>
      <%= render :partial=>"roxiware/page/page_edit" %>
   <% end %>
-  <script>
-  $(document).bind("ready", function() {
-     $("BUTTON").button();
-
-     var bottom_pos = 0;
-     $("#left_bar:last-child, #center_bar:last-child, #right_bar:last-child").each(function(index, elem){
-        bottom_pos = Math.max(bottom_pos, $(elem).position() + $(elem).height());
-     });
-
-  });
-  </script>
-  <!--[if IE]> 
-  <script>
-  /* IE bug where clicks on contained elements don't set container to 'active' */
-  $(document).bind("ready", function() {
-     $(".button_box").bind("mousedown", function() {
-	$(this).addClass("button_box_pressed");
-     });
-     $(".button_box").bind("mouseleave", function() {
-	$(this).removeClass("button_box_pressed");
-     });
-     $(".button_box").bind("mouseup", function() {
-	$(this).removeClass("button_box_pressed");
-     });
-  });
-  </script>
-  <![endif]-->
+  <%= render :partial=>'roxiware/shared/footer_common' %>
 </body>
-
 </html>

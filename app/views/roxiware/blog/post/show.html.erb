@@ -55,7 +55,7 @@ $(document).ready(function() {
 
        $.ajax("<%= blog_post_comment_index_path(@post.id) %>" + "/"+blog_comment_id, {
 						type:"PUT",
-				                data: upload_params
+				                data: upload_params,
 						error: function (jqXHR, textStatus, errorThrown) {
 						    $.error(errorThrown);
                                                     window.location.reload();

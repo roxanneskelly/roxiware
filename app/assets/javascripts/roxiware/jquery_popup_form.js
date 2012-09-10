@@ -108,7 +108,7 @@ function toTitleCase(str)
 						  }
 					   }
 				   }
-				   self.find("textarea.popup_wysiwyg[name='"+key+"']").wysiwyg(wysiwyg_params)
+				   self.find("textarea.popup_wysiwyg[name='"+key+"']").wysiwyg(wysiwyg_params);
 				       self.find("select[name='"+key+"']").selectBox("enable");
                                    self.find("textarea[name='"+key+"']").removeAttr("readonly");
 			     });

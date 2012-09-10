@@ -1,0 +1,103 @@
+  <div id="edit_overlay" class="popup_form overlay">
+    <div class="contentWrap"> </div>
+  </div>
+
+  <script>
+  $(document).bind("ready", function() {
+     $("BUTTON").button();
+
+   <%  if (can? :edit, Roxiware::Layout::WidgetInstance) %>
+     $(".widget_drag_box").draggable({
+        start:function() {
+            $(this).addClass("widget_drag_box_dragging");
+        },
+        stop:function() {
+            $(this).removeClass("widget_drag_box_dragging");
+            $(this).css("top", 0).css("left", 0);
+     }});
+     $(".widget_instance_delete").click(function() {
+        if (!confirm("Delete Widget\nAre you sure?")) {
+           return;
+        }
+        var source_widget = $(this).parent().parent().attr("id").split("-")[1];
+        var source_section = $(this).parent().parent().attr("section");
+        var endpoint = '<%= layout_page_path(@current_layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}")) %>/section/'+source_section + "/widget/" + source_widget;
+        $.ajax({url:endpoint,
+                type:"DELETE",
+                dataType: "json",
+                success: function(json_data, textStatus, jqXHR) {
+                    window.location.reload();
+                }
+           });
+     });
+     $(".widget_vspace").droppable({accept:"*",
+                                         hoverClass:"widget_vpsace_drop_hover",
+                                         tolerance: "pointer",
+                                         drop: function(event, ui) {
+                                            var drop_target = this;
+                                            var target_section = $(this).attr("section");
+                                            var target_order = $(this).attr("order");
+                                            var source_widget = $(ui.draggable).attr("id").split("-")[1];
+                                            if (source_widget == "new") {
+                                              var guid = $(ui.draggable).attr("guid");
+					      var endpoint = '<%= layout_page_path(@current_layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}")) %>/section/'+target_section + "/widget/";
+					      $.ajax({url: endpoint, 
+						      type: "POST",
+						      dataType: "json",
+						      data: jQuery.param({section_order:target_order, widget_guid:guid}),
+						      success: function(json_data, textStatus, jqXHR) {
+                                                         window.location.reload();
+                                                    }});
+                                            }
+                                            else {
+					      var source_section = $(ui.draggable).parent().attr("section");
+					      if((source_section == target_section) && (target_order == $(ui.draggable).parent().attr("order"))) {
+						 return;
+					      }
+					      var endpoint = '<%= layout_page_path(@current_layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}")) %>/section/'+source_section + "/widget/" + source_widget + "/move";
+					      $.ajax({url: endpoint, 
+						      type: "PUT",
+						      dataType: "json",
+						      data: jQuery.param({target_section: target_section, target_order:target_order}),
+						      success: function(json_data, textStatus, jqXHR) {
+							 $(drop_target).before($(ui.draggable).parent().prev());
+							 $(drop_target).before($(ui.draggable).parent());
+							 $.each(json_data, function(index, widget) {
+							   $(".widget#widget-"+index).attr("section", widget.section).attr("order", widget.position);
+							   $(".widget_vspace#widget-"+index).attr("section", widget.section).attr("order", widget.position);
+							 });
+                                                    }});
+                                             }
+                                         }});
+   <% end %>
+     var bottom_pos = 0;
+     $("#left_bar:last-child, #center_bar:last-child, #right_bar:last-child").each(function(index, elem){
+        bottom_pos = Math.max(bottom_pos, $(elem).position() + $(elem).height());
+     });
+      $(".overlay_form").click(function() {
+         var overlay = $("#edit_overlay");
+         overlay.find(".contentWrap").load($(this).attr("rel"), function() {
+             overlay.overlay().load();
+         });
+         overlay.overlay({
+               closeOnClick: false
+         });
+     });
+  });
+  </script>
+  <!--[if IE]> 
+  <script>
+  /* IE bug where clicks on contained elements don't set container to 'active' */
+  $(document).bind("ready", function() {
+     $(".button_box").bind("mousedown", function() {
+	$(this).addClass("button_box_pressed");
+     });
+     $(".button_box").bind("mouseleave", function() {
+	$(this).removeClass("button_box_pressed");
+     });
+     $(".button_box").bind("mouseup", function() {
+	$(this).removeClass("button_box_pressed");
+     });
+  });
+  </script>
+  <![endif]-->

@@ -10,7 +10,32 @@ module Roxiware
 	 end
 	 
 
-	 before_filter :add_nav, :only=>[:index_by_date, :show_by_title]
+         def redirect_by_title
+	   conditions = {}
+	   if params.has_key?(:year)
+	      start_date = DateTime.new(params[:year].to_i, 
+	                            (params[:month] || 1).to_i, 
+                                    (params[:day] || 1).to_i,
+				    0, 0, 0)
+	      end_date = DateTime.new(params[:year].to_i, 
+	                          (params[:month] || -1).to_i, 
+				  (params[:day] || -1).to_i,
+				  -1, -1, -1)
+              conditions[:post_date] =start_date..end_date
+              posts = Roxiware::Blog::Post.visible(@role, @person_id).where(conditions)
+	      post = nil
+	      posts.each do |current_post|
+	        if current_post.post_title.to_seo == params[:title]
+		   post = current_post
+		   break
+		end
+	      end
+              raise ActiveRecord::RecordNotFound if post.nil?
+              respond_to do |format|
+	        format.html { redirect_to post.post_link }
+	      end
+           end
+         end
 
 	 def index_by_date
 	   @enable_blog_edit = true
@@ -87,10 +112,10 @@ module Roxiware
 	   raise ActiveRecord::RecordNotFound if @post.nil?
 	   authorize! :read, @post
 
-           @calendar_posts_index ||= Roxiware::Blog::Post.visible(@role, @person_id).order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
 	   @prev_post_link = nil
 	   @next_post_link = nil
-	   @calendar_posts_index.each do |post|
+           calendar_posts_index = Roxiware::Blog::Post.visible(@role, @person_id).order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
+	   calendar_posts_index.each do |post|
 	      if post.id != @post.id
 	        if(post.post_date > @post.post_date)
 	          @next_post_link = post.post_link
@@ -117,8 +142,6 @@ module Roxiware
 	        @comments[value[:comment].parent_id][:children] << key
              end
 	   end
-
-	   logger.debug @comments.to_json
 
 	   @title = @post.post_title
 	   @meta_description = @title
@@ -258,32 +281,6 @@ module Roxiware
 	     end
 	   end
 	 end
-
-	 private
-
-	   def add_nav
-	     
-	     @calendar_posts = {}
-             raw_calendar_posts = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
-
-	     published_post_ids = []
-
-	     raw_calendar_posts.each do |post|
-	       year = post.post_date.year
-	       @calendar_posts[year] ||= {:count=>0, :unpublished_count=>0, :monthly=>{}}
-	       @calendar_posts[year][:monthly][post.post_date.month] ||= {:count=>0, :unpublished_count=>0, :name=>post.post_date.strftime("%B"), :posts=>[]}
-	       @calendar_posts[year][:monthly][post.post_date.month][:posts] << {:title=>post.post_title, :published=>(post.post_status == "publish"), :link=>post.post_link}
-	       if post.post_status == "publish"
-                  @calendar_posts[year][:count] += 1
-	          @calendar_posts[year][:monthly][post.post_date.month][:count] += 1
-		  published_post_ids << post.id
-               elsif can? :edit, post
-                  @calendar_posts[year][:unpublished_count] += 1
-	          @calendar_posts[year][:monthly][post.post_date.month][:unpublished_count] += 1
-               end
-	     end
-
-	  end
       end
    end
 end

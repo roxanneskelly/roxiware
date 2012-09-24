@@ -1,8 +1,14 @@
 class Roxiware::GalleryController < ApplicationController
   include Roxiware::GalleryHelper
+
+  application_name "gallery"
+
+
   load_and_authorize_resource :except=>[:show_seo, :new], :class=>"Roxiware::Gallery"
 
   before_filter do
+    redirect_to("/") unless @enable_gallery
+    @application_name = "gallery"
     @role = "guest"
     @role = current_user.role unless current_user.nil?
   end

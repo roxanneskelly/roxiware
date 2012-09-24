@@ -1,9 +1,14 @@
 module Roxiware
    module Blog
       class CommentController < ApplicationController
+
+         application_name "blog"
+
          load_and_authorize_resource :except=>[:create, :index], :class=>"Roxiware::Blog::Comment"
 
+
 	 before_filter do
+           redirect_to("/") unless @enable_blog
            @role = "guest"
 	   @role = current_user.role unless current_user.nil?
 	 end
@@ -61,7 +66,8 @@ module Roxiware
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
 	   @post = Roxiware::Blog::Post.find(params[:post_id])
 	   comment_status = "moderate"
-	   comment_status= "publish" if ((@post.comment_permissions=="publish") || (can? :edit, @post))
+	   comment_permissions = (@post.comment_permissions == "default")?@comment_permissions:@post.comment_permissions
+	   comment_status= "publish" if ((comment_permissions=="publish") || (can? :edit, @post))
 	   @comment = @post.comments.create({:person_id=>person_id,
 	                                           :parent_id=>0,
 	                                           :post_id=>params[:post_id],

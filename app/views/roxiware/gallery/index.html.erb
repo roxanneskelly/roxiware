@@ -1,9 +1,9 @@
 <section class="gallery_list">
 <%
 gallery_list_pages = []
-@galleries.in_groups_of(Roxiware.galleries_per_row * Roxiware.gallery_rows_per_page, false) do |gallery_list_page |
+@galleries.in_groups_of(@galleries_per_row * @gallery_rows_per_page, false) do |gallery_list_page |
   gallery_list_pages << []
-  gallery_list_page.in_groups_of(Roxiware.galleries_per_row, false) do |gallery_list_row|
+  gallery_list_page.in_groups_of(@galleries_per_row, false) do |gallery_list_row|
    gallery_list_pages.last << gallery_list_row
   end
 end

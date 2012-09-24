@@ -1,7 +1,15 @@
 module Roxiware
    module Blog
       class PostController < ApplicationController
+         include Roxiware::ApplicationControllerHelper
+
+         application_name "blog"
+
          load_and_authorize_resource :only=>[:show, :update, :edit, :destroy], :class=>"Roxiware::Blog::Post"
+
+	 before_filter do
+	     redirect_to("/") unless @enable_blog
+	 end
 
 	 before_filter do
 	   @role = "guest"
@@ -43,11 +51,10 @@ module Roxiware
 	   page = (params[:page] || 1).to_i
 	   conditions = {}
 	   if params[:format] == "rss"
-              num_posts = [(params[:max] || Roxiware.blog_posts_per_feed).to_i, Roxiware.max_blog_posts_per_feed].min
+              num_posts = [(params[:max] || @blog_posts_per_feed).to_i, @max_blog_posts_per_feed].min
 	   else
-              num_posts = [(params[:max] || Roxiware.blog_posts_per_page).to_i, Roxiware.max_blog_posts_per_page].min
+              num_posts = [(params[:max] || @blog_posts_per_page).to_i, @max_blog_posts_per_page].min
 	   end
-
 
 	   if params.has_key?(:year)
 	      start_date = DateTime.new(params[:year].to_i, 
@@ -209,8 +216,8 @@ module Roxiware
 					     :post_date=>DateTime.now.utc, 
 					     :post_content=>"Content",
 					     :post_title=>"Title"}, 
-					     :comment_permissions=>((Roxiware.blog_moderate_comments)?"moderate":"publish"), :as=>"")
-	   
+					     :comment_permissions=>"default", :as=>"")
+
 	   respond_to do |format|
 	       if @post.update_attributes(params, :as=>@role)
 		  format.html { redirect_to @post, :notice => 'Blog post was successfully created.' }

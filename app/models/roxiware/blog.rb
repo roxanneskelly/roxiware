@@ -13,7 +13,7 @@ module Roxiware
     include Roxiware::BaseModel
     self.table_name="blog_posts"
     ALLOWED_STATUS = %w(new publish draft trash)
-    ALLOWED_COMMENT_PERMISSIONS = %w(open moderate closed hide)
+    ALLOWED_COMMENT_PERMISSIONS = %w(default open moderate closed hide)
     belongs_to :person
     has_many :comments, :dependent=>:destroy, :inverse_of=>:post
     has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true

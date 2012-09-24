@@ -1,6 +1,24 @@
 module Roxiware
   module ApplicationControllerHelper
 
+
+    module BaseControllerClassMethods
+       def application_name(name = nil)
+           @application_name = name if name.present?
+	   @application_name
+       end
+    end
+
+
+    def self.included(base)
+       base.extend(BaseControllerClassMethods)
+    end
+
+    def application_name
+       self.class.application_name
+    end
+
+
     private 
     def after_sign_in_path_for(resource_or_scope)
       "/"
@@ -8,6 +26,7 @@ module Roxiware
     def after_sign_out_path_for(resource_or_scope)
       "/"
     end
+
 
     def current_page?(location_sym)
        if(location_sym.blank?) 
@@ -23,7 +42,7 @@ module Roxiware
     end
 
     def load_layout
-       @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>Roxiware.layout).first
+       @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
        @page_layout = @@current_layout.find_page_layout(params[:controller], params[:action])
        if(request.format == :html)
          @layout_styles = @@current_layout.get_styles(params[:controller], params[:action])
@@ -45,8 +64,18 @@ module Roxiware
 
     def populate_layout_params
       @@current_layout.resolve_layout_params(params[:controller], params[:action]).each do |key, value|
-        print "INSTANCE VARIABLE: @#{key} : #{value}\n"
         self.instance_variable_set("@#{key}".to_sym, value)
+      end
+    end
+
+    def populate_application_params(controller)
+      Roxiware::Param::Param.application_params("system").each do |param|
+        controller.instance_variable_set("@#{param.name}".to_sym, param.conv_value)
+      end
+      if controller.application_name.present?
+	Roxiware::Param::Param.application_params(controller.application_name).each do |param|
+	  controller.instance_variable_set("@#{param.name}".to_sym, param.conv_value)
+	end
       end
     end
 

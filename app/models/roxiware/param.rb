@@ -6,6 +6,8 @@ module Roxiware
           include Roxiware::BaseModel
           self.table_name= "params"
 
+	  
+	  has_many   :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  belongs_to :param_object, :polymorphic=>true
 
 	  attr_accessible :param_class        # type of the param (style, local, global)
@@ -14,26 +16,54 @@ module Roxiware
 	  attr_accessible :widget_instance_id # parent widget instance
 	  belongs_to :param_description, :autosave=>true, :foreign_key=>:description_guid, :primary_key=>:guid
 
-	  scope :settings, where(:param_class=>"setting")
-
           edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[nil]
 	  edit_attr_accessible :value, :as=>[:admin, nil]
 	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[:admin]
 
-	  def description
-	     @description ||= Roxiware::Param::ParamDescription.where(:guid=>self.description_guid).first || Roxiware::Param::ParamDescription.new(:guid=>self.description_guid)
 
+	  def self.application_params(application)
+	     @application_params ||= {}
+	     @application_params[application] ||= Hash[self.where(:param_class=>application).collect(){|param| [param.name, param]}]
+	     @application_params[application].values
+	  end
+
+	  def self.application_param_val(application, param)
+	     self.application_params(application)
+	     result = @application_params[application][param].conv_value if  @application_params[application][param].present?
+	     result
+	  end
+
+	  def self.refresh_application_params
+	     @application_params = {}
+	  end
+
+	  def description
+	     @description ||= param_description || create_param_description({:guid=>self.description_guid})
 	     @description
+	  end
+
+	  def hash_params
+	     @hash_params ||= Hash[params.collect{|param| [param.name, param]}]
+	  end
+
+	  def array_params
+	     hash_params.collect{|name, value| value}.sort_by{|param| param.name}
 	  end
 
 	  def conv_value
 	     case description.field_type
+	       when "array"
+	         array_params
+	       when "hash"
+	         hash_params
 	       when "integer"
 	         value.to_i
 	       when "string"
 	         value.to_s
 	       when "float"
 	         value.to_f
+	       when "bool"
+	         return (value == "true")
 	       else
 	         return value
 	     end
@@ -43,16 +73,31 @@ module Roxiware
 	  def import(xml_param, include_description)
 	     self.param_class = xml_param["class"]
 	     self.name = xml_param["name"]
-	     self.value = xml_param.find_first("value").content
-	     if include_description
-	        xml_param_description = xml_param.find_first("param_description")
-		if xml_param_description.present?
-		   self.description_guid = xml_param_description["guid"]
-		   if self.param_description.blank?
-		      self.build_param_description
-		   end
-	  	   self.param_description.import(xml_param_description)
-		end
+	     xml_param_description = xml_param.find_first("param_description")
+             if xml_param_description.present?
+	       self.description_guid = xml_param_description["guid"]
+	       if include_description && xml_param_description.content.present?
+                   self.build_param_description if self.param_description.blank?
+		   self.param_description.import(xml_param_description)
+	       else
+	           self.param_description = Roxiware::Param::ParamDescription.where(:guid=>self.description_guid).first
+	       end
+	     end
+	     case self.param_description.field_type
+	        when "hash"
+		  xml_param.find_first("value").find("param").each do |xml_hashparam|
+		     new_param = Param.new
+		     new_param.import(xml_hashparam, include_description)
+		     params << new_param
+		  end
+		when "array"
+		  xml_param.find_first("value").find("param").each do |xml_arrayparam|
+		     new_param = Param.new
+		     new_param.import(xml_arrayparam, include_description)
+		     params << new_param
+		  end
+		else
+	          self.value = xml_param.find_first("value").content
 	     end
 	  end
 

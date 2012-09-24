@@ -3,9 +3,9 @@
 <div id="gallery_description"><%= raw @gallery.description %></div>
 <%
 gallery_pages = []
-@gallery.gallery_items.in_groups_of(Roxiware.gallery_items_per_row * Roxiware.gallery_rows_per_page, false) do |gallery_page |
+@gallery.gallery_items.in_groups_of(@gallery_items_per_row * @gallery_rows_per_page, false) do |gallery_page |
   gallery_pages << []
-  gallery_page.in_groups_of(Roxiware.gallery_items_per_row, false) do |gallery_row|
+  gallery_page.in_groups_of(@gallery_items_per_row, false) do |gallery_row|
    gallery_pages.last << gallery_row
   end
 end

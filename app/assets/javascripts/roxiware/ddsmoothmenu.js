@@ -121,7 +121,7 @@ buildmenu:function($, setting){
 	}) //end $headers.each()
 	if (smoothmenu.shadow.enable && smoothmenu.css3support){ //if shadows enabled and browser supports CSS3 shadows
 		var $toplevelul=$('#'+setting.mainmenuid+' ul li ul')
-		var css3shadow=parseInt(smoothmenu.shadow.offsetx)+"px "+parseInt(smoothmenu.shadow.offsety)+"px 5px #aaa" //construct CSS3 box-shadow value
+		var css3shadow=parseInt(smoothmenu.shadow.offsetx)+"px "+parseInt(smoothmenu.shadow.offsety)+"px 5px rgba(0,0,0,0.7)" //construct CSS3 box-shadow value
 		var shadowprop=["boxShadow", "MozBoxShadow", "WebkitBoxShadow", "MsBoxShadow"] //possible vendor specific CSS3 shadow properties
 		for (var i=0; i<shadowprop.length; i++){
 			$toplevelul.css(shadowprop[i], css3shadow)

@@ -1,8 +1,12 @@
 class Roxiware::PeopleController < ApplicationController
   require 'uri'
+
+  application_name "people"
+
   load_and_authorize_resource :except => [ :show_seo, :new ], :class=>"Roxiware::Person"
 
   before_filter do
+    redirect_to("/") unless @enable_people
     @role = "guest"
     @role = current_user.role unless current_user.nil?
   end
@@ -25,7 +29,7 @@ class Roxiware::PeopleController < ApplicationController
         end
     else
         respond_to do |format|
-	    if Roxiware.single_person
+	    if @single_person
                  format.html { render :action=>"show" }
 	    else
               format.html { redirect_to :action=>'show_seo', :seo_index => @person.seo_index }
@@ -40,7 +44,6 @@ class Roxiware::PeopleController < ApplicationController
     people = Roxiware::Person.all
     # iterate each person to see if user can read them
     @people = people.select { |person| can? :read, person }
-    print "Person user id is " + @person.user_id.to_s + "\n\n"
     @title = @title + ": People : " + @person.first_name + " " + @person.last_name
 
     respond_to do |format|
@@ -64,9 +67,6 @@ class Roxiware::PeopleController < ApplicationController
     people = Roxiware::Person.all
     @people = people.select { |person| can? :read, person }
     if params[:seo_index].blank?
-      people.each do |person|
-         print person.to_json
-      end
       @person = people.select { |person| person.show_in_directory }.first
     else
       @person = Roxiware::Person.where(:seo_index => params[:seo_index]).first
@@ -135,7 +135,6 @@ class Roxiware::PeopleController < ApplicationController
   # DELETE /people/1.json
   def destroy
     @person = Roxiware::Person.find(params[:id])
-    print "destroying person with user id of " + @person.user_id.to_s + "\n\n"
     respond_to do |format|
         if !@person.user_id.nil?
           format.json { render :json=>{:error=>[nil, "This person is associated with a user.  Delete the user instead."]}}

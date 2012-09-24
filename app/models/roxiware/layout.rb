@@ -64,23 +64,30 @@ module Roxiware
  	  end
 
           def find_page_layout(current_controller, action)
+	       stack = page_layout_stack(current_controller, action)
+	       stack[-1] if stack.present?
+	  end
+
+          def page_layout_stack(current_controller, action)
 	     controller = current_controller.clone
 	     if @page_layout_cache.blank?
 	         page_layout_list = self.page_layouts.collect {|page_layout| page_layout}
-	         @page_layout_cache = self.page_layouts.reject {|page_layout| page_layout.controller.blank? || page_layout.action.blank?}
-	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.blank? || page_layout.action.present?})
+		 @page_layout_cache=[]
 	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.present?})
+	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.blank? || page_layout.action.present?})
+	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.blank? || page_layout.action.blank?})
 	     end
 
-
+	     result = []
 	     @page_layout_cache.each do |page_layout|
 	        if((page_layout.controller == controller) || page_layout.controller.blank?)
 		   if ((page_layout.action == action) || page_layout.action.blank?)
-		      return page_layout
+		      page_layout.refresh_sections_if_needed(result[-1])
+		      result <<  page_layout
 		   end
 		end
              end
-	     nil
+	     result
 	  end
 
 	  def get_styles(controller, action)
@@ -91,9 +98,6 @@ module Roxiware
 	  def resolve_layout_params(controller, action)
 	     if @layout_params.nil?
 	        @layout_params = {}
-	        Roxiware::Param::Param.settings.each do |param|
-	           @layout_params[param.name] = param.conv_value
-	        end
 	        self.params.where(:param_class=>"local").each do |param|
 	           @layout_params[param.name] = param.conv_value
 	        end
@@ -155,9 +159,14 @@ module Roxiware
 	       end
 	     end
           end
+
+          def refresh_styles
+	     @style_cache = nil
+	  end
 	  
 	  def get_styles
-	     @style_cache ||= style_replace(self.style + self.layout_sections.collect{|section| section.get_styles}.join(" "), self.params.where(:param_class=>:style))
+	     
+	     @style_cache ||= style_replace(self.style + self.sections.values.collect{|section| section.get_styles}.join(" "), self.params.where(:param_class=>:style))
 	     @style_cache
 	  end
 
@@ -171,16 +180,35 @@ module Roxiware
 	     @layout_params
           end
 
-	  def section(section_name)
-	     if @sections.blank?
-	        @sections = {}
-	        layout_sections.each do |layout_section|
-		   @sections[layout_section.name] = layout_section
-		end
-             end
-	     @sections[section_name]
+	  def reset_sections
+	     @sections = nil
 	  end
 
+	  def refresh_sections_if_needed(parent_page)
+	      if @sections.nil?
+	         refresh_sections(parent_page)
+	      end
+	  end
+
+	  def refresh_sections(parent_page)
+	     if parent_page.present?
+	        @sections = parent_page.sections.dup
+	     else
+	        @sections = {}
+             end
+             layout_sections.each do |layout_section|
+		@sections[layout_section.name] = layout_section
+	     end
+	     
+	  end
+
+	  def sections
+	     @sections
+	  end
+
+	  def section(section_name)
+	     @sections[section_name] ||= self.layout_sections.create({:name=>section_name, :style=>""}, :as=>"")
+	  end
       end
 
       # LayoutSection
@@ -352,6 +380,11 @@ module Roxiware
 	     @params
           end
 
+          def get_param(name)
+	    get_param_objs
+	    @param_objs[name.to_sym]
+	  end
+
 	  def get_param_objs
 	     if @param_objs.nil?
 	        @param_objs = {}
@@ -363,7 +396,7 @@ module Roxiware
                    @param_objs[param.name.to_sym] =  param
                 end
              end
-	     @param_objs.values
+	     @param_objs
           end
       end
    end

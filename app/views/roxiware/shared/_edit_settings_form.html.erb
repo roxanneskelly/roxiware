@@ -1,0 +1,105 @@
+<style>
+#settings_edit {
+}
+
+#settings_edit label
+{
+  width: 12em;
+  font-size:0.7em;
+  text-align:left;
+}
+
+#settings_edit .settings_name
+{
+ width: 20em;
+}
+
+#settings_edit .panes
+{
+ width: 100%;
+ color:#000;
+}
+
+#settings_edit .panes > div
+{
+  padding:1em;
+}
+
+#settings_edit .settings_pane
+{
+  width:100%;
+  height:26em;
+  padding:0px;
+  margin:0px;
+}
+
+#settings_edit textarea.settings_description
+{
+  width:100%;
+  height:10em;
+  padding:0px;
+  margin:0px;
+}
+
+
+</style>
+<div class="settings_edit" id="settings_edit">
+   <%= form_tag(settings_path, :method=>"put") do %>
+     <% system_settings = @settings.delete("system") || []
+	blog_settings = @settings.delete("blog") || []
+	gallery_settings = @settings.delete("gallery") || []
+	people_settings = @settings.delete("people") || []
+     %>
+     <ul class="tabs">
+          <li><a href="#">system</a></li>
+          <li><a href="#">blog</a></li>
+          <li><a href="#">gallery</a></li>
+          <li><a href="#">people</a></li>
+       <% @settings.each do |application, setting_data| %>
+          <li><a href="#"><%= application %></a></li>
+       <% end %>
+     </ul>
+     <div class="panes">
+       <div>
+	 <%= fields_for :system do |system_fields| %>
+ 	  <%= param_fields(system_fields, system_settings) %>
+         <% end %>
+       </div>
+       <div>
+	 <%= fields_for :blog do |blog_fields| %>
+ 	  <%= param_fields(blog_fields, blog_settings) %>
+         <% end %>
+       </div>
+       <div>
+	 <%= fields_for :gallery do |gallery_fields| %>
+ 	  <%= param_fields(gallery_fields, gallery_settings) %>
+         <% end %>
+       </div>
+       <div>
+	 <%= fields_for :people do |people_fields| %>
+ 	  <%= param_fields(people_fields, people_settings) %>
+         <% end %>
+       </div>
+       <% @settings.each do |application, settings_data| %>
+         <div>
+	 <%= fields_for application.to_sym do |app_fields| %>
+ 	  <%= param_fields(app_fields, settings_data) %>
+         <% end %>
+        </div>
+       <% end %>
+      </div>
+     <%= button_tag "Save", :id=>"save_button", :type=>"submit" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      $("#settings_edit").find("ul.tabs").tabs($("div.panes > div"));
+      $("#settings_edit [title]").tooltip({
+        predelay:500,
+        position: "center right"
+      });
+      $("#settings_edit").find("button").button().click(function() {
+         
+      });
+   });
+</script>

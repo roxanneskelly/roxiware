@@ -16,7 +16,7 @@ module Roxiware
 	 def index
 	   authorize! :read, Roxiware::Blog::Comment
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
-           @comments = Roxiware::Blog::Comment.visible(@role, person_id).where(:post_id=>params[:post_id]).order("comment_date DESC")
+           @comments = Roxiware::Blog::Comment.visible(user).where(:post_id=>params[:post_id]).order("comment_date DESC")
 
 	   clean_comments = []
 	   @comments.each do |comment| 

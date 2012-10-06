@@ -30,7 +30,7 @@ module Roxiware
 				  (params[:day] || -1).to_i,
 				  -1, -1, -1)
               conditions[:post_date] =start_date..end_date
-              posts = Roxiware::Blog::Post.visible(@role, @person_id).where(conditions)
+              posts = Roxiware::Blog::Post.visible(current_user).where(conditions)
 	      post = nil
 	      posts.each do |current_post|
 	        if current_post.post_title.to_seo == params[:title]
@@ -75,9 +75,9 @@ module Roxiware
               conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy::TAG_ID, :seo_index=>params[:tag]}
 	   end
 	   if conditions.has_key?(:terms)
-	     @posts = Roxiware::Blog::Post.joins(:terms).visible(@role, @person_id)
+	     @posts = Roxiware::Blog::Post.joins(:terms).visible(current_user)
 	   else 
-	     @posts = Roxiware::Blog::Post.visible(@role, @person_id)
+	     @posts = Roxiware::Blog::Post.visible(current_user)
 	   end
 
            @posts = @posts.includes(:term_relationships, :terms).where(conditions).order("post_date DESC").limit(num_posts+1).offset(num_posts*(page-1))
@@ -121,7 +121,7 @@ module Roxiware
 
 	   @prev_post_link = nil
 	   @next_post_link = nil
-           calendar_posts_index = Roxiware::Blog::Post.visible(@role, @person_id).order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
+           calendar_posts_index = Roxiware::Blog::Post.visible(current_user).order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
 	   calendar_posts_index.each do |post|
 	      if post.id != @post.id
 	        if(post.post_date > @post.post_date)
@@ -136,7 +136,7 @@ module Roxiware
 	   conditions = {}
 	   person_id = ((current_user && current_user.person)?current_user.person.id : -1)
 
-           comments = Roxiware::Blog::Comment.visible(@role, person_id).where(:post_id=>@post.id).order("comment_date DESC")
+           comments = Roxiware::Blog::Comment.visible(current_user).where(:post_id=>@post.id).order("comment_date DESC")
 
            # create comment hierarchy
 	   @comments = {0=>{:comment=>nil, :children=>[]}}
@@ -215,8 +215,8 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.new({:person_id=>current_user.person.id, 
 					     :post_date=>DateTime.now.utc, 
 					     :post_content=>"Content",
-					     :post_title=>"Title"}, 
-					     :comment_permissions=>"default", :as=>"")
+					     :post_title=>"Title", 
+					     :comment_permissions=>"default"}, :as=>"")
 
 	   respond_to do |format|
 	       if @post.update_attributes(params, :as=>@role)

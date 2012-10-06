@@ -36,10 +36,10 @@ module Roxiware
         return self.person.ajax_attrs(:guest)
      end
 
-     edit_attr_accessible :name, :description, :medium, :image_thumbprint, :featured, :as=>[:admin, :user, nil]
-     edit_attr_accessible :person_id, :seo_index, :as=>[:admin, nil]
+     edit_attr_accessible :name, :description, :medium, :image_thumbprint, :featured, :as=>[:super, :admin, :user, nil]
+     edit_attr_accessible :person_id, :seo_index, :as=>[:super, :admin, nil]
      ajax_attr_accessible :name, :description, :medium, :image_thumbprint, :featured, :person_id, :as=>[:guest]
-     ajax_attr_accessible :person_data, :as=>[nil, :guest, :admin, :user]
+     ajax_attr_accessible :person_data, :as=>[nil, :guest, :super, :admin, :user]
 
     before_validation() do
        postfix = 1

@@ -1,12 +1,12 @@
 module Roxiware
   module ApplicationControllerHelper
 
-
     module BaseControllerClassMethods
        def application_name(name = nil)
            @application_name = name if name.present?
 	   @application_name
        end
+
     end
 
 
@@ -26,7 +26,6 @@ module Roxiware
     def after_sign_out_path_for(resource_or_scope)
       "/"
     end
-
 
     def current_page?(location_sym)
        if(location_sym.blank?) 

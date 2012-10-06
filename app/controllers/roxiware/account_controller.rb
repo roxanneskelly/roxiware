@@ -1,6 +1,14 @@
 class Roxiware::AccountController < ApplicationController
   load_and_authorize_resource :except=>[:edit, :update, :show, :new], :class=>"Roxiware::User"
 
+  before_filter do
+    @role = "guest"
+    if (!current_user.nil?)
+        @role = current_user.role 
+        @role = "self" if current_user == @user
+    end
+  end
+
   # GET - enumerate user
   def index
     @users = @accounts
@@ -18,12 +26,13 @@ class Roxiware::AccountController < ApplicationController
     else 
       @user = Roxiware::User.find(params[:id])
     end
+    @role = "self" if current_user == @user
     raise ActiveRecord::RecordNotFound if @user.nil?
 
     authorize! :read, @user
     respond_to do |format|
       format.html { render }
-      format.json { render :json => @user.ajax_attrs(get_role) }
+      format.json { render :json => @user.ajax_attrs(@role) }
     end
   end
 
@@ -35,13 +44,14 @@ class Roxiware::AccountController < ApplicationController
     else 
       @user = Roxiware::User.find(params[:id])
     end
+    @role = "self" if current_user == @user
 
     raise ActiveRecord::RecordNotFound if @user.nil?
     authorize! :edit, @user
     
     respond_to do |format|
       format.html { render }
-      format.json { render :json => @user.ajax_attrs(get_role) }
+      format.json { render :json => @user.ajax_attrs(@role) }
     end
   end
 
@@ -49,12 +59,12 @@ class Roxiware::AccountController < ApplicationController
   def new
     @robots="noindex,nofollow"
     authorize! :create, Roxiware::User
-    @user = Roxiware::User.new({:email => "email@email.com", :username=>"username", :role=>"guest"}, :as=>self.get_role )
-    @user.build_person({:first_name=>"First", :last_name=>"Last", :role=>"Guest", :bio=>""}, :as=>self.get_role)
+    @user = Roxiware::User.new({:email => "email@email.com", :username=>"username", :role=>"guest"}, :as=>@role )
+    @user.build_person({:first_name=>"First", :last_name=>"Last", :role=>"Guest", :bio=>""}, :as=>@role)
 
     respond_to do |format|
         format.html
-        format.json { render :json => @user.ajax_attrs(self.get_role) }
+        format.json { render :json => @user.ajax_attrs(@role) }
     end
   end
 
@@ -71,7 +81,7 @@ class Roxiware::AccountController < ApplicationController
          @user.reload
          @user.person.user_id = @user.id
 	 @user.save
-         format.json { render :json => @user.ajax_attrs(self.get_role) }
+         format.json { render :json => @user.ajax_attrs(@role) }
       else
          format.json { render :json=>report_error(@user)}
       end
@@ -86,6 +96,7 @@ class Roxiware::AccountController < ApplicationController
     else 
       @user = Roxiware::User::find(params[:id])
     end
+    @role = "self" if current_user == @user
     raise ActiveRecord::RecordNotFound if @user.nil?
     authorize! :edit, @user
     update_params = params
@@ -102,7 +113,7 @@ class Roxiware::AccountController < ApplicationController
          format.html { redirect_to "/account/edit", :notice=>flash_from_object_errors(@user) } 
          format.json { render :json=>report_error(@user)}
       else
-          format.json { render :json => @user.ajax_attrs(self.get_role) }
+          format.json { render :json => @user.ajax_attrs(@role) }
         if update_params.has_key?("password")
           format.html { redirect_to "/", :notice=>"User successfully updated.  You must log in again."}
 	else
@@ -130,14 +141,4 @@ class Roxiware::AccountController < ApplicationController
     end
   end
 
- protected
-
-  def get_role
-    role = "guest"
-    if (!current_user.nil?)
-        role = current_user.role 
-        role = "self" if current_user == @user
-    end
-    role
-  end
 end

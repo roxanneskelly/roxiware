@@ -41,13 +41,13 @@ module Roxiware
     validates_presence_of :post_status, :inclusion=> {:in => ALLOWED_STATUS}, :message=>"Invalid post status."
     validates_presence_of :comment_permissions, :inclusion=> {:in => ALLOWED_COMMENT_PERMISSIONS}, :message=>"Invalid comment permissions."
 
-    edit_attr_accessible :post_content, :post_date, :post_exerpt, :post_title, :post_status, :comment_permissions, :category_name, :tag_csv, :as=>[:admin, :user, nil]
-    edit_attr_accessible :person_id, :as=>[:admin, nil]
+    edit_attr_accessible :post_content, :post_date, :post_exerpt, :post_title, :post_status, :comment_permissions, :category_name, :tag_csv, :as=>[:super, :admin, :user, nil]
+    edit_attr_accessible :person_id, :as=>[:super, :admin, nil]
     edit_attr_accessible :post_exerpt, :as=>[nil]
     ajax_attr_accessible :guid, :post_date, :post_exerpt, :post_link, :post_title, :post_content, :person_id, :post_status, :comment_permissions, :tag_csv, :category_name
     
     scope :published, where(:post_status=>"publish")
-    scope :visible, lambda{|role, person_id| where(role=="admin"?"":["person_id = ? OR post_status='publish'", person_id])}
+    scope :visible, lambda{|user| where((user.is_admin?) ?"":["person_id = ? OR post_status='publish'", user.person_id])}
 
     after_save do
       @@last_update = DateTime.now
@@ -151,14 +151,14 @@ module Roxiware
 				      }
 
 
-    edit_attr_accessible :comment_status, :as=>[:admin, :user, nil]
-    edit_attr_accessible :person_id, :as=>[:admin, nil]
+    edit_attr_accessible :comment_status, :as=>[:super, :admin, :user, nil]
+    edit_attr_accessible :person_id, :as=>[:super, :admin, nil]
     edit_attr_accessible :parent_id, :post_id, :as=>[nil]
-    edit_attr_accessible :comment_content, :comment_date, :comment_author, :comment_author_email, :comment_author_url, :parent_id, :as=>[:admin, :user, :guest, nil]
+    edit_attr_accessible :comment_content, :comment_date, :comment_author, :comment_author_email, :comment_author_url, :parent_id, :as=>[:super, :admin, :user, :guest, nil]
     ajax_attr_accessible :comment_content, :comment_date, :comment_author, :comment_author_email, :comment_author_url, :person_id, :parent_id, :comment_status
     
     scope :published, where(:comment_status=>"publish")
-    scope :visible, lambda{|role, person_id| where(role=="admin"?"":["person_id = ? OR comment_status='publish'", person_id])}
+    scope :visible, lambda{|user| where((user.is_admin?)?"":["person_id = ? OR comment_status='publish'", user.person_id])}
 
     before_validation() do
        self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))

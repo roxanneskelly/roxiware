@@ -8,7 +8,7 @@ module Roxiware
     validates :headline, :length => {:minimum=>2}
     validates_presence_of :post_date
 
-    edit_attr_accessible :headline, :content, :post_date, :as=>[:user, :admin, nil]
+    edit_attr_accessible :headline, :content, :post_date, :as=>[:user, :super, :admin, nil]
     ajax_attr_accessible :headline, :content, :post_date
 
     

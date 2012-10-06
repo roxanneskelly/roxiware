@@ -24,8 +24,8 @@ module Roxiware
 				      :too_long => "The description can be no larger than ${count} characters."
 				      }
 
-	  edit_attr_accessible :description, :style, :name, :as=>[:admin, nil]
-	  ajax_attr_accessible :guid, :as=>[:admin, nil]
+	  edit_attr_accessible :description, :style, :name, :as=>[:super, nil]
+	  ajax_attr_accessible :guid, :as=>[:super, :admin, nil]
 
 	  def import(layout_node)
 	     self.guid = layout_node["guid"]
@@ -120,9 +120,9 @@ module Roxiware
           has_many        :layout_sections, :autosave=>true, :dependent=>:destroy
           belongs_to      :layout
 
-	  edit_attr_accessible :render_layout, :style, :as=>[:admin, nil]
+	  edit_attr_accessible :render_layout, :style, :as=>[:super, nil]
 	  edit_attr_accessible :controller, :action, :layout_id, :as=>[nil]
-	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:admin, nil]
+	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:super, nil]
 
 
 	  def import(page_layout_node)
@@ -207,7 +207,7 @@ module Roxiware
 	  end
 
 	  def section(section_name)
-	     @sections[section_name] ||= self.layout_sections.create({:name=>section_name, :style=>""}, :as=>"")
+	     @sections[section_name] ||= self.layout_sections.create(:name=>section_name, :style=>"")
 	  end
       end
 
@@ -219,6 +219,7 @@ module Roxiware
           include Roxiware::BaseModel
           self.table_name= "layout_sections"
 
+	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  has_many        :widget_instances, :autosave=>true, :dependent=>:destroy
 	  belongs_to      :page_layout
 	  attr_accessible :name               # name of the layout section ('left_bar', etc)
@@ -233,16 +234,23 @@ module Roxiware
                 widget_instance = self.widget_instances.build
 		widget_instance.import(widget_instance_node)
 	     end
-	     params = layout_section_node.find("params/param")
-	     params.each do |param|
-               param = self.params.build
-               param.import(param)
+	     param_nodes = layout_section_node.find("params/param")
+	     if param_nodes.present?
+	       param_nodes.each do |param_node|
+		 param = self.params.build
+		 param.import(param_node, true)
+	       end
 	     end
 	  end
 
           def export(xml_layout_sections)
 	     xml_layout_sections.section(:name=>self.name) do |xml_layout_section|
 	       xml_layout_section.style {|s| s.cdata!(self.style)}
+	       xml_layout.params do |xml_params|
+	          self.params.each do |param|
+		     param.export(xml_params, true)
+		  end
+	       end
 	       xml_layout_section.widget_instances do |xml_widget_instances|
 	          self.widget_instances.each do |widget_instance|
 		     widget_instance.export(xml_widget_instances)
@@ -263,6 +271,30 @@ module Roxiware
 	  def get_styles
 	     return self.style + self.widget_instances.collect{|instance| instance.get_styles}.join(" ")
 	  end
+	  def get_params
+	     if @params.nil?
+	        @params = {}
+	        params.where(:param_class=>:local).each do |param|
+                   @params[param.name.to_sym] = param.conv_value
+                end
+             end
+	     @params
+          end
+
+          def get_param(name)
+	    get_param_objs
+	    @param_objs[name.to_sym]
+	  end
+
+	  def get_param_objs
+	     if @param_objs.nil?
+	        @param_objs = {}
+	        params.where(:param_class=>:local).each do |param|
+                   @param_objs[param.name.to_sym] =  param
+                end
+             end
+	     @param_objs
+          end
       end
 
       # Widget
@@ -272,8 +304,8 @@ module Roxiware
           self.table_name= "widgets"
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 
-	  edit_attr_accessible :name, :version, :description, :preload, :render_view, :style, :editform, :as=>[:admin, nil]
-	  ajax_attr_accessible :guid, :as=>[:admin, nil]
+	  edit_attr_accessible :name, :version, :description, :preload, :render_view, :style, :editform, :as=>[:super, nil]
+	  ajax_attr_accessible :guid, :as=>[:super, nil]
 
           def import(widget_node)
 	     self.version = widget_node["version"]
@@ -317,8 +349,8 @@ module Roxiware
 	  has_many   :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  belongs_to :layout_section
 
-	  edit_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:admin, nil]
-	  ajax_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:admin, nil]
+	  edit_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
+	  ajax_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 
 	  def globals
 	    @@globals ||= {}

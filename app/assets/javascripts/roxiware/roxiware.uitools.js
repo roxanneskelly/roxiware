@@ -63,7 +63,7 @@
                               closeOnClick: false,
 			      mask: {
 			      zIndex: 99998,
-				 color: "#777",
+				 color: "#222",
 				 loadSpeed: 200,
 				 opacity: 0.6
 			      },
@@ -205,7 +205,291 @@
 	        return $.roxiware.progressbar.instance;
 	    }
 	});
+
+    $.roxiware.context_menu = {
+	conf: {
+	    onConfig: function(menu_obj) { }
+	}
+    }
+
+    function ContextMenu(target, menu, conf) {
+	var self = this;
+	   $.extend(self,
+		    {
+			context_menu: null,
+			    current_menu: null,
+			    addMenu: function(menu_item, text) { 
+			       self.context_menu.append("<li id='"+menu_item+"><a href='#' menu_item='"+menu_item+">"+text+"</a></li>"); 
+			},
+			    appendMenuItems: function(menu_items) {
+			    self.clone();
+			    self.context_menu.append(menu_items);
+			},
+			addSep: function() { self.context_menu.append("<hr/>"); },
+			    clone: function() {self.context_menu = self.context_menu.clone(); return self;},
+			setMenu: function(menu) {self.context_menu = menu; conf.onConfig(self);},
+			    onConfig: function(func) {self.onConfig = func;}
+		    });
+	   if(menu) self.setMenu(menu); 
+	   self.appendMenuItems(target.find("ul.instance_context_menu li, ul.instance_context_menu hr"));
+	   target.bind("contextmenu", function(e) {
+	     e.preventDefault();
+	     if (self.current_menu) { 
+		 self.current_menu.remove(); 
+	     }
+	     self.current_menu = self.context_menu.clone();
+	     $("body").append(self.current_menu);
+	     self.current_menu.css("position", "fixed").css("display", "block").offset({left:e.pageX-5, top:e.pageY-5});
+	     self.current_menu.find("li a").click(function(event) {
+		     target.trigger("context_menu", [$(this).attr("menu_item"), e]);
+		 });
+	     $(document).on("click.contextMenu keyup.contextMenu contextmenu.contextMenu", function(event) {
+		if (event.type == "keyup" && (event.which != 27)) return;
+		if (self.current_menu) {
+		    self.current_menu.remove();
+		    self.current_menu = null;
+		}
+		$("document").off("click.contextMenu keyup.contextMenu contextmenu.contextMenu");
+		 });
+	     return false;
+	   });
+    }
+    $.fn.context_menu = function(menu, conf) {
+	      conf = $.extend(true, {}, $.roxiware.context_menu.conf, conf);
+	      var cm_api = null;
+	      this.each(function() {
+		      cm_api = $(this).data("context_menu");
+		      if(!cm_api) {
+		         cm_api = new ContextMenu($(this), menu, conf);
+		         $(this).data("context_menu", cm_api);
+		      }
+		      else {
+			  if(menu) {
+			      cm_api.setMenu(menu);
+			  }
+		      }
+			  
+		  });
+	      return  cm_api;
+    };
+
+    $.fn.autoGrowInput = function(o) {
+
+        o = $.extend({
+		maxWidth: 1000,
+		minWidth: 30,
+		comfortZone: 30
+	    }, o);
+
+        this.filter('input:text').each(function(){
+
+		var minWidth = o.minWidth || $(this).width(),
+		    val = '',
+		    input = $(this),
+		    testSubject = $('<tester/>').css({
+			    position: 'absolute',
+			    top: -9999,
+			    left: -9999,
+			    width: 'auto',
+			    fontSize: input.css('fontSize'),
+			    fontFamily: input.css('fontFamily'),
+			    fontWeight: input.css('fontWeight'),
+			    letterSpacing: input.css('letterSpacing'),
+			    whiteSpace: 'nowrap'
+			}),
+		    check = function() {
+
+                    if (val === (val = input.val())) {return;}
+
+                    // Enter new content into testSubject
+                    var escaped = val.replace(/&/g, '&amp;').replace(/\s/g,'&nbsp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                    testSubject.html(escaped);
+
+                    // Calculate new width + whether to change
+                    var testerWidth = testSubject.width(),
+		    newWidth = (testerWidth + o.comfortZone) >= minWidth ? testerWidth + o.comfortZone : minWidth,
+		    currentWidth = input.width(),
+		    isValidWidthChange = (newWidth < currentWidth && newWidth >= minWidth)
+		    || (newWidth > minWidth && newWidth < o.maxWidth);
+
+                    // Animate width
+                    if (isValidWidthChange) {
+                        input.width(newWidth);
+                    }
+
+                };
+
+		testSubject.insertAfter(input);
+
+		$(this).bind('keyup keydown blur update', check);
+
+	    });
+
+        return this;
+
+    };
+
 })(jQuery);
+
+function overlayForm(url)
+{
+   var overlay = $("<div id='edit_overlay' class='popup_form overlay'><div class='contentWrap'> </div></div>");
+   $("body").append(overlay);
+   overlay.find(".contentWrap").load(url, function(responseText, textStatus, xhr) {
+      if(xhr.status != 200) {
+	  $.error(xhr.statusText);
+	  return;
+      }
+      overlay.overlay({
+		top: "center",
+                oneInstance: false,
+		load: true,
+		zIndex: 99999,
+                closeOnClick: false,
+		mask: {
+		     zIndex: 99997,
+		     color: "#222",
+	             loadSpeed: 200,
+		     opacity: 0.6
+		      },
+		 onClose: function (event) {
+		         $.roxiware.alert.popup = null;
+		         delete this;
+	         }
+	  });
+      overlay.find(".contentWrap [title]").tooltip({
+	  predelay:1000,
+	  effect:'fade',
+	  position: "top right",
+	  offset: [10, -20]
+	});
+   });
+}
+
+
+function colorToHex(color) {
+    if (color.substr(0, 1) === '#') {
+	   return color;
+    }
+    var digits = /(.*?)rgb\((\d+), (\d+), (\d+)\)/.exec(color);
+    
+    var red = parseInt(digits[2]);
+    var green = parseInt(digits[3]);
+    var blue = parseInt(digits[4]);
+    
+    var rgb = blue | (green << 8) | (red << 16);
+    return digits[1] + '#' + rgb.toString(16);
+};
+
+
+function imageDialog(conf)
+{
+    var default_options = {
+	raw_upload: false
+    };
+   var options = $.extend(true, {}, default_options, conf);
+   
+   var overlay_dialog = $('<div class="overlay" id="wysiwyg_add_image_overlay">' +
+		      '<form class="wysiwyg">' +
+		      '<div id="upload_target" class="upload_target">' +
+		       '</div>' + 
+			 '<input id="image_source_upload" name="image_source" type="radio" value="upload" checked>Upload Image</input>' +
+			 '<br style="clear:both"/>' +
+			 '<input id="image_source_url" name="image_source" type="radio" value="url">URL</input>' +
+			   '<input name="image_text_url" type="text" disabled/>' +
+			 '<br/><br/><input type="submit" class="button" value="Save" disabled/>' +
+		      '</form>' +
+			  '</div>');
+
+   $("body").append(overlay_dialog);
+   overlay_dialog.find("input:radio[name=image_source]").change(function() {
+      var new_image_url;
+      var image_type = overlay_dialog.find("input:radio[name=image_source]:checked").val();
+      if(image_type == "url") {
+	    // set the preview image to the image specified in the image_url input
+	    new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
+	    self.old_image = overlay_dialog.find("div#upload_target").image_upload().getImage();
+	    self.old_thumbprint = overlay_dialog.find("div#upload_target").image_upload().getThumbprint();
+	    overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url);
+	    overlay_dialog.find("div#upload_target").image_upload().setThumbprint(null);
+	    overlay_dialog.find("div#upload_target").image_upload().disable();
+	    overlay_dialog.find("input[name=image_text_url]").removeAttr("disabled");
+      }
+      else if (image_type == "upload") {
+	  new_image_url = self.old_image;
+	  overlay_dialog.find("div#upload_target").image_upload().setImage(self.old_image);
+	  overlay_dialog.find("div#upload_target").image_upload().setThumbprint(self.old_thumbprint);
+	  overlay_dialog.find("div#upload_target").image_upload().enable();
+	  overlay_dialog.find("input[name=image_text_url]").attr("disabled", "disabled");
+      }
+
+      if((new_image_url != null) && (new_image_url != "")) {
+	  overlay_dialog.find("input:submit").removeAttr("disabled");
+      }
+      else {
+	   overlay_dialog.find("input:submit").attr("disabled", "disabled");
+      }
+
+   });
+   overlay_dialog.find("input[name=image_text_url]").change(function(e) {
+      var new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
+      overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url).setThumbprint(null);
+      if((new_image_url != null) && (new_image_url != "")) {
+	  overlay_dialog.find("input:submit").removeAttr("disabled");
+       }
+       else {
+	  overlay_dialog.find("input:submit").attr("disabled", "disabled");
+       }
+
+   });
+   overlay_dialog.overlay({
+      oneInstance:false,
+      top: "center",
+      // some mask tweaks suitable for facebox-looking dialogs
+      mask: {
+	 color: '#222',
+	 loadSpeed: 200,
+	 opacity: 0.6,
+	    zIndex:2999
+	 },
+	 closeOnClick: true,
+	 load:true,
+	 onClose: function() {
+	    overlay_dialog.remove();
+	 },
+	 onBeforeLoad: function () {
+	    overlay_dialog.find("form").submit(function (e) {
+	       e.preventDefault();
+	       var image_type = overlay_dialog.find("input:radio[name=image_source]:checked").val();
+	       if(image_type == "url") {
+		   options.onSuccess(overlay_dialog.find("input[name=image_text_url]").val(), image_type, null);
+	       }
+               else if (image_type == "upload") {
+		   
+		   options.onSuccess(overlay_dialog.find("div#upload_target").image_upload().getImage(), image_type, null);
+	       }
+	       overlay_dialog.overlay().close();
+	       return false;
+	     });
+	    
+	    var default_upload_params = {
+		  uploadImagePreviewSize: "raw",
+		  complete: function(urls) {
+			  overlay_dialog.find("input:submit").removeAttr("disabled");
+		      }
+	    };
+	    
+	    var image_upload_conf = $.extend(true, {}, default_upload_params, options.uploadConf);
+	    if(options.raw_upload) {
+		image_upload_conf = $.extend(true, {}, image_upload_conf, {uploadImageParams: { unprocessed_raw:true}});
+	    }
+
+	    $("div#wysiwyg_add_image_overlay div#upload_target").image_upload(image_upload_conf);
+	   }
+       }
+   );
+}
+
 
 $(document).bind("ready", function() {
 	$(document).bind("ajaxStart", function(event) {

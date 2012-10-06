@@ -20,7 +20,6 @@ class Roxiware::Person < ActiveRecord::Base
     validates :email, :length=>{:maximum=>256,
                                  :too_long => "The email address must be no more than %{count} characters." 
 				 }
-    validates_uniqueness_of :email, :message=>"The email address has is not unique."
 
     validates :role, :length=>{:maximum=>64,
                                  :too_long => "The role must be no more than %{count} characters." 
@@ -34,7 +33,7 @@ class Roxiware::Person < ActiveRecord::Base
                                  :too_long => "The bio must be no more than %{count} characters." 
 				 }
 
-   edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_thumbprint, :bio, :as=>[:admin, :self, nil]
+   edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_thumbprint, :bio, :as=>[:super, :admin, :self, nil]
    ajax_attr_accessible :first_name, :last_name, :role, :email, :image_thumbprint, :bio, :show_in_directory, :full_name, :seo_index
 
    before_destroy :destroy_images
@@ -72,7 +71,7 @@ class Roxiware::Person < ActiveRecord::Base
       end
    end
 
-   add_social_networks :twitter, :website, :facebook, :google, :as=>[:admin, :self, nil]
+   add_social_networks :twitter, :website, :facebook, :google, :as=>[:super, :admin, :self, nil]
 
    def full_name
       return_full_name = self.first_name || ""

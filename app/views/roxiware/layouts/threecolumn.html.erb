@@ -11,9 +11,8 @@
   <%= render :partial=>'roxiware/shared/socialheader' %>
   <div id="mainBody">
     <header class="main_header">
-    <%= render :partial => 'shared/header' %>
-    </header>
     <%= render(:partial => 'roxiware/layouts/section', :locals=>{:section=> "header_bar"})%>
+    </header>
     <div id="layout_body">
       <div id="content_section">
         <%= render(:partial => 'roxiware/layouts/section', :locals=>{:section=> "left_bar" })%>
@@ -31,7 +30,7 @@
       </div>
     </div>
     <footer class="main_footer">
-      <%= render :partial => 'shared/footer' %>
+      <%= render(:partial => 'roxiware/layouts/section', :locals=>{:section=> "footer_bar"})%>
     </footer>
   </div>
   <% if can? :edit, Roxiware::Page %>

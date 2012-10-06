@@ -1,9 +1,7 @@
 <div class="new_widget_bar">
    <% Roxiware::Layout::Widget.all.each do |widget|%>
-      <div class="new_widget">
-      <div class="widget_drag_box" id="widget-new" guid="<%= widget.guid %>"></div>
-	  <div><%= widget.name %></div>
-	  <%= widget.description %>
+      <div class="new_widget" id="widget-new" title="<%= widget.description%>" guid="<%= widget.guid %>">
+      <div><%= widget.name %></div>
       </div>
    <% end %>
 </div>

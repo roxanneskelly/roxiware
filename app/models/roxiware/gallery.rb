@@ -21,7 +21,7 @@ module Roxiware
      before_destroy :destroy_images
      configure_image_handling(%w(small medium))
 
-     edit_attr_accessible :name, :description, :image_thumbprint, :as=>[:admin, :user]
+     edit_attr_accessible :name, :description, :image_thumbprint, :as=>[:super, :admin, :user]
      edit_attr_accessible :seo_index, :as=>[nil]
 
      ajax_attr_accessible :seo_index, :name, :description

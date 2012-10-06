@@ -2,4 +2,12 @@
   <%= button_tag "Edit Layout", :rel=>"/layout/#{@current_layout.guid}", :id=>"edit-layout", :class=>"overlay_form layout_edit button_edit", :type=>"button"  %>
   <%= button_tag "Edit Layout Page", :rel=>"/layout/#{@current_layout.guid}/page/"+url_encode("#{@page_layout.controller}\##{@page_layout.action}"), :id=>"edit-layout-page", :class=>"overlay_form layout_page_edit button_edit", :type=>"button"  %>
   <%= button_tag "Site Settings", :rel=>"/settings", :id=>"edit-settings", :class=>"overlay_form settings_edit button_edit", :type=>"button"  %>
+
+  <% url = URI.parse(request.fullpath) 
+     params = url.query
+     params = CGI.parse(url.query) if url.query.present? 
+     params ||= {}
+     params["preview"]=nil
+     url.query = params.to_param %>
+  <%= button_tag "Preview",:rel=>url.to_s, :id=>"preview", :target=>"_blank", :class=>"button_link preview", :style=>"float:right", :type=>"button"  %>
 </div>

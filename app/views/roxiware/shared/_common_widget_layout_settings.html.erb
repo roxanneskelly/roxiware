@@ -1,5 +1,6 @@
 
 <%= fields_for :params do |params_fields| %>
   <%= param_field(params_fields, @widget_instance.get_param("show_background")) %>
-  <%= param_field(params_fields, @widget_instance.get_param("align")) %>
+  <%= param_field(params_fields, @widget_instance.get_param("float")) %>
+  <%= param_field(params_fields, @widget_instance.get_param("height")) %>
 <% end %>

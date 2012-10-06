@@ -11,7 +11,7 @@ class Roxiware::Service < ActiveRecord::Base
       self.seo_index = self.name.downcase.gsub(/[^a-z0-9]+/i, '-')
    end
 
-   edit_attr_accessible :name, :summary, :description, :as=>[:admin, nil]
+   edit_attr_accessible :name, :summary, :description, :as=>[:super, :admin, nil]
    edit_attr_accessible :service_class, :as=>[nil]
    ajax_attr_accessible :name, :summary, :description
    ajax_attr_accessible :service_class, :as=>[nil]

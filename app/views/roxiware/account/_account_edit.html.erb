@@ -1,7 +1,9 @@
 <div class="account_edit_overlay popup_form overlay" id="account_edit_overlay">
   <%= form_tag do %>
       <%= label_tag :role, "Role"%>
-      <%= select_tag :role, options_for_select({"Admin"=>:admin, "User"=>:user, "Guest"=>:guest}) %>
+      <% role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} %>
+      <% role_options["Super"] = :super if current_user.role == "super" %>
+      <%= select_tag :role, options_for_select(role_options) %>
       <br/>
 
       <%= label_tag :username, "Username" %>

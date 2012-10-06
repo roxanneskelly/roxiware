@@ -1,10 +1,10 @@
 <% layout_section = @page_layout.section(section) %>
 <% first_widget = true %>
-<% if layout_section.present? && (layout_section.widget_instances.present? || can?(:edit, Roxiware::Layout::WidgetInstance))  %>
-  <div id="<%= section %>_section" class="<%= section %>_class">
-    <% if can? :edit, @page_layout %>
-       <div class="section_name"><%= layout_section.name %>(<%= layout_section.page_layout.controller %>#<%= layout_section.page_layout.action%>)</div>
-    <% end %>
+<% if layout_section.present? && (layout_section.widget_instances.present? || can?(:move, Roxiware::Layout::WidgetInstance))  %>
+  <% edit_section_class = "edit_section" if can? :move, Roxiware::Layout::WidgetInstance %>
+  <% style = "" %>
+  <% style += "width:#{layout_section.get_param('width').conv_value}px;" if layout_section.get_param('width').present? %>
+  <div id="<%= section %>_section" class="<%= section %>_class <%= edit_section_class %>" style="<%= style %>">
     <% layout_section.get_widget_instances.each do |widget_instance| %>
        <% show_widget = true %>
        <% begin %>
@@ -13,25 +13,28 @@
 	 <% show_widget = eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1) %>
 	 <% if show_widget || can?( :edit, widget_instance) %>
 	   <% locals[:widget_instance]=widget_instance %>
-	   <% if can? :edit, widget_instance %>
+	   <% locals[:layout_section]=layout_section %>
+	   <% locals[:page_layout]=@page_layout %>
+	   <% locals[:layout]=@layout %>
+	   <% if can? :move, widget_instance %>
 	      <div class="widget_vspace" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"><div></div></div>
 	   <% elsif (!first_widget) %>
-	      <% first_widget = false %>
 	      <div class="widget_vspace"></div>
+	   <% else first_widget = false %>
 	   <% end %>
-	   <div class="widget" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
-	        <% if widget_instance.get_param("show_background").conv_value %>
-	           style="margin:0px;padding:0px;"
-                <% end %>
-	     >
+	   <% widget_style = ""
+	      widget_style += "margin:0px;padding:0px;" if widget_instance.get_param("show_background") && widget_instance.get_param("show_background").conv_value 
+	      widget_height = widget_instance.get_param("height").conv_value
+	      widget_style += "height:#{widget_height}px;" if widget_height >= 0 
+	      widget_style += "text-align:"+widget_instance.get_param('float').conv_value+";"  if widget_instance.get_param('float') %>
+	   <% widget_edit_class = ""
+	      widget_edit_class = "widget_edit" if can? :edit, widget_instance %>
+	   <div class="widget <%= widget_edit_class %>" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
+	           style="<%=widget_style%>">
 	     <% if widget_instance.get_param("show_background").conv_value %>
 	        <div class="widget_background"></div>
              <% end %>
-	     <% if can? :edit, widget_instance %>
-		 <div class="widget_drag_box" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"></div>
-		 <%= render :partial=>"roxiware/shared/widget_instance_edit_controls", :locals=>{:widget_instance=>widget_instance, :layout_section=>layout_section} %>
-	     <% end %>
-	     <div class="widget_content">
+	     <div class="widget_content" style="display:inline-block">
 	       <%= render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
 	    </div>
 	  </div>
@@ -39,7 +42,7 @@
        <% rescue Exception => e  %>
 	 <div class="widget" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>">
            <div class="widget_background"></div>
-           <% if can? :edit, widget_instance %>
+           <% if can? :move, widget_instance %>
 	       <div class="widget_drag_box" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"></div>
                <%= render :partial=>"roxiware/shared/widget_instance_edit_controls", :locals=>{:widget_instance=>widget_instance, :layout_section=>layout_section} %>
 	   <% end %>
@@ -68,7 +71,7 @@ Globals: <%= h globals.inspect %>
      </div>
      <% end %>
    <% end %>
-  <% if can? :edit, Roxiware::Layout::WidgetInstance %>
+  <% if can? :move, Roxiware::Layout::WidgetInstance %>
      <div class="widget_vspace"  section="<%= section %>" order="-1"><div></div></div>
   <% elsif  layout_section.get_widget_instances.present? %>
      <div class="widget_vspace"></div>

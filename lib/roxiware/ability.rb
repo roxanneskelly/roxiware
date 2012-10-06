@@ -1,13 +1,24 @@
 class Ability
   include CanCan::Ability
-  def initialize(user)
+  def initialize(user, params)
     user ||= Roxiware::User.new # guest user (not logged in)
-    print "role is " + user.role + "\n"
-    case user.role
+    role = user.role
+    if params.has_key?(:preview)
+       role="guest"
+    end
+    case role
+    when "super"
+      can :manage, :all
+      can :comment, Roxiware::Blog::Comment
+      cannot :delete, Roxiware::User, :id=>user.id
+
     when "admin"
       can :manage, :all
       can :comment, Roxiware::Blog::Comment
       cannot :delete, Roxiware::User, :id=>user.id
+      cannot [:create, :update, :delete], Roxiware::User, :role=>"super"
+      cannot [:create, :destroy], [Roxiware::Layout::Layout, Roxiware::Layout::PageLayout, Roxiware::Layout::LayoutSection, Roxiware::Layout::WidgetInstance, Roxiware::Layout::Widget]
+      cannot :move, Roxiware::Layout::WidgetInstance
     when "user"
       can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page, Roxiware::Event, Roxiware::GalleryItem, Roxiware::Gallery, Roxiware::Service]
       can :read, Roxiware::Person, :show_in_directory=>true

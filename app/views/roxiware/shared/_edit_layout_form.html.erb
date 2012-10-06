@@ -55,28 +55,20 @@
      <div class="panes">
        <div>
           <%= text_area_tag :description, @layout.description, :class=>"popup_wysiwyg layout_description" %>
-	 <% @layout.params.each do |layout_param| %>
-	    <div title="<%=layout_param.description.description%>" style="display:inline-block">
-            <%= label_tag layout_param.name.to_sym, layout_param.description.name %>
-            <%= text_field_tag layout_param.name.to_sym, layout_param.value %>
-	    </div>
-	 <% end %>
+	  <%= fields_for :params do |param_field_block| %>
+	     <%= param_fields(param_field_block, @layout.params) %>
+	  <% end %>
        </div>
        <div>
           <%= text_area_tag :style, @layout.style, :class=>"layout_style" %>
        </div>
      </div>
-      
      <%= button_tag "Save", :id=>"save_button", :type=>"submit" %>
    <% end %>
 </div>
 <script>
    $(function() {
       $("#layout_edit").find("ul.tabs").tabs($("div.panes > div"));
-      $("#layout_edit [title]").tooltip({
-        predelay:500,
-        position: "center right"
-      });
       $("#layout_edit").find("button").button().click(function() {
          
       });

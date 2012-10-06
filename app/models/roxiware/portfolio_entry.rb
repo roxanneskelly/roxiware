@@ -24,7 +24,7 @@ module Roxiware
        end
     end
 
-   edit_attr_accessible :name, :service_class, :image_url, :thumbnail_url, :description, :service_class, :url, :blurb, :as=>[:admin, nil]
+   edit_attr_accessible :name, :service_class, :image_url, :thumbnail_url, :description, :service_class, :url, :blurb, :as=>[:super, :admin, nil]
 
    ajax_attr_accessible :name, :service_class, :image_url, :thumbnail_url, :description, :service_class, :url, :blurb
 

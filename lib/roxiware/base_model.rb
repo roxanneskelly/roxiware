@@ -66,13 +66,9 @@ module Roxiware
         def destroy_images
 	   if(image_thumbprint.present?)
 	      image_path = File.join(AppConfig.raw_upload_path, image_thumbprint + Roxiware.upload_image_file_type)
-	         print "DELETE #{image_path}\n\n"
               File.delete(image_path) if File.exists?(image_path)
-              print Roxiware.upload_image_sizes.keys.to_json + "\n\n"
 	      Roxiware.upload_image_sizes.keys.each do |size|
-	         print "size is #{size}\n\n"
 	         image_path = File.join(AppConfig.processed_upload_path, image_thumbprint + "_#{size.to_s}"+Roxiware.upload_image_file_type)
-	         print "DELETE #{image_path}\n\n"
 	         File.delete(image_path) if File.exists?(image_path)
 	      end
            end
@@ -97,7 +93,6 @@ module Roxiware
 
         attrs = {}
         valid_read_keys.each do |key|
-	  print "key is #{key}\n\n"
 	  value = eval("self.#{key}")
 	  if value.class == Array
 	     attrs[key+"[]"] = value
@@ -114,7 +109,7 @@ module Roxiware
       end
 
       def style_replace(style_string, params)
-        params.each {|param| style_string.gsub!("$("+param[:key]+")", param[:value])}
+        params.each {|param| style_string.gsub!("$("+param.name+")", param.value)}
 	style_string
       end
   end

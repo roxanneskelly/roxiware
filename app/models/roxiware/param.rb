@@ -17,8 +17,8 @@ module Roxiware
 	  belongs_to :param_description, :autosave=>true, :foreign_key=>:description_guid, :primary_key=>:guid
 
           edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[nil]
-	  edit_attr_accessible :value, :as=>[:admin, nil]
-	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[:admin]
+	  edit_attr_accessible :value, :as=>[:super, :admin, nil]
+	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[:super, :admin]
 
 
 	  def self.application_params(application)
@@ -64,6 +64,8 @@ module Roxiware
 	         value.to_f
 	       when "bool"
 	         return (value == "true")
+	       when "asset"
+	         return value
 	       else
 	         return value
 	     end
@@ -103,9 +105,26 @@ module Roxiware
 
           def export(xml_params, include_description)
 	     xml_params.param(:class=>self.param_class, :name=>self.name) do |xml_param|
-	       xml_param.value  self.value
+	       case self.param_description.field_type
+	         when "hash"
+		   xml_param.value do |xml_hashvalue|
+		      self.params.each do |hash_param|
+		         hash_param.export(xml_hashvalue, include_description)
+		      end
+		   end
+		 when "array"
+		   xml_param.value do |xml_arrayvalue|
+		      self.params.each do |array_param|
+		         array_param.export(xml_arrayvalue, include_description)
+		      end
+		   end
+		 else
+	          xml_param.value  self.value
+	       end
 	       if include_description
 		   self.description.export(xml_param)
+	       else
+	           xml_param.param_description(:guid=>self.description_guid)
 	       end
 	     end
           end
@@ -114,7 +133,6 @@ module Roxiware
       class ParamDescription < ActiveRecord::Base
         include Roxiware::BaseModel
         self.table_name= "param_descriptions"
-
 
         attr_accessible :name         # human readable name of parameter
 	attr_accessible :guid         # unique id of parameter
@@ -128,6 +146,7 @@ module Roxiware
 	     self.description = xml_param_description.find_first("description").content
 	     self.field_type = xml_param_description.find_first("field_type").content
 	     self.permissions = xml_param_description.find_first("permissions").content
+	     self.save!
 	  end
 
           def export(xml_param_descriptions)

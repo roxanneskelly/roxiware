@@ -15,13 +15,13 @@ module Roxiware
                                    :too_long => "The password must be no more than %{count} characters.", 
 				   :allow_blank=>true}
     validates_confirmation_of :password, :message=>"The confirmation does not match the password."
-    validates_uniqueness_of :email, :message=>"The email address has already been used."
-    validates_presence_of   :email, :message => "An email address is required"
+    validates_uniqueness_of :email, :message=>"The email address is not unique."
+    validates_presence_of   :email, :message => "An email address is required."
 
     validates_uniqueness_of :username, :message=>"The username has already been taken."
-    validates_presence_of :role, :inclusion => {:in => %w(guest admin user)}, :message=>"Invalid role."
+    validates_presence_of :role, :inclusion => {:in => %w(guest super admin user)}, :message=>"Invalid role."
 
-    validates_format_of     :email, :with  => Devise.email_regexp
+    validates_format_of     :email, :with  => Devise.email_regexp, :message=>"The email address is invalid."
 
 
 
@@ -29,6 +29,10 @@ module Roxiware
     # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
     devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable
+
+    def is_admin?
+      return (self.role == "admin") || (self.role == "super")
+    end
 
     def first_name
       self.person.first_name unless self.person.nil?
@@ -52,9 +56,9 @@ module Roxiware
 
     # Setup accessible (or protected) attributes for your model
 
-    edit_attr_accessible :email, :password, :password_confirmation, :remember_me, :person_id, :first_name, :last_name, :as=>[:admin, :self, nil]
-    edit_attr_accessible :username, :role, :as=>[:admin, nil]
+    edit_attr_accessible :email, :password, :password_confirmation, :remember_me, :person_id, :first_name, :last_name, :as=>[:super, :admin, :self, nil]
+    edit_attr_accessible :username, :role, :as=>[:super, :admin, nil]
     ajax_attr_accessible :username, :as=>[:self]
-    ajax_attr_accessible :full_name, :role, :as=>[:self, :admin, nil]
+    ajax_attr_accessible :full_name, :role, :as=>[:self, :super, :admin, nil]
   end
 end

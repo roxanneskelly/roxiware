@@ -246,7 +246,7 @@ module Roxiware
           def export(xml_layout_sections)
 	     xml_layout_sections.section(:name=>self.name) do |xml_layout_section|
 	       xml_layout_section.style {|s| s.cdata!(self.style)}
-	       xml_layout.params do |xml_params|
+	       xml_layout_section.params do |xml_params|
 	          self.params.each do |param|
 		     param.export(xml_params, true)
 		  end

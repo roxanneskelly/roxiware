@@ -15,7 +15,7 @@
 	   <% locals[:widget_instance]=widget_instance %>
 	   <% locals[:layout_section]=layout_section %>
 	   <% locals[:page_layout]=@page_layout %>
-	   <% locals[:layout]=@layout %>
+	   <% locals[:layout]=@current_layout %>
 	   <% if can? :move, widget_instance %>
 	      <div class="widget_vspace" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"><div></div></div>
 	   <% elsif (!first_widget) %>

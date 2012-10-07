@@ -47,7 +47,7 @@ module Roxiware
     ajax_attr_accessible :guid, :post_date, :post_exerpt, :post_link, :post_title, :post_content, :person_id, :post_status, :comment_permissions, :tag_csv, :category_name
     
     scope :published, where(:post_status=>"publish")
-    scope :visible, lambda{|user| where((user.is_admin?) ?"":["person_id = ? OR post_status='publish'", user.person_id])}
+    scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR post_status='publish'")) }
 
     after_save do
       @@last_update = DateTime.now
@@ -158,7 +158,7 @@ module Roxiware
     ajax_attr_accessible :comment_content, :comment_date, :comment_author, :comment_author_email, :comment_author_url, :person_id, :parent_id, :comment_status
     
     scope :published, where(:comment_status=>"publish")
-    scope :visible, lambda{|user| where((user.is_admin?)?"":["person_id = ? OR comment_status='publish'", user.person_id])}
+    scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR post_status='publish'")) }
 
     before_validation() do
        self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))

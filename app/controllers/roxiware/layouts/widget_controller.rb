@@ -172,8 +172,6 @@ module Roxiware
 			raise ActiveRecord::Rollback
 		     end
 		     doc = parser.parse
-		     print "PARSED XML\n"
-		     print request.body.string + "\n\n"
 		     param_nodes = doc.find("/widget_params/param")
 		     param_nodes.each do |param_node|
 		         print "importing #{param_node['name']}\n"

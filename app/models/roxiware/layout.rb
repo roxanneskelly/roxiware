@@ -27,6 +27,31 @@ module Roxiware
 	  edit_attr_accessible :description, :style, :name, :as=>[:super, nil]
 	  ajax_attr_accessible :guid, :as=>[:super, :admin, nil]
 
+	  def get_params
+	     if @params.nil?
+	        @params = {}
+	        params.where(:param_class=>:local).each do |param|
+                   @params[param.name.to_sym] = param.conv_value
+                end
+             end
+	     @params
+          end
+
+          def get_param(name)
+	    get_param_objs
+	    @param_objs[name.to_sym]
+	  end
+
+	  def get_param_objs
+	     if @param_objs.nil?
+	        @param_objs = {}
+	        params.each do |param|
+                   @param_objs[param.name.to_sym] =  param
+                end
+             end
+	     @param_objs
+          end
+
 	  def import(layout_node)
 	     self.guid = layout_node["guid"]
 	     self.name = layout_node.find_first("name").content
@@ -124,6 +149,34 @@ module Roxiware
 	  edit_attr_accessible :controller, :action, :layout_id, :as=>[nil]
 	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:super, nil]
 
+	  def get_url_identifier
+	      "#{controller}\##{action}"
+	  end
+
+	  def get_params
+	     if @params.nil?
+	        @params = {}
+	        params.where(:param_class=>:local).each do |param|
+                   @params[param.name.to_sym] = param.conv_value
+                end
+             end
+	     @params
+          end
+
+          def get_param(name)
+	    get_param_objs
+	    @param_objs[name.to_sym]
+	  end
+
+	  def get_param_objs
+	     if @param_objs.nil?
+	        @param_objs = {}
+	        params.each do |param|
+                   @param_objs[param.name.to_sym] =  param
+                end
+             end
+	     @param_objs
+          end
 
 	  def import(page_layout_node)
 	     self.controller    = page_layout_node["controller"]
@@ -222,9 +275,10 @@ module Roxiware
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  has_many        :widget_instances, :autosave=>true, :dependent=>:destroy
 	  belongs_to      :page_layout
-	  attr_accessible :name               # name of the layout section ('left_bar', etc)
-	  attr_accessible :style              # style content, containing style applied when the widget is to be rendered
-	  attr_accessible :page_layout_id     # page layout
+
+	  edit_attr_accessible :style, :as=>[:super, nil]
+	  edit_attr_accessible :name, :as=>[nil]
+	  ajax_attr_accessible :name, :style, :page_layout_id, :as=>[:super, nil]
 
 	  def import(layout_section_node)
 	     self.name = layout_section_node["name"]
@@ -271,6 +325,7 @@ module Roxiware
 	  def get_styles
 	     return self.style + self.widget_instances.collect{|instance| instance.get_styles}.join(" ")
 	  end
+
 	  def get_params
 	     if @params.nil?
 	        @params = {}
@@ -289,7 +344,7 @@ module Roxiware
 	  def get_param_objs
 	     if @param_objs.nil?
 	        @param_objs = {}
-	        params.where(:param_class=>:local).each do |param|
+	        params.each do |param|
                    @param_objs[param.name.to_sym] =  param
                 end
              end
@@ -395,7 +450,7 @@ module Roxiware
           end
 	  
 	  def get_styles
-	     return style_replace(self.widget.style, self.params.where(:param_class=>:style))
+	     return style_replace(style_replace(self.widget.style, self.params.where(:param_class=>:style)), self.widget.params.where(:param_class=>:style))
 	  end
 
 	  def get_params
@@ -420,11 +475,11 @@ module Roxiware
 	  def get_param_objs
 	     if @param_objs.nil?
 	        @param_objs = {}
-		widget.params.where(:param_class=>:local).each do |param|
+		widget.params.each do |param|
                    @param_objs[param.name.to_sym] =  param
                 end
 		
-	        params.where(:param_class=>:local).each do |param|
+	        params.each do |param|
                    @param_objs[param.name.to_sym] =  param
                 end
              end

@@ -10,10 +10,6 @@
         </div>
       <% end %>
     </section>
-    <div class="blog_nav">
-      <%= link_to("<< Newer posts", @prev_page_link, :class=>"prev_page") if @prev_page_link %>
-      <%= link_to("Older posts >>", @next_page_link, :class=>"next_page") if @next_page_link %>
-    </div>
 <% end %>
 <div class="feed_buttons">
 <a href="http://fusion.google.com/add?feedurl=<%=AppConfig::feedburner_url%>"><img src="http://buttons.googlesyndication.com/fusion/add.gif" width="104" height="17" style="border:0" alt="Add to Google Reader or Homepage"/></a>

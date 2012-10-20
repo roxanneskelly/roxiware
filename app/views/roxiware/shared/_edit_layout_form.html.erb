@@ -1,12 +1,14 @@
 
 <style>
 #layout_edit {
-  width:34em;
+  width:45em;
 }
 
 #layout_edit label
 {
-  width: 7em;
+  width: 17em;
+  padding-right:1em;
+  text-align:left;
 }
 
 #layout_edit .layout_name
@@ -22,13 +24,13 @@
 
 #layout_edit .panes > div
 {
- height: 20em;
+ height: 40em;
 }
 
 #layout_edit textarea.layout_style
 {
   width:100%;
-  height:26em;
+  height:36em;
   padding:0px;
   margin:0px;
 }
@@ -46,8 +48,6 @@
 
 <div class="layout_edit" id="layout_edit">
    <%= form_tag(layout_path(@layout.guid), :method=>"put") do%>
-     <%= label_tag :name, "Name" %>
-     <%= text_field_tag(:name, @layout.name, :class=>"layout_name") %>
      <ul class="tabs">
        <li><a href="#">Settings</a></li>
        <li><a href="#">Style</a></li>
@@ -56,7 +56,7 @@
        <div>
           <%= text_area_tag :description, @layout.description, :class=>"popup_wysiwyg layout_description" %>
 	  <%= fields_for :params do |param_field_block| %>
-	     <%= param_fields(param_field_block, @layout.params) %>
+	     <%= param_fields(param_field_block, @layout.get_param_objs) %>
 	  <% end %>
        </div>
        <div>

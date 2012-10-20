@@ -25,8 +25,9 @@ module Roxiware
        
        def show
            page_identifier = params[:id].split("#")
-	   page_identifier << ""
-           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>page_identifier[0], :action=>page_identifier[1]).first
+	   controller = page_identifier[0] || ""
+	   action = page_identifier[1] || ""
+           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>controller, :action=>action).first
 	   raise ActiveRecord::RecordNotFound if @page.nil?
 	   authorize! :read, @page
            respond_to do |format|
@@ -36,27 +37,100 @@ module Roxiware
 
        def update
            page_identifier = params[:id].split("#")
-	   page_identifier << ""
-           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>page_identifier[0], :action=>page_identifier[1]).first
+	   controller = page_identifier[0] || ""
+	   action = page_identifier[1] || ""
+           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>controller, :action=>action).first
 	   raise ActiveRecord::RecordNotFound if @page.nil?
 	   authorize! :update, @page
+	   success = true
+           ActiveRecord::Base.transaction do
+	      begin
+	         if params[:params].present?
+	            @page.params.each do |page_param|
+		       if params[:params][page_param.name.to_sym].present?
+		          page_param.value = params[:params][page_param.name.to_sym]
+			  page_param.save!
+		       end
+		    end
+		 end
+		 if !@page.update_attributes(params, :as=>@role)
+		    raise ActiveRecord::Rollback
+		 end 
+	      rescue Exception => e
+	         print e.message
+	         success = false
+	      end
+           end
+
 	   respond_to do |format|
-	       if @page.update_attributes(params, :as=>@role)
-	          @page.params.each do |page_param|
-		     if params[page_param.name.to_sym].present?
-		        page_param.value = params[page_param.name.to_sym]
-			page_param.save!
-		     end
-		  end
+	       if success
 		  refresh_layout
-		  format.html { redirect_to return_to_location("/"), :notice => 'layout page was successfully updated.' }
-		  format.json { render :json => @page.ajax_attrs(@role) }
+		  format.xml  { render :xml => {:success=>true} }
+		  format.html { redirect_to return_to_location("/"), :notice => 'layout was successfully updated.' }
+		  format.json { render :json => @layout.ajax_attrs(@role) }
 	       else
-		  format.html { redirect_to return_to_location("/"), :alert => 'Failure updating page layout.' }
-		  format.json { render :json=>report_error(@page)}
+		  format.html { redirect_to return_to_location("/"), :alert => 'Failure updating layout.' }
+		  format.xml  { head :fail }
+		  format.json { render :json=>report_error(@layout)}
 	       end
 	   end
        end
+
+       def create
+	   authorize! :create, Roxiware::Layout::PageLayout
+           page_params = params[:params]
+	   
+	   identifier = page_params[:url_identifier].split("#")
+	   controller = identifier[0] || ""
+	   action = identifier[1] || ""
+
+	   @page = @current_layout.page_layouts.build
+	   if (page_params[:clone].present?)
+	       print "CLONING PAGE\n"
+               clone_page = Roxiware::Layout::PageLayout.find(page_params[:clone])
+	       raise ActiveRecord::RecordNotFound if clone_page.nil?
+	       @page.update_attributes(clone_page.attributes, :as=>nil)
+	       clone_page.params.each do |page_param|
+	          # NOTE, recursive params?
+	          @page.params << page_param.dup
+	       end
+	   end
+           @page.controller = controller
+	   @page.action = action
+	   success = true
+           ActiveRecord::Base.transaction do
+	      begin
+	         if params[:params].present?
+	            @page.params.each do |page_param|
+		       if params[:params][page_param.name.to_sym].present?
+		          page_param.value = params[:params][page_param.name.to_sym]
+			  page_param.save!
+		       end
+		    end
+		 end
+		 if !@page.update_attributes(params, :as=>@role)
+		    raise ActiveRecord::Rollback
+		 end 
+	      rescue Exception => e
+	         print e.message
+	         success = false
+	      end
+           end
+
+	   respond_to do |format|
+	       if success
+		  refresh_layout
+		  format.xml  { render :xml => {:success=>true} }
+		  format.html { redirect_to return_to_location("/"), :notice => 'layout was successfully updated.' }
+		  format.json { render :json => @page.ajax_attrs(@role) }
+	       else
+		  format.html { redirect_to return_to_location("/"), :alert => 'Failure updating layout.' }
+		  format.xml  { head :fail }
+		  format.json { render :json=>report_error(@layout)}
+	       end
+	   end
+       end
+
 
      private
        def _load_role

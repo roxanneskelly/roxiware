@@ -37,7 +37,7 @@ module Roxiware
 	            @layout.params.each do |layout_param|
 		       if params[:params][layout_param.name.to_sym].present?
 		          layout_param.value = params[:params][layout_param.name.to_sym]
-			  instance_param.save!
+			  layout_param.save!
 		       end
 		    end
 		 end

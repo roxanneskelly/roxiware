@@ -1,9 +1,7 @@
-  <div id="edit_overlay" class="popup_form overlay">
-    <div class="contentWrap"> </div>
-  </div>
-   <%= render :partial=>"roxiware/shared/widget_instance_edit_controls" %>
+   <%= render :partial=>"roxiware/shared/context_menus" %>
 
   <script>
+  $(".widget").context_menu($("#widget_context_menu"));
   $(document).bind("ready", function() {
      $("BUTTON").button();
    <%  if (can? :move, Roxiware::Layout::WidgetInstance) %>
@@ -73,19 +71,7 @@
         bottom_pos = Math.max(bottom_pos, $(elem).position() + $(elem).height());
      });
       $(".overlay_form").click(function() {
-         var overlay = $("#edit_overlay");
-         overlay.find(".contentWrap").load($(this).attr("rel"), function() {
-             overlay.overlay().load();
-             overlay.find(".contentWrap [title]").tooltip({
-                predelay:1000,
-                effect:'fade',
-                position: "top right",
-                offset: [10, -20]
-              });
-         });
-         overlay.overlay({
-               closeOnClick: false
-         });
+         overlayForm($(this).attr("rel"));
      });
   });
 

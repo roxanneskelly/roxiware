@@ -33,9 +33,6 @@
       <%= render(:partial => 'roxiware/layouts/section', :locals=>{:section=> "footer_bar"})%>
     </footer>
   </div>
-  <% if can? :edit, Roxiware::Page %>
-     <%= render :partial=>"roxiware/page/page_edit" %>
-  <% end %>
 <%= render :partial=>'roxiware/shared/footer_common' %>
 </body>
 </html>

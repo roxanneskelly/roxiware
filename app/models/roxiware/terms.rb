@@ -33,7 +33,11 @@ module Roxiware::Terms
        current_terms = self.where(:term_taxonomy_id=>term_taxonomy_id, :seo_index=>term_str_hash.keys)
        current_terms.each {|term| term_str_hash.delete(term.seo_index)}
        term_str_hash.each do |seo_index, name|
-          current_terms << Term.create({:name=>name, :term_taxonomy_id=>term_taxonomy_id}, :as=>"")
+          term = Term.create({:name=>name, :term_taxonomy_id=>term_taxonomy_id}, :as=>"")
+          current_terms << term
+	  if(term_taxonomy_id == TermTaxonomy::CATEGORY_ID)
+	     @@categories[term.id] = term
+	  end
        end
        current_terms
     end

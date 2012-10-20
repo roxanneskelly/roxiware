@@ -216,40 +216,54 @@
 	var self = this;
 	   $.extend(self,
 		    {
-			context_menu: null,
-			    current_menu: null,
-			    addMenu: function(menu_item, text) { 
-			       self.context_menu.append("<li id='"+menu_item+"><a href='#' menu_item='"+menu_item+">"+text+"</a></li>"); 
+			context_menu: "",
+                        instance_menu: "",
+			addInstanceMenus: function(menu_items) {
+			    self.instance_menu = self.instance_menu + menu_items;
 			},
-			    appendMenuItems: function(menu_items) {
-			    self.clone();
-			    self.context_menu.append(menu_items);
+			buildMenu: function(trigger) {
+			    // get the parent menu
+			    var parent = $(trigger).parents(".context_menu_client").first();
+			    var menu = null;
+			    if(parent.context_menu()) {
+				menu = parent.context_menu().buildMenu(parent);
+				menu.prepend("<hr/>");
+			        $(self.context_menu).find("li").clone().prependTo(menu);
+			    }
+			    else {
+				menu = $(self.context_menu).clone();
+			    }
+			    menu.prepend(self.instance_menu);
+			    return menu;
 			},
-			addSep: function() { self.context_menu.append("<hr/>"); },
-			    clone: function() {self.context_menu = self.context_menu.clone(); return self;},
-			setMenu: function(menu) {self.context_menu = menu; conf.onConfig(self);},
-			    onConfig: function(func) {self.onConfig = func;}
+			setMenu: function(menu) {
+			    // get the parent menu
+			    self.context_menu = menu;
+			    conf.onConfig(self);
+			},
+			onConfig: function(func) {self.onConfig = func;}
 		    });
-	   if(menu) self.setMenu(menu); 
-	   self.appendMenuItems(target.find("ul.instance_context_menu li, ul.instance_context_menu hr"));
+	   if(menu) self.setMenu(menu);
+	   target.addClass("context_menu_client");
 	   target.bind("contextmenu", function(e) {
 	     e.preventDefault();
-	     if (self.current_menu) { 
-		 self.current_menu.remove(); 
-	     }
-	     self.current_menu = self.context_menu.clone();
-	     $("body").append(self.current_menu);
-	     self.current_menu.css("position", "fixed").css("display", "block").offset({left:e.pageX-5, top:e.pageY-5});
-	     self.current_menu.find("li a").click(function(event) {
-		     target.trigger("context_menu", [$(this).attr("menu_item"), e]);
-		 });
+	     $(".live_context_menu").remove();
+	     var current_menu = self.buildMenu($(this));
+	     current_menu.addClass("live_context_menu");
+	     $("body").append(current_menu);
+	     current_menu.css("position", "fixed").css("display", "block").offset({left:e.clientX-5, top:e.clientY-5});
+	     current_menu.find("li a").click(function(event) {
+		var menu_item = $(this).attr("menu_item");
+		target.trigger("context_menu", [menu_item, e]);
+	      });
+	     
 	     $(document).on("click.contextMenu keyup.contextMenu contextmenu.contextMenu", function(event) {
 		if (event.type == "keyup" && (event.which != 27)) return;
-		if (self.current_menu) {
-		    self.current_menu.remove();
-		    self.current_menu = null;
+		if (current_menu) {
+		    current_menu.remove();
+		    current_menu = null;
+		    $("document").off("click.contextMenu keyup.contextMenu contextmenu.contextMenu");
 		}
-		$("document").off("click.contextMenu keyup.contextMenu contextmenu.contextMenu");
 		 });
 	     return false;
 	   });
@@ -354,7 +368,7 @@ function overlayForm(url)
 		      },
 		 onClose: function (event) {
 		         $.roxiware.alert.popup = null;
-		         delete this;
+		         overlay.remove();
 	         }
 	  });
       overlay.find(".contentWrap [title]").tooltip({

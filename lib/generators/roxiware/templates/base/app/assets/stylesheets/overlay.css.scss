@@ -4,18 +4,12 @@
 .overlay {
   display:none;
   color:#fff;
-  background:#222;
+  background: rgba(33,33,33,0.9);
   padding:1em;
   font-size:1.2em;
   line-height:1.2em;
   border:solid 1px black;
   z-index:999;
-   o-border-radius: 0.7em;
-   -icab-border-radius: 0.7em;
-   -khtml-border-radius: 0.7em;
-   -moz-border-radius: 0.7em;
-   -webkit-border-radius: 0.7em;
-   border-radius: 0.7em;
    -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
    -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
    -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
@@ -28,8 +22,8 @@
 /* default close button positioned on upper right corner */
 .overlay .close {
 	background-image:url(/assets/overlay/close_unpressed.png);
-	position:absolute; right:-4px; top:-9px;
-	background-color: none;
+	position:absolute; right:-12px; top:-12px;
+	background-color: transparent;
 	cursor:pointer;
 	height:29px;
 	width:28px;
@@ -37,9 +31,11 @@
 
 .overlay .close:active {
 	background-image:url(/assets/overlay/close_pressed.png);
+	background-color: transparent;
 }
 
 /* default close button positioned on upper right corner */
 .overlay .close:hover {
-	background-color: inherit;
+	background-image:url(/assets/overlay/close_pressed.png);
+	background-color: transparent;
 }

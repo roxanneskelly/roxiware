@@ -1,0 +1,1071 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layouts>
+  <layout version="1.0" guid="CBA695DA-D6BE-461D-94CA-456FEFF27538">
+    <name>Basic Blog</name>
+    <description>Basic Blog Website</description>
+    <style>
+      <![CDATA[
+      
+
+
+body.application_body
+{
+  font-size:12px;
+  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+}
+
+body.application_body  h1, h2, h3, h4, h5, h6 {
+   font-family:Georgia, serif;
+   color:#000000;
+}
+
+body.application_body h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
+body.application_body h2 {font-size:1.2em;margin-bottom:0.75em;}
+body.application_body h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
+body.application_body h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
+body.application_body h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+body.application_body h6 {font-size:1em;font-weight:bold;}
+
+body.application_body b
+{
+    text-shadow:2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+body.application_body a,
+body.application_body a:visited, 
+body.application_body a:link, 
+body.application_body a:hover 
+{
+    color: #66f;
+    text-decoration:none;
+    font-style:none;
+    
+}
+body.application_body a:hover
+{
+   color: #aaf;
+}
+
+/* Menu layout */
+.widget#main_menu .ddsmoothmenu_widget ul li, 
+.widget#main_menu .ddsmoothmenu_widget ul li a, 
+.widget#main_menu .ddsmoothmenu_widget ul li a:link, 
+.widget#main_menu .ddsmoothmenu_widget ul li a:visited
+{
+  color: #ffffff;
+  background: #000000;
+}
+
+.widget#main_menu .ddsmoothmenu_widget ul li a:hover, 
+.widget#main_menu .ddsmoothmenu_widget ul li a.selected,
+.widget#main_menu  .ddsmoothmenu_widget ul li ul li a:hover
+{
+  color: #000000;
+  background: #c8c8c8;
+}
+
+.widget#main_menu .ddsmoothmenu_widget ul li a.menu_selected,
+.widget#main_menu  .ddsmoothmenu_widget ul li ul li a.menu_selected
+{
+  color: #ffffff;
+  background: #969696;
+}
+
+
+/* Document layout */
+body.application_body
+{ 
+  width:950px;
+  margin-left:auto;
+  margin-right:auto;
+  margin-bottom:0px;
+
+
+  background: #fffff;
+  color:#000;
+  background-color: #fff;
+  margin-bottom:auto;
+}
+div#mainBody
+{
+    background: #ffffff;
+}
+
+
+div#header_social_networks
+{
+   position:relative;
+   float:left;
+   text-align:left;
+   margin-left:3px;
+   margin-top:3px;
+   vertical-align:center;
+   height:35px;
+}
+/* Section layout */
+div#mainBody
+{
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top:0px;
+    margin-bottom:20px;
+}
+
+#layout_body
+{
+   display:table;
+   margin:0px;
+   width:100%;
+}
+#flash_section, #content_section
+{
+   display:table-row;
+}
+
+#flash_section
+{
+  padding:10px;
+}
+
+
+#left_bar_section, #right_bar_section, #center_bar_section
+{
+   position:relative;
+   display:table-cell;
+   vertical-align:top;
+}
+
+#right_bar_section
+{
+   width:120px;
+   padding-left:10px;
+}
+
+#left_bar_section
+{
+   width:250px;
+   padding-right:10px;
+}
+
+#center_content
+{
+   position:relative;
+   padding:10px;
+}
+
+/* footer layout */
+footer.main_footer { 
+ height:50px; 
+ padding: 0px;
+ margin:0px;
+}
+
+.share_bar
+{
+   clear:both;
+}
+div.content_background_container
+{
+   position:relative;
+}
+
+.widget
+{
+  position:relative;
+  width:100%;
+  margin:0px;
+}
+
+.widget_vspace
+{
+   height:2px;
+   padding:4px;
+}
+
+.widget_content
+{
+  margin:0px;
+  padding:0px;
+  position:relative;
+}
+
+.widget_content h1
+{
+   font-size:1.2em;
+   font-weight:700;
+}
+
+div.widget_background, div.content_background
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+}
+    
+    ]]>
+    </style>
+    <params>
+      <param class="style" name="content_background">
+        <value>/assets/background.png</value>
+        <param_description guid="E121E288-E726-46C3-8B1C-D2E8EE692531">
+          <name>Main Body Background</name>
+          <description>Background for the main body</description>
+          <field_type>asset</field_type>
+          <permissions></permissions>
+        </param_description>
+      </param>
+    </params>
+    <pages>
+      <page controller="" action="">
+        <render_layout>roxiware/layouts/threecolumn</render_layout>
+        <style>
+          <![CDATA[
+          
+        
+        ]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="header_bar">
+            <style>
+              <![CDATA[
+              
+              
+/* Header layout */
+#header_bar_section {
+   min-height:20px;
+   position:relative; 
+}
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+              <instance order="4" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
+                <params>
+                </params>
+              </instance>
+              <instance order="3" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+                <params>
+                  <param class="local" name="float">
+                    <value>right</value>
+                    <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
+                  </param>
+                  <param class="local" name="show_background">
+                    <value>false</value>
+                    <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
+                  </param>
+                  <param class="local" name="menu_root">
+                    <value>
+                      <param class="local" name="menu_root_0">
+                        <value>
+                          <param class="local" name="name">
+                            <value>Home</value>
+                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
+                          </param>
+                          <param class="local" name="url">
+                            <value>/</value>
+                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
+                          </param>
+                          <param class="local" name="children">
+                            <value>
+                            </value>
+                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
+                          </param>
+                        </value>
+                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                      </param>
+                      <param class="local" name="menu_root_1">
+                        <value>
+                          <param class="local" name="name">
+                            <value>Blog</value>
+                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
+                          </param>
+                          <param class="local" name="url">
+                            <value>/blog</value>
+                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
+                          </param>
+                          <param class="local" name="children">
+                            <value>
+                            </value>
+                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
+                          </param>
+                        </value>
+                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                      </param>
+                      <param class="local" name="menu_root_2">
+                        <value>
+                          <param class="local" name="name">
+                            <value>Gallery</value>
+                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
+                          </param>
+                          <param class="local" name="url">
+                            <value>/gallery</value>
+                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
+                          </param>
+                          <param class="local" name="children">
+                            <value>
+                            </value>
+                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
+                          </param>
+                        </value>
+                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                      </param>
+                    </value>
+                    <param_description guid="45A433ED-7183-4A28-890B-08F585A0E41A"/>
+                  </param>
+                </params>
+              </instance>
+              <instance order="1" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+                <params>
+                  <param class="local" name="show_search_box">
+                    <value>false</value>
+                    <param_description guid="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793"/>
+                  </param>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
+                <params>
+                  <param class="local" name="height">
+                    <value>70</value>
+                    <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
+                  </param>
+                  <param class="local" name="display_items">
+                    <value>
+                      <param class="local" name="item-0">
+                        <value>
+                          <param class="local" name="left">
+                            <value>44.55555725097656</value>
+                            <param_description guid="DED6595E-7ABE-47F7-B536-328472C14990"/>
+                          </param>
+                          <param class="local" name="top">
+                            <value>-25.444442749023438</value>
+                            <param_description guid="06E72987-55E7-4C36-9620-776931B9B2F9"/>
+                          </param>
+                        </value>
+                        <param_description guid="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9"/>
+                      </param>
+                    </value>
+                    <param_description guid="AE42CE08-7AEA-49D0-90A0-6714CE599788"/>
+                  </param>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="footer_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="left_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>120</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="4" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+                <params>
+                </params>
+              </instance>
+              <instance order="5" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="6" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="right_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>120</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="top_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D">
+                <params>
+                  <param class="local" name="page_type">
+                    <value>home</value>
+                    <param_description guid="5032B423-3E1C-4E8E-B036-37F86777412F"/>
+                  </param>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="content">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page controller="" action="">
+        <render_layout>roxiware/layouts/threecolumn</render_layout>
+        <style>
+          <![CDATA[
+          
+#left_bar_section
+{
+   width:300px;
+}
+        
+        
+        ]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="left_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>300</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D">
+                <params>
+                  <param class="local" name="page_type">
+                    <value>home_left</value>
+                    <param_description guid="5032B423-3E1C-4E8E-B036-37F86777412F"/>
+                  </param>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="right_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>120</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="top_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+              <instance order="-1" widget_guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D">
+                <params>
+                  <param class="local" name="page_type">
+                    <value>home</value>
+                    <param_description guid="5032B423-3E1C-4E8E-B036-37F86777412F"/>
+                  </param>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="content">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page controller="roxiware/blog/post" action="">
+        <render_layout>roxiware/layouts/threecolumn</render_layout>
+        <style>
+          <![CDATA[
+          
+        .blog_nav .next_post
+        {
+           margin-left:20px;
+        }
+        .blog_nav .prev_post
+        {
+           margin-right:20px;
+        }
+        
+        
+        
+        
+        
+        ]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="left_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>250</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+                <params>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="right_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>120</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="top_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="content">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page controller="roxiware/events" action="">
+        <render_layout>roxiware/layouts/threecolumn</render_layout>
+        <style>
+          <![CDATA[
+          
+        
+        ]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="left_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>250</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="right_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>120</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="top_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="content">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page controller="roxiware/gallery" action="">
+        <render_layout>roxiware/layouts/twocolumn_left</render_layout>
+        <style>
+          <![CDATA[
+          
+        
+        ]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="right_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>120</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="2" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="3" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="top_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="content">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page controller="roxiware/people" action="">
+        <render_layout>roxiware/layouts/threecolumn</render_layout>
+        <style>
+          <![CDATA[
+          
+        
+        ]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="left_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>250</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="right_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+              <param class="local" name="width">
+                <value>120</value>
+                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+                  <name>Width</name>
+                  <description>Width of the section in pixels</description>
+                  <field_type>integer</field_type>
+                  <permissions></permissions>
+                </param_description>
+              </param>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="top_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="content">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page controller="roxiware/account" action="">
+        <render_layout>roxiware/layouts/twocolumn_left</render_layout>
+        <style>
+          <![CDATA[
+          
+        
+        ]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="right_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+              <instance order="1" widget_guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
+                <params>
+                </params>
+              </instance>
+              <instance order="2" widget_guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
+                <params>
+                </params>
+              </instance>
+            </widget_instances>
+          </section>
+          <section name="top_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+          <section name="content">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+    </pages>
+  </layout>
+</layouts>

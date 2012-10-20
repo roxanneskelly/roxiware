@@ -1,0 +1,52 @@
+
+<style>
+#section_layout_edit {
+  width:45em;
+}
+
+#section_layout_edit label
+{
+  width: 7em;
+}
+
+#section_layout_edit .panes
+{
+ width: 100%;
+ color:#000;
+}
+
+#section_layout_edit .panes > div
+{
+ height: 30em;
+}
+</style>
+
+<div class="section_layout_edit" id="section_layout_edit">
+   <%= form_tag(layout_page_section_path(@layout.guid, url_encode("#{@page.controller}\##{@page.action}"), @section.name), :method=>"put") do%>
+     <h3>Edit Section Layout: <%= @section.page_layout.controller %>#<%=@section.page_layout.action %> : <%= @section.name %>
+     <ul class="tabs">
+       <li><a href="#">Settings</a></li>
+       <li><a href="#">Style</a></li>
+     </ul>
+     <div class="panes">
+       <div>
+	  <%= fields_for :params do |param_field_block| %>
+	     <%= param_fields(param_field_block, @section.get_param_objs) %>
+	  <% end %>
+       </div>
+       <div>
+          <%= text_area_tag :style, @section.style, :class=>"section_layout_style" %>
+       </div>
+     </div>
+      
+     <%= button_tag "Save", :id=>"save_button", :type=>"submit" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      $("#section_layout_edit").find("ul.tabs").tabs($("div.panes > div"));
+      $("#section_layout_edit").find("button").button().click(function() {
+         
+      });
+   });
+</script>

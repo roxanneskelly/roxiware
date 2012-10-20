@@ -1,33 +1,42 @@
 
-.widget
+div.widget_vspace div
 {
-  position:relative;
-  margin-bottom:10px;
-  width:100%;
+  height:1px;
+  padding-top:4px;
+  color:#fff;
 }
 
-.widget_content
+div.widget_exception
 {
-  padding:10px;
-  position:relative;
+   font-size:0.7em;
+   height:100px;
+   position:relative;
+}
+div.widget_exception
+{
+   overflow:hidden;
+   width:100px;
+   height:100px;
 }
 
-.widget_content h1
+div.widget_exception:hover
 {
-   font-size:1.2em;
-   font-weight:700;
+   position:fixed;
+   color:#000;
+   background:#fff;
+   width:auto;
+   height:1000px;
+   z-index:20000;
+   top:40px;
+   left:10px;
 }
 
-.widget_content div.book
+div.widget_clear
 {
-   padding-bottom:10px;
+   float:clear;
+   height:0px;
+   width:0px;
 }
-
-.widget_content div.book div.book_title
-{
-  font-size:0.7em;
-}
-
 
 div.featured_blurb
 {
@@ -63,3 +72,174 @@ div.sidebar_portfolio_entries h1
 }
 
 
+.widget_vspace
+{
+   height:4px;
+   margin:0px;
+}
+.widget_vspace div
+{
+   width:100%;
+   height:2px;
+}
+
+.widget_vpsace_drop_hover div
+{
+   border-top:dotted 1px #bbb;
+}
+
+div.widget_drag_box
+{
+   background:none;
+   position: absolute;
+   border:dotted 1px #bbb;
+}
+
+div.new_widget_bar
+{
+   position:fixed;
+   top:0px;
+   width:150px;
+   height:100%;
+   left:-144px;
+   padding:0px;
+   border-right:solid 1px #000;
+   border-top:solid 1px #000;
+   font-size:0.7em;
+   z-index:9000;
+   color:#000;
+   background:#ccc;
+   transition: left 1.0s;
+   -moz-transition: left 1.0s;
+   -webkit-transition: left 1.0s;
+   -o-transition: left 1.0s;
+}
+
+div.new_widget_bar:hover
+{
+   left:0px;
+   transition: left 0.5s;
+   -moz-transition: left 0.5s;
+   -webkit-transition: left 0.5s;
+   -o-transition: left 0.5s;
+}
+
+div.new_widget
+{
+   position:relative;
+   padding:5px;
+   border-bottom:solid 1px #000;
+   cursor:pointer;
+}
+
+div.new_widget:hover
+{
+   background:#ddd;
+    -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+}
+
+.widget_instance_edit label
+{
+    width: 7em;
+}
+
+.widget_instance_edit input[type=checkbox]
+{
+    font-size:14px;
+    width: 1em;
+    align:right;
+    margin-left:6em;
+    margin-right:1em;
+}
+
+.widget_instance_edit .checkbox_label
+{
+    font-size:14px;
+    font-weight:900;
+}
+
+.widget_instance_edit .panes
+{
+    width: 100%;
+    color: #000;
+}
+
+div.widget_instance_edit_controls
+{
+  padding:0px;
+  text-align:left;
+  position:absolute;
+  width:100%;
+  color:#fff;
+  background:#555;
+  border:1px solid #000;
+  display:none;
+  z-index:10000;
+    -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+  height:20px;
+}
+
+div.widget_edit:hover
+{
+    -o-box-shadow: 1px 1px 5px rgba(200, 200, 200, 1.0);
+    -icab-box-shadow: 1px 1px 5px rgba(200, 200, 200, 1.0);
+    -khtml-box-shadow: 1px 1px 5px rgba(200, 200, 200, 1.0);
+    -moz-box-shadow: 1px 1px 5px rgba(200, 200, 200, 1.0);
+    -webkit-box-shadow: 1px 1px 5px rgba(200, 200, 200, 1.0);
+    box-shadow: 1px 1px 5px rgba(200, 200, 200, 1.0);
+}
+
+.context_menu
+{
+   position:relative;
+   list-style-type:none;
+   background: #eee;
+   border:1px solid #000;
+    border-radius:4px;
+    -moz-border-radius:4px;
+    -webkit-border-radius:4px;
+    padding:5px 0px 5px 0px;
+    -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
+    z-index:20000;
+    display:none;
+}
+
+.context_menu hr
+{
+   padding:0px;
+   margin:3px;
+   width:auto;
+}
+.context_menu a
+{
+   text-align:left;
+   color:#000 !important;
+   padding:1px 20px 1px 20px;
+   display:block;
+}
+
+.context_menu a:hover
+{
+   background:#888;
+   color:#fff;
+}
+
+.widget_content
+{
+   width:100%;
+}

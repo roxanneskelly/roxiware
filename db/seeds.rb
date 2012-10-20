@@ -8,16 +8,16 @@
 class Roxiware::User < ActiveRecord::Base
 end
 
-
 user = Roxiware::User.where(:username=>"admin").first
 if user.nil?
   print "Creating admin user\n"
   user = Roxiware::User.new({:username=>"admin", 
                            :email=>"admin@roxiware.com", 
-                           :role=>"admin", 
+                           :role=>"super", 
 			   :password=>"Password", 
                            :password_confirmation=>"Password"}, 
 			   :without_protection=>true)
+  user.save!
   user.create_person({:first_name=>"Admin", :last_name=>"User", :role=>"Admin", :bio=>"", :role=>""}, :without_protection=>true)
   user.save!
 
@@ -26,17 +26,5 @@ if user.nil?
 else
   print "User admin already exists\n"
 end
-
 categories = Roxiware::Terms::TermTaxonomy.create({:name=>"Category", :description=>"Category"}, :as=>"")
-
-writing = categories.terms.create({:name=>"Writing", :parent_id=>0}, :as=>"")
-urban_fantasy = categories.terms.create({:name=>"Urban Fantasy", :parent_id=>writing.id}, :as=>"")
-
-urban_fantasy = categories.terms.create({:name=>"Urban Fantasy", :parent_id=>writing.id}, :as=>"")
-
-sci_fi = categories.terms.create({:name=>"Science Fiction", :parent_id=>writing.id}, :as=>"")
-
-frugal = categories.terms.create({:name=>"Frugality", :parent_id=>0}, :as=>"")
-
-
 tags = Roxiware::Terms::TermTaxonomy.create({:name=>"Tag", :description=>"tag"}, :as=>"")

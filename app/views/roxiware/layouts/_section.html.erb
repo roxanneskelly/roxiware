@@ -4,7 +4,7 @@
   <% edit_section_class = "edit_section" if can? :move, Roxiware::Layout::WidgetInstance %>
   <% style = "" %>
   <% style += "width:#{layout_section.get_param('width').conv_value}px;" if layout_section.get_param('width').present? %>
-  <div id="<%= section %>_section" class="<%= section %>_class <%= edit_section_class %>" style="<%= style %>">
+  <div id="<%= section %>_section" section="<%= section %>" section_id="<%= u layout_section.id %>" class="<%= section %>_class <%= edit_section_class %>" style="<%= style %>" rel="/layout/<%=@current_layout.guid%>/page/<%= u layout_section.page_layout.get_url_identifier %>/section/<%=layout_section.name%>">
     <% layout_section.get_widget_instances.each do |widget_instance| %>
        <% show_widget = true %>
        <% begin %>
@@ -13,6 +13,7 @@
 	 <% show_widget = eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1) %>
 	 <% if show_widget || can?( :edit, widget_instance) %>
 	   <% locals[:widget_instance]=widget_instance %>
+	   <% locals[:widget_instance_id] = "widget-#{widget_instance.id}" if locals[:widget_instance_id].blank? %>
 	   <% locals[:layout_section]=layout_section %>
 	   <% locals[:page_layout]=@page_layout %>
 	   <% locals[:layout]=@current_layout %>
@@ -23,28 +24,27 @@
 	   <% else first_widget = false %>
 	   <% end %>
 	   <% widget_style = ""
-	      widget_style += "margin:0px;padding:0px;" if widget_instance.get_param("show_background") && widget_instance.get_param("show_background").conv_value 
 	      widget_height = widget_instance.get_param("height").conv_value
 	      widget_style += "height:#{widget_height}px;" if widget_height >= 0 
 	      widget_style += "text-align:"+widget_instance.get_param('float').conv_value+";"  if widget_instance.get_param('float') %>
 	   <% widget_edit_class = ""
 	      widget_edit_class = "widget_edit" if can? :edit, widget_instance %>
-	   <div class="widget <%= widget_edit_class %>" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
+	   <% widget_rendering = render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
+	   <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
 	           style="<%=widget_style%>">
 	     <% if widget_instance.get_param("show_background").conv_value %>
 	        <div class="widget_background"></div>
              <% end %>
 	     <div class="widget_content" style="display:inline-block">
-	       <%= render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
-	    </div>
-	  </div>
+	       <%= widget_rendering %>
+	     </div>
+	   </div>
          <% end %>
        <% rescue Exception => e  %>
-	 <div class="widget" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>">
+	   <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>">
            <div class="widget_background"></div>
            <% if can? :move, widget_instance %>
 	       <div class="widget_drag_box" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"></div>
-               <%= render :partial=>"roxiware/shared/widget_instance_edit_controls", :locals=>{:widget_instance=>widget_instance, :layout_section=>layout_section} %>
 	   <% end %>
 	   <div class="widget_exception">
 	    <% print "#{widget_instance.widget.name}\n" %>
@@ -77,4 +77,13 @@ Globals: <%= h globals.inspect %>
      <div class="widget_vspace"></div>
   <% end %>
   </div>
+  <script>
+     $("#<%= section %>_section").context_menu($("#section_context_menu"));
+     <% if layout_section.page_layout.get_url_identifier != "#" %>
+        $("#<%= section %>_section").context_menu().addInstanceMenus("<li id='section_delete'><a href='#' menu_item='section_delete' class='section_delete'>Collapse Section</a></li>");
+     <% end %>
+     <% if layout_section.page_layout.get_url_identifier != @page_layout.get_url_identifier %>
+        $("#<%= section %>_section").context_menu().addInstanceMenus("<li id='section_fork'><a href='#' menu_item='section_fork' class='section_fork'>Fork Section</a></li>");
+     <% end %>
+  </script>
 <% end %>

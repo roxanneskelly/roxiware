@@ -11,7 +11,7 @@ namespace :settings do
 
       desc "Import settings"
       task :import, [:settings_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:settings_file])
+	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/config/settings")
 	 doc_obj = parser.parse
 	 param_nodes = doc_obj.find("/settings/param")
 	 param_nodes.each do |param_node|
@@ -50,7 +50,7 @@ namespace :widget do
 
       desc "Import widgets"
       task :import, [:widget_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:widget_file])
+	 parser = XML::Parser.file(args[:widget_file] || "#{Roxiware::Engine.root}/config/widgets")
 	 doc_obj = parser.parse
 	 widget_nodes = doc_obj.find("/widgets/widget")
 	 widget_nodes.each do |widget_node|
@@ -95,7 +95,7 @@ namespace :layout do
 
       desc "Import a layout"
       task :import, [:layout_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:layout_file])
+	 parser = XML::Parser.file(args[:layout_file] || "#{Roxiware::Engine.root}/config/layouts")
 	 doc_obj = parser.parse
 	 layout_nodes = doc_obj.find("/layouts/layout")
 	 layout_nodes.each do |layout_node|

@@ -1,0 +1,124 @@
+
+
+<% if can? :edit, @page_layout %>
+<script>
+  $(document).bind("ready", function() {
+     $("body").context_menu($("#page_context_menu"));
+     <% if @page_layout.get_url_identifier != "#" %>
+         $("body").context_menu().addInstanceMenus("<li id='page_delete'><a href='#' menu_item='page_delete' class='page_delete'>Collapse Page</a></li>");
+     <% end %>
+     <% if @page_layout.action.blank? %>
+         $("body").context_menu().addInstanceMenus("<li id='page_fork'><a href='#' menu_item='page_fork' class='page_fork'>Fork Page</a></li>");
+     <% end %>
+     $("body").on("context_menu", function(event, menu_item) {
+        switch (menu_item) {
+<% if @page_layout.action.blank? %>
+          case "page_fork":
+        <% url_identifier = "#{params[:controller]}\#"
+	   url_identifier = url_identifier + params[:action] if @page_layout.controller.present? %>
+              $.ajax({url:"/layout/<%= @current_layout.guid %>/page/",
+                     type:"POST",
+                     data: {params: { url_identifier: "<%= url_identifier %>",
+	                              clone: <%= @page_layout.id %> }},
+                     dataType: "json",
+                     success: function(json_data, textStatus, jqXHR) {
+                        window.location.reload();
+                     }
+                 });
+             break;
+<% end %>
+<% if @page_layout.controller.present? %>
+          case "page_delete":
+              if(!confirm("Collapse Section\nAre you sure?")) {
+                   return;
+              }
+              $.ajax({url:"/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>",
+                     type:"DELETE",
+                     dataType: "json",
+                     success: function(json_data, textStatus, jqXHR) {
+                        window.location.reload();
+                     }
+                 });
+             break;
+<% end %>
+          case "page_settings":
+              overlayForm("/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>"); 
+              break;
+          break;
+        }     
+     });
+});
+</script>
+<% end %>
+
+<% if can? :edit, Roxiware::Layout::LayoutSection %>
+  <script>
+    $(document).bind("ready", function() {
+       $(".edit_section").on("context_menu", function(event, menu_item) {
+	  var section_link =$(this).attr("rel");
+
+          switch (menu_item) {
+            case "section_settings": 
+              overlayForm(section_link); break;
+            case "section_delete": 
+              if(!confirm("Collapse Section\nAre you sure?")) {
+                   return;
+              }
+              $.ajax({url:section_link,
+                     type:"DELETE",
+                     dataType: "json",
+                     success: function(json_data, textStatus, jqXHR) {
+                        window.location.reload();
+                     }
+                 });
+              break;
+           case "section_fork":
+              section_link = "/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>/section/";
+              $.ajax({url:section_link,
+                     type:"POST",
+                     dataType: "json",
+                     data: {params: { section: $(this).attr("section"), clone: $(this).attr("section_id") } }, 
+                     success: function(json_data, textStatus, jqXHR) {
+                        window.location.reload();
+                     }
+                 });               
+           break;
+         }});
+    });
+  </script>
+<% end %>
+
+
+
+<% if can? :edit, Roxiware::Layout::WidgetInstance %>
+  <script>
+    $(document).bind("ready", function() {
+       console.log("Adding widget context handler");
+       $(".widget").on("context_menu", function(event, menu_item) {
+          console.log("widget context handler hit");
+	  var layout_section = $(this).attr("section");
+	  var widget_instance = $(this).attr("widget_id");
+	  var section_link ="<%= "/layout/#{@current_layout.guid}/page/"+url_encode("#{@page_layout.controller}\##{@page_layout.action}")+"/section/"%>"+layout_section;
+	  var widget_link = section_link + "/widget/" + widget_instance;
+
+          switch (menu_item) {
+            case "widget_settings": 
+                overlayForm(widget_link); 
+                break;
+            case "widget_delete" :
+                if (!confirm("Delete Widget\nAre you sure?")) {
+                   return;
+                 }
+                 $.ajax({url:widget_link,
+                     type:"DELETE",
+                     dataType: "json",
+                     success: function(json_data, textStatus, jqXHR) {
+                        window.location.reload();
+                     }
+                 });               
+                 break;
+            }
+         });
+    });
+  </script>
+<% end %>

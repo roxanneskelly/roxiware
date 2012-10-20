@@ -22,13 +22,13 @@
 
 #page_layout_edit .panes > div
 {
- height: 20em;
+ height: 40em;
 }
 
 #page_layout_edit textarea.page_layout_style
 {
   width:100%;
-  height:26em;
+  height:36em;
   padding:0px;
   margin:0px;
 }
@@ -55,14 +55,11 @@
        <div>
           <div title="Select the form of layout for the page" style="display:inline-block">
 	    <%= label_tag :render_layout, "Page Layout" %>
-	    <%=  select_tag :render_layout, options_for_select({"Three Column"=> "roxiware/layouts/threecolumn", "Two Column Left"=>"roxiware/layouts/twocolumn_left"}, @page.render_layout) %>
+	    <%=  select_tag :render_layout, options_for_select({"Widget|Content|Widget"=> "roxiware/layouts/threecolumn", "Content|Widget"=>"roxiware/layouts/twocolumn_left", "Widget|Content"=>"roxiware/layouts/twocolumn_right", "One Column"=>"Content", "Widget|Widget|Content"=>"roxiware/layouts/double_left", "Content|Widget|Widget"=>"roxiware/layouts/double_right"}, @page.render_layout) %>
 	  </div>
- 	  <% @page.params.each do |page_layout_param| %>
-	    <div title="<%=page_layout_param.description.description%>" style="display:inline-block">
-            <%= label_tag page_layout_param.name.to_sym, page_layout_param.description.name %>
-            <%= text_field_tag page_layout_param.name.to_sym, page_layout_param.value %>
-	    </div>
-	 <% end %>
+	  <%= fields_for :params do |param_field_block| %>
+	     <%= param_fields(param_field_block, @page.get_param_objs) %>
+	  <% end %>
        </div>
        <div>
           <%= text_area_tag :style, @page.style, :class=>"page_layout_style" %>

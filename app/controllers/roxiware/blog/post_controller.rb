@@ -48,12 +48,12 @@ module Roxiware
 	 def index_by_date
 	   @enable_blog_edit = true
 	   authorize! :read, Roxiware::Blog::Post
-	   page = (params[:page] || 1).to_i
+	   @page = (params[:page] || 1).to_i
 	   conditions = {}
 	   if params[:format] == "rss"
-              num_posts = [(params[:max] || @blog_posts_per_feed).to_i, @max_blog_posts_per_feed].min
+              @num_posts = [(params[:max] || @blog_posts_per_feed).to_i, @max_blog_posts_per_feed].min
 	   else
-              num_posts = [(params[:max] || @blog_posts_per_page).to_i, @max_blog_posts_per_page].min
+              @num_posts = [(params[:max] || @blog_posts_per_page).to_i, @max_blog_posts_per_page].min
 	   end
 
 	   if params.has_key?(:year)
@@ -80,16 +80,18 @@ module Roxiware
 	     @posts = Roxiware::Blog::Post.visible(current_user)
 	   end
 
-           @posts = @posts.includes(:term_relationships, :terms).where(conditions).order("post_date DESC").limit(num_posts+1).offset(num_posts*(page-1))
-
-           if (@posts.length == num_posts+1)
+	   @num_posts_total = @posts.includes(:term_relationships, :terms).where(conditions).count
+           @posts = @posts.includes(:term_relationships, :terms).where(conditions).order("post_date DESC").limit(@num_posts+1).offset(@num_posts*(@page-1))
+	   @num_pages = (@num_posts_total.to_f/@num_posts.to_f).ceil.to_i
+           @link_params = {}
+	   @link_params[:max] = params[:max] if params[:max].present?
+           if (@posts.length == @num_posts+1)
 	      @posts.pop
-	      @next_page_link = url_for(:page=>page+1, :max=>num_posts)
+	      @next_page_link = url_for({:page=>@page+1}.merge @link_params)
 	   end
-	   if(page > 1)
-	      @prev_page_link = url_for(:page=>page-1, :max=>num_posts)
+	   if(@page > 1)
+	      @prev_page_link = url_for({:page=>@page-1}.merge @link_params)
 	   end
-	      
 
 	   respond_to do |format|
 	     format.html do 

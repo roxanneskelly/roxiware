@@ -85,6 +85,7 @@ module Roxiware
     end
 
     def category_ids
+      print "CATEGORY IDS " + self.terms.select {|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy::CATEGORY_ID }.collect{|term| term.id}.inspect + "\n\n"
       self.terms.select {|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy::CATEGORY_ID }.collect{|term| term.id}
     end
 
@@ -158,7 +159,7 @@ module Roxiware
     ajax_attr_accessible :comment_content, :comment_date, :comment_author, :comment_author_email, :comment_author_url, :person_id, :parent_id, :comment_status
     
     scope :published, where(:comment_status=>"publish")
-    scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR post_status='publish'")) }
+    scope :visible, lambda{|user| where((user.blank?) ? "comment_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR comment_status='publish'")) }
 
     before_validation() do
        self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))

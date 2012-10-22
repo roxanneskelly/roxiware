@@ -55,7 +55,7 @@
        <div>
           <div title="Select the form of layout for the page" style="display:inline-block">
 	    <%= label_tag :render_layout, "Page Layout" %>
-	    <%=  select_tag :render_layout, options_for_select({"Widget|Content|Widget"=> "roxiware/layouts/threecolumn", "Content|Widget"=>"roxiware/layouts/twocolumn_left", "Widget|Content"=>"roxiware/layouts/twocolumn_right", "One Column"=>"Content", "Widget|Widget|Content"=>"roxiware/layouts/double_left", "Content|Widget|Widget"=>"roxiware/layouts/double_right"}, @page.render_layout) %>
+	    <%=  select_tag :render_layout, options_for_select({"Widget|Content|Widget"=> "roxiware/layouts/threecolumn", "Content|Widget"=>"roxiware/layouts/twocolumn_left", "Widget|Content"=>"roxiware/layouts/twocolumn_right", "One Column"=>"roxiware/layouts/onecolumn", "Widget|Widget|Content"=>"roxiware/layouts/double_left", "Content|Widget|Widget"=>"roxiware/layouts/double_right"}, @page.render_layout) %>
 	  </div>
 	  <%= fields_for :params do |param_field_block| %>
 	     <%= param_fields(param_field_block, @page.get_param_objs) %>

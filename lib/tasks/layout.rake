@@ -28,9 +28,9 @@ namespace :settings do
           xml = ::Builder::XmlMarkup.new(:indent=>2, :target=>$stdout)
           xml.instruct! :xml, :version => "1.0"
           if args[:setting].present? 
-	     params = Roxiware::Param::Param.settings.where(:name=>args[:setting])
+	     params = Roxiware::Param::Param.where(:param_object_type=>nil, :name=>args[:setting])
 	  else
-	     params = Roxiware::Param::Param.settings
+	     params = Roxiware::Param::Param.where(:param_object_type=>nil)
 	  end
           xml.settings do |xml_params|
 	     params.each do |param|

@@ -212,7 +212,7 @@ module Roxiware
        def destroy
            @widget_instance = Roxiware::Layout::WidgetInstance.where(:id=>params[:id]).first
 	   raise ActiveRecord::RecordNotFound if @widget_instance.nil?
-	   authorize! :read, @widget_instance
+	   authorize! :destroy, @widget_instance
 	   moved_instances = {}
 	   order = @widget_instance.section_order
 	   respond_to do |format|

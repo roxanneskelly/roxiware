@@ -86,10 +86,9 @@ module Roxiware
 
 	   @page = @current_layout.page_layouts.build
 	   if (page_params[:clone].present?)
-	       print "CLONING PAGE\n"
                clone_page = Roxiware::Layout::PageLayout.find(page_params[:clone])
 	       raise ActiveRecord::RecordNotFound if clone_page.nil?
-	       @page.update_attributes(clone_page.attributes, :as=>nil)
+	       @page.update_attributes(clone_page.attributes, :as=>@role)
 	       clone_page.params.each do |page_param|
 	          # NOTE, recursive params?
 	          @page.params << page_param.dup
@@ -131,6 +130,24 @@ module Roxiware
 	   end
        end
 
+       def destroy
+           page_identifier = params[:id].split("#")
+	   controller = page_identifier[0] || ""
+	   action = page_identifier[1] || ""
+           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>controller, :action=>action).first
+	   raise ActiveRecord::RecordNotFound if @page.nil?
+	   authorize! :destroy, @page
+	   respond_to do |format|
+	      if @page.destroy
+	      	 refresh_layout
+		 format.html {redirect_to return_to_location("/"), :notice => "Page has been successfully deleted"}
+		 format.json {render :json=>{}}
+              else
+	         format.json {render :json=>report_error(@page)}
+		 format.html {redirect_to return_to_location("/"), :error => "Page was not deleted"}
+	      end
+	   end
+       end
 
      private
        def _load_role

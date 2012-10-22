@@ -80,9 +80,7 @@ module Roxiware
 	   section_params = params[:params]
 	   
            @section = @page.layout_sections.build
-	   print "SECTION PARAMS " + section_params.inspect + "\n"
 	   if(section_params[:clone].present?)
-	      print "CLONING from #{section_params[:clone]}\n"
 	      clone_section = Roxiware::Layout::LayoutSection.find(section_params[:clone])
 	      raise ActiveRecord::RecordNotFound if clone_section.nil?
 	      @section.update_attributes(clone_section.attributes, :as=>"")
@@ -123,6 +121,25 @@ module Roxiware
 		  format.xml  { head :fail }
 		  format.json { render :json=>report_error(@section)}
 	       end
+	   end
+       end
+
+
+       def destroy
+           @section = @page.section(params[:id])
+	   raise ActiveRecord::RecordNotFound if @section.nil?
+	   authorize! :destroy, @section
+	   success = true
+
+	   respond_to do |format|
+	      if @section.destroy
+	      	 refresh_layout
+		 format.html {redirect_to return_to_location("/"), :notice => "Section has been successfully deleted"}
+		 format.json {render :json=>{}}
+              else
+	         format.json {render :json=>report_error(@section)}
+		 format.html {redirect_to return_to_location("/"), :error => "Section was not deleted"}
+	      end
 	   end
        end
 

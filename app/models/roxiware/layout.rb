@@ -218,8 +218,7 @@ module Roxiware
 	  end
 	  
 	  def get_styles
-	     
-	     @style_cache ||= style_replace(self.style + self.sections.values.collect{|section| section.get_styles}.join(" "), self.params.where(:param_class=>:style))
+	     @style_cache ||= style_replace(self.style+ self.sections.values.collect{|section| section.get_styles}.join(" "), self.params.where(:param_class=>:style))
 	     @style_cache
 	  end
 

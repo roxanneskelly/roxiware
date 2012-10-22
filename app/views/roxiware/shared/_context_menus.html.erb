@@ -29,7 +29,7 @@
 <% end %>
 <% if @page_layout.controller.present? %>
           case "page_delete":
-              if(!confirm("Collapse Section\nAre you sure?")) {
+              if(!confirm("Collapse Page\nAre you sure?")) {
                    return;
               }
               $.ajax({url:"/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>",

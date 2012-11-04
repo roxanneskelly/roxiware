@@ -1,11 +1,4 @@
-<table class="people"><tr>
-<% if !@single_person %>
-  <td class="person_directory"> 
-    <%= render :partial => 'roxiware/people/directory' %>
-  </td>
-<% end %>
 <% if !@person.nil? %>
-  <td class="person_listing">
   <section><article class="person_listing">
     <% if (can? :edit, Roxiware::Person)  %>
       <div class="edit_controls">
@@ -45,9 +38,7 @@
     <div class="person_bio"><%= raw @person.bio %>
     <div style="clear:both"></div>
   </article></section>
-  </td>
 <% end %>
-</tr></table>
 <% if (can? :edit, Roxiware::Person) || (can? :add, Roxiware::Person) %>
    <%= render :partial => 'roxiware/people/editform' %>
 <% end %>

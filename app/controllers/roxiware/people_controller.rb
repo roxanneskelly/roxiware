@@ -3,7 +3,7 @@ class Roxiware::PeopleController < ApplicationController
 
   application_name "people"
 
-  load_and_authorize_resource :except => [ :show_seo, :new ], :class=>"Roxiware::Person"
+  load_and_authorize_resource :except => [ :index, :show_seo, :new ], :class=>"Roxiware::Person"
 
   before_filter do
     redirect_to("/") unless @enable_people
@@ -15,7 +15,9 @@ class Roxiware::PeopleController < ApplicationController
   def index
     @title = @title + " : People"
     @meta_description = @meta_description +" : People"
-    @people ||= []
+    people = Roxiware::Person.all
+    # iterate each person to see if user can read them
+    @people = people.select { |person| can? :read, person }
     @people.each do |person|
       @meta_keywords = @meta_keywords + ", " + person.first_name
       if !person.last_name.blank?

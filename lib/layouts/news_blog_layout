@@ -421,7 +421,7 @@ div.popup_form_alert {
     </params>
     <pages>
       <page controller="" action="">
-        <render_layout>roxiware/layouts/onecolumn</render_layout>
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
         <style>
           <![CDATA[]]>
         </style>
@@ -443,7 +443,7 @@ div.popup_form_alert {
             <params>
             </params>
             <widget_instances>
-              <instance widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" order="8">
+              <instance widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" order="7">
                 <params>
                 </params>
               </instance>
@@ -575,6 +575,18 @@ div.popup_form_alert {
                   </param>
                 </params>
               </instance>
+              <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="6">
+                <params>
+                  <param class="local" name="google_ad_format">
+                    <value>728x90</value>
+                    <param_description guid="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987"/>
+                  </param>
+                  <param class="local" name="float">
+                    <value>center</value>
+                    <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
+                  </param>
+                </params>
+              </instance>
             </widget_instances>
           </section>
           <section name="left_bar">
@@ -596,6 +608,18 @@ div.popup_form_alert {
               </param>
             </params>
             <widget_instances>
+              <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="-1">
+                <params>
+                  <param class="local" name="google_ad_slot">
+                    <value>1084111802</value>
+                    <param_description guid="CF1C5254-1644-447F-9D87-DE0CBC472E0E"/>
+                  </param>
+                  <param class="local" name="google_ad_format">
+                    <value>120x600</value>
+                    <param_description guid="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987"/>
+                  </param>
+                </params>
+              </instance>
             </widget_instances>
           </section>
           <section name="footer_bar">
@@ -794,6 +818,58 @@ div.popup_form_alert {
             <widget_instances>
             </widget_instances>
           </section>
+        </sections>
+      </page>
+      <page controller="roxiware/blog/post" action="">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+        </sections>
+      </page>
+      <page controller="roxiware/blog/post" action="show_by_title">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+        </sections>
+      </page>
+      <page controller="roxiware/blog/post" action="show_by_title">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[
+              
+            
+            ]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page controller="roxiware/blog/post" action="index_by_date">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
         </sections>
       </page>
     </pages>

@@ -22,10 +22,12 @@ xml.urlset(:xmlns=>"http://www.sitemaps.org/schemas/sitemap/0.9") do
    # bio/people
    if @people.present?
       @people.each do |person|
-	xml.lastmod person.updated_at.strftime("%Y-%m-%d")
-	xml.changefreq "weekly"
-	xml.priority "1.0"
-	xml.loc "http://#{request.host_with_port}/people/#{person.seo_index}"
+	 xml.url do
+	   xml.lastmod person.updated_at.strftime("%Y-%m-%d")
+	   xml.changefreq "weekly"
+	   xml.priority "1.0"
+	   xml.loc "http://#{request.host_with_port}/people/#{person.seo_index}"
+	  end
        end
    end
 end

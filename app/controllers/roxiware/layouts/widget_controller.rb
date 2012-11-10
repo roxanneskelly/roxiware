@@ -102,7 +102,6 @@ module Roxiware
 	      @widget_instance.section_order = last_order
 	   end
 	   @widget_instance.layout_section_id = target_section.id
-	   @widget_instance.layout_section = target_section
 	   @widget_instance.save!
 	   
 
@@ -120,10 +119,17 @@ module Roxiware
 
        def create
           authorize! :create, Roxiware::Layout::WidgetInstance
-          @layout_section.widget_instances.where("section_order >= #{params[:section_order]}").each do |instance|
+
+	  target_order = params[:section_order].to_i
+           if target_order < 0
+              target_order = 1
+              target_order += @layout_section.get_widget_instances.last.section_order if @layout_section.get_widget_instances.last
+           end
+	  
+          @layout_section.widget_instances.where("section_order >= #{target_order}").each do |instance|
 	      Roxiware::Layout::WidgetInstance.increment_counter(:section_order, instance.id)
 	  end
-	  @widget_instance = @layout_section.widget_instances.create({:widget_guid=>params[:widget_guid], :section_order=>params[:section_order]}, :as=>@role)
+	  @widget_instance = @layout_section.widget_instances.create({:widget_guid=>params[:widget_guid], :section_order=>target_order}, :as=>@role)
 	  @widget_instance.widget = Roxiware::Layout::Widget.where(:guid=>params[:widget_guid]).first
           @widget_instance.save!
 	  @layout_section.save!

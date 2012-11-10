@@ -4,11 +4,13 @@
     <% recent_posts.each do |post| %>
        <div class="recent_post_entry"><%= link_to post.post_title, post.post_link %>
          <div class="post_date"><%= post.post_date.localtime.strftime("%D") %>,&nbsp;
-	    <div class="post_author">
-		<a href="<%= people_url %>/<%= post.person.seo_index %>">
-		  <%= post.person.full_name %>
-		</a>
-            </div>
+	    <% if post.person.present? %>
+	       <div class="post_author">
+		   <a href="<%= people_url %>/<%= post.person.seo_index %>">
+		     <%= post.person.full_name %>
+		   </a>
+	       </div>
+	    <% end %>
          </div>
 	 <div class="post_snippet"><%= truncate(Sanitize.clean(post.post_exerpt), :separator=>' ', :length=>50, :omission=>'') %><%= link_to " ...", post.post_link %></div>
        </div>

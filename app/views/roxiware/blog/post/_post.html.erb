@@ -26,16 +26,18 @@
         <% end %>
         <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
 	<div class="post_header">
-         <% if show_full_header %>
+         <% if show_full_header && post.person.present? %>
           <img class="post_author_img" src="<%= post.person.thumbnail_image_url %>" class="person_thumbnail"/>
          <% end %>
 	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%D %I:%M %p") %></div>
          <% if show_full_header %>
-	  <div class="post_author">
-	      by <a href="<%= people_url %>/<%= post.person.seo_index %>">
-		<%= post.person.full_name %>
-	      </a>
-	  </div>
+	 <% if post.person.present? %>
+	    <div class="post_author">
+		by <a href="<%= people_url %>/<%= post.person.seo_index %>">
+		  <%= post.person.full_name %>
+		</a>
+	    </div>
+          <% end %>
           <div class="comments_link">
 	      <%= link_to pluralize(post.comment_count, "Comment"), post.post_link %>
 	      <% if can?(:edit, post) && (post.pending_comment_count > 0) %>

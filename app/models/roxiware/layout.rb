@@ -1,3 +1,4 @@
+require 'uri'
 module Roxiware
    module Layout
      # Layout
@@ -150,7 +151,7 @@ module Roxiware
 	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:super, nil]
 
 	  def get_url_identifier
-	      "#{controller}\##{action}"
+	      URI.escape("#{controller}##{action}", '/')
 	  end
 
 	  def get_params

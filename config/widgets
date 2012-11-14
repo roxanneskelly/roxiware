@@ -35,7 +35,6 @@
 .notice-flash
 {
   padding:20px;
-  color:white;
   left-margin:40px;
 }
 
@@ -52,25 +51,6 @@
   color:red;
   left-margin:40px;
 }
-
-#menu_widget_instance_edit div.menu_root_edit input
-{
-   width:20em;
-   float:right;
-   font-size:0.8em;
-   line-height:14px;0.8em;
-   height:14px;
-   margin:0;
-   display:inline-block;
-}
-
-#menu_widget_instance_edit div.menu_root_edit input[disabled]
-{
-  display:inline-block;
-  border:none;
-  background:none;
-}
-
     ]]>
     </style>
     <params>
@@ -663,6 +643,73 @@ opacity: 0.8;
         <param_description guid="5032B423-3E1C-4E8E-B036-37F86777412F">
           <name>Page Type</name>
           <description>Unique identifier for the content of this page.</description>
+          <field_type>string</field_type>
+          <permissions></permissions>
+        </param_description>
+      </param>
+    </params>
+  </widget>
+  <widget guid="FAD1AC80-5580-468C-B4BC-F72A8F6E5F75" version="1.0">
+    <name>Javascript Widget</name>
+    <description>Javascript</description>
+    <preload>
+      <![CDATA[
+        require 'uuid'
+        script_id_param = widget_instance.get_param("script_id")
+        script_id = script_id_param.conv_value
+        if (script_id.blank?)
+           script_id = (UUID.new.generate :compact)
+           widget_instance.set_param("script_id", script_id)
+           widget_instance.save!
+        end
+        print "SCRIPT ID IS #{script_id}\n"
+        locals[:page] = Roxiware::Page.where(:page_type=>script_id).first || Roxiware::Page.create({:page_type=>script_id, :content=>""}, :as=>"")
+        true
+    ]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+    <script><%= raw page.content %></script>
+    ]]>
+    </render_view>
+    <editform>
+      <![CDATA[
+        <% script_id = @widget_instance.get_param("script_id").conv_value
+        page = Roxiware::Page.where(:page_type=>script_id).first %>
+<div class="widget_instance_edit" id="script_widget_edit">
+  <%= form_tag("/") do %>
+      <%= text_area_tag :content, page.content, :class=>"" %>
+  <% end %>
+  <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
+</div>
+<script>
+$(function() {
+    var script_id = "<%= script_id %>";
+    $("button#save_button").click( function() {
+         $.ajax({type:"PUT",
+            url: "/page/"+script_id + ".json",
+            dataType: "json",
+            data: jQuery.param($("form").serializeArray()),
+            success: function() {
+              window.location.reload();
+            }
+          })}).button();
+});
+</script>
+    ]]>
+    </editform>
+    <style>
+      <![CDATA[
+      <%= fields_for :params do |params_fields| %>
+      <% end %>
+    ]]>
+    </style>
+    <params>
+      <param class="local" name="script_id">
+        <value></value>
+        <param_description guid="E69D3C97-40EE-4A3D-91CC-0C1CA0844EAB">
+          <name>Script ID</name>
+          <description>Unique identifier for this script.</description>
           <field_type>string</field_type>
           <permissions></permissions>
         </param_description>

@@ -24,7 +24,8 @@
 	   <% else first_widget = false %>
 	   <% end %>
 	   <% widget_style = ""
-	      widget_height = widget_instance.get_param("height").conv_value
+	      widget_height = 0
+	      widget_height = widget_instance.get_param("height").conv_value if widget_instance.get_param("height").present?
 	      widget_style += "height:#{widget_height}px;" if widget_height >= 0 
 	      widget_style += "text-align:"+widget_instance.get_param('float').conv_value+";"  if widget_instance.get_param('float') %>
 	   <% widget_edit_class = ""
@@ -32,7 +33,7 @@
 	   <% widget_rendering = render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
 	   <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
 	           style="<%=widget_style%>">
-	     <% if widget_instance.get_param("show_background").conv_value %>
+	     <% if widget_instance.get_param("show_background").present? && widget_instance.get_param("show_background").conv_value %>
 	        <div class="widget_background"></div>
              <% end %>
 	     <div class="widget_content" style="display:inline-block">

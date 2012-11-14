@@ -471,6 +471,17 @@ module Roxiware
 	    @param_objs[name.to_sym]
 	  end
 
+	  def set_param(name, value)
+	    get_param_objs
+	    if (@param_objs[name.to_sym].param_object_type != "Roxiware::Layout::WidgetInstance")
+	       @param_objs[name.to_sym] = self.params.build(
+	          {:param_class=> @param_objs[name.to_sym].param_class,
+		   :name=> @param_objs[name.to_sym].name,
+		   :description_guid=>@param_objs[name.to_sym].description_guid,
+		   :value=>value})
+            end
+          end
+
 	  def get_param_objs
 	     if @param_objs.nil?
 	        @param_objs = {}

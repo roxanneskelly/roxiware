@@ -435,7 +435,6 @@ top: 0;
 opacity:0.9;
 width: 100%; /*width of sub menus*/
 padding-bottom:0px;
-font: normal 11px Verdana;
 display: list-item;
 margin:0px;
 height:auto;

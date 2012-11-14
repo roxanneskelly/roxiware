@@ -14,11 +14,9 @@
         switch (menu_item) {
 <% if @page_layout.action.blank? %>
           case "page_fork":
-        <% url_identifier = "#{params[:controller]}\#"
-	   url_identifier = url_identifier + params[:action] if @page_layout.controller.present? %>
               $.ajax({url:"/layout/<%= @current_layout.guid %>/page/",
                      type:"POST",
-                     data: {params: { url_identifier: "<%= url_identifier %>",
+                     data: {params: { url_identifier: "<%= @page_layout.get_url_identifier %>",
 	                              clone: <%= @page_layout.id %> }},
                      dataType: "json",
                      success: function(json_data, textStatus, jqXHR) {
@@ -98,7 +96,7 @@
           console.log("widget context handler hit");
 	  var layout_section = $(this).attr("section");
 	  var widget_instance = $(this).attr("widget_id");
-	  var section_link ="<%= "/layout/#{@current_layout.guid}/page/"+url_encode("#{@page_layout.controller}\##{@page_layout.action}")+"/section/"%>"+layout_section;
+	  var section_link ="<%= "/layout/#{@current_layout.guid}/page/"+url_encode("#{@page_layout.get_url_identifier}")+"/section/"%>"+layout_section;
 	  var widget_link = section_link + "/widget/" + widget_instance;
 
           switch (menu_item) {

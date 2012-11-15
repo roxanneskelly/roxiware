@@ -94,11 +94,7 @@
        console.log("Adding widget context handler");
        $(".widget").on("context_menu", function(event, menu_item) {
           console.log("widget context handler hit");
-	  var layout_section = $(this).attr("section");
-	  var widget_instance = $(this).attr("widget_id");
-	  var section_link ="<%= "/layout/#{@current_layout.guid}/page/#{@page_layout.get_url_identifier}/section/"%>"+layout_section;
-	  var widget_link = section_link + "/widget/" + widget_instance;
-
+	  var widget_link = $(this).attr("rel");
           switch (menu_item) {
             case "widget_settings": 
                 overlayForm(widget_link); 

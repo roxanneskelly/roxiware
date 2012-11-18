@@ -1,6 +1,6 @@
 <div class="layout_edit_controls">
   <%= button_tag "Edit Layout", :rel=>"/layout/#{@current_layout.guid}", :id=>"edit-layout", :class=>"overlay_form layout_edit button_edit", :type=>"button"  %>
-  <%= button_tag "Edit Layout Page", :rel=>"/layout/#{@current_layout.guid}/page/#{@page_layout.get_url_identifier}", :id=>"edit-layout-page", :class=>"overlay_form layout_page_edit button_edit", :type=>"button"  %>
+  <%= button_tag "Edit Layout Page", :rel=>"/layout/#{@current_layout.guid}/page/"+ url_encode(@page_layout.get_url_identifier), :id=>"edit-layout-page", :class=>"overlay_form layout_page_edit button_edit", :type=>"button"  %>
   <%= button_tag "Site Settings", :rel=>"/settings", :id=>"edit-settings", :class=>"overlay_form settings_edit button_edit", :type=>"button"  %>
 
   <% url = URI.parse(request.fullpath) 

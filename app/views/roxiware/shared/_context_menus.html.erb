@@ -4,10 +4,10 @@
 <script>
   $(document).bind("ready", function() {
      $("body").context_menu($("#page_context_menu"));
-     <% if @page_layout.get_url_identifier != "#" %>
+     <% if !@page_layout.is_root? %>
          $("body").context_menu().addInstanceMenus("<li id='page_delete'><a href='#' menu_item='page_delete' class='page_delete'>Collapse Page</a></li>");
      <% end %>
-     <% if @page_layout.action.blank? %>
+     <% if @page_layout.is_root? %>
          $("body").context_menu().addInstanceMenus("<li id='page_fork'><a href='#' menu_item='page_fork' class='page_fork'>Fork Page</a></li>");
      <% end %>
      $("body").on("context_menu", function(event, menu_item) {
@@ -16,7 +16,7 @@
           case "page_fork":
               $.ajax({url:"/layout/<%= @current_layout.guid %>/page/",
                      type:"POST",
-                     data: {params: { url_identifier: "<%= @page_layout.get_url_identifier %>",
+                     data: {params: { url_identifier: "<%= params[:controller] + '#' + params[:action] %>",
 	                              clone: <%= @page_layout.id %> }},
                      dataType: "json",
                      success: function(json_data, textStatus, jqXHR) {
@@ -40,7 +40,7 @@
              break;
 <% end %>
           case "page_settings":
-              overlayForm("/layout/<%= @current_layout.guid %>/page/<%= @page_layout.get_url_identifier %>"); 
+              overlayForm("/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>"); 
               break;
           break;
         }     
@@ -71,7 +71,7 @@
                  });
               break;
            case "section_fork":
-              section_link = "/layout/<%= @current_layout.guid %>/page/<%= @page_layout.get_url_identifier %>/section/";
+              section_link = "/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>/section/";
               $.ajax({url:section_link,
                      type:"POST",
                      dataType: "json",

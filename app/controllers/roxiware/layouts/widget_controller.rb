@@ -14,9 +14,7 @@ module Roxiware
 	   raise ActiveRecord::RecordNotFound if @layout.nil?
 	   authorize! :read, @layout
 
-           page_identifier = params[:page_id].split("#")
-	   page_identifier << ""
-           @page_layout = @layout.find_page_layout(page_identifier[0], page_identifier[1])
+           @page_layout = @layout.page_layout_by_url(@layout.id, params[:page_id])
 	   raise ActiveRecord::RecordNotFound if @page_layout.nil?
 	   authorize! :read, @page_layout
 
@@ -97,8 +95,11 @@ module Roxiware
 	   if target_order > 0
              @widget_instance.section_order = target_order
 	   else
-	      last_order = 1
-	      last_order += target_section.get_widget_instances.last.section_order if target_section.get_widget_instances.last
+	      if target_section.get_widget_instances.last.blank?
+	         last_order = 1
+	      else
+	         last_order += target_section.get_widget_instances.last.section_order
+	      end
 	      @widget_instance.section_order = last_order
 	   end
 	   @widget_instance.layout_section_id = target_section.id

@@ -94,6 +94,13 @@ module Roxiware
 	       stack[-1] if stack.present?
 	  end
 
+	  def page_layout_by_url(layout_id, url_identifier)
+	      page_id = URI.decode(url_identifier).split("#")
+	      find_page_layout((page_id[0] || ""), (page_id[1] || ""))
+	  end
+
+
+
           def page_layout_stack(current_controller, action)
 	     controller = current_controller.clone
 	     if @page_layout_cache.blank?
@@ -106,11 +113,9 @@ module Roxiware
 
 	     result = []
 	     @page_layout_cache.each do |page_layout|
-	        if((page_layout.controller == controller) || page_layout.controller.blank?)
-		   if ((page_layout.action == action) || page_layout.action.blank?)
-		      page_layout.refresh_sections_if_needed(result[-1])
-		      result <<  page_layout
-		   end
+	        if(page_layout.is_root? || (page_layout.controller == controller) && (page_layout.action == action))
+		   page_layout.refresh_sections_if_needed(result[-1])
+		   result <<  page_layout
 		end
              end
 	     result
@@ -151,7 +156,17 @@ module Roxiware
 	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:super, nil]
 
 	  def get_url_identifier
-	      URI.encode("#{controller}##{action}".gsub('/', "%2F"))
+	      URI.encode("#{controller}##{action}")
+	  end
+	  
+	  def set_url_identifier(url_identifier)
+	      page_id = URI.decode(url_identifier).split("#")
+	      self.controller = page_id[0] || ""
+	      self.action = page_id[1] || ""
+	  end
+
+	  def is_root?
+	     controller.blank? && action.blank?
 	  end
 
 	  def get_params
@@ -260,7 +275,7 @@ module Roxiware
 	  end
 
 	  def section(section_name)
-	     @sections[section_name] ||= self.layout_sections.create(:name=>section_name, :style=>"")
+	     @sections[section_name] ||= self.layout_sections.create({:name=>section_name, :style=>""}, :as=>"")
 	  end
       end
 

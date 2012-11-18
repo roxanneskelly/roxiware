@@ -39,7 +39,7 @@
                                             var source_widget = $(ui.draggable).attr("id").split("-")[1];
                                             if (source_widget == "new") {
                                               var guid = $(ui.draggable).attr("guid");
-					      var endpoint = '<%= layout_page_path(@current_layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}")) %>/section/'+target_section + "/widget/";
+					      var endpoint = $(this).parent().attr("rel") + "/widget/";
 					      $.ajax({url: endpoint, 
 						      type: "POST",
 						      dataType: "json",
@@ -53,7 +53,7 @@
 					      if((source_section == target_section) && (target_order == $(ui.draggable).attr("order"))) {
 						 return;
 					      }
-					      var endpoint = '<%= layout_page_path(@current_layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}")) %>/section/'+source_section + "/widget/" + source_widget + "/move";
+					      var endpoint = $(this).parent().attr("rel") + "/widget/" + source_widget + "/move";
 					      $.ajax({url: endpoint, 
 						      type: "PUT",
 						      dataType: "json",

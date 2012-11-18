@@ -8,9 +8,7 @@ module Roxiware
 	   @layout = Roxiware::Layout::Layout.where(:guid=>params[:layout_id]).first
 	   raise ActiveRecord::RecordNotFound if @layout.nil?
 	   authorize! :read, @layout
-           page_identifier = params[:page_id].split("#")
-	   page_identifier << ""
-           @page = @layout.find_page_layout(page_identifier[0], page_identifier[1])
+           @page = @layout.page_layout_by_url(@layout.id, params[:page_id])
 	   raise ActiveRecord::RecordNotFound if @page.nil?
 	   authorize! :read, @page
        end

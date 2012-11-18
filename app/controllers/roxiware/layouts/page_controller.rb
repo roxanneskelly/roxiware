@@ -24,10 +24,7 @@ module Roxiware
        end
        
        def show
-           page_identifier = params[:id].split("#")
-	   controller = page_identifier[0] || ""
-	   action = page_identifier[1] || ""
-           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>controller, :action=>action).first
+           @page = @layout.page_layout_by_url(@layout.id, params[:id])
 	   raise ActiveRecord::RecordNotFound if @page.nil?
 	   authorize! :read, @page
            respond_to do |format|
@@ -36,10 +33,7 @@ module Roxiware
        end
 
        def update
-           page_identifier = params[:id].split("#")
-	   controller = page_identifier[0] || ""
-	   action = page_identifier[1] || ""
-           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>controller, :action=>action).first
+           @page = @layout.page_layout_by_url(@layout.id, params[:id])
 	   raise ActiveRecord::RecordNotFound if @page.nil?
 	   authorize! :update, @page
 	   success = true
@@ -80,22 +74,18 @@ module Roxiware
 	   authorize! :create, Roxiware::Layout::PageLayout
            page_params = params[:params]
 	   
-	   identifier = page_params[:url_identifier].split("#")
-	   controller = identifier[0] || ""
-	   action = identifier[1] || ""
-
 	   @page = @current_layout.page_layouts.build
 	   if (page_params[:clone].present?)
                clone_page = Roxiware::Layout::PageLayout.find(page_params[:clone])
 	       raise ActiveRecord::RecordNotFound if clone_page.nil?
-	       @page.update_attributes(clone_page.attributes, :as=>@role)
+	       @page.update_attributes(clone_page.attributes, :as=>"")
 	       clone_page.params.each do |page_param|
 	          # NOTE, recursive params?
 	          @page.params << page_param.dup
 	       end
 	   end
-           @page.controller = controller
-	   @page.action = action
+           @page.set_url_identifier(URI.decode(page_params[:url_identifier]))
+           @page.save!
 	   success = true
            ActiveRecord::Base.transaction do
 	      begin
@@ -131,10 +121,7 @@ module Roxiware
        end
 
        def destroy
-           page_identifier = params[:id].split("#")
-	   controller = page_identifier[0] || ""
-	   action = page_identifier[1] || ""
-           @page = Roxiware::Layout::PageLayout.where(:layout_id=>@layout.id, :controller=>controller, :action=>action).first
+           @page = @layout.page_layout_by_url(@layout.id, params[:id])
 	   raise ActiveRecord::RecordNotFound if @page.nil?
 	   authorize! :destroy, @page
 	   respond_to do |format|

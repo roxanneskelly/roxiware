@@ -81,7 +81,7 @@ Globals: <%= h globals.inspect %>
   </div>
   <script>
      $("#<%= section %>_section").context_menu($("#section_context_menu"));
-     <% if layout_section.page_layout.get_url_identifier != "#" %>
+     <% if !layout_section.page_layout.is_root? %>
         $("#<%= section %>_section").context_menu().addInstanceMenus("<li id='section_delete'><a href='#' menu_item='section_delete' class='section_delete'>Collapse Section</a></li>");
      <% end %>
      <% if layout_section.page_layout.get_url_identifier != @page_layout.get_url_identifier %>

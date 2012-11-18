@@ -36,7 +36,7 @@
 </style>
 
 <div class="widget_instance_edit" id="widget_instance_edit">
-   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page.get_url_identifier()), @layout_section.name, @widget_instance.id), :method=>"put") do%>
+   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier()), @layout_section.name, @widget_instance.id), :method=>"put") do%>
      <h3><%= @widget_instance.widget.name %> settings</h3>
          <% if @widget_instance.widget.editform.present? %>
             <%= render :inline => @widget_instance.widget.editform %>

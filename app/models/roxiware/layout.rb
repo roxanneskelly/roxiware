@@ -156,7 +156,7 @@ module Roxiware
 	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:super, nil]
 
 	  def get_url_identifier
-	      URI.encode("#{controller}##{action}")
+	      URI.encode("#{controller}##{action}", "/")
 	  end
 	  
 	  def set_url_identifier(url_identifier)

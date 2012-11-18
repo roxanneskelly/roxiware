@@ -45,7 +45,7 @@
 </style>
 
 <div class="page_layout_edit" id="page_layout_edit">
-   <%= form_tag(layout_page_path(@layout.guid, url_encode("#{@page.controller}\##{@page.action}")), :method=>"put") do%>
+   <%= form_tag(layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)), :method=>"put") do%>
      <h3>Edit Page Layout: <%= @page.controller %> # <%= @page.action %></h3>
      <ul class="tabs">
        <li><a href="#">Settings</a></li>

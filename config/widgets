@@ -198,7 +198,7 @@
 
 <% menu_root = @widget_instance.get_param("menu_root").conv_value %>
 <div class="widget_instance_edit" id="menu_widget_instance_edit">
-   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}"), @layout_section.name, @widget_instance.id), :method=>"put") do%>
+   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
      <h3><%= @widget_instance.widget.name %> settings</h3>
      <ul class="tabs">
        <li><a href="#">Layout</a></li>
@@ -284,7 +284,7 @@
             xml_result = xml_result + xmlTreeExport("menu_root_"+index, $(node), $("#menu_widget_instance_edit ul#root_edit_<%= menu_root.id %>"));
          });
          xml_result = xml_result + "</value></param></widget_params>";
-         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode("#{@page_layout.controller}\##{@page_layout.action}"), @layout_section.name, @widget_instance.id) %>.xml?" + $("#menu_widget_instance_edit form").serialize();
+         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.xml?" + $("#menu_widget_instance_edit form").serialize();
          $.ajax({type:"PUT",
                  processData: false, 
                  contentType: "application/xml",
@@ -1541,7 +1541,7 @@ div#text_properties input
 		    xml_result = xml_result + "</value></param>";
 	     });
 	     xml_result = xml_result + "</value></param></widget_params>";
-	     var endpoint = "<%= layout_page_section_widget_path(layout.guid, url_encode("#{page_layout.controller}\##{page_layout.action}"), layout_section.name, widget_instance.id ) %>.xml";
+	     var endpoint = "<%= layout_page_section_widget_path(layout.guid, url_encode(page_layout.get_url_identifier), layout_section.name, widget_instance.id ) %>.xml";
 	     $.ajax({type:"PUT",
 		     processData: false,
 		     contentType: "application/xml",

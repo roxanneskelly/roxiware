@@ -22,7 +22,7 @@
 </style>
 
 <div class="section_layout_edit" id="section_layout_edit">
-   <%= form_tag(layout_page_section_path(@layout.guid, url_encode("#{@page.controller}\##{@page.action}"), @section.name), :method=>"put") do%>
+   <%= form_tag(layout_page_section_path(@layout.guid, url_encode(@page.get_url_identifier), @section.name), :method=>"put") do%>
      <h3>Edit Section Layout: <%= @section.page_layout.controller %>#<%=@section.page_layout.action %> : <%= @section.name %>
      <ul class="tabs">
        <li><a href="#">Settings</a></li>

@@ -30,7 +30,7 @@
               if(!confirm("Collapse Page\nAre you sure?")) {
                    return;
               }
-              $.ajax({url:"/layout/<%= @current_layout.guid %>/page/<%= @page_layout.get_url_identifier %>",
+              $.ajax({url:"/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>",
                      type:"DELETE",
                      dataType: "json",
                      success: function(json_data, textStatus, jqXHR) {

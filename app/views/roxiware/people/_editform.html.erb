@@ -62,7 +62,7 @@ $(document).bind("ready", function() {
                     canEdit: true,
                     method: method,
                     uploadImageParams: {
-                        image_sizes: ["thumbnail", "medium"]
+                        image_sizes: ["thumbnail", "xsmall", "small", "medium","large"]
                     },
                     success: function(xhr, status) {
                        window.location.reload();

@@ -243,6 +243,15 @@
       <permissions/>
     </param_description>
   </param>
+  <param class="people" name="portrait_size">
+    <value>medium</value>
+    <param_description guid="5A75D095-82D6-41A1-933A-E3F11A231729">
+      <name>Portrait Size</name>
+      <description>Size of portrait to display.</description>
+      <field_type>string</field_type>
+      <permissions/>
+    </param_description>
+  </param>
   <param class="people" name="single_person">
     <value>false</value>
     <param_description guid="B908FDB5-A0B5-48AC-8BAE-48741485CC06">

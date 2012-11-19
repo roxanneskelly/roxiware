@@ -37,7 +37,7 @@ class Roxiware::Person < ActiveRecord::Base
    ajax_attr_accessible :first_name, :last_name, :role, :email, :image_thumbprint, :bio, :show_in_directory, :full_name, :seo_index
 
    before_destroy :destroy_images
-   configure_image_handling(%w(thumbnail medium))
+   configure_image_handling(%w(thumbnail xsmall small medium large))
 
    def self.add_social_networks (*args)
       options = {}

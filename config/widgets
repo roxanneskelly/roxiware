@@ -1883,4 +1883,52 @@ nav.blog_page_nav div.blog_page_nav_next
       </param>
     </params>
   </widget>
+  <widget guid="1E8738E5-E991-492C-AF1E-0CC864F84930">
+     <name>People Directory</name>
+     <description>Displays a directory of people in the people list.</description>
+     <preload>
+      <![CDATA[
+       @people.present?
+    ]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+      <nav class="people_directory">
+         <% @people.each do |person| %>
+	    <div class="person_directory_entry">
+	      <% if (params[:controller]=="roxiware/people") && (params[:action] == "show_seo") && (params[:seo_index] == person.seo_index) %>
+                  <div class="person_name"><%= person.full_name %></div>
+	          <% if person.role.present? %>
+	             <div class="person_role"><%= person.role %></div>
+	          <% end %>
+               <% else %>
+	       <%= link_to(:seo_index=>person.seo_index) do %>
+                  <div class="person_name"><%= person.full_name %></div>
+	          <% if person.role.present? %>
+	             <div class="person_role"><%= person.role %></div>
+	          <% end %>
+               <% end %>
+	      <% end %>
+	    </div>
+	 <% end %>
+      </nav>
+    ]]>
+    </render_view>
+    <editform>
+	<![CDATA[
+      ]]>
+    </editform>
+    <style>
+    </style>
+    <params>
+      <param class="local" name="show_background">
+        <value>false</value>
+        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
+      </param>
+      <param class="local" name="height">
+        <value>-1</value>
+        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
+      </param>
+    </params>
+  </widget>
 </widgets>

@@ -7,6 +7,7 @@
   <div id="<%= section %>_section" section="<%= section %>" section_id="<%= u layout_section.id %>" class="<%= section %>_class <%= edit_section_class %>" style="<%= style %>" rel="/layout/<%=@current_layout.guid%>/page/<%= u layout_section.page_layout.get_url_identifier %>/section/<%=layout_section.name%>">
     <% layout_section.get_widget_instances.each do |widget_instance| %>
        <% show_widget = true %>
+       <% widget_path  = "/layout/#{@current_layout.guid}/page/#{u layout_section.page_layout.get_url_identifier}/section/#{layout_section.name}/widget/#{widget_instance.id}" %>
        <% begin %>
          <% locals = widget_instance.get_params %>
          <% globals = widget_instance.globals %>
@@ -33,7 +34,7 @@
 	   <% widget_rendering = render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
 	   <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
 	           style="<%=widget_style%>"
-                   rel="/layout/<%=@current_layout.guid%>/page/<%= u layout_section.page_layout.get_url_identifier %>/section/<%=layout_section.name%>/widget/<%= widget_instance.id %>">
+                   rel="<%= widget_path %>">
 	     <% if widget_instance.get_param("show_background").present? && widget_instance.get_param("show_background").conv_value %>
 	        <div class="widget_background"></div>
              <% end %>
@@ -43,7 +44,8 @@
 	   </div>
          <% end %>
        <% rescue Exception => e  %>
-	   <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>">
+	   <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
+                   rel="<%= widget_path %>">
            <div class="widget_background"></div>
            <% if can? :move, widget_instance %>
 	       <div class="widget_drag_box" id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"></div>

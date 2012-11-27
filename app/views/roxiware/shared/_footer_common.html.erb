@@ -73,8 +73,8 @@
      $("#left_bar:last-child, #center_bar:last-child, #right_bar:last-child").each(function(index, elem){
         bottom_pos = Math.max(bottom_pos, $(elem).position() + $(elem).height());
      });
-      $(".overlay_form").click(function() {
-         overlayForm($(this).attr("rel"));
+      $(".settings_link").click(function() {
+         settingsForm($(this).attr("rel"));
      });
   });
 

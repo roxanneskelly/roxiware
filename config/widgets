@@ -103,9 +103,17 @@
     </preload>
     <render_view>
       <![CDATA[
-      <% def render_menu(menu_node) %>
+      <% 
+         def render_menu(menu_node) 
+	  permissions = {"guest"=>0, "user"=>1, "admin"=>2, "super"=>3}
+          role = "guest"
+          role = current_user.role unless current_user.nil?
+          menu_node_values = menu_node.conv_value
+          permission = menu_node_values['permission'].to_s
+          permission = "guest" unless permissions.has_key?(permission)
+          print "PERMISSION " + permission + "\n\n"
+          return if(permissions[permission] > permissions[role]) %> 
           <li id="child_<%= menu_node.id %>">
-	    <% menu_node_values = menu_node.conv_value %>
 	      <% uri = URI.parse(menu_node_values["url"].conv_value) 
 	      menu_class = "menu_selected" if ((uri.path == request.path) && ( uri.host.blank? || (uri.host == request.host))) %>
 	      <%=  link_to(menu_node_values["url"].conv_value, :class=>menu_class) do %>
@@ -125,24 +133,6 @@
           <% menu_root.each do |menu_node_child| 
 	     render_menu(menu_node_child)
            end%>
-	  <% if show_system_menus %>
-	    <% if user_signed_in? %>
-	       <li>
-		 <a href="/account/edit">Account</a>
-		 <ul>
-		   <li><a href="/account/edit">Edit</a></li>
-		   <li><a href="/account/logout">Log Out</a></li>
-		 </ul>
-	       </li>
-	       <% if current_user.role=="admin" || current_user.role="super" %>
-	         <li><a href="/account/">Admin</a>
-		   <ul>
-	             <li><a href="/account/">Manage Users</a></li>
-                   </ul>
-                 </li>
-               <% end %>
-            <% end %>
-	  <% end %>
 	</ul>
       <% if show_search_box %>
 	 <%= form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do %>
@@ -177,23 +167,129 @@
 
 <style>
 
-#new_menu_item
-{
-  cursor:pointer;
-  display:inline;
-}    
-#menu_widget_instance_edit {
-  width:34em;
-}
-
 #menu_widget_instance_edit .panes > div
 {
- height: 20em;
+  width:  40em;
+  height: 25em;
 }
-#menu_widget_instance_edit .panes > div#style_pane label
+
+div.menu_edit 
 {
-    width:15em;
+  width:100%;
+  height:100%;
 }
+
+#menu_edit_left_pane
+{
+    margin:0px;
+    padding:0px;
+    height:25em;
+    width:12em;
+    display:inline-block;
+    vertical-align:top;
+}
+
+#menu_edit_right_pane
+{
+    margin:0px;
+    padding:0px;
+    width:27em;
+    display:inline-block;
+    height:25em;
+    vertical-align:top;
+}
+
+#menu_edit_right_pane label
+{
+   width:4em;
+}
+#menu_edit_right_pane input[name=url]
+{
+   width:30em;
+}
+
+
+div.menu_root_edit
+{
+   border:solid 1px black;
+   background:white;
+   margin:0px;
+   padding:0px;
+   vertical-align:top;
+   height:23em;
+   overflow:scroll;
+}
+
+#menu_item_edit_bar
+{
+   margin:0px;
+   padding:0px;
+   border:solid 1px #777;
+   font-size:14px;
+   vertical-align:center;
+   background-image: -ms-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+   background-image: -moz-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+   background-image: -o-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+
+   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #DDDDDD), color-stop(1, #777777));
+   background-image: -webkit-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+   background-image: linear-gradient(to bottom, #DDDDDD 0%, #777777 100%);
+   cursor:default;
+}
+
+div.menu_item_edit_bar_button
+{
+   width:1em;
+   border-right:solid 1px #222222;
+   border-left:solid 1px #777777;
+   display:inline-block;
+   cursor:pointer;
+   text-align:center;
+   padding:3px 5px 3px 5px;
+}
+
+div.menu_item_edit_bar_button:active
+{
+   background-color:#777;
+}
+div.menu_item_edit_bar_button:hover
+{
+   background-image: -ms-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+   background-image: -moz-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+   background-image: -o-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+
+   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #CCCCCC), color-stop(1, #666666));
+   background-image: -webkit-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+   background-image: linear-gradient(to bottom, #CCCCCC 0%, #666666 100%);
+}
+
+#menu_widget_instance_edit {
+  width:43em;
+}
+
+
+
+div.table_edit_bar
+{
+   height:1em;
+}
+
+div.menu_root_edit ul
+{
+   padding:0px;
+   margin:0px;
+}
+
+div.menu_edit a
+{
+   width:10em;
+}
+
+#menu_edit_right_pane fieldset label
+{
+   text-align:left;
+}
+
 </style>
 
 <% menu_root = @widget_instance.get_param("menu_root").conv_value %>
@@ -201,24 +297,25 @@
    <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
      <h3><%= @widget_instance.widget.name %> settings</h3>
      <ul class="tabs">
-       <li><a href="#">Layout</a></li>
        <li><a href="#">Settings</a></li>
+       <li><a href="#">Layout</a></li>
      </ul>
      <div class="panes">
-       <div class="layout">
+       <div class="settings">
          <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
 	 <br/>
-         <%= fields_for :params do |params_fields| %>
-	     <%= param_field(params_fields, @widget_instance.get_param("show_system_menus")) %>
+         <%= fields_for :params, :id=>"params_field" do |params_fields| %>
 	     <%= param_field(params_fields, @widget_instance.get_param("show_search_box")) %>
 	     <%= param_field(params_fields, @widget_instance.get_param("show_arrow")) %>
 	 <% end %>
+       </div>
+       <div class="menu_layout">
 	 <div class="menu_edit" id="menu-edit-<%= menu_root.id %>">
 	    <% def render_edit_menu(menu_node, parent) %>
 		<li id="child_edit_<%= menu_node.id %>">
 		  <% menu_node_values = menu_node.conv_value %>
-                  <a href="#"><%= menu_node_values["name"].conv_value %></a>
-		  <input type="text" name="<%= parent %>[url]" value="<%= menu_node_values['url'].conv_value %>" guid="<%= menu_node_values['url'].description_guid %>" disabled />
+                  <a href="#"><%= menu_node_values["name"].to_s %></a>
+		  <input type="hidden" name="<%= parent %>[url]" value="<%= menu_node_values['url'].to_s %>" guid="<%= menu_node_values['url'].description_guid %>" permission="<%= (menu_node_values['permission'] || 'guest').to_s %>"/>
 		  <% if menu_node_values["children"].present? %> 
 		     <ul guid="<%= menu_node_values['children'].description_guid%>">
 			<% menu_node_values["children"].conv_value.each do |menu_node_child| 
@@ -228,21 +325,31 @@
 		  <% end %>
 		</li>
 	    <% end %>
-
-	    <div id="root_edit_<%= menu_root.id %>"  class='menu_root_edit'>
-	      <ul id="root_edit_<%= menu_root.id %>">
-		<% menu_root.each do |menu_node_child| 
-		   render_edit_menu(menu_node_child, "menu_root[#{menu_node_child.id}]")
-		 end%>
-	      </ul>
-            </div>
-	    <div id="new_menu_item">+</div>
+	    <div id="menu_edit_left_pane">
+	       <div id="root_edit_<%= menu_root.id %>"  class='menu_root_edit'>
+		 <ul id="root_edit_<%= menu_root.id %>">
+		   <% menu_root.each do |menu_node_child| 
+		      render_edit_menu(menu_node_child, "menu_root[#{menu_node_child.id}]")
+		    end%>
+		 </ul>
+	       </div>
+	       <div id="menu_item_edit_bar">
+                  <div id="new_menu_item" class="menu_item_edit_bar_button">+</div><div id="delete_menu_item" class="menu_item_edit_bar_button">-</div>
+               </div>
+	    </div>
+	    <div id="menu_edit_right_pane">
+	      <%= field_set_tag "Permissions", :id=>"permissions" do %>
+		 <%= radio_button_tag "permission", "guest" %><label>Guest</label></br>
+		 <%= radio_button_tag "permission", "user" %><label>User</label></br>
+		 <%= radio_button_tag "permission", "admin" %><label>Admin</label></br>
+		 <%= radio_button_tag "permission", "super" %><label>Superuser</label></br>
+              <% end %>
+	      <%= field_set_tag "URL" do %>
+	         <input type="text" name="url">
+	      <% end %>
+	    </div>
 	  </div>
         </div>
-       <div id="style_pane">
-	 <%= fields_for :params do |param_field_block| %>
-	 <% end %>
-       </div>
      </div>
      <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
    <% end %>
@@ -260,6 +367,10 @@
 				"<param class='local' name='url'>" +
 				  "<param_description guid='43EE6D21-7BEB-4F45-8105-78ED08A931B0'/>" + 
 				  "<value>" + node.find("input").attr("value") + "</value>" +
+				"</param>" +
+                                "<param class='local' name='permission'>" +
+				  "<param_description guid='14E5907E-2C02-413B-8F3B-6C03C2AC9EA1'/>" + 
+				  "<value>" + node.find("input").attr("permission") + "</value>" +
 				"</param>";
          var children = node.find("> ul > li");
          if (children) {
@@ -275,7 +386,6 @@
       };
 
       $("#menu_widget_instance_edit  button#save_button").click(function() {
-         $("#menu_widget_instance_edit ul#root_edit_<%= menu_root.id %> input").attr("disabled", "disabled");
          var xml_result = '<?xml version="1.0" encoding="UTF-8"?><widget_params>' +
            "<param name='menu_root' class='local'>" +
              "<param_description guid='45A433ED-7183-4A28-890B-08F585A0E41A'/>" + 
@@ -304,29 +414,99 @@
          $(this_jstree).jstree("rename"); 
       });
       $(this_jstree).jstree({
-          "ui"     : { "select_limit" : 1, "initially_select" : [initial_item] },
-          "themes" : {"no_load":true, url:false, theme:"default", "icons":true, "dots":true},
           "core" : {"html_titles" : true, "animation":200},
+          "dnd" : {"drop_target" : false, "drag_target" : false},
+          "themes" : {"no_load" : true, url:"/assets/themes/apple/style.css", theme:"apple", "icons":true, "dots":true},
+          "ui" : { "initially_select":$(this_jstree).find("li:first").attr("id")},
           "hotkeys" : { "backspace" : function(e) {
-              e.preventDefault(); 
-              this.remove(); 
-           }},
+                           e.preventDefault(); 
+                           this.remove();
+                          }, 
+                        "down" : function(e) {
+                                var o = this.data.ui.last_selected || -1;
+                                var n = this._get_next(o);
+                                console.log(n);
+                                if (n.length > 0) {
+				   this.deselect_all();
+				   this.select_node(n);
+                                }
+                                return false; 
+                        },
+                        "up" : function(e) {
+                                var o = this.data.ui.last_selected || -1;
+                                var n = this._get_prev(o);
+                                if (n.length > 0) {
+                                   this.deselect_all();
+                                   this.select_node(n);
+                                }
+                                return false; 
+                         },
+                        "space" : false, "ctrl+up" : false, "ctrl+down" : false, "shift+up" : false, "shift+down" : false,
+                        "shift-space" : false, "ctrl+space" : false, "f2" : false, "del" : false,
+                        "left" : function(e) {
+                                var o = this.data.ui.last_selected;
+                                if(o) {
+                                   if(!o.hasClass("jstree-open")) { 
+                                      var n = this._get_prev(o);
+                                      if (n.length > 0) {
+                                        this.deselect_all();
+                                        this.select_node(n); 
+                                      }
+                                   }
+                                }
+                                return false; 
+                           },
+                        "right" : function(e) {
+                                var o = this.data.ui.last_selected;
+                                if(o && o.length) {
+                                        if(o.hasClass("jstree-closed")) { this.open_node(o); }
+                                        else if(o.hasClass("jstree-open")){ 
+                                          var n = this._get_next(o);
+                                          if (n.length > 0) {
+                                             this.deselect_all();
+                                             this.select_node(n); 
+                                          }
+                                        }
+                                }
+                                return false; 
+                           },
+                        "ctrl+left" : false, "ctrl+right" : false, "shift+left" : false, "shift+right" : false
+          },
           "plugins" : ["themes", "html_data", "ui", "dnd","crrm","hotkeys"]
       });
+     $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input[name=url]").change(function() {
+        $(this_jstree).jstree("get_selected").find("> input").val($(this).val());
+     });
+     $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input:radio[name=permission]").change(function() {
+        var permission = $(this).filter(":checked").val();
+        $(this_jstree).jstree("get_selected").find("> input").attr("permission", permission);
+   
+     });
      $(this_jstree).bind("select_node.jstree", function(event, data) {
-        $(this_jstree + " input").attr("disabled", "disabled");
-        $(this_jstree).jstree("get_selected").find("> input").removeAttr("disabled");
+        var selected_url = $(this_jstree).jstree("get_selected").find("> input");
+        $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input[name=url]").val(selected_url.val());
+        $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input:radio[value=guest]").removeAttr("checked");
+        var permission = selected_url.attr("permission");
+        $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input:radio[value="+permission+"]").attr("checked", true);
+      });
+      $(this_jstree).bind("loaded.jstree", function(event, data) { 
+	 $(this_jstree).jstree("open_all");
+	 $(this_jstree).jstree("select_node","li:first");
+      });
 
+      $("#menu_widget_instance_edit #delete_menu_item").click(function() {
+         var currently_selected = $(this_jstree).jstree("get_selected");
+         if (currently_selected) {
+            $(this_jstree).jstree("delete_node", currently_selected);
+         }
       });
       $("#menu_widget_instance_edit #new_menu_item").click(function() {
          var currently_selected = $(this_jstree).jstree("get_selected");
          if (currently_selected) {
             new_node = $(this_jstree).jstree("create", currently_selected, "after", "New Menu Item", function(new_node) {
-               $(new_node).find("a").after("<input type='text' value='/'/>");
-               $(this_jstree + " input").attr("disabled", "disabled");
+               $(new_node).find("a").after("<input type='text' value='/' permission='guest'/>");
                $(this_jstree).jstree("deselect_all");
                $(this_jstree).jstree("select_node", new_node);
-               $(new_node).find("> input").removeAttr("disabled");
 	       $(new_node).find("a").dblclick(function() {
 		  $(this_jstree).jstree("rename");
 	       });
@@ -334,11 +514,9 @@
          }
          else {
            new_node = $(this_jstree).jstree("create", -1, "New Menu Item", function(new_node) {
-               $(new_node).find("a").after("<input type='hidden' value='New Menu Item'/><input type='text' value='/'/>");
-               $(this_jstree + " input").attr("disabled", "disabled");
+               $(new_node).find("a").after("<input type='hidden' value='New Menu Item'/><input type='text' value='/' permission='guest'/>");
                $(this_jstree).jstree("deselect_all");
                $(this_jstree).jstree("select_node", new_node);
-               $(new_node).find("> input").removeAttr("disabled");
 	       $(new_node).find("a").dblclick(function() {
 		  $(this_jstree).jstree("rename");
 	       });
@@ -523,15 +701,6 @@ opacity: 0.8;
           <permissions></permissions>
         </param_description>
       </param>
-      <param class="local" name="show_system_menus">
-        <value>true</value>
-        <param_description guid="25F80A0B-8EAE-4637-8C34-EB2DB405A577">
-          <name>Show System Menus</name>
-          <description>Append the account and admin menus.</description>
-          <field_type>bool</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
       <param class="local" name="menu_root">
         <value>
 	  <param class="local" name="child-1">
@@ -551,6 +720,15 @@ opacity: 0.8;
 		  <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0">
 		     <name>URL</name>
 		     <description>Menu URL</description>
+		     <field_type>string</field_type>
+		     <permissions></permissions>
+		  </param_description>
+		</param>
+		<param class="local" name="permission">
+		  <value>guest</value>
+		  <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">
+		     <name>Permission</name>
+		     <description>Permission</description>
 		     <field_type>string</field_type>
 		     <permissions></permissions>
 		  </param_description>
@@ -583,7 +761,10 @@ opacity: 0.8;
 		  <value>/blog</value>
 		  <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
 		</param>
-
+		<param class="local" name="permission">
+		  <value>guest</value>
+		  <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"/>
+                </param>
             </value>
 	    <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
 	  </param>
@@ -661,7 +842,6 @@ opacity: 0.8;
            widget_instance.set_param("script_id", script_id)
            widget_instance.save!
         end
-        print "SCRIPT ID IS #{script_id}\n"
         locals[:page] = Roxiware::Page.where(:page_type=>script_id).first || Roxiware::Page.create({:page_type=>script_id, :content=>""}, :as=>"")
         true
     ]]>
@@ -1376,7 +1556,7 @@ div#text_properties input
        <ul id="image_item_context_menu" class="context_menu">
 	 <li id="delete_item"><a href="#" menu_item="delete_item">Delete</a></li>
        </ul>
-       <div id="text_properties" class="popup_form overlay">
+       <div id="text_properties" class="settings overlay">
 	  <%= label_tag :font, "Font" %><%= select_tag :font, options_for_select(
              {"Arial"=>"Arial", 
               "Geneva" => "Geneva",

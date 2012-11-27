@@ -50,6 +50,10 @@ module Roxiware
 	     hash_params.collect{|name, value| value}.sort_by{|param| param.name}
 	  end
 
+	  def to_s
+	    conv_value.to_s
+	  end
+
 	  def conv_value
 	     case description.field_type
 	       when "array"

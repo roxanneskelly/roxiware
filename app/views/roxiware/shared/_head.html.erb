@@ -23,7 +23,7 @@
 
 <% if can? :edit, Roxiware::Layout::WidgetInstance %>
    <ul id="widget_context_menu" class="context_menu">
-     <li id="widget_settings"><a href="#" menu_item="widget_settings" class="overlay_form">Widget Settings</a></li>
+     <li id="widget_settings"><a href="#" menu_item="widget_settings" class="settings_link">Widget Settings</a></li>
      <% if can? :delete, Roxiware::Layout::WidgetInstance %>
         <li id="delete_widget"><a href="#" menu_item="widget_delete" class="widget_instance_delete">Delete Widget</a></li>
      <% end %>
@@ -31,11 +31,11 @@
 <% end %>
 <% if can? :edit, Roxiware::Layout::LayoutSection %>
    <ul id="section_context_menu" class="context_menu">
-         <li id="section_settings"><a href="#" id="section_settings" menu_item="section_settings" class="overlay_form">Section Settings</a></li>
+         <li id="section_settings"><a href="#" id="section_settings" menu_item="section_settings" class="settings_link">Section Settings</a></li>
      </ul>
 <% end %>
 <% if can? :edit, @page_layout %>
    <ul id="page_context_menu" class="context_menu">
-       <li id="page_settings"><a href="#" id="page_settings" menu_item="page_settings" class="overlay_form">Page Settings</a></li>
+       <li id="page_settings"><a href="#" id="page_settings" menu_item="page_settings" class="settings_link">Page Settings</a></li>
     </ul>
 <% end %>

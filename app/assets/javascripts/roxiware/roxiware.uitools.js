@@ -345,9 +345,9 @@
 
 })(jQuery);
 
-function overlayForm(url)
+function settingsForm(url)
 {
-   var overlay = $("<div id='edit_overlay' class='popup_form overlay'><div class='contentWrap'> </div></div>");
+   var overlay = $("<div id='edit_overlay' class='settings overlay'><div class='contentWrap'> </div></div>");
    $("body").append(overlay);
    overlay.find(".contentWrap").load(url, function(responseText, textStatus, xhr) {
       if(xhr.status != 200) {
@@ -358,10 +358,10 @@ function overlayForm(url)
 		top: "center",
                 oneInstance: false,
 		load: true,
-		zIndex: 99999,
+		zIndex: 2000,
                 closeOnClick: false,
 		mask: {
-		     zIndex: 99997,
+		     zIndex: 1999,
 		     color: "#222",
 	             loadSpeed: 200,
 		     opacity: 0.6

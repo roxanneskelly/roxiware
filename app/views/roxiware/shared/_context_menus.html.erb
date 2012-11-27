@@ -40,7 +40,7 @@
              break;
 <% end %>
           case "page_settings":
-              overlayForm("/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>"); 
+              settingsForm("/layout/<%= @current_layout.guid %>/page/<%= u @page_layout.get_url_identifier %>"); 
               break;
           break;
         }     
@@ -57,7 +57,7 @@
 
           switch (menu_item) {
             case "section_settings": 
-              overlayForm(section_link); break;
+              settingsForm(section_link); break;
             case "section_delete": 
               if(!confirm("Collapse Section\nAre you sure?")) {
                    return;
@@ -97,7 +97,7 @@
 	  var widget_link = $(this).attr("rel");
           switch (menu_item) {
             case "widget_settings": 
-                overlayForm(widget_link); 
+                settingsForm(widget_link); 
                 break;
             case "widget_delete" :
                 if (!confirm("Delete Widget\nAre you sure?")) {

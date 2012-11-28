@@ -1,12 +1,10 @@
 class Roxiware::AccountController < ApplicationController
+  before_filter :authenticate_user!
   load_and_authorize_resource :except=>[:edit, :update, :show, :new], :class=>"Roxiware::User"
 
   before_filter do
-    @role = "guest"
-    if (!current_user.nil?)
-        @role = current_user.role 
-        @role = "self" if current_user == @user
-    end
+    @role = current_user.role 
+    @role = "self" if current_user == @user
   end
 
   # GET - enumerate user

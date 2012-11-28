@@ -1,6 +1,6 @@
 <% layout_section = @page_layout.section(section) %>
 <% first_widget = true %>
-<% if layout_section.present? && (layout_section.widget_instances.present? || can?(:move, Roxiware::Layout::WidgetInstance))  %>
+<% if layout_section.present?  %>
   <% edit_section_class = "edit_section" if can? :move, Roxiware::Layout::WidgetInstance %>
   <% style = "" %>
   <% style += "width:#{layout_section.get_param('width').conv_value}px;" if layout_section.get_param('width').present? %>

@@ -25,6 +25,7 @@ Roxiware::Engine.routes.draw do
 
   get "/account/edit" => "account#edit", :id => 0, :as=>"edit_self"
   put "/account/edit" => "account#update", :id => 0, :as=>"edit_self"
+  get "/admin" => "account#index"
   resources :account
   get "page/:page_type" => "page#show"
   put "page/:page_type" => "page#update"

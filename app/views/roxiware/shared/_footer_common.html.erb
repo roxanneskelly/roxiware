@@ -36,7 +36,7 @@
                                             var drop_target = this;
                                             var target_section = $(this).attr("section");
                                             var target_order = $(this).attr("order");
-                                            var source_widget = $(ui.draggable).attr("id").split("-")[1];
+                                            var source_widget = $(ui.draggable).attr("widget_id");
                                             if (source_widget == "new") {
                                               var guid = $(ui.draggable).attr("guid");
 					      var endpoint = $(this).parent().attr("rel") + "/widget/";

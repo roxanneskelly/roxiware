@@ -473,6 +473,10 @@ div.popup_form_alert {
                             <value>/</value>
                             <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
                           </param>
+			  <param class="local" name="permission">
+			    <value>guest</value>
+			    <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"/>
+                          </param>
                           <param class="local" name="children">
                             <value>
                             </value>
@@ -486,6 +490,10 @@ div.popup_form_alert {
                           <param class="local" name="name">
                             <value>Blog</value>
                             <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
+                          </param>
+			  <param class="local" name="permission">
+			    <value>guest</value>
+			    <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"/>
                           </param>
                           <param class="local" name="url">
                             <value>/blog</value>

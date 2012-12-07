@@ -111,7 +111,6 @@
           menu_node_values = menu_node.conv_value
           permission = menu_node_values['permission'].to_s
           permission = "guest" unless permissions.has_key?(permission)
-          print "PERMISSION " + permission + "\n\n"
           return if(permissions[permission] > permissions[role]) %> 
           <li id="child_<%= menu_node.id %>">
 	      <% uri = URI.parse(menu_node_values["url"].conv_value) 
@@ -297,10 +296,31 @@ div.menu_edit a
    <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
      <h3><%= @widget_instance.widget.name %> settings</h3>
      <ul class="tabs">
-       <li><a href="#">Settings</a></li>
        <li><a href="#">Layout</a></li>
+       <li><a href="#">Settings</a></li>
      </ul>
      <div class="panes">
+       <div class="menu_layout">
+	 <div class="menu_edit" id="menu-edit-<%= menu_root.id %>">
+	    <div id="menu_edit_left_pane">
+	       <div id="root_edit_<%= menu_root.id %>"  class='menu_root_edit'>
+	       </div>
+	       <div id="menu_item_edit_bar">
+                  <div id="new_menu_item" class="menu_item_edit_bar_button">+</div><div id="delete_menu_item" class="menu_item_edit_bar_button">-</div>
+               </div>
+	    </div>
+	    <div id="menu_edit_right_pane">
+              <label>Name</label><input type="text" name="name"></br>
+	      <label>URL</label><input type="text" name="url"></br>
+	      <%= field_set_tag "Permissions", :id=>"permissions" do %>
+		 <%= radio_button_tag "permission", "guest" %><label>Guest</label></br>
+		 <%= radio_button_tag "permission", "user" %><label>User</label></br>
+		 <%= radio_button_tag "permission", "admin" %><label>Admin</label></br>
+		 <%= radio_button_tag "permission", "super" %><label>Superuser</label></br>
+              <% end %>
+	    </div>
+	  </div>
+       </div>
        <div class="settings">
          <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
 	 <br/>
@@ -309,91 +329,19 @@ div.menu_edit a
 	     <%= param_field(params_fields, @widget_instance.get_param("show_arrow")) %>
 	 <% end %>
        </div>
-       <div class="menu_layout">
-	 <div class="menu_edit" id="menu-edit-<%= menu_root.id %>">
-	    <% def render_edit_menu(menu_node, parent) %>
-		<li id="child_edit_<%= menu_node.id %>">
-		  <% menu_node_values = menu_node.conv_value %>
-                  <a href="#"><%= menu_node_values["name"].to_s %></a>
-		  <input type="hidden" name="<%= parent %>[url]" value="<%= menu_node_values['url'].to_s %>" guid="<%= menu_node_values['url'].description_guid %>" permission="<%= (menu_node_values['permission'] || 'guest').to_s %>"/>
-		  <% if menu_node_values["children"].present? %> 
-		     <ul guid="<%= menu_node_values['children'].description_guid%>">
-			<% menu_node_values["children"].conv_value.each do |menu_node_child| 
-			   render_edit_menu(menu_node_child, parent+"#{parent}[children][#{menu_node_child.id}]")
-			end%>
-		    </ul>
-		  <% end %>
-		</li>
-	    <% end %>
-	    <div id="menu_edit_left_pane">
-	       <div id="root_edit_<%= menu_root.id %>"  class='menu_root_edit'>
-		 <ul id="root_edit_<%= menu_root.id %>">
-		   <% menu_root.each do |menu_node_child| 
-		      render_edit_menu(menu_node_child, "menu_root[#{menu_node_child.id}]")
-		    end%>
-		 </ul>
-	       </div>
-	       <div id="menu_item_edit_bar">
-                  <div id="new_menu_item" class="menu_item_edit_bar_button">+</div><div id="delete_menu_item" class="menu_item_edit_bar_button">-</div>
-               </div>
-	    </div>
-	    <div id="menu_edit_right_pane">
-	      <%= field_set_tag "Permissions", :id=>"permissions" do %>
-		 <%= radio_button_tag "permission", "guest" %><label>Guest</label></br>
-		 <%= radio_button_tag "permission", "user" %><label>User</label></br>
-		 <%= radio_button_tag "permission", "admin" %><label>Admin</label></br>
-		 <%= radio_button_tag "permission", "super" %><label>Superuser</label></br>
-              <% end %>
-	      <%= field_set_tag "URL" do %>
-	         <input type="text" name="url">
-	      <% end %>
-	    </div>
-	  </div>
-        </div>
      </div>
      <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
    <% end %>
 </div>
 <script>
    $(function() {
-      function xmlTreeExport(node_name, node, jstree) {
-         var xml_result = "<param class='local' name='" + node_name + "'>" +
-                          "<param_description guid='FB30B299-B498-4848-AD22-7B973433C9F9'/>" + 
-			    "<value>" +
-				"<param class='local' name='name'>" +
-				  "<param_description guid='CFBE4135-C0F9-4438-BFBB-6B26EEB365BB'/>" + 
-				  "<value>" + jstree.jstree("get_text",node) + "</value>" +
-				"</param>" +
-				"<param class='local' name='url'>" +
-				  "<param_description guid='43EE6D21-7BEB-4F45-8105-78ED08A931B0'/>" + 
-				  "<value>" + node.find("input").attr("value") + "</value>" +
-				"</param>" +
-                                "<param class='local' name='permission'>" +
-				  "<param_description guid='14E5907E-2C02-413B-8F3B-6C03C2AC9EA1'/>" + 
-				  "<value>" + node.find("input").attr("permission") + "</value>" +
-				"</param>";
-         var children = node.find("> ul > li");
-         if (children) {
-            xml_result = xml_result + "<param class='local' name='children'>" +
-                                      "<param_description guid='457B190F-89DB-42EC-9537-4EBB46498659'/><value>";
-            children.each(function(index, child_node){
-                xml_result = xml_result + xmlTreeExport(node_name+"_"+index, $(child_node), jstree);
-            });
-            xml_result = xml_result + "</value></param>";
-         }
-         xml_result = xml_result +  "</value></param>";
-         return xml_result;
-      };
+      var menu_map = <%= raw menu_root.collect{|menu_node| menu_node.to_jstree_data("name")}.to_json %>
+      var this_jstree = "#menu_widget_instance_edit div#root_edit_<%= menu_root.id %>";
 
       $("#menu_widget_instance_edit  button#save_button").click(function() {
          var xml_result = '<?xml version="1.0" encoding="UTF-8"?><widget_params>' +
-           "<param name='menu_root' class='local'>" +
-             "<param_description guid='45A433ED-7183-4A28-890B-08F585A0E41A'/>" + 
-             "<value>";
-         $("#menu_widget_instance_edit ul#root_edit_<%= menu_root.id %> > ul > li").each(function(index, node) {
-            xml_result = xml_result + xmlTreeExport("menu_root_"+index, $(node), $("#menu_widget_instance_edit ul#root_edit_<%= menu_root.id %>"));
-         });
-         xml_result = xml_result + "</value></param></widget_params>";
+           $(this_jstree).jstree_param().export_xml("menu_root") +
+           "</widget_params>";
          var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.xml?" + $("#menu_widget_instance_edit form").serialize();
          $.ajax({type:"PUT",
                  processData: false, 
@@ -406,92 +354,43 @@ div.menu_edit a
       });
       
 
-      var this_jstree = "#menu_widget_instance_edit ul#root_edit_<%= menu_root.id %>";
       $("#menu_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
-      var initial_item = $(this_jstree + "> li").first().attr("id");
+      $(this_jstree).jstree_param(menu_map,
+         { 
+             description_guid: "45A433ED-7183-4A28-890B-08F585A0E41A", 
+             objects: {
+                "FB30B299-B498-4848-AD22-7B973433C9F9": {  /* menu item */
+                   children_guid:"457B190F-89DB-42EC-9537-4EBB46498659",
+                   title:"name",
+                   init_params: {
+                           name: {
+                             value:"New Menu Item", 
+                             guid:"CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"
+                           },
+                           permission: {
+                             value:"guest", 
+                             guid:"14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"
+                           },
+                           url: {
+                             value:"/", 
+                             guid:"43EE6D21-7BEB-4F45-8105-78ED08A931B0"
+                           }
+                   }
+                }
+             }
+         }
+     );
 
-      $(this_jstree + " li > a").bind("dblclick", function() {
-         $(this_jstree).jstree("rename"); 
-      });
-      $(this_jstree).jstree({
-          "core" : {"html_titles" : true, "animation":200},
-          "dnd" : {"drop_target" : false, "drag_target" : false},
-          "themes" : {"no_load" : true, url:"/assets/themes/apple/style.css", theme:"apple", "icons":true, "dots":true},
-          "ui" : { "initially_select":$(this_jstree).find("li:first").attr("id")},
-          "hotkeys" : { "backspace" : function(e) {
-                           e.preventDefault(); 
-                           this.remove();
-                          }, 
-                        "down" : function(e) {
-                                var o = this.data.ui.last_selected || -1;
-                                var n = this._get_next(o);
-                                console.log(n);
-                                if (n.length > 0) {
-				   this.deselect_all();
-				   this.select_node(n);
-                                }
-                                return false; 
-                        },
-                        "up" : function(e) {
-                                var o = this.data.ui.last_selected || -1;
-                                var n = this._get_prev(o);
-                                if (n.length > 0) {
-                                   this.deselect_all();
-                                   this.select_node(n);
-                                }
-                                return false; 
-                         },
-                        "space" : false, "ctrl+up" : false, "ctrl+down" : false, "shift+up" : false, "shift+down" : false,
-                        "shift-space" : false, "ctrl+space" : false, "f2" : false, "del" : false,
-                        "left" : function(e) {
-                                var o = this.data.ui.last_selected;
-                                if(o) {
-                                   if(!o.hasClass("jstree-open")) { 
-                                      var n = this._get_prev(o);
-                                      if (n.length > 0) {
-                                        this.deselect_all();
-                                        this.select_node(n); 
-                                      }
-                                   }
-                                }
-                                return false; 
-                           },
-                        "right" : function(e) {
-                                var o = this.data.ui.last_selected;
-                                if(o && o.length) {
-                                        if(o.hasClass("jstree-closed")) { this.open_node(o); }
-                                        else if(o.hasClass("jstree-open")){ 
-                                          var n = this._get_next(o);
-                                          if (n.length > 0) {
-                                             this.deselect_all();
-                                             this.select_node(n); 
-                                          }
-                                        }
-                                }
-                                return false; 
-                           },
-                        "ctrl+left" : false, "ctrl+right" : false, "shift+left" : false, "shift+right" : false
-          },
-          "plugins" : ["themes", "html_data", "ui", "dnd","crrm","hotkeys"]
-      });
-     $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input[name=url]").change(function() {
-        $(this_jstree).jstree("get_selected").find("> input").val($(this).val());
+     var right_pane = $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane");
+     right_pane.find("input").bind("change",function() {
+        var selected_node = $(this_jstree).jstree("get_selected");
+        selected_node.data().params[$(this).attr("name")].value = $(this).val();
+        $(selected_node).trigger("data_changed.jstree_param");
      });
-     $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input:radio[name=permission]").change(function() {
-        var permission = $(this).filter(":checked").val();
-        $(this_jstree).jstree("get_selected").find("> input").attr("permission", permission);
-   
-     });
+
      $(this_jstree).bind("select_node.jstree", function(event, data) {
-        var selected_url = $(this_jstree).jstree("get_selected").find("> input");
-        $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input[name=url]").val(selected_url.val());
-        $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input:radio[value=guest]").removeAttr("checked");
-        var permission = selected_url.attr("permission");
-        $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane input:radio[value="+permission+"]").attr("checked", true);
-      });
-      $(this_jstree).bind("loaded.jstree", function(event, data) { 
-	 $(this_jstree).jstree("open_all");
-	 $(this_jstree).jstree("select_node","li:first");
+        var selected_item = $(this_jstree).jstree("get_selected");
+        var menu_form = $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane");
       });
 
       $("#menu_widget_instance_edit #delete_menu_item").click(function() {
@@ -501,31 +400,9 @@ div.menu_edit a
          }
       });
       $("#menu_widget_instance_edit #new_menu_item").click(function() {
-         var currently_selected = $(this_jstree).jstree("get_selected");
-         if (currently_selected) {
-            new_node = $(this_jstree).jstree("create", currently_selected, "after", "New Menu Item", function(new_node) {
-               $(new_node).find("a").after("<input type='text' value='/' permission='guest'/>");
-               $(this_jstree).jstree("deselect_all");
-               $(this_jstree).jstree("select_node", new_node);
-	       $(new_node).find("a").dblclick(function() {
-		  $(this_jstree).jstree("rename");
-	       });
-           }, true);
-         }
-         else {
-           new_node = $(this_jstree).jstree("create", -1, "New Menu Item", function(new_node) {
-               $(new_node).find("a").after("<input type='hidden' value='New Menu Item'/><input type='text' value='/' permission='guest'/>");
-               $(this_jstree).jstree("deselect_all");
-               $(this_jstree).jstree("select_node", new_node);
-	       $(new_node).find("a").dblclick(function() {
-		  $(this_jstree).jstree("rename");
-	       });
-           }, true);
-         }
+         $(this_jstree).jstree_param().new_node("FB30B299-B498-4848-AD22-7B973433C9F9");
       });
-      $("#menu_widget_instance_edit").find("button").button().click(function() {
-         
-      });
+      $("#menu_widget_instance_edit").find("button").button();
    });
 </script>
     ]]>
@@ -704,6 +581,12 @@ opacity: 0.8;
       <param class="local" name="menu_root">
         <value>
 	  <param class="local" name="child-1">
+	    <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9">
+	      <name>Menu Child</name>
+	      <description>Menu child.</description>
+	      <field_type>hash</field_type>
+	      <permissions></permissions>
+	    </param_description>
 	    <value>
 		<param class="local" name="name">
 		  <value>Home</value>
@@ -743,12 +626,6 @@ opacity: 0.8;
 		  </param_description>
 		</param>
             </value>
-	    <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9">
-	      <name>Menu Child</name>
-	      <description>Menu child.</description>
-	      <field_type>hash</field_type>
-	      <permissions></permissions>
-	    </param_description>
 	  </param>
 	  <param class="local" name="child-2">
 	    <value>
@@ -2073,41 +1950,394 @@ nav.blog_page_nav div.blog_page_nav_next
     </preload>
     <render_view>
       <![CDATA[
-      <nav class="people_directory">
-         <% @people.each do |person| %>
-	    <div class="person_directory_entry">
-	      <% if (params[:controller]=="roxiware/people") && (params[:action] == "show_seo") && (params[:seo_index] == person.seo_index) %>
-                  <div class="person_name"><%= person.full_name %></div>
-	          <% if person.role.present? %>
-	             <div class="person_role"><%= person.role %></div>
-	          <% end %>
-               <% else %>
-	       <%= link_to(:seo_index=>person.seo_index) do %>
-                  <div class="person_name"><%= person.full_name %></div>
-	          <% if person.role.present? %>
-	             <div class="person_role"><%= person.role %></div>
-	          <% end %>
-               <% end %>
-	      <% end %>
-	    </div>
-	 <% end %>
-      </nav>
+      <% if !@people.present? 
+            @people = Roxiware::Person.all();
+         end
+         if !@people_map.present?
+            @people_map = Hash[@people.collect{|person| [person.id, person]}]
+         end
+
+	 def show_person(person_param)
+	    person = @people_map[person_param.hash_params["person_id"].conv_value]
+	    content_tag(:li, :class=>"person_item") do
+	       link_to(:seo_index=>person.seo_index) do 
+                 result = content_tag(:div, person.full_name, :class=>"person_name") 
+                 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
+                 result
+               end
+             end
+	 end
+
+         def show_person_group(person_group) 
+             content_tag(:li, :class=>"person_group") do
+                result = content_tag(:div, person_group.hash_params["name"].conv_value)
+                children = person_group.hash_params["children"]
+                if children.present?
+                    result << content_tag(:ul) do 
+                      raw(children.array_params.collect{ |person| raw(show_person(person)) }.join)
+                    end
+               end
+               result
+             end
+          end
+%>
+      <nav class="people_directory"><ul>
+         <% people_dir_root.each do |person_entry|
+	    if(person_entry.description_guid == "82CE9542-06EB-4D3D-A877-1DCCFCCC812B") %>
+	      <%=  show_person_group(person_entry) %>
+	 <%   elsif(person_entry.description_guid == "709904C0-83A6-4FA6-924B-B69881FEAEB8") %>
+	       <%= show_person(person_entry) %>
+	 <%   end
+	 end
+	    %>
+      </ul></nav>
     ]]>
     </render_view>
     <editform>
 	<![CDATA[
+<style>
+
+#people_dir_widget_instance_edit .panes > div
+{
+  width:  40em;
+  height: 25em;
+}
+
+div.people_dir_edit 
+{
+  width:100%;
+  height:100%;
+}
+
+#people_dir_edit_left_pane
+{
+    margin:0px;
+    padding:0px;
+    height:25em;
+    width:12em;
+    display:inline-block;
+    vertical-align:top;
+   border:solid 1px black;
+}
+#people_dir_edit_right_pane
+{
+    margin:0px;
+    padding:0px;
+    height:25em;
+    width:12em;
+    display:inline-block;
+    vertical-align:top;
+}
+
+div.people_dir_root_edit
+{
+   border:solid 1px black;
+   background:white;
+   margin:0px;
+   padding:0px;
+   vertical-align:top;
+   height:23em;
+   overflow:scroll;
+}
+
+#people_dir_item_edit_bar
+{
+   margin:0px;
+   padding:0px;
+   border:solid 1px #777;
+   font-size:14px;
+   vertical-align:center;
+   background-image: -ms-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+   background-image: -moz-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+   background-image: -o-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+
+   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #DDDDDD), color-stop(1, #777777));
+   background-image: -webkit-linear-gradient(top, #DDDDDD 0%, #777777 100%);
+   background-image: linear-gradient(to bottom, #DDDDDD 0%, #777777 100%);
+   cursor:default;
+}
+
+div.people_dir_item_edit_bar_button
+{
+   width:1em;
+   border-right:solid 1px #222222;
+   border-left:solid 1px #777777;
+   display:inline-block;
+   cursor:pointer;
+   text-align:center;
+   padding:3px 5px 3px 5px;
+}
+
+div.people_dir_item_edit_bar_button:active
+{
+   background-color:#777;
+}
+
+div.people_dir_item_edit_bar_button:hover
+{
+   background-image: -ms-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+   background-image: -moz-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+   background-image: -o-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+
+   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #CCCCCC), color-stop(1, #666666));
+   background-image: -webkit-linear-gradient(top, #CCCCCC 0%, #666666 100%);
+   background-image: linear-gradient(to bottom, #CCCCCC 0%, #666666 100%);
+}
+
+#people_dir_widget_instance_edit {
+  width:43em;
+}
+
+div#people_list div:nth-child(even)
+{
+   background:#eeeeff;
+}
+div#people_list div
+{
+   cursor:pointer;
+}
+
+div#people_list div:hover
+{
+   background:#ccccff;
+}
+
+div.table_edit_bar
+{
+   height:1em;
+}
+
+div.people_dir_root_edit ul
+{
+   padding:0px;
+   margin:0px;
+}
+
+div.people_dir_edit a
+{
+   width:10em;
+}
+
+#people_dir_edit_right_pane fieldset label
+{
+   text-align:left;
+}
+
+</style>
+
+<% people_dir_root = @widget_instance.get_param("people_dir_root").conv_value %>
+<div class="widget_instance_edit" id="people_dir_widget_instance_edit">
+   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
+     <h3><%= @widget_instance.widget.name %> settings</h3>
+     <ul class="tabs">
+       <li><a href="#">Layout</a></li>
+       <li><a href="#">Settings</a></li>
+     </ul>
+     <div class="panes">
+       <div class="people_dir_layout">
+	 <div class="people_dir_edit" id="people_dir-edit-<%= people_dir_root.id %>">
+	    <div id="people_dir_edit_left_pane">
+	      <div id="people_list">
+                <% Roxiware::Person.order(:seo_index).each do |person| %>
+		   <div class="jstree-draggable jstree-drop people_list_person" rel="709904C0-83A6-4FA6-924B-B69881FEAEB8" id="<%= person.id %>"><%= person.full_name %></div>
+		<% end %>
+              </div>
+	    </div>
+	    <div id="people_dir_edit_right_pane">
+	       <div id="root_edit_<%= people_dir_root.id %>"  class='people_dir_root_edit'>
+	       </div>
+	       <div id="people_dir_item_edit_bar">
+                  <div id="new_people_dir_item" class="people_dir_item_edit_bar_button">+</div><div id="delete_people_dir_item" class="people_dir_item_edit_bar_button">-</div>
+               </div>
+	    </div>
+	  </div>
+        </div>
+       <div class="settings">
+         <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
+       </div>
+     </div>
+     <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      var people_dir_map = <%= raw people_dir_root.collect{|people_dir_node| people_dir_node.to_jstree_data("name")}.to_json %>;
+      var people_name_map = <%= raw Hash[Roxiware::Person.all().collect{|person| [person.id, person.full_name]}].to_json %>;
+
+      var this_jstree = "#people_dir_widget_instance_edit div#root_edit_<%= people_dir_root.id %>";
+
+      $("#people_dir_widget_instance_edit  button#save_button").click(function() {
+         var xml_result = '<?xml version="1.0" encoding="UTF-8"?><widget_params>' +
+           $(this_jstree).jstree_param().export_xml("people_dir_root", "82CE9542-06EB-4D3D-A877-1DCCFCCC812B") +
+           "</widget_params>";
+         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.xml?" + $("#people_dir_widget_instance_edit form").serialize();
+         $.ajax({type:"PUT",
+                 processData: false, 
+                 contentType: "application/xml",
+                 url: endpoint,
+                 data:xml_result,
+                 success: function() {
+                    window.location.reload();
+                 }}); 
+      });
+
+      console.log("people name map");
+      console.log(people_name_map);
+
+      $("#people_dir_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
+
+      $(this_jstree).jstree_param(people_dir_map,
+         { 
+             description_guid: "79EF7236-A48B-46E8-AD60-2F76EEB2A9AB", 
+             valid_children: ["82CE9542-06EB-4D3D-A877-1DCCFCCC812B", "709904C0-83A6-4FA6-924B-B69881FEAEB8"],
+             objects: {
+                "82CE9542-06EB-4D3D-A877-1DCCFCCC812B": {  /* people class item */
+                   valid_children: ["709904C0-83A6-4FA6-924B-B69881FEAEB8"],
+                   children_guid:"F783A27B-3409-4E75-99DE-941E2E610F9A",
+                   title: "name",
+                   onNew: function(new_node) {
+		       new_node.find("> a").bind("dblclick", function(data) {
+			$(this_jstree).jstree("rename", new_node);
+		      });
+                   },
+                   icon: {image:"/assets/icons/people.png"},
+                   init_params: {
+                           name: {
+                             value:"New User Class",
+                             guid:"58F02ABC-4863-4F77-B304-0F375C793FDB"
+                           },
+                   }
+                },
+               "709904C0-83A6-4FA6-924B-B69881FEAEB8": { /* person class item */
+                   valid_children: "none",
+                   icon: {image:"/assets/icons/person.png"},
+                   title: function(params) { 
+                       return people_name_map[params.person_id.value];
+                   },
+                   drop: function(data) {
+                      $(this_jstree).jstree_param().new_node($(data.o).attr("rel"), $(data.r), data.p, {
+                         person_id: {
+                          value: $(data.o).attr("id"),
+                          guid: "C94F5738-AEDF-46B1-99F1-8A526393DD54"
+                         }
+                      });
+                   },
+                   init_params: {
+                       person_id: {
+                          value: 1,
+                          guid: "C94F5738-AEDF-46B1-99F1-8A526393DD54"
+                       }
+                   }
+               }
+             }
+         });
+
+     $(this_jstree).bind("loaded.jstree", function(event, data) {
+        $(this_jstree).find("> ul > li > a").bind("dblclick", function(data) {
+          $(this_jstree).jstree("rename", $(this));
+        });
+     });
+   $(this_jstree).bind("rename_node.jstree", function(event, data) {
+       data.args[0].data().params.name.value = data.args[1];
+   });
+
+
+     var left_pane = $("#people_dir_widget_instance_edit  #people_dir_edit_left_pane");
+
+     $(this_jstree).bind("select_node.jstree", function(event, data) {
+        var selected_item = $(this_jstree).jstree("get_selected");
+      });
+
+      $("#people_dir_widget_instance_edit #delete_menu_item").click(function() {
+         var currently_selected = $(this_jstree).jstree("get_selected");
+         if (currently_selected) {
+            $(this_jstree).jstree("delete_node", currently_selected);
+         }
+      });
+      $("#people_dir_widget_instance_edit #new_people_dir_item").click(function() {
+         var new_node = $(this_jstree).jstree_param().new_node("82CE9542-06EB-4D3D-A877-1DCCFCCC812B");
+      });
+      $("#people_dir_widget_instance_edit").find("button").button();
+   });
+</script>
       ]]>
     </editform>
     <style>
     </style>
     <params>
+      <param class="local" name="people_dir_root">
+        <param_description guid="79EF7236-A48B-46E8-AD60-2F76EEB2A9AB">
+          <name>People Directory</name>
+          <description>People directory.</description>
+          <field_type>array</field_type>
+          <permissions></permissions>
+        </param_description>
+        <value>
+	  <param class="local" name="child_1">
+	    <param_description guid="82CE9542-06EB-4D3D-A877-1DCCFCCC812B">
+	      <name>People Class</name>
+	      <description>People Directory Class, such as 'Authors', or 'Board'.  This is a container element.</description>
+	      <field_type>hash</field_type>
+	      <permissions></permissions>
+	    </param_description>
+	    <value>
+		<param class="local" name="name">
+		  <value>Users</value>
+		  <param_description guid="58F02ABC-4863-4F77-B304-0F375C793FDB">
+		     <name>Name</name>
+		     <description>Name of a given class of people</description>
+		     <field_type>string</field_type>
+		     <permissions></permissions>
+		  </param_description>
+		</param>
+		<param class="local" name="children">
+		  <param_description guid="F783A27B-3409-4E75-99DE-941E2E610F9A">
+		    <name>People</name>
+		    <description>List of children in a given class.</description>
+		    <field_type>array</field_type>
+		    <permissions></permissions>
+		  </param_description>
+		  <value>
+		    <param class="local" name="person">
+		     <param_description guid="709904C0-83A6-4FA6-924B-B69881FEAEB8">
+		       <name>Person</name>
+		       <description>A reference to a person.</description>
+		       <field_type>hash</field_type>
+		       <permissions></permissions>
+		     </param_description>
+		     <value>
+		       <param class="local" name="person_id">
+			   <param_description guid="C94F5738-AEDF-46B1-99F1-8A526393DD54">
+			     <name>Person ID</name>
+			     <description>A reference to a person.</description>
+			     <field_type>integer</field_type>
+			     <permissions></permissions>
+			   </param_description>
+			   <value>1</value>
+			</param>
+		     </value>
+		    </param>
+		  </value>
+		</param>
+            </value>
+	  </param>
+	</value>
+      </param>
       <param class="local" name="show_background">
-        <value>false</value>
+        <value>true</value>
         <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
+      </param>
+      <param class="local" name="float">
+        <value>none</value>
+        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
       </param>
       <param class="local" name="height">
         <value>-1</value>
         <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
+      </param>
+      <param class="local" name="widget_instance_id">
+        <value></value>
+        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
       </param>
     </params>
   </widget>

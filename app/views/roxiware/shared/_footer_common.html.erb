@@ -39,7 +39,7 @@
                                             var source_widget = $(ui.draggable).attr("widget_id");
                                             if (source_widget == "new") {
                                               var guid = $(ui.draggable).attr("guid");
-					      var endpoint = $(ui.draggable).parent().attr("rel") + "/widget/";
+					      var endpoint = $(this).parent().attr("rel") + "/widget/";
 					      $.ajax({url: endpoint, 
 						      type: "POST",
 						      dataType: "json",

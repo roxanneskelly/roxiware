@@ -390,7 +390,11 @@ div.menu_edit a
 
      $(this_jstree).bind("select_node.jstree", function(event, data) {
         var selected_item = $(this_jstree).jstree("get_selected");
-        var menu_form = $("#menu_widget_instance_edit  .menu_layout #menu_edit_right_pane");
+        right_pane.find("input[name=url]").val(selected_item.data().params.url.value);
+        right_pane.find("input:radio[value=guest]").removeAttr("checked");
+        var permission = selected_item.data().params.permission.value;
+        right_pane.find("input:radio[value="+permission+"]").attr("checked", true);
+        right_pane.find("input[name=name]").val(selected_item.data().params.name.value);
       });
 
       $("#menu_widget_instance_edit #delete_menu_item").click(function() {
@@ -2181,9 +2185,6 @@ div.people_dir_edit a
                  }}); 
       });
 
-      console.log("people name map");
-      console.log(people_name_map);
-
       $("#people_dir_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
 
       $(this_jstree).jstree_param(people_dir_map,
@@ -2200,7 +2201,7 @@ div.people_dir_edit a
 			$(this_jstree).jstree("rename", new_node);
 		      });
                    },
-                   icon: {image:"/assets/icons/people.png"},
+                   icon: "/assets/icons/people.png",
                    init_params: {
                            name: {
                              value:"New User Class",
@@ -2210,7 +2211,7 @@ div.people_dir_edit a
                 },
                "709904C0-83A6-4FA6-924B-B69881FEAEB8": { /* person class item */
                    valid_children: "none",
-                   icon: {image:"/assets/icons/person.png"},
+                   icon: "/assets/icons/person.png",
                    title: function(params) { 
                        return people_name_map[params.person_id.value];
                    },

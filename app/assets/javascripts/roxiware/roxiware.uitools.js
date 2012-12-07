@@ -397,7 +397,7 @@
 			    title = init_params[init_object.title].value;
 			}
 			// jstree 'types' create_node doesn't set the icon based on type automatically, so we need to pass it in
-			var js_init_params = {icon:init_object.icon, data:{title:title}};
+			var js_init_params = {icon:{image:init_object.icon}, data:{title:title}};
 			$(jstree).jstree("create_node", currently_selected, position, js_init_params, function(new_node) {
 				new_node.attr("rel", obj_type);
 				new_node.data().params = init_params;
@@ -614,7 +614,7 @@
 	      $(jstree).jstree("open_all");
 	      $(jstree).jstree("select_node","li:first");
 	      $(jstree).find("li").bind("data_changed.jstree_param", function() {
-		    var object_info = conf.objects[$(this).attr("obj_type")];
+		    var object_info = conf.objects[$(this).attr("rel")];
 		    if($.isFunction(object_info.title)) {
 			title = object_info.title($(this).data());
 		    }

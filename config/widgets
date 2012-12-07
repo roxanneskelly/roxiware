@@ -2249,7 +2249,7 @@ div.people_dir_edit a
         var selected_item = $(this_jstree).jstree("get_selected");
       });
 
-      $("#people_dir_widget_instance_edit #delete_menu_item").click(function() {
+      $("#people_dir_widget_instance_edit #delete_people_dir_item").click(function() {
          var currently_selected = $(this_jstree).jstree("get_selected");
          if (currently_selected) {
             $(this_jstree).jstree("delete_node", currently_selected);

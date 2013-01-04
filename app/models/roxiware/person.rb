@@ -9,6 +9,8 @@ class Roxiware::Person < ActiveRecord::Base
 
    belongs_to :user, :polymorphic=>true
    has_many :social_networks, :autosave=>true, :dependent=>:destroy
+   has_and_belongs_to_many :books
+
 
    validates :first_name, :length=>{:minimum=>3,
                                    :too_short => "The first name must be at least %{count} characters.", 

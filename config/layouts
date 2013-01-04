@@ -626,10 +626,6 @@ div.popup_form_alert {
               </instance>
               <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="-1">
                 <params>
-                  <param class="local" name="show_system_menus">
-                    <value>false</value>
-                    <param_description guid="25F80A0B-8EAE-4637-8C34-EB2DB405A577"/>
-                  </param>
                   <param class="local" name="widget_instance_id">
                     <value>sitemap_menu</value>
                     <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>

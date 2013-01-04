@@ -1,0 +1,57 @@
+<ul id="book_context_menu" class="context_menu">
+   <li id="edit_book"><a href="#" menu_item="edit_book">Edit Book</a></li>
+   <li id="delete_book"><a href="#" menu_item="delete_book">Delete Book</a></li>
+</ul>
+
+<ul id="series_context_menu" class="context_menu">
+   <li id="edit_series"><a href="#" menu_item="edit_series">Edit Series</a></li>
+   <li id="delete_series"><a href="#" menu_item="delete_series">Delete Series</a></li>
+</ul>
+
+<script>
+  $(document).bind("ready", function() {
+    $("article.book_listing").context_menu("#book_context_menu");
+    $("article.series_listing").context_menu("#series_context_menu");
+
+    $(".series_listing").on("context_menu", function(event, menu_item) {
+       console.log("context menu " + menu_item);
+       var series_link=$(this).attr("rel");
+       switch (menu_item) {
+	  case "edit_series":
+	    settingsForm(series_link+"/edit");
+	    break;
+          case "delete_series":
+            if(confirm("Remove Series\nAre you sure?")) {
+              $.ajax({url:series_link, 
+                      type:"DELETE",
+                      dataType: "json", 
+                      success: function(json_data, textStatus, jqXHR) {
+                         window.location = "<%= books_path %>";
+                      }
+               });
+              }
+              break;
+        }});
+
+
+    $(".book_listing").on("context_menu", function(event, menu_item) {
+       var book_link=$(this).attr("rel");
+       switch (menu_item) {
+	  case "edit_book":
+	    settingsForm(book_link+"/edit");
+	    break;
+          case "delete_book":
+            if(confirm("Remove Book\nAre you sure?")) {
+              $.ajax({url:book_link, 
+                      type:"DELETE",
+                      dataType: "json", 
+                      success: function(json_data, textStatus, jqXHR) {
+                         window.location = "<%= books_path %>";
+                      }
+               });
+              }
+              break;
+        }
+    });
+});
+</script>

@@ -266,13 +266,6 @@ div.menu_item_edit_bar_button:hover
   width:43em;
 }
 
-
-
-div.table_edit_bar
-{
-   height:1em;
-}
-
 div.menu_root_edit ul
 {
    padding:0px;
@@ -335,7 +328,7 @@ div.menu_edit a
 </div>
 <script>
    $(function() {
-      var menu_map = <%= raw menu_root.collect{|menu_node| menu_node.to_jstree_data("name")}.to_json %>
+      var menu_map = <%= raw menu_root.collect{|menu_node| menu_node.to_jstree_data}.to_json %>
       var this_jstree = "#menu_widget_instance_edit div#root_edit_<%= menu_root.id %>";
 
       $("#menu_widget_instance_edit  button#save_button").click(function() {
@@ -2106,11 +2099,6 @@ div#people_list div:hover
    background:#ccccff;
 }
 
-div.table_edit_bar
-{
-   height:1em;
-}
-
 div.people_dir_root_edit ul
 {
    padding:0px;
@@ -2165,7 +2153,7 @@ div.people_dir_edit a
 </div>
 <script>
    $(function() {
-      var people_dir_map = <%= raw people_dir_root.collect{|people_dir_node| people_dir_node.to_jstree_data("name")}.to_json %>;
+      var people_dir_map = <%= raw people_dir_root.collect{|people_dir_node| people_dir_node.to_jstree_data}.to_json %>;
       var people_name_map = <%= raw Hash[Roxiware::Person.all().collect{|person| [person.id, person.full_name]}].to_json %>;
 
       var this_jstree = "#people_dir_widget_instance_edit div#root_edit_<%= people_dir_root.id %>";

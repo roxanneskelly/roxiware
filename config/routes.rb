@@ -46,6 +46,20 @@ Roxiware::Engine.routes.draw do
     resources :gallery_item, :path=>:item
   end
 
+    resources :books do
+       get 'import', :on=>:collection
+       collection do
+          resources :book_series, :path=>:series do
+	     get 'import', :on=>:collection
+	     get 'member' => "book_series#member"
+	     post 'member' => "book_series#add_book"
+	     delete 'member' => "book_series#remove_book"
+	  end
+       end
+    end
+   
+
+
     namespace :blog do
       resources :post do
          resources :comment

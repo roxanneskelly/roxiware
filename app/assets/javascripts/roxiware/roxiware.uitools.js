@@ -375,7 +375,23 @@
     function JSTreeParam(jstree, init_data, conf) {
 	var self = this;
 	$.extend(self, {
-		new_node: function(obj_type, target, position, params) {
+                reload: function(data) {
+		    jQuery.jstree._reference($(jstree)).delete_node($(jstree).find("> ul > li"));
+		    
+		    var update_tree = function(node, data) {
+			$.each(data, function(index, value) {
+			    self.new_node(value.description_guid,
+					  node, "inside", value.params,
+					  function(new_node) {
+					      if(value.children) {
+						  update_tree(new_node, value.children);
+					      }
+					  });
+			    });
+		    }
+		    update_tree(-1, data);
+	     },
+	    new_node: function(obj_type, target, position, params, callback) {
 		    if (!position) {
 			position="after";
 		    }
@@ -388,8 +404,9 @@
 			}
 			var title = "";
 			var init_object = conf.objects[obj_type];
-			var init_params = init_object.init_params;
-			$.extend(init_params, params);
+			var init_params = {};
+	
+			$.extend(init_params, init_object.init_params, params);
 			if($.isFunction(init_object.title)) {
 			    title = init_object.title(init_params);
 			}
@@ -406,6 +423,9 @@
                                 if($.isFunction(init_object.onNew)) {
 				    init_object.onNew(new_node);
 				}
+				if(callback) {
+				    callback(new_node);
+				}
 				new_node.bind("data_changed.jstree_param", function() {
 				    var object_info = conf.objects[$(this).attr("rel")];
 				    if($.isFunction(object_info.title)) {
@@ -421,11 +441,18 @@
 		    export_xml: function(param_name) {
 			var export_jstree_node = function(node_name, node) {
 			    var export_params = function(params) {
+
+				var xml_escape = function(value) {
+				    return value.replace(/&/g, '&amp;')
+				.replace(/</g, '&lt;')
+				.replace(/>/g, '&gt;')
+				.replace(/\"/g, '&quot;');
+				}
 				var xml_result = ""
 				for(var param_name in params) {
 				    xml_result = xml_result + "<param class='local' name='"+param_name+"'>" +
 				       "<param_description guid='"+params[param_name].guid+"'/>" +
-				       "<value>" + params[param_name].value+"</value>" +
+				    "<value>" + xml_escape(params[param_name].value)+"</value>" +
 				       "</param>";
 				}
 				return xml_result;
@@ -486,8 +513,8 @@
 		   }
 		   return result;
 	       }
-	       for (var child_index in init_data) {
-		   result.push(scrub_init_data_item(init_data[child_index]));
+	       for (var child_index in jstree_data) {
+		   result.push(scrub_init_data_item(jstree_data[child_index]));
 	       }
 	       return result;
 
@@ -613,6 +640,10 @@
       $(jstree).bind("loaded.jstree", function(event, data) {
 	      $(jstree).jstree("open_all");
 	      $(jstree).jstree("select_node","li:first");
+	      $(jstree).bind("select_node.jstree", function(event, data) { 
+		      $(jstree).focus();
+		  });
+	      $(jstree).jstree("disable_hotkeys");
 	      $(jstree).find("li").bind("data_changed.jstree_param", function() {
 		    var object_info = conf.objects[$(this).attr("rel")];
 		    if($.isFunction(object_info.title)) {
@@ -624,7 +655,14 @@
 		    $(jstree).jstree("set_text", $(this), title);
 		  });
 	  });
-
+      $(jstree).focus(function() {
+	      $(jstree).css("border", "solid 1px red");
+	      $(jstree).jstree("enable_hotkeys");
+	  });
+      $(jstree).blur(function() {
+	      $(jstree).css("border", "solid 1px green");
+	      $(jstree).jstree("disable_hotkeys");
+	  });
     }
 
     $.fn.jstree_param =  function(init_data, conf) {
@@ -644,7 +682,7 @@
 
 function settingsForm(url)
 {
-   var overlay = $("<div id='edit_overlay' class='settings overlay'><div class='contentWrap'> </div></div>");
+   var overlay = $("<div id='edit_overlay' class='settings'><div class='contentWrap'> </div></div>");
    $("body").append(overlay);
    overlay.find(".contentWrap").load(url, function(responseText, textStatus, xhr) {
       if(xhr.status != 200) {

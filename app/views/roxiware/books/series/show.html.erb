@@ -1,0 +1,47 @@
+<div class="series">
+  <div class="series_info">
+    <img src="<%= @series.small_image %>" class="small_series_cover"/>
+    <div class="series_title"><%= @series.title %></div>
+    <div class="series_description"><%= raw @series.description %></div>
+  </div>
+  <section class="books_listing">
+    <% @series.books.each do |book| %>
+      <article class="book_listing" book_id="<%= book.id %>" rel="<%= book_path(book.id) %>">
+	<img src="<%= book.small_image %>" class="small_book_cover"/>
+	<a href="<%= book_path(book.seo_index) %>"><div class="book_title"><%= book.title %></div></a>
+      </article>
+    <% end %>
+  </section>
+</div>
+<%= render :partial=>"roxiware/books/series/context_menus" %>
+<ul id="series_context_menu" class="context_menu">
+   <li id="new_book"><a href="#" menu_item="new_book">New Book</a></li>
+   <li id="edit_series"><a href="#" menu_item="edit_series">Edit Series</a></li>
+   <li id="delete_series"><a href="#" menu_item="delete_series">Edit Series</a></li>
+</ul>
+<script>
+  $(document).bind("ready", function() {
+    $("#mainBody").context_menu("#series_context_menu");
+    $("#mainBody").on("context_menu", function(event, menu_item) {
+       switch (menu_item) {
+	  case "new_book":
+	    settingsForm("<%= new_book_path %>");
+	    break;
+	  case "new_book":
+	    settingsForm("<%= new_book_path %>");
+	    break;
+          case "delete_series":
+            if(confirm("Remove Series\nAre you sure?")) {
+              $.ajax({url:"<%= book_series_path(@series.id)%>",
+                      type:"DELETE",
+                      dataType: "json",
+                      success: function(json_data, textStatus, jqXHR) {
+                         window.location = "<%= books_path %>";
+                      }
+               });
+            }
+            break;
+       };
+  });
+});
+</script>

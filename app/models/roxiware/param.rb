@@ -46,20 +46,34 @@ module Roxiware
 	     @hash_params ||= Hash[params.collect{|param| [param.name, param]}]
 	  end
 
+	  def a
+	     if description.field_type == "array"
+	        array_params
+	     else
+	        raise Exception("Invalid type")
+	     end
+	  end
+
+	  def h
+	     if description.field_type == "hash"
+	        hash_params
+	     else
+	        raise Exception("Invalid type")
+	     end
+	  end
+
 	  def array_params
 	     hash_params.collect{|name, value| value}.sort_by{|param| param.name}
 	  end
 
-          def to_jstree_data(title_param)
+          def to_jstree_data
 	     metadata = {}
-	     print "to_jstree_data for #{title_param}\n"
-	     print self.hash_params.inspect + "\n\n"
 	     metadata = Hash[params.collect{|param| [param.name, {"value"=>param.value, "guid"=>param.description_guid}]}]
 	     metadata.delete("children")
 	     result = { "description_guid" => self.description_guid,
                         "params"=>metadata }
 	     if(self.hash_params["children"].present? && self.hash_params["children"].array_params.present?)
-                 result["children"] = self.hash_params["children"].array_params.collect{|param| param.to_jstree_data(title_param)}
+                 result["children"] = self.hash_params["children"].array_params.collect{|param| param.to_jstree_data}
 	     end
              return result
           end
@@ -93,9 +107,9 @@ module Roxiware
 	  def import(xml_param, include_description)
 	     self.param_class = xml_param["class"]
 	     self.name = xml_param["name"]
+	     
 	     xml_param_description = xml_param.find_first("param_description")
              if xml_param_description.present?
-	     print "description guid #{self.name}\n"
 	       self.description_guid = xml_param_description["guid"]
 	       if include_description && xml_param_description.content.present?
                    self.build_param_description if self.param_description.blank?
@@ -104,7 +118,6 @@ module Roxiware
 	           self.param_description = Roxiware::Param::ParamDescription.where(:guid=>self.description_guid).first
 	       end
 	     end
-	     print "description guid #{self.description_guid}\n"
 	     case self.param_description.field_type
 	        when "hash"
 		  xml_param.find_first("value").find("param").each do |xml_hashparam|

@@ -1,0 +1,589 @@
+
+<% new_series = @series.id.blank? %>
+<style>
+.series_edit_form 
+{
+   margin-top:0.2em;
+}
+
+.series_edit_form div.panes > div 
+{
+    position:relative;
+    width:40em;
+    height:35em;
+}
+.series_edit_form div.panes  div.pane_content 
+{
+    width:40em;
+    height:34em;
+}
+
+div.series_edit label
+{
+   width:4em;
+}
+
+div.series_edit input#book_series_title
+{
+   width:30em;
+}
+
+div.series_edit .upload_target
+{
+   float:right;
+   min-width:110px;
+   min-height:160px;
+   cursor: pointer;
+}
+
+#import_pane input#import_search
+{
+   width:43em;
+   margin:0.3em 0em 2em 0em;
+   
+}
+#import_pane button#import_search
+{
+   height:1.7em;
+   margin-left: 1em;
+   font-size:0.8em;
+   line-height:1em;
+}
+
+#import_pane button#import_search .ui-button-text 
+{
+   line-height:1em;
+}
+
+textarea#book_series_description
+{
+   clear:both;
+   height:22em;
+   width:52em;
+   margin:0px;
+   overflow:scroll;
+}
+
+.import_watermark
+{
+   color:grey;
+}
+
+#import_search_results
+{
+   border: solid 1px rgb(150, 80, 70);
+   overflow:scroll;
+   width: 100%;
+   height: 23em;
+}
+
+#import_search_results .search_result
+{
+   clear:both;
+   padding:5px;
+   cursor:pointer;
+   vertical-align:middle;
+}
+
+#import_search_results .search_result:hover
+{
+   background:#ccccff;
+}
+
+#import_search_results .series_info
+{
+   display:inline-block;
+   vertical-align:middle;
+}
+
+#import_search_results .authors
+{
+    font-size:0.8em;
+    display:inline-block;
+}
+
+#import_search_status {
+    text-align:center;
+    width:100%;
+    height:1.5em;
+}
+
+#import_search_results .import_links a:hover
+{
+   background:none;
+}
+
+#import_search_results .series_info 
+{
+   display:inline-block;
+}
+
+#import_search_results .import_links a
+{
+   padding:0.2em;
+   display:block;
+   font-size:0.9em;
+}
+
+#import_search_results .series_books_pane
+{
+    font-size:0.8em;
+    display:inline-block;
+    margin-left:2em;
+    font-style:italic;
+}
+
+
+#import_search_results .search_result .search_result_title
+{
+   margin: 10px 0px 5px 0px;
+   display:inline-block;
+   font-size:1.2em;
+   font-weight:700;
+}
+
+div#manage_series_books
+{
+   display:block;
+   vertical-align:middle;
+}
+
+div#series_books_list, div#current_books
+{
+   border: solid 1px rgb(150, 80, 70);
+   width:17em;
+   display:inline-block;
+   height:26em;
+   vertical-align:middle;
+}
+
+div#current_books, div#series_books
+{
+   overflow:scroll;
+}
+
+div#series_books
+{
+   height:24.5em;
+}
+
+div#books_move_controls
+{
+   display:inline-block;
+   vertical-align:middle;
+   height:26em;
+}
+
+div#books_move_controls button
+{
+   display:block;
+}
+
+div#book_shift_buttons
+{
+  display:inline-block;
+}
+div#book_shift_buttons button
+{
+   display:block;
+}
+
+div#series_books .book, div#current_books .book
+{
+   padding:0px;
+   cursor:pointer;
+   vertical-align:top;
+   display:block;
+}
+
+
+div#series_books .book_selected, div#current_books .book_selected
+{
+   background:#ccffff;
+}
+
+div#series_books .book:hover, div#current_books .book:hover
+{
+   background:#bbffff;
+}
+
+
+div#series_books .book_details, div#current_books .book_details
+{
+   vertical-align:top;
+   display:inline-block;
+   padding:0.3em;
+   width:10em;
+}
+
+div#series_books .book img,
+div#current_books .book img
+{
+    display:inline-block;
+    padding:3px;
+    margin-right:5px;
+    height:45px;
+    width:30px;
+}
+
+div#series_books .book_title, div#current_books .book_title
+{
+    font-size:0.9em;
+}
+
+</style>
+<% if new_series %>
+  <div class="settings_title">Add Series</div>
+<% else %>
+  <div class="settings_title">Edit Series</div>
+<% end %>
+<div class="series_edit_form">
+  <ul class="tabs">
+    <% if new_series %><li><a href="#">Import</a></li><% end %>
+    <li><a href="#">Details</a></li>
+    <li><a href="#">Books</a></li>
+  </ul>
+  <div class="panes">
+   <% if new_series %>
+     <div id="import_pane">
+     <div class="pane_content">
+	<div class="wizard_step">Import your series.</div>
+	<div class="wizard_instructions">Paste or type the title, ISBN, or ISBN13 of a book in the series, a Goodreads or Amazon link to the book, the series title, the author name, or a Goodreads link to the series.</div>
+	  <%= search_field_tag(:import_search) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
+	<div id="import_search_status"></div>
+	<div id="import_search_results">
+	</div>
+	</div>
+	<%= button_tag "Skip >", :class=>"next_tab", :type=>"button"%>
+     </div>
+    <% end %>
+     <div class="series_edit">
+       <div class="pane_content">
+	 <%= form_for @series do |series| %>
+	           <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
+                   <img id="book_image" src="<%= @series.image %>" class="upload_target" upload_sizes="large,medium,small,xsmall,thumbprint"/>
+		   <input type="hidden" name="image_thumbprint"/>
+		   <div class="wizard_step">Edit your series details.</div>
+		   <div class="wizard_instructions">These details will be displayed to people who visit your site.  You can optionally upload an image that's associated with your series, such as a book cover or image of your characters.</div>
+		   <%= series.hidden_field :image %>
+		   <%= series.hidden_field :small_image %>
+		   <%= series.label :title, "Title"%>
+		   <%= series.text_field :title %>
+		   <br style="clear:both"/>
+
+		<%= series.label :description, "Description" %><br/>
+		<%= series.text_area :description %>
+		<br/>
+	     <% end %>
+           </div>
+           <% if new_series %><%= button_tag "< Import", :class=>"prev_tab", :type=>"button"%><% end %>
+           <%= button_tag "Books >", :class=>"next_tab", :type=>"button"%>
+           <%= button_tag "Save", :class=>"save_button", :type=>"button" %>
+	 </div>
+       <div id="series_books_pane">
+	   <div class="pane_content">
+	      <div class="wizard_step">Manage Series Books.</div>
+	      <% if new_series %>
+	         <div class="wizard_instructions">Check the box next to the books that you'd like to include in your series.<br/>You can always add or edit a series book later.</div>
+	      <% else %>
+	         <div class="wizard_instructions">Select books you'd like to add to the series and click the '>>' button, or select the books you'd like to remove and click the '<<' button.</div>
+	      <% end %>
+		<div id="manage_series_books">
+		   <div id="current_books">
+	           <% if new_series
+		         current_series_books = []
+		         current_books = Roxiware::Book.find(:all)
+		      else
+                         current_series_books = @series.book_series_joins.order(:series_order).includes(:book)
+		         current_books = Roxiware::Book.find(:all, :conditions=>['id not in (?)', current_series_books.collect{|series_book| series_book.book_id}])
+		      end
+			print "CURRENT BOOKS: "+current_books.inspect+"\n\n"
+			current_books.each do |book| %>
+			  <div class="book" book_id="<%= book.id %>" goodreads_id="<%= book.goodreads_id %>">
+			    <img src="<%= book.small_image %>"/>
+			    <div class="book_details"><div class="book_title"><%= book.title %></div></div>
+			  </div>
+		       <% end %>
+		   </div>
+		 <div id="books_move_controls">
+		    <%= button_tag ">>", :id=>"include_in_series", :type=>"button" %>
+		    <%= button_tag "<<", :id=>"remove_from_series", :type=>"button" %>
+		 </div>
+		 <div id="series_books_list">
+	         <div id="series_books">
+		   <% if @series.id.present? 
+		      current_series_books.each do |book_series_join| 
+		         book = book_series_join.book %>
+                         <div class="book" book_id="<%= book.id %>">
+			   <img src="<%= book.small_image %>"/>
+			   <div class="book_details"><div class="book_title"><%= book.title %></div></div>
+                         </div>
+		      <% end
+		   end %>
+		      </div>
+		   <div class="edit_bar">
+		     <div id="move_up" class="edit_bar_button" title="Move Up">^</div><div id="move_down" class="edit_bar_button" title="Move Down">v</div>
+                   </div>
+                 </div>
+              </div>
+	   </div>
+        <%= button_tag "< Details", :class=>"prev_tab", :type=>"button"%>
+        <%= button_tag "Save", :class=>"save_button", :type=>"button", :style=>"margin-right:8em;" %>
+     </div>
+   </div>
+</div>
+<script>
+  $(function() {
+
+     $(".next_tab").click(function() {
+        $(".series_edit_form ul.tabs").data("tabs").next();
+     });
+     $(".prev_tab").click(function() {
+        $(".series_edit_form ul.tabs").data("tabs").prev();
+     });
+     
+     $(".series_edit_form textarea").wysiwyg({ css: "<%= stylesheet_path('application') %>",
+                                       controls: {
+                                          undo: { visible: false },
+                                          redo: { visible: false},
+                                          insertHorizontalRule: { visible: true},
+                                          html: { visible: true},
+                                          insertTable: {visible: true},
+                                          'fileManager': {
+                                              visible: true,
+                                              tooltip: "File Manager"
+                                                  }
+                                           }});
+
+     var import_watermark = 'Member ISBN, Member Book Title, Goodreads Book or Series Link, Amazon Link';
+     $('.series_edit_form input#import_search').blur(function(){
+                if ($(this).val().length == 0) {
+                   $(this).val(import_watermark).addClass('import_watermark');
+                   $(".series_edit_form button#import_search").button("disable");
+                  }
+                  else {
+                  if ($(this).val() != import_watermark)
+                      $(".series_edit_form button#import_search").button("enable");
+                  }
+                }).focus(function(){
+                  if ($(this).val() == import_watermark)
+                   $(this).val('').removeClass('import_watermark');
+                }).val(import_watermark).addClass('import_watermark');
+
+     $('.series_edit_form input#import_search').bind("input propertychange", function() {
+        if ($(this).val().length == 0) {
+            $(".series_edit_form button#import_search").button("disable");
+        }
+        else {
+            $(".series_edit_form button#import_search").button("enable");
+        }
+     });
+    $('.series_edit_form input#import_search').bind("keypress", function(event) {
+         if(event.keyCode == 13) {
+           $("button#import_search").click();
+         }
+    });
+     $(".series_edit_form ul.tabs").tabs($("div.panes > div"));
+     $(".series_edit_form button").button();
+     
+     $("div#series_books .book, div#current_books .book").click(function() {
+	  $("div#series_books .book, div#current_books .book").removeClass("book_selected");
+	  $(this).addClass("book_selected");
+	  if($(this).parent().is("div#series_books")) {
+	     console.log("is series");
+	     $("button#remove_from_series").button("enable");
+	     $("button#include_in_series").button("disable");
+	  }
+	  else {
+	     console.log("isnt series");
+	     $("button#remove_from_series").button("disable");
+	     $("button#include_in_series").button("enable");
+	  }
+     });
+
+     $("div#series_books_list div.edit_bar div#move_up").click(function() {
+	  var selected_book = $("div#series_books_list div.book_selected");
+	  selected_book.prev().before(selected_book);
+     });
+
+     $("div#series_books_list div.edit_bar div#move_down").click(function() {
+	  var selected_book = $("div#series_books_list div.book_selected");
+	  var next_book = selected_book.next();
+	  next_book.after(selected_book);
+     });
+
+
+
+     $("div#series_books .book").first().click();
+
+     $("button#include_in_series").click(function() {
+	  var selected_book = $("div#current_books .book_selected");
+	  selected_book.prependTo("div#series_books").click();
+     });
+
+     $("button#remove_from_series").click(function() {
+	  var selected_book = $("div#series_books .book_selected");
+	  selected_book.prependTo("div#current_books").click();
+     });
+
+     $("button#import_search").click(function() {
+         var search_val = $("input#import_search").val();
+         var endpoint = "<%= import_book_series_index_path %>.json?search="+escape(search_val);
+         $("#import_search_status").html("Searching...");
+         $.getJSON(endpoint,
+                   function(data) {
+                       $("div#import_search_results").html("");
+                       $("#import_search_status").html("Click on your series");
+  
+                       if(data.length > 0) {
+			   $.each(data, function(index, series) {
+                              var authors_map = {}
+                              var authors_id_count = {}
+                              var series_books = "<div class='series_books'>";
+                              $.each(series["books"], function(index, book) {
+                                 var insert = (index?", ":"");
+                                 if(index <= 5) {
+                                    series_books = series_books + insert+book["title"];
+                                 }
+				 $.each(book.authors, function(index, author) {
+				     authors_map[author.goodreads_id] = author.author_name;
+				     if(authors_id_count[author.goodreads_id]) {
+				         authors_id_count[author.goodreads_id][0] = authors_id_count[author.goodreads_id][0]+1;
+			             }
+                                     else {
+				         authors_id_count[author.goodreads_id] = [1, author.author_name];
+			             }
+				 });
+                              });
+
+                              var authors_by_count = [];
+	                      $.each(authors_id_count, function(author_id, count_info) {
+                                  authors_by_count.push([count_info[0], {goodreads_id:author_id, name:count_info[1]}]);
+                              });
+
+			      authors_by_count = authors_by_count.sort().reverse();
+					
+
+			      if (series["books"].length > 5) {
+                                    series_books = series_books + "...";
+                              }
+	                      series_books = series_books+"</div>";
+
+                              var authors = $("<div class='authors'>,&nbsp;by&nbsp;</div>")
+                              authors.append(authors_by_count[0][1].name);
+                              if(authors_by_count.length > 1) {
+                                  authors.append(" and others");
+                              }
+			      var series_html_root = $("<div class='search_result'>");
+	                      var series_html = $("<div class='series_info'/>");
+	                      if(series["image"]) {
+                                 series_html.append("<img src='"+series["image"]+"'/>");
+                              }
+	                      series_html.append("<div class='search_result_title'>"+series["title"]+"</div>");
+	                      series_html.append(authors);
+                              series_html.append("<br/>");
+	                      series_html.append($(series_books));
+	                      series_html.append("<br style='clear:both'/>");
+	                      series_html_root.append(series_html);
+			      series_html_root.data().series_data = series;
+			      $("div#import_search_results").append(series_html_root)
+			   });
+                           $("div#import_search_results .search_result").click(function() {
+                               var goodreads_id = $(this).data().series_data.goodreads_id;
+                               var endpoint = "<%= import_book_series_index_path %>.json?goodreads_id="+goodreads_id;
+                               var series_books = $("div#series_books");
+                               var current_books = $("div#current_books");
+	                       current_books.append(series_books.find(".book[book_id]"));
+	                       current_books.find(".book").each(function(index, book) {
+	                          if($(book).attr("book_id") === undefined) {
+	                             $(book).remove();
+                                  }
+	                       });
+                               series_books.html("");
+                               $.getJSON(endpoint,
+                                  function(data) {
+                                     $(".series_edit input#book_series_title").val(data.title);
+                                     $(".series_edit input#book_series_image").val(data.image);
+                                     $(".series_edit input#book_book_small_image").val(data.small_image);
+                                     $(".series_edit img#book_image").attr("src", data.image);
+                              
+                                     $(".series_edit textarea#book_series_description").html(data.description);
+                                     $(".series_edit_form textarea").wysiwyg("setContent", data.description);
+                                     if(data.books) {
+					$.each(data.books, function(index, book) {
+                                            var authors = $("<div class='authors'/>")
+                                            $.each(book.authors, function(index, author) {
+                                               var insert = (index?", ":"");
+                                               authors.append(insert+author.author_name);
+                                            });
+	                                    var series_book = current_books.find(".book[goodreads_id='"+book.goodreads_id+"']");
+	                                    if(series_book.length == 0) {
+	                                        series_book = $("<div class='book' id='"+book.goodreads_id+"'/>");
+	                                        series_book.append("<img src='"+book.small_image+"'/>");
+					        series_book.append("<div class='book_details'><div class='book_title'>"+book.title+"</div>"+authors.html()+"</div>");
+                                               series_book.attr("goodreads_id", book.goodreads_id);
+	                                    }
+	                                    console.log("appending");
+	                                    console.log(series_book);
+	                                    console.log(book);
+                                            if (book.order > 0.0) {
+	                                      series_books.append(series_book);
+	                                    }
+	                                    else {
+	                                      current_books.append(series_book);
+	                                    }
+					});
+				     }
+       
+                                     $("ul.tabs").data("tabs").next();
+                                     
+                               });
+                           });
+                       }
+                       else {
+                          $("div#import_search_status").html("<div class='no_results'>No series found.  Try another ISBN, Title or Link.</div>");
+                       }
+                    }
+                  );
+    });
+     
+      $(".series_edit_form button.save_button").click(function() {
+
+         var xml_result = '<?xml version="1.0" encoding="UTF-8"?><books>';
+	    $("div#series_books .book").each(function(index, book) {
+	       var goodreads_id = $(book).attr("goodreads_id")?"goodreads_id='"+$(book).attr("goodreads_id")+"'":""
+	       var book_id = $(book).attr("book_id")?"book_id='"+$(book).attr("book_id")+"'":""
+	       xml_result = xml_result+ "<book "+book_id+" "+goodreads_id+"/>";
+            });
+	 xml_result = xml_result+"</books>";
+
+         <% if @series.id.present? %>
+	    var endpoint = "<%= book_series_path(@series.id) %>.xml?" + $(".series_edit_form form").serialize();
+	    var method = "PUT";
+         <% else %>
+	    var endpoint = "<%= book_series_index_path %>.xml?" + $(".series_edit_form form").serialize();
+            var method="POST";
+	 <% end %>
+         $.ajax({type:method,
+                 processData: false, 
+                 contentType: "application/xml",
+                 url: endpoint,
+                 data:xml_result,
+                 success: function() {
+                   window.location.reload();
+                 }}); 
+      });
+      
+
+     $(".series_edit_form img.upload_target").bind("click", function() {
+      imageDialog({
+	     raw_upload: true,
+	     onSuccess: function(url, type, thumbprint) {
+                 $(".series_edit_form input[name=image]").val(url);
+                 $(".series_edit_form input[name=small_image").val(url);
+                 $(".series_edit_form img.upload_target").attr("src", url);
+             }
+      });
+    });
+   });
+</script>

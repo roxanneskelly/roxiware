@@ -79,6 +79,8 @@ namespace :widget do
      end
 
 end
+
+
 namespace :layout do
 
       desc "style"
@@ -122,5 +124,24 @@ namespace :layout do
               end
            end
      end
+end
+
+
+
+namespace :param_descriptions do
+
+      desc "Import a list of param descriptions"
+      task :import, [:description_file]=>:environment do |t, args|
+	 parser = XML::Parser.file(args[:layout_file] || "#{Roxiware::Engine.root}/config/param_descriptions")
+	 doc_obj = parser.parse
+	 description_nodes = doc_obj.find("/param_descriptions/param_description")
+	 description_nodes.each do |description_node|
+	    description = Roxiware::Param::ParamDescription.new
+	    old_description = Roxiware::Param::ParamDescription.where(:guid=>description_node["guid"]).first
+	    old_description.destroy if old_description.present?
+	    description.import(description_node)
+	    description.save!
+	 end
+      end
 end
 

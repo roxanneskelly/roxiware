@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<param_descriptions>
+  <param_description guid="6C16D934-0643-48EC-806C-95BDAF52E078">
+    <name>Bookstores</name>
+    <description>An hash of bookstores that support purchase of a given book</description>
+    <field_type>array</field_type>
+    <permissions></permissions>
+  </param_description>
+
+  <param_description guid="E59B2EB2-6867-475D-A691-ABF1A68E5BE7">
+    <name>Bookstore</name>
+    <description>A bookstore that supports purchase of a given book</description>
+    <field_type>hash</field_type>
+    <permissions></permissions>
+  </param_description>
+
+  <param_description guid="5B7766EA-3FAD-48DB-9894-756F1B14DB69">
+    <name>Bookstore ID</name>
+    <description>The ID of the bookstore</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+  </param_description>
+
+  <param_description guid="E73E1207-CB64-44AB-8F1C-2032AD6A34B4">
+    <name>Bookstore Editions</name>
+    <description>An array of book editions available at a bookstore.</description>
+    <field_type>array</field_type>
+    <permissions></permissions>
+  </param_description>
+
+  <param_description guid="4014F256-277D-4B58-8375-E1560524EA20">
+    <name>Book Edition</name>
+    <description>A book edition.</description>
+    <field_type>hash</field_type>
+    <permissions></permissions>
+  </param_description>
+
+  <param_description guid="2BEBB288-5015-4D05-A3A1-224EE4D3D37F">
+    <name>Book Edition URL</name>
+    <description>A string representing the url to the purchase location.</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+  </param_description>
+</param_descriptions>

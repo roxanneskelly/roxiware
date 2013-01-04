@@ -18,6 +18,8 @@ class Ability
       cannot :delete, Roxiware::User, :id=>user.id
       cannot [:create, :update, :delete], Roxiware::User, :role=>"super"
       cannot [:create, :destroy], [Roxiware::Layout::Layout, Roxiware::Layout::PageLayout, Roxiware::Layout::LayoutSection, Roxiware::Layout::WidgetInstance, Roxiware::Layout::Widget]
+      can :manage, Roxiware::Book
+      can :manage, Roxiware::Series
       cannot :move, Roxiware::Layout::WidgetInstance
     when "user"
       can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page, Roxiware::Event, Roxiware::GalleryItem, Roxiware::Gallery, Roxiware::Service]
@@ -39,6 +41,8 @@ class Ability
       can :manage, Roxiware::User do |resource|
         resource==user
       end
+      can :read, Roxiware::Book
+      can :read, Roxiware::Series
     else
       can :read, [Roxiware::NewsItem, 
                   Roxiware::PortfolioEntry, 
@@ -46,6 +50,8 @@ class Ability
                   Roxiware::Event, 
                   Roxiware::GalleryItem, 
                   Roxiware::Gallery, 
+                  Roxiware::Book,
+                  Roxiware::BookSeries,
                   Roxiware::Service]
       can :read, Roxiware::Person, :show_in_directory=>true
       can :read, Roxiware::Blog::Post, :post_status=>"publish"

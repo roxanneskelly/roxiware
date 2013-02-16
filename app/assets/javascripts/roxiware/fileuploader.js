@@ -267,7 +267,7 @@ qq.FileUploaderBasic = function(o){
         onProgress: function(id, fileName, loaded, total){},
         onComplete: function(id, fileName, responseJSON){},
         onCancel: function(id, fileName){},
-        // messages                
+        // messages        
         messages: {
             typeError: "{file} has invalid extension. Only {extensions} are allowed.",
             sizeError: "{file} is too large, maximum file size is {sizeLimit}.",
@@ -275,9 +275,7 @@ qq.FileUploaderBasic = function(o){
             emptyError: "{file} is empty, please select files again without it.",
             onLeave: "The files are being uploaded, if you leave now the upload will be cancelled."            
         },
-        showMessage: function(message){
-            $.alert(message);
-        }               
+        showMessage: function(message){}
     };
     qq.extend(this._options, o);
         
@@ -299,6 +297,11 @@ qq.FileUploaderBasic.prototype = {
     getInProgress: function(){
         return this._filesInProgress;         
     },
+    
+    cancel: function(id){
+       this._handler.cancel(id);
+    },
+
     _createUploadButton: function(element){
         var self = this;
         
@@ -365,7 +368,7 @@ qq.FileUploaderBasic.prototype = {
         }             
     },
     _onCancel: function(id, fileName){
-        this._filesInProgress--;        
+        this._filesInProgress--;
     },
     _onInputChange: function(input){
         if (this._handler instanceof qq.UploadHandlerXhr){                
@@ -652,7 +655,7 @@ qq.extend(qq.FileUploader.prototype, {
             e = e || window.event;
             var target = e.target || e.srcElement;
             
-            if (qq.hasClass(target, self._classes.cancel)){                
+            if (qq.hasClass(target, self._classes.cancel)){
                 qq.preventDefault(e);
                
                 var item = target.parentNode;

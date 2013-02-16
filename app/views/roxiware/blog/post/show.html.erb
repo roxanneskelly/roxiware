@@ -30,10 +30,22 @@
      <%= submit_tag "Post" %>
   <% end %>
 </div>
-<%= render :partial=>"edit_post", :locals=>{:index=>true} if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) %>
+
+<ul id="post_context_menu" class="context_menu">
+   <li id="edit_post"><a href="#" menu_item="edit_post">Edit Post</a></li>
+</ul>
 
 <script>
 $(document).ready(function() {
+    $("#mainBody").context_menu("#post_context_menu");
+
+    $("#mainBody").on("context_menu", function(event, menu_item) {
+       switch (menu_item) {
+	  case "edit_post":
+	    settingsForm("<%= edit_blog_post_path(@post.id) %>", "Edit Blog Post");
+	    break;
+       }});
+
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
 

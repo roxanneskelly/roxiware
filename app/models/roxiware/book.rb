@@ -11,8 +11,8 @@ class Roxiware::Book < ActiveRecord::Base
   validates_uniqueness_of :seo_index, :allow_nil=>true, :allow_blank=>true, :message=>"The book has already been added."
 
 
-  edit_attr_accessible :seo_index, :goodreads_id, :description, :image, :isbn, :isbn13, :large_image, :small_image, :title, :bookstores, :as=>[:super, :admin, :user, nil]
-  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image, :isbn, :isbn13, :large_image, :small_image, :title, :bookstores, :as=>[:super, :admin, :user, :guest, nil]
+  edit_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :as=>[:super, :admin, :user, nil]
+  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :as=>[:super, :admin, :user, :guest, nil]
 
 
   EDITIONS = {
@@ -76,13 +76,15 @@ class Roxiware::Book < ActiveRecord::Base
       self.title = goodreads_result[:title]
       self.isbn=goodreads_result[:isbn]
       self.isbn13=goodreads_result[:isbn13]
-      self.large_image=goodreads_result[:large_image]
-      self.image=goodreads_result[:image]
-      self.small_image=goodreads_result[:small_image]
+      self.large_image_url=goodreads_result[:large_image_url]
+      self.image_url=goodreads_result[:image_url]
+      self.thumbnail_url=goodreads_result[:thumbnail_url]
       self.description=goodreads_result[:description]
       self.goodreads_id = goodreads_result[:goodreads_id]
+   end
 
-     stores =  params.build({:param_class=>"local", 
+  def init_sales_links
+      stores =  params.build({:param_class=>"local", 
                                      :description_guid=>"6C16D934-0643-48EC-806C-95BDAF52E078",
                                      :name=>"bookstores",
                                      :value=>""}, :as=>"")

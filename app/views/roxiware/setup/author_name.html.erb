@@ -1,0 +1,31 @@
+<div class="wizard_instructions">
+Great, you're account has been created.  Now we need a bit of information about you.<br/><br/>
+<h1>What's your name?</h1><br/>
+Enter the name you'll use for your author site.  This can be your real name, a pen name, pretty much anything your want.  If you've been published, it's probably best to enter the name you've used to publish most of your books.<br/>
+You can change this later, of course</br>
+</div>
+
+<%= form_tag '/setup', :method=>"put" do %>
+   <%= label_tag "Name" %><%= text_field_tag :first_name, "First", :class=>"setup_watermark", :watermark=>"First" %> <%= text_field_tag :middle_name, "Middle", :class=>"setup_watermark", :watermark=>"Middle" %><%= text_field_tag :last_name, "Last", :class=>"setup_watermark", :watermark=>"Last" %>
+
+   <div class="wizard_instructions">
+      <h1>Have you been published?</h1>
+   If you have, we can automatically gather your biographical information for your website,
+   as well as information about your books.
+   </div>
+
+   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "No, Skip import", :id=>"skip_import", :value=>"skip", :type=>"button" %><%= button_tag "Yes, Import my information", :id=>"import", :value=>"import", :type=>"submit" %></div>
+   <%= hidden_field_tag :setup_action, "import" %>
+   <%= hidden_field_tag :setup_step, @setup_step %>
+<% end %>
+<script>
+  $(function() {
+     $("button#back_button,button#skip_import").click(function() {
+        $("input#setup_action").val($(this).attr("id"));
+        $("form").submit();
+     });
+     $("form").submit(function() {
+        $("input.setup_watermark").val("");
+     });
+  });
+</script>

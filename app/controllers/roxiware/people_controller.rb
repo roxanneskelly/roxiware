@@ -14,29 +14,23 @@ class Roxiware::PeopleController < ApplicationController
   # GET /people
   def index
     @title = @title + " : People"
-    @meta_description = @meta_description +" : People"
     people = Roxiware::Person.all
+    @person = Roxiware::Person.where(:seo_index=>@default_biography).first if @default_biography.present?
+    @person = nil if cannot? :read, @person
     # iterate each person to see if user can read them
     @people = people.select { |person| can? :read, person }
     @people.each do |person|
-      @meta_keywords = @meta_keywords + ", " + person.first_name
-      if !person.last_name.blank?
-        @meta_keywords = @meta_keywords  + " " + person.last_name
-      end
+      @meta_keywords = @meta_keywords + ", " + person.full_name
     end
-    @person = @people.first
+    @person ||= @people.first 
     if (@person.nil? || @person.seo_index.nil?)
         respond_to do |format|
             format.html 
         end
     else
+        @title = @title + " : " + @person.full_name
         respond_to do |format|
-	    if @single_person
-                 format.html { render :action=>"show" }
-	    else
-              format.html { redirect_to :action=>'show_seo', :seo_index => @person.seo_index }
-
-            end
+            format.html { render :action=>"show" }
         end
     end
   end
@@ -46,7 +40,7 @@ class Roxiware::PeopleController < ApplicationController
     people = Roxiware::Person.all
     # iterate each person to see if user can read them
     @people = people.select { |person| can? :read, person }
-    @title = @title + ": People : " + @person.first_name + " " + @person.last_name
+    @title = @title + ": People : " + @person.full_name
 
     respond_to do |format|
        format.html # show.html.erb
@@ -55,11 +49,8 @@ class Roxiware::PeopleController < ApplicationController
   end
 
   def edit
-    @people = Roxiware::Person.all
-    @title = @title + ": People : " + @person.first_name + " " + @person.last_name
     respond_to do |format|
-       format.html # show.html.erb
-       format.json { render :json => @person.ajax_attrs(@role) }
+      format.html { render :partial =>"roxiware/people/editform" }
     end
   end
 
@@ -75,9 +66,8 @@ class Roxiware::PeopleController < ApplicationController
     end
     raise ActiveRecord::RecordNotFound if @person.nil?
     authorize! :read, @person
-    @title = @title + ": People : " + @person.first_name + " " + @person.last_name
-    @meta_description = @title
-    @meta_keywords = @meta_keywords + ", " + @person.first_name + " " + @person.last_name
+    @title = @title + ": People : " + @person.full_name
+    @meta_keywords = @meta_keywords + ", " + @person.full_name
 
     @recent_posts = Roxiware::Blog::Post.published().where(:person_id=>@person.id).order("post_date DESC").limit(5).collect{|post| post}
 
@@ -94,6 +84,7 @@ class Roxiware::PeopleController < ApplicationController
    authorize! :create, Roxiware::Person
    @person = Roxiware::Person.new({:show_in_directory=>true,
                                    :first_name=>"First", 
+                                   :middle_name=>"", 
                                    :last_name=>"Last", 
 				   :role=>"Role", 
 				   :email=>"email@email.com", 
@@ -109,7 +100,7 @@ class Roxiware::PeopleController < ApplicationController
   # POST /people.json
   def create
     respond_to do |format|
-      if @person.update_attributes(params, :as=>@role)
+      if @person.update_attributes(params[:person], :as=>@role)
         format.html { redirect_to @person, :notice => 'Person was successfully created.' }
         format.json { render :json => @person, :status => :created, :location => @person }
       else
@@ -123,7 +114,7 @@ class Roxiware::PeopleController < ApplicationController
   # PUT /people/:id.json
   def update
     respond_to do |format|
-        if @person.update_attributes(params, :as=>@role)
+        if @person.update_attributes(params[:person], :as=>@role)
 	   format.html { redirect_to @person, :notice => 'Person was successfully updated.' }
            format.json { render :json => @person }
 	else

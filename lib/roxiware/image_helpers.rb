@@ -1,26 +1,29 @@
 module Roxiware
   module ImageHelpers
     require 'RMagick'
-    def self.process_uploaded_image(thumbprint, options={})
+    def self.process_uploaded_image(filename, options={})
+      extension = File.extname(filename)
+      base_filename = File.basename(filename, extension)
+      result = {:basename => base_filename, :urls=>{}}
+      requested_sizes = options[:image_sizes] || Roxiware.upload_image_sizes
+      puts "RESIZING TO #{requested_sizes.inspect}"
+      processed_image_root = File.join(Rails.root.join(AppConfig.processed_upload_path), base_filename)
 
-      result = {:thumbprint=>thumbprint, :urls=>{}}
-      requested_sizes = options[:image_sizes] ||= Roxiware.upload_image_sizes.keys
-      image_path = File.join(Rails.root.join(AppConfig.raw_upload_path), thumbprint+Roxiware.upload_image_file_type)
-      processed_image_root = File.join(Rails.root.join(AppConfig.processed_upload_path), thumbprint)
-
-      image = options[:image] || Magick::Image::read(image_path).first
-      requested_sizes.each do |name|
-	 sizes = Roxiware.upload_image_sizes[name.to_sym]
+      image = options[:image] || Magick::Image::read(filename).first
+      requested_sizes.each do |name, size|
+         sizes = requested_sizes[name]
+         puts "NAME: #{name} SIZES: #{sizes.inspect}"
 	 if sizes
 	    image_watermark = nil
-	    if(sizes[0] > 200)
+	    if(sizes["width"].to_i > 200)
 	       image_watermark = options[:watermark]
 	       if options[:watermark_person].present?
 		  image_watermark = "©" + DateTime.now.year.to_s + " " + options[:watermark_person].full_name;
 	       end
 	    end
 	    
-	    resize_image = image.resize_to_fit(sizes[0], sizes[1])
+	    resize_image = image.resize_to_fit(sizes["width"].to_i, sizes["height"].to_i)
+	    puts "IMAGE RESIZED"
 	    if image_watermark.present?
 	        print "WATERMARKING WITH " + image_watermark + " to " + resize_image.columns.to_s, resize_image.rows.to_s + "\n\n"
 		mark = Magick::Image.new(resize_image.columns, resize_image.rows) do
@@ -38,9 +41,10 @@ module Roxiware
 		gc.draw(resize_image)
 	    end
 
-	    resize_image.write( processed_image_root + "_#{name}"+Roxiware.upload_image_file_type)
+	    puts "RESIZING #{name} "+processed_image_root + "_#{name}#{extension}"
+	    resize_image.write( processed_image_root + "_#{name}#{extension}")
 	    resize_image.destroy!
-	    result[:urls][name] = File.join(AppConfig.upload_url, thumbprint + "_#{name}"+Roxiware.upload_image_file_type)
+	    result[:urls][name] = File.join(AppConfig.upload_url, base_filename + "_#{name}"+extension)
 	    result[:success] = true;
 	 end
       end

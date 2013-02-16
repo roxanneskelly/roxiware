@@ -1,40 +1,9 @@
 <% if @book.present? %>
   <section>
-     <article class="book_listing" rel="<%= book_path(@book.isbn) %>">
-       <img src="<%= @book.image %>" class="book_cover"/>
-       <div class="book_title"><%= @book.title %></div>
-       <div class="book_description"><%= raw @book.description %></div>
-
-       <% bookstores = @book.get_param("bookstores")
-          bookstore_list = []
-	  if bookstores.present? && bookstores.a.present?
-	      bookstores.a.each do |bookstore|
-	         if bookstore.h.present? && bookstore.h['children'].present? && bookstore.h['children'].a.present? 
-	            bookstore_list << bookstore
-                 end
-              end
-          end
-          if bookstore_list.present? %>
-	    <h1 class="bookstore_buy_title">Buy It!</h1>
-	    <ul class="book_purchase_bar">
-	      <% bookstore_list.each do |bookstore| %>
-	        <% print "BOOKSTORE " + bookstore.inspect + "\n\n" %>
-		<li class="book_store" id="<%= bookstore.h['store_id'].to_s %>">
-		  <% edition = bookstore.h['children'].a[0] %>
-		  <a href="<%= edition.h['link'].to_s %>" target="_blank" class="store_name"><%= Roxiware::Book::STORES[bookstore.h['store_id'].conv_value] %></a>
-		  <% if bookstore.h['children'].a.length > 1 %>
-		     <ul class="book_store_editions">
-			<% bookstore.h['children'].a.each do |edition| %>
-			  <li><a href="<%= edition.h['url'].to_s %>" target="_blank" class="edition_store_name"><%= edition.h['name'].to_s %></a></li>
-		        <% end %>
-		     </ul>
-		  <% end %>
-	        </li>
-	      <% end %>
-	    </ul>
-          <% end %>
-     </article>
+     <%= render :partial=>"roxiware/books/book", :locals=>{:book=>@book, :book_image_url=>@book.large_image_url} %>
   </section>
-
 <% end %>
-<%= render :partial=>"roxiware/books/context_menus" %>
+<% if can? :edit, @book %>
+    <div class="help_bar_entry">Left-click to manage the book.</div>
+    <%= render :partial=>"roxiware/books/context_menus" %>
+<% end %>

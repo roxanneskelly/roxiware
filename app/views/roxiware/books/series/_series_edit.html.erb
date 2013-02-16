@@ -1,0 +1,61 @@
+<%= series_fields.label :title, "Title"%>
+<%= series_fields.text_field :title %>
+<span class="popup_help_text" style="float:right;">Click to change image</span><br/>
+<img id="series_image_url" src="" class="upload_target" upload_sizes="large,medium,small,xsmall,thumbprint"/>
+<input type="hidden" name="image_thumbprint"/>
+<%= series_fields.hidden_field :goodreads_id %>
+<%= series_fields.hidden_field :image_url %>
+<%= series_fields.hidden_field :thumbnail_url %>
+<%= series_fields.hidden_field :large_image_url %>
+<br/>
+<%= series_fields.label :books, "Books"%>
+<div id="series_books">
+  <%= series_fields.fields_for :include_book do |include_book| %>
+   <%  @books.each do |book| %>
+      <div class="series_book"><%= include_book.check_box(book.id, {:class=>"series_book_checkbox", :book_id=>book.id}) %><div class="series_book_title"><%=book.title%></div><br style="clear:both;"/></div>
+    <% end %>
+  <% end %>
+</div>
+<br/>
+<br style="clear:both"/>
+<%= series_fields.label :description, "Description" %><br/>
+<%= series_fields.text_area :description %>
+<br/>
+<script>
+$(function() {     
+     $(".series_edit_form textarea").wysiwyg({ css: "<%= stylesheet_path('application') %>",
+                                       controls: {
+                                          undo: { visible: false },
+                                          redo: { visible: false},
+                                          insertHorizontalRule: { visible: true},
+                                          html: { visible: true},
+                                          insertTable: {visible: true},
+                                          'fileManager': {
+                                              visible: true,
+                                              tooltip: "File Manager"
+                                                  }
+                                           }});
+
+   $(".series_edit_form img.upload_target").bind("click", function() {
+      imageDialog({
+	     initialImage: $(".series_edit_form input#series_fields_large_image_url").val(),
+             previewSize:"large",
+             uploadParams:{
+               imageSizes: {
+                  large: {width:300, height:450},
+                  medium: {width:100, height:150},
+                  thumbnail:  {width:50, height:75}
+               }
+             },
+             sizeLimit: 10000000,
+	     onSuccess: function(upload_result) {
+                 $(".series_edit_form input#series_fields_image_url").val(upload_result["urls"]["medium"]);
+                 $(".series_edit_form input#series_fields_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
+                 $(".series_edit_form input#series_fields_large_image_url").val(upload_result["urls"]["large"]);
+                 $(".series_edit_form img#series_image_url").attr("src", upload_result["urls"]["medium"]);
+                 $("input#series_fields_image_url, input#series_fields_thumbnail_url, input#series_fields_large_image_url").trigger("change");
+             }
+      });
+    });
+});
+</script>

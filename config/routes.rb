@@ -4,8 +4,12 @@ Roxiware::Engine.routes.draw do
     get "/sitemap" => "sitemap#index", :format=>"xml" 
   end
 
-  get "/settings" => "settings#show"
-  put "/settings" => "settings#update"
+  get "/setup" => "setup#show"
+  put "/setup" => "setup#update"
+  get "/setup/import" => "setup#import"
+
+
+  resources :settings
 
   resources :layout, :module=>"layouts" do
     resources :page do
@@ -15,6 +19,7 @@ Roxiware::Engine.routes.draw do
 	  end
        end
     end
+    put "" => "layout#settings", :on=>:collection 
   end
 
   # resources for managing widgets
@@ -32,9 +37,10 @@ Roxiware::Engine.routes.draw do
 
   post   "asset/:upload_type" => "asset#upload"
 
-
   get "/people/" => "people#index"
   get "/people/:seo_index" => "people#show_seo"
+  get "/biography/" => "people#index"
+  get "/biography/:seo_index" => "people#show_seo"
   resources :people, :path=>"/person"
 
   resources :events

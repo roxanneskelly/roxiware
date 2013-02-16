@@ -1,241 +1,167 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layouts>
-  <layout version="1.0" guid="CBA695DA-D6BE-461D-94CA-456FEFF27538">
-    <name>Basic Blog</name>
-    <description>Basic Blog Website</description>
+  <layout version="1.0" guid="03AAF953-D897-4D82-A2D4-F7DEC52773E4">
+    <name>Plain Jane</name>
+    <description>
+      <![CDATA[Lorem ipsum <b>dolor</b> sit amet, <i>consectetur</i> adipiscing elit. Fusce bibendum dolor non justo tincidunt quis ornare lectus condimentum. Etiam sit amet purus ornare ligula hendrerit molestie. Nunc elementum faucibus sagittis. Aliquam erat mi, rhoncus accumsan imperdiet at, placerat et libero. Nulla posuere convallis est et consectetur. Duis cursus augue id tellus placerat at aliquam ipsum consectetur. Sed rhoncus libero in metus pharetra euismod. Donec porta auctor posuere. Pellentesque rhoncus porttitor nibh, nec eleifend orci scelerisque id. Vestibulum nec dolor lectus. Cras pellentesque aliquam fringilla. Ut auctor tellus ut ligula accumsan quis feugiat nunc scelerisque.]]>
+    </description>
+    <setup>
+      <![CDATA[]]>
+    </setup>
+    <categories>
+    </categories>
     <style>
-      <![CDATA[
-      
- body.application_body
-{
-  font-size:12px;
-  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
-}
-
-body.application_body  h1, h2, h3, h4, h5, h6 {
-   font-family:Georgia, serif;
-   color:#000000;
-}
-
-body.application_body h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
-body.application_body h2 {font-size:1.2em;margin-bottom:0.75em;}
-body.application_body h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
-body.application_body h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
-body.application_body h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
-body.application_body h6 {font-size:1em;font-weight:bold;}
-
-body.application_body b
-{
-    text-shadow:2px 2px 4px rgba(0, 0, 0, 0.7);
-}
-
-body.application_body a,
-body.application_body a:visited, 
-body.application_body a:link, 
-body.application_body a:hover 
-{
-    color: #66f;
-    text-decoration:none;
-    font-style:none;
-    
-}
-body.application_body a:hover
-{
-   color: #aaf;
-}
-
-/* Menu layout */
-.widget#main_menu .ddsmoothmenu_widget ul li, 
-.widget#main_menu .ddsmoothmenu_widget ul li a, 
-.widget#main_menu .ddsmoothmenu_widget ul li a:link, 
-.widget#main_menu .ddsmoothmenu_widget ul li a:visited
-{
-  color: #ffffff;
-  background: #000000;
-}
-
-.widget#main_menu .ddsmoothmenu_widget ul li a:hover, 
-.widget#main_menu .ddsmoothmenu_widget ul li a.selected,
-.widget#main_menu  .ddsmoothmenu_widget ul li ul li a:hover
-{
-  color: #000000;
-  background: #c8c8c8;
-}
-
-.widget#main_menu .ddsmoothmenu_widget ul
-{
-   padding-right:0px;
-}
-
-.widget#main_menu .ddsmoothmenu_widget ul li a.menu_selected,
-.widget#main_menu  .ddsmoothmenu_widget ul li ul li a.menu_selected
-{
-  color: #ffffff;
-  background: #969696;
-}
-
-
-.widget#sitemap_menu .ddsmoothmenu_widget ul li, 
-.widget#sitemap_menu .ddsmoothmenu_widget ul li a, 
-.widget#sitemap_menu .ddsmoothmenu_widget ul li a:link, 
-.widget#sitemap_menu .ddsmoothmenu_widget ul li a:visited
-{
-  font-weight:300;
-  color: #777;
-  background: none;
-}
-
-.widget#sitemap_menu .ddsmoothmenu_widget ul li a:hover, 
-.widget#sitemap_menu .ddsmoothmenu_widget ul li a.selected,
-.widget#sitemap_menu  .ddsmoothmenu_widget ul li ul li a:hover
-{
-  color: #333;
-  background: none;
-}
-
-.widget#sitemap_menu .ddsmoothmenu_widget ul li a.menu_selected,
-.widget#sitemap_menu  .ddsmoothmenu_widget ul li ul li a.menu_selected
-{
-  color: #000;
-  background: none;
-}
-
-.widget#sitemap_menu .ddsmoothmenu_widget ul li
-{
-    border-left:solid 1px #777;
-}
-
-.widget#sitemap_menu .ddsmoothmenu_widget ul li:first-child
-{
-    border:none;
-}
-
-/* Document layout */
+      <![CDATA[/* Document layout */
 body.application_body
-{ 
-  width:862px;
-  margin-left:auto;
-  margin-right:auto;
-  margin-bottom:0px;
-
-
-  background: #fffff;
-  color:#000;
-  background-color: #fff;
-  margin-bottom:auto;
+{
+  background: <%= background %>;
 }
+
+
+/* Fonts and text */
 div#mainBody
 {
-    background: #ffffff;
-     width:100%;
-}
+    font-size:12px;
+    font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
 
-
-div#header_social_networks
-{
-   position:relative;
-   float:left;
-   text-align:left;
-   margin-left:3px;
-   margin-top:3px;
-   vertical-align:center;
-   height:35px;
-}
-/* Section layout */
-div#mainBody
-{
     padding-left: 10px;
     padding-right: 10px;
-    margin-left:0px;
-    margin-right:0px;
-    margin-top:0px;
-    margin-bottom:20px;
+    margin:0px auto 20px auto;
+    width:862px;
+    background: <%= background %>;
+    color:<%= text_color %>;
+
+    h1, h2, h3, h4, h5, h6 {
+	font-family:Georgia, serif;
+	color:<%= text_color %>;
+    }
+
+    h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
+    h2 {font-size:1.2em;margin-bottom:0.75em;}
+    h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
+    h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
+    h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+    h6 {font-size:1em;font-weight:bold;}
+
+    b {
+        text-shadow:2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+   
+    a, a:visited, a:link {
+        color: <%= link_color %>;
+        text-decoration:none;
+        font-style:none;
+    }
+
+    a, a:visited, a:link, a:hover {
+        color: <%= link_color %>;
+    }
+    a:hover {
+      color: <%= link_hover_color %>;
+    }
 }
 
-header
+
+/* General layout */
+div#mainBody
 {
-   width:100%;
+    header {
+       width:100%;
+    }
+
+    #layout_body
+    {
+       margin:0px;
+       width:100%;
+       display:table;
+    }
+
+    #content_section {
+       display:table-row;
+    }
+
+    #left_bar_section, #right_bar_section, #center_bar
+    {
+       position:relative;
+       display:table-cell;
+       vertical-align:top;
+       margin:0px;
+    }
+
+    #center_content
+    {
+       position:relative;
+       padding:10px;
+       width:100%;
+    }
 }
 
-#layout_body
-{
-   display:table;
-   margin:0px;
-   width:100%;
-}
-#flash_section, #content_section
-{
-   display:table-row;
+/* General Menu Settings */
+
+/* Main Menu layout */
+.widget#main_menu .ddsmoothmenu_widget {
+    ul li { 
+        a, a:link, a:visited {
+            color: #ffffff;
+	    background: #000000;
+        }
+
+	a.menu_selected,
+	ul li a.menu_selected
+	{
+	    color: #ffffff;
+	    background: #969696;
+	}
+
+        a:hover, a.selected, ul li a:hover   {
+	    color: #000000;
+	    background: #c8c8c8;
+        }
+    }
+    ul {
+        padding-right:0px;
+    }
 }
 
-#flash_section
-{
-  padding:10px;
+
+/* Main Menu layout */
+.widget#sitemap_menu .ddsmoothmenu_widget {
+    ul li { 
+        border-left:solid 1px #777;
+
+        a, a:link, a:visited {
+            font-weight:300;
+            color: #777;
+	    background: none;
+        }
+
+	a.menu_selected,
+	ul li a.menu_selected
+	{
+            color: #000;
+            background: none;
+	}
+
+        a:hover, a.selected, ul li a:hover   {
+            color: #333;
+            background: none;
+        }
+    }
+    ul {
+        padding-right:0px;
+    }
+
+    ul li:first-child {
+        border:none;
+    }
 }
 
-#left_bar_section, #right_bar_section, #center_bar_section
+
+/* Content and widget background boxes */
+/* set the content background to relative so we can position the content background off of it */
+div.content_background_container, .widget
 {
    position:relative;
-   display:table-cell;
-   vertical-align:top;
-}
-
-#right_bar_section
-{
-   padding-left:10px;
-}
-
-#left_bar_section
-{
-   padding-right:10px;
-}
-
-#center_content
-{
-   position:relative;
-   padding:10px;
-}
-
-/* footer layout */
-footer.main_footer { 
- height:50px; 
- padding: 0px;
- margin:0px;
-}
-
-.share_bar
-{
-   clear:both;
-}
-div.content_background_container
-{
-   position:relative;
-}
-
-.widget
-{
-  position:relative;
-  width:100%;
-  margin:0px;
-}
-
-.widget_vspace
-{
-   height:2px;
-   padding:4px;
-}
-
-.widget_content
-{
-  margin:0px;
-  padding:0px;
-  position:relative;
-}
-
-.widget_content h1
-{
-   font-size:1.2em;
-   font-weight:700;
 }
 
 div.widget_background, div.content_background
@@ -244,184 +170,189 @@ div.widget_background, div.content_background
     width:100%;
     height:100%;
 }
-    
-    
-/* the overlayed element */
-.overlay {
-  display:none;
-  color:#000;
-  background: #fff;
-  padding:1em;
-  font-size:1.2em;
-  line-height:1.2em;
-  border:solid 1px black;
-  z-index:999;
-   -o-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
-   -icab-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
-   -khtml-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
-   -moz-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
-   -webkit-box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
-   box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.7);
-}
 
-
-/* default close button positioned on upper right corner */
-.overlay .close {
-        background-image:url(/assets/overlay/close_unpressed.png);
-        position:absolute; right:-12px; top:-12px;
-        background-color: transparent;
-        cursor:pointer;
-        height:29px;
-        width:28px;
-}
-
-.overlay .close:active {
-        background-image:url(/assets/overlay/close_pressed.png);
-        background-color: transparent;
-}
-
-/* default close button positioned on upper right corner */
-.overlay .close:hover {
-        background-image:url(/assets/overlay/close_pressed.png);
-        background-color: transparent;
-}
- 
-
-button
+/* WIDGETS */
+.widget
 {
- padding-top:0.2em;
- padding-bottom:0.2em;
- border:1px solid #777;
-   o-border-radius: 5px;
-   -icab-border-radius: 5px;
-   -khtml-border-radius: 5px;
-   -moz-border-radius: 5px;
-   -webkit-border-radius: 5px;
-   border-radius: 5px;
-   background:#333;
-  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
-  font-weight:bold;
-  padding-left:0.4em;
-  padding-right:0.4em;
+    width:100%;
+    margin:0px;
 }
 
-button, button.ui-widget, ui-button-text-only
+
+/* vertical space between widgets.  It's an actual element
+   instead of simply margins as it's used as a drop location
+   when moving widgets */
+.widget_vspace
 {
-  display:inline-block;
-  margin:0.1em;
-  height:1.9em;
-  font-size:0.8em;
-  vertical-align:top;
-  background:#333;
-  color:#fff;
- }
+     height:2px;
+     padding:4px;
+}
 
-ui-widget, ui-state-default
+
+.widget_content
 {
-   color:#fff;
+    margin:0px;
+    padding:0px;
+    position:relative;
+
+    .widget_content h1 {
+        font-size:1.2em;
+        font-weight:700;
+    }
+}
+
+.series_listing {
+   border:solid 1px white;
+   clear:both;
+   margin:1em 0 2em 0;
+   width:100%;
+   a.series_link {
+      div.series_title {
+       }
+   }
+
+   div.series_books {
+       vertical-align:top;
+       clear:both;
+       overflow:hidden;
+       margin-left:0px;
+       margin-right:0px;
+
+       div.series_book_tab:hover {
+	  background:#444;
+       }
+       div.series_book_tab {
+          cursor:pointer;
+	  background:#333;
+	  border:solid 1px white;
+	  float:left;
+	  height:20em;
+	  width:1.5em;
+	  position:relative;
+	  display:inline-block;
+          vertical-align:middle;
+          text-align:middle;
+	  div.series_book_title {
+              position:relative;
+              left:-9em;
+              top:9em;
+              text-align:left;
+	      height:1em;
+              font-size:0.8em;
+              line-height:1.5em;
+	      width:20em;
+	      color:#fff;
+	      display:inline-block;
+	      -webkit-transform: rotate(-90deg);
+	      -moz-transform: rotate(-90deg);
+	      -ms-transform: rotate(-90deg);
+	      -o-transform: rotate(-90deg);
+	      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+	      transform: rotate(-90deg);
+	  }
+      }
+
+       div.book_pane {
+           display:none;
+           float:left;
+	   div.book_listing {
+               position:relative;
+	       height:20em;
+	       overflow:hidden;
+	       border:solid 1px white;
+	       background:#000;
+	       color:#fff;
+	       display:inline-block;
+	       img {
+	           float:left;
+                   padding:20px;
+	       }
+          }
+      }
+  }
+
 }
 
 
-button.button_delete, button.button_edit, button.button_add
-{
-  color:#fff;
+.book_listings {
+      div.book_listing {
+          position:relative;
+          height:20em;
+          border:solid 1px white;
+          background:#000;
+	  color:#fff;
+          img {
+	      float:left;
+              padding:20px;
+	  }
+      }
 }
 
-select
-{
-   line-height: 1.4em !important;
-   font-size:100%;
-   padding:0px 10px 0px 2px!important;
-   margin:1px 10px 0px 1px!important;
-   min-width: 80px;
-   border: solid 0px transparent;
-   height:1.6em;
-   margin: 0px;
-   color: 3000;
-   background: #fff;
-  font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+.bookstore_list {
+      position:absolute;
+      bottom:0em;
+      ul.book_purchase_bar {
+          list-style-type:none;
+          display:hidden;
+              li {
+	          display:inline-block;
+		  ul {
+		      display:block;
+		      a {
+	                  display:block;
+		      }
+	       }
+	   }
+       }
+       ul.book_purchase_bar:hover {
+	   display:block;
+       }
 }
 
- .popup_form
-{
-   color:#fff;
-   background:#333;
-   border:solid 1px #777;
-}
-
-.popup_form a.selectBox,
-.popup_form a.selectBox:visited,
-.popup_form a.selectBox:link,
-.popup_form a.selectBox:hover
-{
-   color:#000;
-   background:#fff;
-}
-
-
-.popup_form a.selectBox-options,
-.popup_form a.selectBox-options:visited,
-.popup_form a.selectBox-options:link,
-.popup_form a.selectBox-options:hover
-{
-   color:#000;
-}
-
-.upload_target
-{
-   -o-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-   -icab-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-   -khtml-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-   -moz-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-   -webkit-box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-   box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
-}
-
-div.upload_target_hover
-{
-   border:solid 1px #000000;
-}
-
-
-span.popup_help_text
-{
-   color:#777;
-}
-
-
-input.popup_form_error_field {
-  background: #FFDDDD !important;
-}
-
-div.popup_form_alert {
-   background:#333;
-   border:1px solid #ccc;
-}
-
-
-/* the popup_form_alerted element */
-.popup_form_alert {
-  display:none;
-  color:#fff;
-  border:solid 2px black;
-  background:#000;
-}
 ]]>
     </style>
     <params>
-      <param class="style" name="content_background">
-        <value>/assets/background.png</value>
-        <param_description guid="E121E288-E726-46C3-8B1C-D2E8EE692531">
-          <name>Main Body Background</name>
-          <description>Background for the main body</description>
-          <field_type>asset</field_type>
-          <permissions/>
-        </param_description>
+      <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
+      <param class="local" description="0ADB2780-3D21-409F-A7B4-670395F99CD5" name="series_display_type">accordion</param>
+      <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_excerpt_length">500</param>
+      <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
+      <param class="local" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="layout_schemes">
+        <param class="local" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="C6148B79-4931-4032-BB3D-2DBFAD705F46">
+          <param class="local" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White</param>
+          <param class="local" description="2124E080-D791-4784-A89D-B1984DB73657" name="scheme_params">
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#ffffff</param>
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#000000</param>
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">#c0c0c0</param>
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">#808080</param>
+          </param>
+          <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_small.jpeg</param>
+          <param class="local" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
+            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-1">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
+            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-2">/assets/uploads/f5312a303e88013024cc002332d4c684_large.jpg</param>
+            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-3">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
+          </param>
+        </param>
+        <param class="local" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="FAD3C4B8-9C1C-40FC-86AF-946FDA6D91B6">
+          <param class="local" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Black</param>
+          <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image">/assets/uploads/e1669dc04023013024ea002332d4c684_small.jpg</param>
+          <param class="local" description="2124E080-D791-4784-A89D-B1984DB73657" name="scheme_params">
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#000000</param>
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#ffffff</param>
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">#707070</param>
+            <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">#c0c0c0</param>
+          </param>
+          <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">/assets/uploads/e1669dc04023013024ea002332d4c684_medium.jpg</param>
+          <param class="local" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
+            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-1">/assets/uploads/e1669dc04023013024ea002332d4c684_large.jpg</param>
+            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-2">/assets/uploads/d18ef8a03f49013024d6002332d4c684_large.jpg</param>
+          </param>
+        </param>
       </param>
+      <param class="style" description="E121E288-E726-46C3-8B1C-D2E8EE692531" name="content_background">/assets/background.png</param>
     </params>
     <pages>
-      <page controller="" action="">
-        <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <page action="" controller="">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
         <style>
           <![CDATA[]]>
         </style>
@@ -430,312 +361,154 @@ div.popup_form_alert {
         <sections>
           <section name="header_bar">
             <style>
-              <![CDATA[
-
-/* Header layout */
+              <![CDATA[/* Header layout */
 #header_bar_section {
    min-height:20px;
    position:relative; 
-}
-
-            ]]>
+}]]>
             </style>
             <params>
             </params>
             <widget_instances>
-              <instance widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" order="8">
+              <instance order="7" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
                 <params>
                 </params>
               </instance>
-              <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="4">
+              <instance order="4" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
                 <params>
-                  <param class="local" name="float">
-                    <value>right</value>
-                    <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-                  </param>
-                  <param class="local" name="show_background">
-                    <value>false</value>
-                    <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-                  </param>
-                  <param class="local" name="widget_instance_id">
-                    <value>main_menu</value>
-                    <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-                  </param>
-                  <param class="local" name="menu_root">
-                    <value>
-                      <param class="local" name="menu_root_0">
-                        <value>
-                          <param class="local" name="name">
-                            <value>Home</value>
-                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-                          </param>
-                          <param class="local" name="url">
-                            <value>/</value>
-                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-                          </param>
-			  <param class="local" name="permission">
-			    <value>guest</value>
-			    <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"/>
-                          </param>
-                          <param class="local" name="children">
-                            <value>
-                            </value>
-                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
-                          </param>
-                        </value>
-                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                  <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">right</param>
+                  <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                  <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">main_menu</param>
+                  <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_0">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Home</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
                       </param>
-                      <param class="local" name="menu_root_1">
-                        <value>
-                          <param class="local" name="name">
-                            <value>Blog</value>
-                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-                          </param>
-			  <param class="local" name="permission">
-			    <value>guest</value>
-			    <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"/>
-                          </param>
-                          <param class="local" name="url">
-                            <value>/blog</value>
-                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-                          </param>
-                          <param class="local" name="children">
-                            <value>
-                            </value>
-                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
-                          </param>
-                        </value>
-                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_1">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Blog</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/blog</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
                       </param>
-                    </value>
-                    <param_description guid="45A433ED-7183-4A28-890B-08F585A0E41A"/>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_2">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Books</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/books</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
+                      </param>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_3">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Biography</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/biography</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
+                      </param>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_4">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Contact</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/page/contact</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
+                      </param>
+                    </param>
                   </param>
                 </params>
               </instance>
-              <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="1">
+              <instance order="1" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
                 <params>
-                  <param class="local" name="height">
-                    <value>70</value>
-                    <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
+                  <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">70</param>
+                  <param class="local" description="AE42CE08-7AEA-49D0-90A0-6714CE599788" name="display_items">
+                    <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-0">
+                      <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">10</param>
+                      <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">10</param>
+                      <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text"> Logo</param>
+                      <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">Geneva</param>
+                      <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">72</param>
+                      <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color">rgb(0, 0, 0)</param>
+                    </param>
+                    <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-1">
+                      <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">392</param>
+                      <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">8</param>
+                      <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text"> </param>
+                      <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">Geneva, Verdana, Arial, Helvetica, sans-serif</param>
+                      <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">12</param>
+                      <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color">rgb(0, 0, 0)</param>
+                    </param>
                   </param>
-                  <param class="local" name="display_items">
-                    <value>
-                      <param class="local" name="item-0">
-                        <value>
-                          <param class="local" name="left">
-                            <value>10</value>
-                            <param_description guid="DED6595E-7ABE-47F7-B536-328472C14990"/>
-                          </param>
-                          <param class="local" name="top">
-                            <value>-22.999998092651367</value>
-                            <param_description guid="06E72987-55E7-4C36-9620-776931B9B2F9"/>
-                          </param>
-                          <param class="local" name="text">
-                            <value> Logo</value>
-                            <param_description guid="97643629-6F5C-4121-9141-BAC6731F1B04"/>
-                          </param>
-                          <param class="local" name="font">
-                            <value>Geneva</value>
-                            <param_description guid="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0"/>
-                          </param>
-                          <param class="local" name="size">
-                            <value>72</value>
-                            <param_description guid="63275631-EEB0-43E3-A2D9-407B6423CDC9"/>
-                          </param>
-                          <param class="local" name="color">
-                            <value>rgb(0, 0, 0)</value>
-                            <param_description guid="DA84EE57-3D89-489E-8B81-08DA7A560550"/>
-                          </param>
-                        </value>
-                        <param_description guid="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9"/>
-                      </param>
-                      <param class="local" name="item-1">
-                        <value>
-                          <param class="local" name="left">
-                            <value>392</value>
-                            <param_description guid="DED6595E-7ABE-47F7-B536-328472C14990"/>
-                          </param>
-                          <param class="local" name="top">
-                            <value>8</value>
-                            <param_description guid="06E72987-55E7-4C36-9620-776931B9B2F9"/>
-                          </param>
-                          <param class="local" name="text">
-                            <value> </value>
-                            <param_description guid="97643629-6F5C-4121-9141-BAC6731F1B04"/>
-                          </param>
-                          <param class="local" name="font">
-                            <value>Geneva, Verdana, Arial, Helvetica, sans-serif</value>
-                            <param_description guid="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0"/>
-                          </param>
-                          <param class="local" name="size">
-                            <value>12</value>
-                            <param_description guid="63275631-EEB0-43E3-A2D9-407B6423CDC9"/>
-                          </param>
-                          <param class="local" name="color">
-                            <value>rgb(0, 0, 0)</value>
-                            <param_description guid="DA84EE57-3D89-489E-8B81-08DA7A560550"/>
-                          </param>
-                        </value>
-                        <param_description guid="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9"/>
-                      </param>
-                    </value>
-                    <param_description guid="AE42CE08-7AEA-49D0-90A0-6714CE599788"/>
-                  </param>
+                </params>
+              </instance>
+              <instance order="6" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+                <params>
+                  <param class="local" description="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987" name="google_ad_format">728x90</param>
+                  <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">center</param>
                 </params>
               </instance>
             </widget_instances>
           </section>
           <section name="left_bar">
             <style>
-              <![CDATA[
-              
-            
-            ]]>
+              <![CDATA[]]>
             </style>
             <params>
-              <param class="local" name="width">
-                <value>120</value>
-                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
-                  <name>Width</name>
-                  <description>Width of the section in pixels</description>
-                  <field_type>integer</field_type>
-                  <permissions/>
-                </param_description>
-              </param>
+              <param class="local" description="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0" name="width">120</param>
             </params>
             <widget_instances>
+              <instance order="-1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+                <params>
+                  <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">1084111802</param>
+                  <param class="local" description="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987" name="google_ad_format">120x600</param>
+                </params>
+              </instance>
             </widget_instances>
           </section>
           <section name="footer_bar">
             <style>
-              <![CDATA[
-
-
-            ]]>
+              <![CDATA[]]>
             </style>
             <params>
             </params>
             <widget_instances>
-              <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="0">
+              <instance order="0" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
                 <params>
-                  <param class="local" name="show_search_box">
-                    <value>false</value>
-                    <param_description guid="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793"/>
-                  </param>
+                  <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">false</param>
                 </params>
               </instance>
-              <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="-1">
+              <instance order="-1" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
                 <params>
-                  <param class="local" name="widget_instance_id">
-                    <value>sitemap_menu</value>
-                    <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-                  </param>
-                  <param class="local" name="show_background">
-                    <value>false</value>
-                    <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-                  </param>
-                  <param class="local" name="float">
-                    <value>center</value>
-                    <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-                  </param>
-                  <param class="local" name="show_search_box">
-                    <value>false</value>
-                    <param_description guid="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793"/>
-                  </param>
-                  <param class="local" name="menu_root">
-                    <value>
-                      <param class="local" name="menu_root_0">
-                        <value>
-                          <param class="local" name="name">
-                            <value>Terms</value>
-                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-                          </param>
-                          <param class="local" name="url">
-                            <value>/page/terms</value>
-                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-                          </param>
-                          <param class="local" name="children">
-                            <value>
-                            </value>
-                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
-                          </param>
-                        </value>
-                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                  <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">sitemap_menu</param>
+                  <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                  <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">center</param>
+                  <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">false</param>
+                  <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_0">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Terms</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/page/terms</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
                       </param>
-                      <param class="local" name="menu_root_1">
-                        <value>
-                          <param class="local" name="name">
-                            <value>Privacy</value>
-                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-                          </param>
-                          <param class="local" name="url">
-                            <value>/page/privacy</value>
-                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-                          </param>
-                          <param class="local" name="children">
-                            <value>
-                            </value>
-                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
-                          </param>
-                        </value>
-                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_1">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Privacy</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/page/privacy</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
                       </param>
-                      <param class="local" name="menu_root_2">
-                        <value>
-                          <param class="local" name="name">
-                            <value>Contact</value>
-                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-                          </param>
-                          <param class="local" name="url">
-                            <value>/page/contact</value>
-                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-                          </param>
-                          <param class="local" name="children">
-                            <value>
-                            </value>
-                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
-                          </param>
-                        </value>
-                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_2">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Contact</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/page/contact</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
                       </param>
-                      <param class="local" name="menu_root_3">
-                        <value>
-                          <param class="local" name="name">
-                            <value>About</value>
-                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-                          </param>
-                          <param class="local" name="url">
-                            <value>/page/about</value>
-                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-                          </param>
-                          <param class="local" name="children">
-                            <value>
-                            </value>
-                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
-                          </param>
-                        </value>
-                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_3">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">About</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/page/about</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
                       </param>
-                      <param class="local" name="menu_root_4">
-                        <value>
-                          <param class="local" name="name">
-                            <value>FAQ</value>
-                            <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-                          </param>
-                          <param class="local" name="url">
-                            <value>/page/faq</value>
-                            <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-                          </param>
-                          <param class="local" name="children">
-                            <value>
-                            </value>
-                            <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659"/>
-                          </param>
-                        </value>
-                        <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
+                    </param>
+                    <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_4">
+                      <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">FAQ</param>
+                      <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/page/faq</param>
+                      <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
                       </param>
-                    </value>
-                    <param_description guid="45A433ED-7183-4A28-890B-08F585A0E41A"/>
+                    </param>
                   </param>
                 </params>
               </instance>
@@ -743,31 +516,17 @@ div.popup_form_alert {
           </section>
           <section name="right_bar">
             <style>
-              <![CDATA[
-              
-            
-            ]]>
+              <![CDATA[]]>
             </style>
             <params>
-              <param class="local" name="width">
-                <value>120</value>
-                <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
-                  <name>Width</name>
-                  <description>Width of the section in pixels</description>
-                  <field_type>integer</field_type>
-                  <permissions/>
-                </param_description>
-              </param>
+              <param class="local" description="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0" name="width">120</param>
             </params>
             <widget_instances>
             </widget_instances>
           </section>
           <section name="top_bar">
             <style>
-              <![CDATA[
-              
-            
-            ]]>
+              <![CDATA[]]>
             </style>
             <params>
             </params>
@@ -776,10 +535,7 @@ div.popup_form_alert {
           </section>
           <section name="bottom_bar">
             <style>
-              <![CDATA[
-              
-            
-            ]]>
+              <![CDATA[]]>
             </style>
             <params>
             </params>
@@ -788,16 +544,62 @@ div.popup_form_alert {
           </section>
           <section name="content">
             <style>
-              <![CDATA[
-              
-            
-            ]]>
+              <![CDATA[]]>
             </style>
             <params>
             </params>
             <widget_instances>
             </widget_instances>
           </section>
+        </sections>
+      </page>
+      <page action="" controller="roxiware/blog/post">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+        </sections>
+      </page>
+      <page action="show_by_title" controller="roxiware/blog/post">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+        </sections>
+      </page>
+      <page action="show_by_title" controller="roxiware/blog/post">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
+          <section name="bottom_bar">
+            <style>
+              <![CDATA[]]>
+            </style>
+            <params>
+            </params>
+            <widget_instances>
+            </widget_instances>
+          </section>
+        </sections>
+      </page>
+      <page action="index_by_date" controller="roxiware/blog/post">
+        <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+        <style>
+          <![CDATA[]]>
+        </style>
+        <params>
+        </params>
+        <sections>
         </sections>
       </page>
     </pages>

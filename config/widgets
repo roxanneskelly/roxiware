@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widgets>
-  <widget guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" version="1.0">
+  <widget version="1.0" guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
     <name>Flash Widget</name>
-    <description>Shows flash</description>
+    <description>
+      <![CDATA[Shows flash]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-        locals[:flash_content] = nil
+      <![CDATA[locals[:flash_content] = nil
         locals[:flash_content] = flash if flash[:notice].present? || flash[:alert].present? || flash[:error].present?
-        locals[:flash_content].present?
-    ]]>
+        locals[:flash_content].present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-<div id="flash_section">
+      <![CDATA[<div id="flash_section">
   <% if flash_content.present? %>
    <% if flash_content[:notice].present? %>
      <div class="notice-flash"><%= flash_content[:notice] %></div>
@@ -24,15 +26,10 @@
       <div class="error-flash"><%= flash_content[:error] %></div>
    <% end %>
   <% end %>
-</div>
-    ]]>
+</div>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-      
-      
-.notice-flash
+      <![CDATA[.notice-flash
 {
   padding:20px;
   left-margin:40px;
@@ -50,121 +47,22 @@
   padding:20px;
   color:red;
   left-margin:40px;
-}
-    ]]>
+}]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">
-          <name>Unique ID</name>
-          <description>Unique ID for this widget instance.  This ID will be set as the ID for the widget element in the markup, allowing stylesheet modification.</description>
-          <field_type>string</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">
-          <name>Background</name>
-          <description>Display the background box for this widget.  If the widget is displayed, padding will be added.</description>
-          <field_type>bool</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C">
-          <name>Float</name>
-          <description>Float the content to the left, right, or none.</description>
-          <field_type>select</field_type>
-          <metadata>left,none,right</metadata>
-          <permissions></permissions>
-        </param_description>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342">
-          <name>Height</name>
-          <description>Height of the widget.  Defaults to -1, which is 'auto'.</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
     </params>
   </widget>
-  <widget guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" version="1.0">
+  <widget version="1.0" guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
     <name>Menu Widget</name>
-    <description>Displays a menu</description>
-    <preload>
-      <![CDATA[
-        locals[:menu_root].present?
-    ]]>
-    </preload>
-    <render_view>
-      <![CDATA[
-      <% 
-         def render_menu(menu_node) 
-	  permissions = {"guest"=>0, "user"=>1, "admin"=>2, "super"=>3}
-          role = "guest"
-          role = current_user.role unless current_user.nil?
-          menu_node_values = menu_node.conv_value
-          permission = menu_node_values['permission'].to_s
-          permission = "guest" unless permissions.has_key?(permission)
-          return if(permissions[permission] > permissions[role]) %> 
-          <li id="child_<%= menu_node.id %>">
-	      <% uri = URI.parse(menu_node_values["url"].conv_value) 
-	      menu_class = "menu_selected" if ((uri.path == request.path) && ( uri.host.blank? || (uri.host == request.host))) %>
-	      <%=  link_to(menu_node_values["url"].conv_value, :class=>menu_class) do %>
-                 <%= menu_node_values["name"].conv_value %>
-              <% end %>
-	    <% if menu_node_values["children"].present? && menu_node_values["children"].conv_value.present? %>
-              <ul>
-	          <% menu_node_values["children"].conv_value.each do |menu_node_child| 
-		     render_menu(menu_node_child)
-                  end%>
-              </ul>
-	    <% end %>
-	  </li>
-      <% end %>
-      <div class="ddsmoothmenu_widget" id="menu-<%= menu_root.id %>">
-	<ul id="root_<%= menu_root.id %>">
-          <% menu_root.each do |menu_node_child| 
-	     render_menu(menu_node_child)
-           end%>
-	</ul>
-      <% if show_search_box %>
-	 <%= form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do %>
-	    <%= search_field_tag(:query) %>
-	 <% end %>
-	 <script>
-	     $(function() {
-		var search_watermark = 'Search';
-		$('#login-strip-<%= widget_instance_id %> #query').blur(function(){
-		if ($(this).val().length == 0)
-		   $(this).val(search_watermark).addClass('search_watermark');
-		}).focus(function(){
-		  if ($(this).val() == search_watermark)
-		   $(this).val('').removeClass('search_watermark');
-		}).val(search_watermark).addClass('search_watermark');
-	     });
-	 </script>
-      <% end %>
-      </div>
-      <script>
-	ddsmoothmenu.init({
-	   noarrow: <%= show_arrow ?"false":"true" %>,
-	   mainmenuid: "menu-<%= menu_root.id %>",
-	   orientation: 'h',
-	   classname: 'ddsmoothmenu_widget',
-	   contentsource: "markup"});
-      </script>
-    ]]>
-    </render_view>
+    <description>
+      <![CDATA[Displays a menu]]>
+    </description>
     <editform>
-      <![CDATA[
-
-<style>
+      <![CDATA[<style>
 
 #menu_widget_instance_edit .panes > div
 {
@@ -287,7 +185,6 @@ div.menu_edit a
 <% menu_root = @widget_instance.get_param("menu_root").conv_value %>
 <div class="widget_instance_edit" id="menu_widget_instance_edit">
    <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
-     <h3><%= @widget_instance.widget.name %> settings</h3>
      <ul class="tabs">
        <li><a href="#">Layout</a></li>
        <li><a href="#">Settings</a></li>
@@ -313,17 +210,18 @@ div.menu_edit a
               <% end %>
 	    </div>
 	  </div>
+         <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
        </div>
-       <div class="settings">
+       <div id="settings">
          <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
 	 <br/>
          <%= fields_for :params, :id=>"params_field" do |params_fields| %>
 	     <%= param_field(params_fields, @widget_instance.get_param("show_search_box")) %>
 	     <%= param_field(params_fields, @widget_instance.get_param("show_arrow")) %>
 	 <% end %>
+         <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
        </div>
      </div>
-     <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
    <% end %>
 </div>
 <script>
@@ -401,339 +299,264 @@ div.menu_edit a
       });
       $("#menu_widget_instance_edit").find("button").button();
    });
-</script>
-    ]]>
-
+</script>]]>
     </editform>
+    <preload>
+      <![CDATA[locals[:menu_root].present?]]>
+    </preload>
+    <render_view>
+      <![CDATA[<% 
+         def render_menu(menu_node) 
+	  permissions = {"guest"=>0, "user"=>1, "admin"=>2, "super"=>3}
+          role = "guest"
+          role = current_user.role unless current_user.nil?
+          menu_node_values = menu_node.conv_value
+          permission = menu_node_values['permission'].to_s
+          permission = "guest" unless permissions.has_key?(permission)
+          return if(permissions[permission] > permissions[role]) %> 
+          <li id="child_<%= menu_node.id %>">
+	      <% uri = URI.parse(menu_node_values["url"].conv_value) 
+	      menu_class = "menu_selected" if ((uri.path == request.path) && ( uri.host.blank? || (uri.host == request.host))) %>
+	      <%=  link_to(menu_node_values["url"].conv_value, :class=>menu_class) do %>
+                 <%= menu_node_values["name"].conv_value %>
+              <% end %>
+	    <% if menu_node_values["children"].present? && menu_node_values["children"].conv_value.present? %>
+              <ul>
+	          <% menu_node_values["children"].conv_value.each do |menu_node_child| 
+		     render_menu(menu_node_child)
+                  end%>
+              </ul>
+	    <% end %>
+	  </li>
+      <% end %>
+      <div class="ddsmoothmenu_widget" id="menu-<%= menu_root.id %>">
+	<ul id="root_<%= menu_root.id %>">
+          <% menu_root.each do |menu_node_child| 
+	     render_menu(menu_node_child)
+           end%>
+	</ul>
+      <% if show_search_box %>
+	 <%= form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do %>
+	    <%= search_field_tag(:query) %>
+	 <% end %>
+	 <script>
+	     $(function() {
+		var search_watermark = 'Search';
+		$('#login-strip-<%= widget_instance_id %> #query').blur(function(){
+		if ($(this).val().length == 0)
+		   $(this).val(search_watermark).addClass('search_watermark');
+		}).focus(function(){
+		  if ($(this).val() == search_watermark)
+		   $(this).val('').removeClass('search_watermark');
+		}).val(search_watermark).addClass('search_watermark');
+	     });
+	 </script>
+      <% end %>
+      </div>
+      <script>
+	ddsmoothmenu.init({
+	   noarrow: <%= show_arrow ?"false":"true" %>,
+	   mainmenuid: "menu-<%= menu_root.id %>",
+	   orientation: 'h',
+	   classname: 'ddsmoothmenu_widget',
+	   contentsource: "markup"});
+      </script>]]>
+    </render_view>
     <style>
       <![CDATA[
-div.ddsmoothmenu_widget{
-font: bold 10px Verdana;
-margin-left:auto;
-margin-right:auto;
-height:1.2em;
-}
-
-
-.ddsmoothmenu_widget form
-{
-    float:right;   
-}
-
 
 .search_watermark
 {
    color:grey;
 }
 
-.ddsmoothmenu_widget ul{
-  margin-left:auto;
-  margin-right:auto;
-  z-index:100;
-  padding: 0;
-  list-style-type: none;
-  display: inline-block;
-}
+div.ddsmoothmenu_widget {
+    font: bold 10px Verdana;
+    margin-left:auto;
+    margin-right:auto;
+    height:1.2em;
 
-/*Top level list items*/
-.ddsmoothmenu_widget ul li{
-    display: inline-block;
-    position: relative;
-    padding-left:0px;
-    padding-right:0px;
-    height:20px;
-    vertical-align:middle;
-    text-align:center;
-    line-height:22px;
-    font-weight:bold;
-}
+    form {
+       float:right;   
+    }
 
-/*Top level menu link items style*/
-.ddsmoothmenu_widget ul li a{
-  display: block;
-  padding-left:10px;
-  padding-right:10px;
-  text-decoration: none;
-  width:auto;
-}
+    ul {
+	margin-left:auto;
+	margin-right:auto;
+	z-index:100;
+	padding: 0;
+	list-style-type: none;
+	display: inline-block;
 
-/*Top level menu link items style*/
-.ddsmoothmenu_widget ul li div.no_menu_link{
-  padding-left:10px;
-  padding-right:10px;
-}
+	/*Top level list items*/
+	li {
+	    display: inline-block;
+	    position: relative;
+	    padding-left:0px;
+	    padding-right:0px;
+	    height:20px;
+	    vertical-align:middle;
+	    text-align:center;
+	    line-height:22px;
+	    font-weight:bold;
 
-* html .ddsmoothmenu_widget ul li a{ /*IE6 hack to get sub menu links to behave correctly*/
-  display: inline-block;
-}
+	    /*Top level menu link items style*/
+	    a {
+		display: block;
+		padding-left:10px;
+		padding-right:10px;
+		text-decoration: none;
+		width:auto;
 
-/*1st sub level menu*/
-.ddsmoothmenu_widget ul li ul{
-position: absolute;
-left: 0;
-display: none; /*collapse all sub menus to begin with*/
-visibility: hidden;
-width: auto; /*width of sub menus*/
-}
+		 /*IE6 hack to get sub menu links to behave correctly*/
+		display: inline-block;
+	    }
+
+	    /*Top level menu link items style*/
+	    div.no_menu_link {
+		padding-left:10px;
+		padding-right:10px;
+	    }
+
+	    /*1st sub level menu*/
+	    ul {
+		position: absolute;
+		left: 0;
+		display: none; /*collapse all sub menus to begin with*/
+		visibility: hidden;
+		width: auto; /*width of sub menus*/
+
+		/* Sub level menu links style */
+		li {
+		    opacity:0.9;
+		    width: 100%; /*width of sub menus*/
+		    padding-bottom:0px;
+		    display: list-item;
+		    margin:0px;
+		    height:auto;
+		    border:none;
+
+		    a {
+			padding-top:5px;
+			padding-bottom:5px;
+			margin:0px;
+		    }
+
+		    /*Top level menu link items style*/
+		    span {
+			padding:5px;
+			line-height:22px;
+		    }
+		}
+		/*All subsequent sub menu levels vertical offset after 1st level sub menu */
+		li ul {
+		   top: 0;
+		}
+	    }
+	}
+    }
 
 
-/*All subsequent sub menu levels vertical offset after 1st level sub menu */
-.ddsmoothmenu_widget ul li ul li ul{
-top: 0;
-}
-
-/* Sub level menu links style */
-.ddsmoothmenu_widget ul li ul li {
-opacity:0.9;
-width: 100%; /*width of sub menus*/
-padding-bottom:0px;
-display: list-item;
-margin:0px;
-height:auto;
-border:none;
-}
-
-.ddsmoothmenu_widget ul li ul li a {
-padding-top:5px;
-padding-bottom:5px;
-margin:0px;
-}
-
-/*Top level menu link items style*/
-.ddsmoothmenu_widget ul li ul li span {
-  padding:5px;
-  line-height:22px;
-}
+    /* Holly Hack for IE \*/
+    * html .ddsmoothmenu_widget{height: 1%;} /*Holly Hack for IE7 and below*/
 
 
-/* Holly Hack for IE \*/
-* html .ddsmoothmenu_widget{height: 1%;} /*Holly Hack for IE7 and below*/
+    /* ######### CSS classes applied to down and right arrow images  ######### */
 
+    .downarrowclass {
+	position: absolute;
+	top: 8px;
+	right: 7px;
+    }
 
-/* ######### CSS classes applied to down and right arrow images  ######### */
+    .rightarrowclass{
+	position: absolute;
+	top: 6px;
+	right: 5px;
+    }
 
-nav.ddsmoothmenu_widget .downarrowclass{
-position: absolute;
-top: 8px;
-right: 7px;
-}
+    /* ######### CSS for shadow added to sub menus  ######### */
 
-nav.ddsmoothmenu_widget .rightarrowclass{
-position: absolute;
-top: 6px;
-right: 5px;
-}
+    .ddshadow{ /*shadow for NON CSS3 capable browsers*/
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 0;
+	height: 0;
+	background: black;
+    }
 
-/* ######### CSS for shadow added to sub menus  ######### */
-
-nav.ddsmoothmenu_widget .ddshadow{ /*shadow for NON CSS3 capable browsers*/
-position: absolute;
-left: 0;
-top: 0;
-width: 0;
-height: 0;
-background: black;
-}
-
-nav.ddsmoothmenu_widget .toplevelshadow{ /*shadow opacity for NON CSS3 capable browsers. Doesn't work in IE*/
-opacity: 0.8;
-}
-    ]]>
+    .toplevelshadow { /*shadow opacity for NON CSS3 capable browsers. Doesn't work in IE*/
+        opacity: 0.8;
+    }
+}]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="show_arrow">
-        <value>true</value>
-        <param_description guid="5AC29485-DFD2-4D09-B80C-F32F59FF5680">
-          <name>Show Arrows</name>
-          <description>Display arrows if menu has submenues.</description>
-          <field_type>bool</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="show_search_box">
-        <value>true</value>
-        <param_description guid="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">
-          <name>Show Search</name>
-          <description>Show a search box</description>
-          <field_type>bool</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
-      <param class="local" name="menu_root">
-        <value>
-	  <param class="local" name="child-1">
-	    <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9">
-	      <name>Menu Child</name>
-	      <description>Menu child.</description>
-	      <field_type>hash</field_type>
-	      <permissions></permissions>
-	    </param_description>
-	    <value>
-		<param class="local" name="name">
-		  <value>Home</value>
-		  <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">
-		     <name>Menu Name</name>
-		     <description>Menu Name</description>
-		     <field_type>string</field_type>
-		     <permissions></permissions>
-		  </param_description>
-		</param>
-
-		<param class="local" name="url">
-		  <value>/</value>
-		  <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0">
-		     <name>URL</name>
-		     <description>Menu URL</description>
-		     <field_type>string</field_type>
-		     <permissions></permissions>
-		  </param_description>
-		</param>
-		<param class="local" name="permission">
-		  <value>guest</value>
-		  <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">
-		     <name>Permission</name>
-		     <description>Permission</description>
-		     <field_type>string</field_type>
-		     <permissions></permissions>
-		  </param_description>
-		</param>
-		<param class="local" name="children">
-		  <value></value>
-		  <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659">
-		     <name>Child Menus</name>
-		     <description>Child Menus</description>
-		     <field_type>array</field_type>
-		     <permissions></permissions>
-		  </param_description>
-		</param>
-            </value>
-	  </param>
-	  <param class="local" name="child-2">
-	    <value>
-		<param class="local" name="name">
-		  <value>Blog</value>
-		  <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"/>
-		</param>
-
-		<param class="local" name="url">
-		  <value>/blog</value>
-		  <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0"/>
-		</param>
-		<param class="local" name="permission">
-		  <value>guest</value>
-		  <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"/>
-                </param>
-            </value>
-	    <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9"/>
-	  </param>
-	</value>
-        <param_description guid="45A433ED-7183-4A28-890B-08F585A0E41A">
-          <name>Menu Root</name>
-          <description>Menu root.</description>
-          <field_type>array</field_type>
-          <permissions></permissions>
-        </param_description>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="show_arrow">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">true</param>
+      <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">
+        <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child-1">
+          <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Home</param>
+          <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/</param>
+          <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
+          <param class="local" description="457B190F-89DB-42EC-9537-4EBB46498659" name="children">
+          </param>
+        </param>
+        <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child-2">
+          <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Blog</param>
+          <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/blog</param>
+          <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
+        </param>
       </param>
     </params>
   </widget>
-  <widget guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D" version="1.0">
+  <widget version="1.0" guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D">
     <name>Content Widget</name>
-    <description>Shows generic content</description>
+    <description>
+      <![CDATA[Shows generic content]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-        locals[:page] = Roxiware::Page.where(:page_type=>locals[:page_type]).first || Roxiware::Page.new({:page_type=>locals[:page_type], :content=>"New Content"}, :as=>"")
-        true
-    ]]>
+      <![CDATA[locals[:page] = Roxiware::Page.where(:page_type=>locals[:page_type]).first || Roxiware::Page.new({:page_type=>locals[:page_type], :content=>"New Content"}, :as=>"")
+        true]]>
     </preload>
     <render_view>
-      <![CDATA[
-  <% if (can? :edit, page) %>
+      <![CDATA[<% if (can? :edit, page) %>
     <%= button_tag "Edit", :id=>"edit-#{page_type}", :class=>"page_edit button_edit", :type=>"button"  %>
     </br>
   <% end %>
-    <%= raw page.content %>
-    ]]>
+    <%= raw page.content %>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-    ]]>
+      <![CDATA[]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="page_type">
-        <value>content_widget</value>
-        <param_description guid="5032B423-3E1C-4E8E-B036-37F86777412F">
-          <name>Page Type</name>
-          <description>Unique identifier for the content of this page.</description>
-          <field_type>string</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="5032B423-3E1C-4E8E-B036-37F86777412F" name="page_type">content_widget</param>
     </params>
   </widget>
-  <widget guid="FAD1AC80-5580-468C-B4BC-F72A8F6E5F75" version="1.0">
+  <widget version="1.0" guid="FAD1AC80-5580-468C-B4BC-F72A8F6E5F75">
     <name>Javascript Widget</name>
-    <description>Javascript</description>
-    <preload>
-      <![CDATA[
-        require 'uuid'
-        script_id_param = widget_instance.get_param("script_id")
-        script_id = script_id_param.conv_value
-        if (script_id.blank?)
-           script_id = (UUID.new.generate :compact)
-           widget_instance.set_param("script_id", script_id)
-           widget_instance.save!
-        end
-        locals[:page] = Roxiware::Page.where(:page_type=>script_id).first || Roxiware::Page.create({:page_type=>script_id, :content=>""}, :as=>"")
-        true
-    ]]>
-    </preload>
-    <render_view>
-      <![CDATA[
-    <script><%= raw page.content %></script>
-    ]]>
-    </render_view>
+    <description>
+      <![CDATA[Javascript]]>
+    </description>
     <editform>
-      <![CDATA[
-        <% script_id = @widget_instance.get_param("script_id").conv_value
+      <![CDATA[<% script_id = @widget_instance.get_param("script_id").conv_value
         page = Roxiware::Page.where(:page_type=>script_id).first %>
 <div class="widget_instance_edit" id="script_widget_edit">
   <%= form_tag("/") do %>
       <%= text_area_tag :content, page.content, :class=>"" %>
   <% end %>
-  <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
+  <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
 </div>
 <script>
 $(function() {
@@ -748,33 +571,41 @@ $(function() {
             }
           })}).button();
 });
-</script>
-    ]]>
+</script>]]>
     </editform>
+    <preload>
+      <![CDATA[require 'uuid'
+        script_id_param = widget_instance.get_param("script_id")
+        script_id = script_id_param.conv_value
+        if (script_id.blank?)
+           script_id = (UUID.new.generate :compact)
+           widget_instance.set_param("script_id", script_id)
+           widget_instance.save!
+        end
+        locals[:page] = Roxiware::Page.where(:page_type=>script_id).first || Roxiware::Page.create({:page_type=>script_id, :content=>""}, :as=>"")
+        true]]>
+    </preload>
+    <render_view>
+      <![CDATA[<script><%= raw page.content %></script>]]>
+    </render_view>
     <style>
-      <![CDATA[
-      <%= fields_for :params do |params_fields| %>
-      <% end %>
-    ]]>
+      <![CDATA[<%= fields_for :params do |params_fields| %>
+      <% end %>]]>
     </style>
     <params>
-      <param class="local" name="script_id">
-        <value></value>
-        <param_description guid="E69D3C97-40EE-4A3D-91CC-0C1CA0844EAB">
-          <name>Script ID</name>
-          <description>Unique identifier for this script.</description>
-          <field_type>string</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
+      <param class="local" description="E69D3C97-40EE-4A3D-91CC-0C1CA0844EAB" name="script_id"></param>
     </params>
   </widget>
-  <widget guid="250D3145-7891-41FD-94AA-C64EF7A5801A" version="1.0">
+  <widget version="1.0" guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
     <name>Recent Posts</name>
-    <description>Show recent posts</description>
+    <description>
+      <![CDATA[Show recent posts]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-       if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
+      <![CDATA[if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
 	 globals[:recent_posts] = []
 	 Roxiware::Blog::Post.published().select("post_title, post_link, post_date, person_id, post_exerpt").order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
 	   globals[:recent_posts] << {:post=>post, :snippet=>truncate(Sanitize.clean(post.post_exerpt), :separator=>' ', :length=>50, :omission=>'')}
@@ -782,12 +613,10 @@ $(function() {
          globals[:recent_posts_last_update] = Roxiware::Blog.last_update
        end
        locals[:recent_posts] = globals[:recent_posts]
-       locals[:recent_posts].present?
-    ]]>
+       locals[:recent_posts].present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-      <nav class="recent_post">
+      <![CDATA[<nav class="recent_post">
 	<div class="recent_post_title">Recent Posts</div>
 	<% recent_posts.each do |post_data| 
 	   post = post_data[:post] %>
@@ -802,14 +631,10 @@ $(function() {
 	     <div class="post_snippet"><%= post_data[:snippet] %><%= link_to " ...", post.post_link %></div>
 	   </div>
 	<% end %>
-      </nav>
-    
-    ]]>
+      </nav>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-div.recent_post_entry
+      <![CDATA[div.recent_post_entry
 {
    font-size:0.8em;
    margin-top:10px;
@@ -830,46 +655,26 @@ div.recent_post_entry .post_snippet
 {
    margin-left:10px;
    font-size:0.9em;
-}
-
-    
-    ]]>
+}]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="recent_posts_count">
-        <value>5</value>
-        <param_description guid="5AD23478-C90D-4BA8-81DF-7112B0762257">
-          <name>Recent Post Count</name>
-          <description>The number of posts listed in the recent posts widget</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="5AD23478-C90D-4BA8-81DF-7112B0762257" name="recent_posts_count">5</param>
     </params>
   </widget>
-  <widget guid="2933001C-F5C3-457D-940A-E20B7F9FD69D" version="1.0">
+  <widget version="1.0" guid="2933001C-F5C3-457D-940A-E20B7F9FD69D">
     <name>Category Blog Navigation</name>
-    <description>Navigate to blog posts via category</description>
+    <description>
+      <![CDATA[Navigate to blog posts via category]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-      
-       categories = Roxiware::Terms::Term.categories()
+      <![CDATA[categories = Roxiware::Terms::Term.categories()
 
        category_counts = {}
        Roxiware::Terms::TermRelationship.count(:term_id=>categories.keys,
@@ -880,12 +685,10 @@ div.recent_post_entry .post_snippet
        end
        locals[:categories] = categories
        locals[:category_counts] = category_counts
-       category_counts.present?
-    ]]>
+       category_counts.present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-   <nav class="categories_nav">
+      <![CDATA[<nav class="categories_nav">
      <div class="category_nav_title">Categories</div>
      <ul>
        <% categories.each do |category_id, category|
@@ -894,39 +697,28 @@ div.recent_post_entry .post_snippet
 	 <% end %>
        <% end %>
      </ul>
-   </nav>
-    ]]>
+   </nav>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-    ]]>
+      <![CDATA[]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
     </params>
   </widget>
-  <widget guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B" version="1.0">
+  <widget version="1.0" guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
     <name>Calendar Blog Navigation</name>
-    <description>Navigate to blog posts via post date</description>
+    <description>
+      <![CDATA[Navigate to blog posts via post date]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-       if globals[:calendar_posts].blank? || globals[:calendar_nav_last_update].blank? || globals[:calendar_nav_last_update] < Roxiware::Blog.last_update
+      <![CDATA[if globals[:calendar_posts].blank? || globals[:calendar_nav_last_update].blank? || globals[:calendar_nav_last_update] < Roxiware::Blog.last_update
          calendar_posts = {}
          calendar_posts_index = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
          published_post_ids = []
@@ -949,12 +741,10 @@ div.recent_post_entry .post_snippet
 	 globals[:calendar_posts] = calendar_posts
        end
        locals[:calendar_posts] = globals[:calendar_posts]
-       locals[:calendar_posts].present?
-    ]]>
+       locals[:calendar_posts].present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-  <nav class="calendar_nav">
+      <![CDATA[<nav class="calendar_nav">
     <div class="calendar_nav_title">Archive</div>
     <ul class="calendar_nav_years">
       <% calendar_posts.keys.sort.reverse.each do |year| %>
@@ -989,13 +779,10 @@ div.recent_post_entry .post_snippet
      $(".calendar_nav li a").click(function(){
        $(this).parent().toggleClass("calendar_nav_hidden");
      });
-  </script>
-    ]]>
+  </script>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-li.calendar_nav_year a
+      <![CDATA[li.calendar_nav_year a
 {
    cursor:pointer;
 }
@@ -1045,34 +832,25 @@ li.calendar_nav_hidden
 li.calendar_nav_hidden ul
 {
    display:none;
-}
-    ]]>
+}]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
     </params>
   </widget>
-  <widget guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA" version="1.0">
+  <widget version="1.0" guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
     <name>Currently Reading</name>
-    <description>Show currently reading from goodreads</description>
+    <description>
+      <![CDATA[Show currently reading from goodreads]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-        globals[:currently_reading] ||=  {}
+      <![CDATA[globals[:currently_reading] ||=  {}
         if globals[:currently_reading][:data].blank? || globals[:currently_reading][:refresh_time].blank? || ((globals[:currently_reading][:refresh_time] + locals[:gr_cr_refresh].to_f) < Time.now())
            begin
              goodreads = Roxiware::Goodreads::Review.new(:goodreads_user=>@goodreads_user)
@@ -1083,12 +861,10 @@ li.calendar_nav_hidden ul
            end
         end
         locals[:currently_reading] = globals[:currently_reading][:data]
-        locals[:currently_reading].present?
-    ]]>
+        locals[:currently_reading].present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-  <div class="currently_reading">
+      <![CDATA[<div class="currently_reading">
   <h1>Currently Reading</h1>
   <% if currently_reading.present? %>
   <div class="book" >
@@ -1100,48 +876,29 @@ li.calendar_nav_hidden ul
   <% end %>
   <a href="http://www.goodreads.com" style="font-size:0.5em">Data by Goodreads</a>
   <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= @amazon_associate_id %>"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= URI.escape(@amazon_associate_id) %>&Operation=NoScript">Amazon.com Widgets</A></NOSCRIPT>
-  </div>
-    ]]>
+  </div>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-    ]]>
+      <![CDATA[]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="gr_cr_refresh">
-        <value>86400</value>
-        <param_description guid="26F42447-4148-4F5F-AAE3-FE3744618E3F">
-          <name>Refresh Period</name>
-          <description>Refresh period for pulling down goodreads currently reading.  Typically one day.  Lowering this value can affect performance if goodreads is slow.</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="26F42447-4148-4F5F-AAE3-FE3744618E3F" name="gr_cr_refresh">86400</param>
     </params>
   </widget>
-  <widget guid="42302934-B3F1-4DED-80C4-B9DF310AC538" version="1.0">
+  <widget version="1.0" guid="42302934-B3F1-4DED-80C4-B9DF310AC538">
     <name>Featured Books</name>
-    <description>Show featured books from goodreads</description>
+    <description>
+      <![CDATA[Show featured books from goodreads]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-        globals[:featured_books] ||= {}
+      <![CDATA[globals[:featured_books] ||= {}
         if globals[:featured_books][:data].blank? || globals[:featured_books][:refresh_time].blank? || ((globals[:featured_books][:refresh_time] + locals[:gr_fb_refresh].to_f) < Time.now())
          begin
            goodreads = Roxiware::Goodreads::Review.new(:goodreads_user=>@goodreads_user)
@@ -1152,12 +909,10 @@ li.calendar_nav_hidden ul
          end
         end
         locals[:featured_books] = globals[:featured_books][:data]
-        locals[:featured_books].present?
-    ]]>
+        locals[:featured_books].present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-  <div class="book_ads">
+      <![CDATA[<div class="book_ads">
   <h1>Good Books</h1>
   <% if featured_books.present? %>
     <% (0..(gr_fb_count*gr_fb_batch)).collect{|x| x}.shuffle[0..(gr_fb_count-1)].each do |review_index| 
@@ -1172,117 +927,60 @@ li.calendar_nav_hidden ul
   <% end %>
   <a href="http://www.goodreads.com" style="font-size:0.5em">Data by Goodreads</a>
   <SCRIPT charset="utf-8" type="text/javascript" src="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= @amazon_associate_id %>"> </SCRIPT> <NOSCRIPT><A HREF="http://ws.amazon.com/widgets/q?ServiceVersion=20070822&MarketPlace=US&ID=<%= URI.escape(@amazon_associate_id) %>&Operation=NoScript">Amazon.com Widgets</A></NOSCRIPT>
-  </div>
-    ]]>
+  </div>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-    ]]>
+      <![CDATA[]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="gr_fb_refresh">
-        <value>3600</value>
-        <param_description guid="536DB435-8652-4457-9374-199635264A81">
-          <name>Refresh Period</name>
-          <description>Refresh period for pulling down goodreads featured books.  Typically between 1 and 10 seconds.  Lowering this value can affect performance if goodreads is slow.</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
-      <param class="local" name="gr_fb_count">
-        <value>2</value>
-        <param_description guid="5CABD8FC-F92C-4DAF-BEE7-0A5299F5DEAD">
-          <name>Display Count</name>
-          <description>Number of featured books to display.</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
-      <param class="local" name="gr_fb_batch">
-        <value>20</value>
-        <param_description guid="2E3FAB50-4A5A-4FEE-B6D7-9603A1CA178F">
-          <name>Batch Count</name>
-          <description>Number of featured books to fetch (multiplier of the display count).  Higher numbers may affect performance.</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="536DB435-8652-4457-9374-199635264A81" name="gr_fb_refresh">3600</param>
+      <param class="local" description="5CABD8FC-F92C-4DAF-BEE7-0A5299F5DEAD" name="gr_fb_count">2</param>
+      <param class="local" description="2E3FAB50-4A5A-4FEE-B6D7-9603A1CA178F" name="gr_fb_batch">20</param>
     </params>
   </widget>
-  <widget guid="53A77ACC-5261-49F3-A959-9FB434F43768" version="1.0">
+  <widget version="1.0" guid="53A77ACC-5261-49F3-A959-9FB434F43768">
     <name>Events</name>
-    <description>Show events</description>
+    <description>
+      <![CDATA[Show events]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-       locals[:events] = Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight).order("start ASC").limit(locals[:events_count])
-       locals[:events].present?
-    ]]>
+      <![CDATA[locals[:events] = Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight).order("start ASC").limit(locals[:events_count])
+       locals[:events].present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-    ]]>
+      <![CDATA[]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-    ]]>
+      <![CDATA[]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="events_count">
-        <value>3</value>
-        <param_description guid="6CD4546A-E350-46AC-BAF5-A788047DCD08">
-          <name>Number of Events</name>
-          <description>Number of events listed for this widget</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-        </param_description>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="6CD4546A-E350-46AC-BAF5-A788047DCD08" name="events_count">3</param>
     </params>
   </widget>
-  <widget guid="731793C5-A217-4C5D-9F40-51B23DB4034A" version="1.0">
+  <widget version="1.0" guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
     <name>Login/Search Strip</name>
-    <description>Displays a small strip that has a login link and an  optional search box</description>
+    <description>
+      <![CDATA[Displays a small strip that has a login link and an  optional search box]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
     <preload>
-      <![CDATA[
-       true
-    ]]>
+      <![CDATA[true]]>
     </preload>
     <render_view>
-      <![CDATA[
-<div id="login-strip-<%= widget_instance_id %>" style="display:inline-block;padding-left:10px;padding-right:10px;">
+      <![CDATA[<div id="login-strip-<%= widget_instance_id %>" style="display:inline-block;padding-left:10px;padding-right:10px;">
    <% if user_signed_in? %>
       <div id="session-greeting">Welcome <%= current_user.username %>&nbsp;
          <%= link_to_unless_current( "(Log Out)", destroy_session_path('user')) do %>Log&nbsp;Out<% end %>
@@ -1307,13 +1005,10 @@ li.calendar_nav_hidden ul
 	  });
       </script>
    <% end %>
-</div>
-]]>
+</div>]]>
     </render_view>
-    <editform/>
     <style>
-      <![CDATA[
-.search_watermark
+      <![CDATA[.search_watermark
 {
    color:grey;
 }
@@ -1325,56 +1020,42 @@ li.calendar_nav_hidden ul
 #query
 {
    display:inline-block;
-}
-    ]]>
+}]]>
     </style>
     <params>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>false</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>right</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="show_search_box">
-        <value>true</value>
-        <param_description guid="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793"/>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">right</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">true</param>
     </params>
   </widget>
-  <widget guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
-     <name>Layout Widget</name>
-     <description>Displays images and text at specified locations</description>
-     <preload>
-      <![CDATA[
-       true
-    ]]>
+  <widget version="" guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
+    <name>Layout Widget</name>
+    <description>
+      <![CDATA[Displays images and text at specified locations]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[true]]>
     </preload>
     <render_view>
       <![CDATA[
-      <style>
-       .display_item
+<style>
+.display_item
 {
        position:absolute;
-       z-index:100;
+       z-index:1;
        margin:2px;
 }
-      </style>
+</style>
 
-       <% if can? :edit, widget_instance %>
-          <style>
+<% if can? :edit, widget_instance %>
+<style>
 div.display_item:hover, img.display_item:hover {
-   border:dotted 1px #ccc;
-   margin:1px;
+   outline:#777 dotted thin;
    cursor:pointer;
 }
 
@@ -1397,14 +1078,18 @@ div#text_properties input
     padding:.3em;
     margin:.3em;
 }
-	  </style>
+div#text_properties .contentWrap
+{
+    padding:1em;
+}
+</style>
        <% end %>
        <div class='display_items'>
        <% display_items.each do |display_item_param|
 	   display_item = display_item_param.conv_value
 	   top = display_item["top"].conv_value
 	   left = display_item["left"].conv_value
-	   style = "position:absolute;z-index:100;left:#{left}px;top:#{top}px;"
+	   style = "position:absolute;left:#{left}px;top:#{top}px;line-height:1em;"
 	   item_class = ""
 	   if can? :edit, widget_instance
 	     item_class="display_item"
@@ -1430,25 +1115,29 @@ div#text_properties input
        <ul id="image_item_context_menu" class="context_menu">
 	 <li id="delete_item"><a href="#" menu_item="delete_item">Delete</a></li>
        </ul>
-       <div id="text_properties" class="settings overlay">
+       <div id="text_properties" class="settings settings_dialog">
+          <div class="settings_title">Text Properties</div>
+	  <div class="contentWrap">
 	  <%= label_tag :font, "Font" %><%= select_tag :font, options_for_select(
-             {"Arial"=>"Arial", 
-              "Geneva" => "Geneva",
-              "Verdana" => "Verdana", 
-              "Helvetica" => "Helvetica", 
-              "Courier"=>"Courier New", 
-              "Times New Roman" => "Times New Roman",
-              "Georgia" => "Georgia",
-              "Lucida" => "Lucida Console",
-              "Tahoma" => "Tahoma"}) %><br/>
-          <%= label_tag :font_size, "Font Size" %><%= select_tag :font_size, options_for_select(
-	      ["8px", "9px", "10px", "11px", "12px", "14px", "16px", "18px", "20px", "22px", "24px", "26px", "28px", "36px", "48px", "72px"]) %><br/>
-	  <%= label_tag :color, "Color" %><%= text_field_tag :color, nil, :type=>"color" %><br/>
-	  <%= button_tag "Save", :id=>"save", :type=>"button" %>
+		 {"Arial"=>"Arial", 
+		  "Geneva" => "Geneva",
+		  "Verdana" => "Verdana", 
+		  "Helvetica" => "Helvetica", 
+		  "Courier"=>"Courier New", 
+		  "Times New Roman" => "Times New Roman",
+		  "Georgia" => "Georgia",
+		  "Lucida" => "Lucida Console",
+		  "Tahoma" => "Tahoma"}) %><br/>
+	      <%= label_tag :font_size, "Font Size" %><%= select_tag :font_size, options_for_select(
+		  ["8px", "9px", "10px", "11px", "12px", "14px", "16px", "18px", "20px", "22px", "24px", "26px", "28px", "36px", "48px", "72px"]) %><br/>
+	      <%= label_tag :color, "Color" %><%= text_field_tag :color, nil, :type=>"color" %><br/>
+	      <%= button_tag "Save", :id=>"save", :type=>"button" %>
+          </div>
        </div>
-       <script>
-	 $(document).bind("ready", function() {
-	 
+<script>
+$(document).bind("ready", function() {
+
+<% if can? :edit, widget_instance %>
 	 $(".widget#<%=widget_instance_id%>").context_menu().addInstanceMenus("<li id='add_image'><a href='#' menu_item='add_image'>Add Image</a></li>");
 	 $(".widget#<%=widget_instance_id%>").context_menu().addInstanceMenus("<li id='add_text'><a href='#' menu_item='add_text'>Add Text</a></li>");
 
@@ -1465,7 +1154,7 @@ div#text_properties input
 		    var new_item = $("<img src='"+url+"' style='position:absolute;z-index:100;left:"+left+"px;top:"+top+"px;' class='display_item' description-guid='" + guid + "'/>");
 		    self.find(".display_items").append(new_item);
 		    addDisplayItem(new_item);
-		    updateItemTree();
+	            dirtyItemTree($(".widget#<%=widget_instance_id%>"));
 	         }});
 	      break;
 	      case "add_text": 
@@ -1493,7 +1182,7 @@ div#text_properties input
 	           }
 	        });
 	        edit_box.blur(function(event) {
-	            var div_box = $("<div class='display_item'/>");
+	            var div_box = $(this);
 		    div_box.css("font-family", $(this).css("font-family")).css("font-size", $(this).css("font-size"));
 		    div_box.css("color", $(this).css("color")).css("background",$(this).css("background")).css("width", "auto").css("height", "auto");
 		    div_box.css("top", $(this).css("top")).css("left",$(this).css("left"));
@@ -1504,7 +1193,7 @@ div#text_properties input
 	            }
 	            else {
 	               addDisplayItem(div_box);
-	               updateItemTree();
+	               dirtyItemTree($(".widget#<%=widget_instance_id%>"));
                     }
 	        });
             });
@@ -1542,7 +1231,7 @@ div#text_properties input
 			    item.css("font-family", properties_dialog.find("select#font").val());
 			    item.css("font-size", properties_dialog.find("select#font_size").val());
 			    item.css("color", properties_dialog.find("input#color").val());
-	                    updateItemTree();
+	                    dirtyItemTree($(".widget#<%=widget_instance_id%>"));
 	                    properties_dialog.overlay().close();
 	                    
 			 });
@@ -1550,11 +1239,10 @@ div#text_properties input
 		     onClose: function(event) {
 		     }});
 	             $("#text_properties").overlay().load();
-
 		     break;
 		  case "delete_item":
 	             $(this).remove();
-	             updateItemTree();
+	             dirtyItemTree($(".widget#<%=widget_instance_id%>"));
 		     break;
 		}
 		return false;});
@@ -1566,17 +1254,25 @@ div#text_properties input
 		   start: function() {
 		   },
 		   stop:function() {
-		     updateItemTree();
+	             dirtyItemTree($(".widget#<%=widget_instance_id%>"));
 		   }});
          }
 	 addDisplayItem($(".widget#<%=widget_instance_id%> .display_item"));
 
-	  function updateItemTree() {
+	  function dirtyItemTree(selector)
+          {
+	      $(selector).data().display_item_dirty = true;
+          }
+	  function updateItemTree(selector) {
+	     if (!$(selector).is(".widget#<%=widget_instance_id%>")) { return }
+	     if (!$(selector).data().display_item_dirty) { return }
+             $(selector).data().display_item_dirty = false;
+	     $(selector);
 	     var xml_result = '<?xml version="1.0" encoding="UTF-8"?><widget_params>' +
 	       "<param name='display_items' class='local'>" +
 		 "<param_description guid='AE42CE08-7AEA-49D0-90A0-6714CE599788'/>" +
 		 "<value>";
-	     $(".display_item").each(function(index, child) {
+	     $(selector).find(".display_item").each(function(index, child) {
 		   xml_result = xml_result + "<param class='local' name='item-" + index + "'>" +
 		     "<param_description guid='78732FAB-BA63-4DFE-B1BB-CEE69450BCC9'/>" +
 		     "<value>" +
@@ -1603,151 +1299,60 @@ div#text_properties input
 		     data:xml_result,
 		     success: function() {
 		     }});
-	  };
+	  }
+	 $(window).bind("beforeunload", function() {
+	     var item = $(".widget#<%=widget_instance_id%>");
+	     updateItemTree(item);
+             $(".widget#<%=widget_instance_id%>").stopTime(".widget#<%=widget_instance_id%>_content");
+         });
+         $(".widget#<%=widget_instance_id%>").everyTime("3s", ".widget#<%=widget_instance_id%>_content", function() {
+	     updateItemTree($(this));
+         });
+<% end %>
 
-	 });
+ });
        </script>
-       <% end %>
-    ]]>
+       <% end %>]]>
     </render_view>
-    <editform>
-	<![CDATA[
-      ]]>
-    </editform>
     <style>
+      <![CDATA[]]>
     </style>
     <params>
-       <param class="local" name="display_items">
-	  <param_description guid="AE42CE08-7AEA-49D0-90A0-6714CE599788">
-	      <name>Items</name>
-	      <description>List of items to display</description>
-	      <field_type>array</field_type>
-	      <permissions></permissions>
-	  </param_description>
-	  <value>
-	    <param class="local" name="item-0">
-	       <param_description guid="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9">
-		   <name>Item</name>
-		   <description>Display Item</description>
-		   <field_type>hash</field_type>
-		   <permissions></permissions>
-	       </param_description>
-	       <value>
-		 <param class="local" name="image">
-		    <param_description guid="6792C972-20F1-48EB-A263-E2DCF029A2E9">
-			<name>Image</name>
-			<description>Image</description>
-			<field_type>asset</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>logo.png</value>
-		 </param>
-		 <param class="local" name="image-2">
-		    <param_description guid="4497B87B-8ECD-432A-9885-0EDF0BD9F8E3">
-			<name>Url</name>
-			<description>Url</description>
-			<field_type>string</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>logo.png</value>
-		 </param>
-		 <param class="local" name="left">
-		    <param_description guid="DED6595E-7ABE-47F7-B536-328472C14990">
-			<name>Left</name>
-			<description>Position from left of widget widget in pixels</description>
-			<field_type>integer</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>0</value>
-		 </param>
-		 <param class="local" name="top">
-		    <param_description guid="06E72987-55E7-4C36-9620-776931B9B2F9">
-			<name>Top</name>
-			<description>Position from top of widget widget in pixels</description>
-			<field_type>integer</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>0</value>
-		 </param>
-	       </value>
-	    </param>
-	    <param class="local" name="item-1">
-	       <param_description guid="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9"/>
-	       <value>
-		 <param class="local" name="text">
-		    <param_description guid="97643629-6F5C-4121-9141-BAC6731F1B04">
-			<name>Text</name>
-			<description>Text</description>
-			<field_type>string</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>Tagline</value>
-		 </param>
-		 <param class="local" name="left">
-		    <param_description guid="DED6595E-7ABE-47F7-B536-328472C14990"/>
-		    <value>200</value>
-		 </param>
-		 <param class="local" name="top">
-		    <param_description guid="06E72987-55E7-4C36-9620-776931B9B2F9"/>
-		    <value>50</value>
-		 </param>
-		 <param class="local" name="font">
-		    <param_description guid="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">
-			<name>Font</name>
-			<description>Font</description>
-			<field_type>string</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>Arial</value>
-		 </param>
-		 <param class="local" name="size">
-		    <param_description guid="63275631-EEB0-43E3-A2D9-407B6423CDC9">
-			<name>Font Size</name>
-			<description>Font Size</description>
-			<field_type>integer</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>20</value>
-		 </param>
-		 <param class="local" name="color">
-		    <param_description guid="DA84EE57-3D89-489E-8B81-08DA7A560550">
-			<name>Font Color</name>
-			<description>Font Color</description>
-			<field_type>color</field_type>
-			<permissions></permissions>
-		    </param_description>
-		    <value>#fffff</value>
-		 </param>
-	       </value>
-	    </param>
-	  </value>
-       </param>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
+      <param class="local" description="AE42CE08-7AEA-49D0-90A0-6714CE599788" name="display_items">
+        <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-0">
+          <param class="local" description="6792C972-20F1-48EB-A263-E2DCF029A2E9" name="image">logo.png</param>
+          <param class="local" description="4497B87B-8ECD-432A-9885-0EDF0BD9F8E3" name="image-2">logo.png</param>
+          <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">0</param>
+          <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">0</param>
+        </param>
+        <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-1">
+          <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Tagline</param>
+          <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">200</param>
+          <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">50</param>
+          <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">Arial</param>
+          <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">20</param>
+          <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color">#fffff</param>
+        </param>
       </param>
-      <param class="local" name="show_background">
-        <value>false</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
     </params>
   </widget>
-  <widget guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
-     <name>Google AdSense</name>
-     <description>Displays a Google AdSense advertisment.</description>
-     <preload>
-      <![CDATA[
-       true
-    ]]>
+  <widget version="" guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+    <name>Google AdSense</name>
+    <description>
+      <![CDATA[Displays a Google AdSense advertisment.]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[true]]>
     </preload>
     <render_view>
-      <![CDATA[
-<script type="text/javascript"><!--
-google_ad_client = "<%= google_ad_client %>";
+      <![CDATA[<script type="text/javascript"><!--
+google_ad_client = "<%= @google_ad_client %>";
 /* 160x90 vert med */
 google_ad_slot = "<%= google_ad_slot %>";
 google_ad_width = <%= google_ad_format.split('x').first %>;
@@ -1756,74 +1361,33 @@ google_ad_height = <%= google_ad_format.split('x').last %>;
 </script>
 <script type="text/javascript"
 src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-    ]]>
+</script>]]>
     </render_view>
-    <editform>
-	<![CDATA[
-      ]]>
-    </editform>
     <style>
+      <![CDATA[]]>
     </style>
     <params>
-      <param class="local" name="google_ad_client">
-	  <param_description guid="289108C9-5CFA-4599-BC54-B4E3593E4FC5">
-	      <name>Adsense Publisher Id</name>
-	      <description>This is the Adsense publisher ID you received from Google Adsense.  You can go to
-               &lt;a href="https://www.google.com/adsense/v3/app?hl=en#account"&gt;Google Adsense Account&lt;/a&gt; and retrieve it from Account Information.</description>
-	      <field_type>string</field_type>
-	      <permissions></permissions>
-	  </param_description>
-	  <value>pub-3239363589402567</value>
-      </param>
-      <param class="local" name="google_ad_slot">
-	  <param_description guid="CF1C5254-1644-447F-9D87-DE0CBC472E0E">
-	      <name>Adsense Ad Slot</name>
-	      <description>This is the Adsense Ad ID for this particular ad instance.  You can go to
-               &lt;a href="https://www.google.com/adsense/"&gt;Google Adsense&lt;/a&gt; and retrieve it from My Ads.</description>
-	      <field_type>string</field_type>
-	      <permissions></permissions>
-	  </param_description>
-	  <value>7551683739</value>
-      </param>
-      <param class="local" name="google_ad_format">
-	  <param_description guid="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987">
-	      <name>Adsense Ad Format</name>
-	      <description>The width x height of the ad.</description>
-	      <field_type>string</field_type>
-	      <permissions></permissions>
-	  </param_description>
-	  <value>728x90</value>
-      </param>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
-      <param class="local" name="show_background">
-        <value>false</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
+      <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">7551683739</param>
+      <param class="local" description="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987" name="google_ad_format">728x90</param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
     </params>
   </widget>
-  <widget guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
-     <name>Blog Page Navigation</name>
-     <description>Displays a list of numbers and next, last for blog posts</description>
-     <preload>
-      <![CDATA[
-         @page.present? && @num_pages.present? && (@num_pages > 1)
-    ]]>
+  <widget version="" guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+    <name>Blog Page Navigation</name>
+    <description>
+      <![CDATA[Displays a list of numbers and next, last for blog posts]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[@page.present? && @num_pages.present? && (@num_pages > 1)]]>
     </preload>
     <render_view>
-      <![CDATA[
-         <% if @num_pages.blank? %>
+      <![CDATA[<% if @num_pages.blank? %>
 	    Blog listing required
 	 <% else %>
          <nav class="blog_num_nav">
@@ -1851,15 +1415,10 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
              <% end %>
            <div class="blog_num_nav"><%= link_to(">>", @next_page_link, :class=>"num_nav_last") if @next_page_link %></div>
 	 </nav>
-      <% end %>
-      ]]>
+      <% end %>]]>
     </render_view>
-    <editform>
-      <![CDATA[
-      ]]>
-    </editform>
     <style>
-nav.blog_num_nav div {
+      <![CDATA[nav.blog_num_nav div {
    display:inline-block;
 }
 nav.blog_num_nav 
@@ -1867,53 +1426,36 @@ nav.blog_num_nav
    text-align:center;
    align:center;
    width:100%;
-}
+}]]>
     </style>
     <params>
-      <param class="local" name="show_background">
-        <value>false</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="nav_width">
-        <value>6</value>
-        <param_description guid="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F">
-          <name>Nav Width</name>
-          <description>Number of entries on each side of current page in the navigation control.</description>
-          <field_type>integer</field_type>
-          <permissions></permissions>
-	</param_description>
-      </param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" name="nav_width">6</param>
     </params>
   </widget>
-  <widget guid="367F87CF-2B37-481A-B02E-9918E989BBB7">
-     <name>Blog Next/Last Page</name>
-     <description>Displays next and last page links for blog posts.</description>
-     <preload>
-      <![CDATA[
-         @prev_page_link.present? || @next_page_link.present?
-    ]]>
+  <widget version="" guid="367F87CF-2B37-481A-B02E-9918E989BBB7">
+    <name>Blog Next/Last Page</name>
+    <description>
+      <![CDATA[Displays next and last page links for blog posts.]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[@prev_page_link.present? || @next_page_link.present?]]>
     </preload>
     <render_view>
-      <![CDATA[
-         <nav class="blog_page_nav">
+      <![CDATA[<nav class="blog_page_nav">
            <div class="blog_page_nav_prev"><%= link_to("<< Previous", @prev_page_link, :class=>"num_nav_prev") if @prev_page_link %></div>
            <div class="blog_page_nav_next"><%= link_to("Next >>", @next_page_link, :class=>"num_nav_next") if @next_page_link %></div>
 	   <% if @next_page_link.blank? && @prev_page_link.blank? %>
 	      Blog listing required.
 	   <% end %>
-	 </nav>
-      ]]>
+	 </nav>]]>
     </render_view>
-    <editform>
-      <![CDATA[
-      ]]>
-    </editform>
     <style>
-nav.blog_page_nav {
+      <![CDATA[nav.blog_page_nav {
    text-align:center;
 }
 nav.blog_page_nav div.blog_page_nav_prev {
@@ -1924,75 +1466,20 @@ nav.blog_page_nav div.blog_page_nav_next
 {
    display:inline-block;
    padding-left:20px;
-}
+}]]>
     </style>
     <params>
-      <param class="local" name="show_background">
-        <value>false</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
     </params>
   </widget>
-  <widget guid="1E8738E5-E991-492C-AF1E-0CC864F84930">
-     <name>People Directory</name>
-     <description>Displays a directory of people in the people list.</description>
-     <preload>
-      <![CDATA[
-       @people.present?
-    ]]>
-    </preload>
-    <render_view>
-      <![CDATA[
-      <% if !@people.present? 
-            @people = Roxiware::Person.all();
-         end
-         if !@people_map.present?
-            @people_map = Hash[@people.collect{|person| [person.id, person]}]
-         end
-
-	 def show_person(person_param)
-	    person = @people_map[person_param.hash_params["person_id"].conv_value]
-	    content_tag(:li, :class=>"person_item") do
-	       link_to(:seo_index=>person.seo_index) do 
-                 result = content_tag(:div, person.full_name, :class=>"person_name") 
-                 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
-                 result
-               end
-             end
-	 end
-
-         def show_person_group(person_group) 
-             content_tag(:li, :class=>"person_group") do
-                result = content_tag(:div, person_group.hash_params["name"].conv_value)
-                children = person_group.hash_params["children"]
-                if children.present?
-                    result << content_tag(:ul) do 
-                      raw(children.array_params.collect{ |person| raw(show_person(person)) }.join)
-                    end
-               end
-               result
-             end
-          end
-%>
-      <nav class="people_directory"><ul>
-         <% people_dir_root.each do |person_entry|
-	    if(person_entry.description_guid == "82CE9542-06EB-4D3D-A877-1DCCFCCC812B") %>
-	      <%=  show_person_group(person_entry) %>
-	 <%   elsif(person_entry.description_guid == "709904C0-83A6-4FA6-924B-B69881FEAEB8") %>
-	       <%= show_person(person_entry) %>
-	 <%   end
-	 end
-	    %>
-      </ul></nav>
-    ]]>
-    </render_view>
+  <widget version="" guid="1E8738E5-E991-492C-AF1E-0CC864F84930">
+    <name>People Directory</name>
+    <description>
+      <![CDATA[Displays a directory of people in the people list.]]>
+    </description>
     <editform>
-	<![CDATA[
-<style>
+      <![CDATA[<style>
 
 #people_dir_widget_instance_edit .panes > div
 {
@@ -2120,7 +1607,6 @@ div.people_dir_edit a
 <% people_dir_root = @widget_instance.get_param("people_dir_root").conv_value %>
 <div class="widget_instance_edit" id="people_dir_widget_instance_edit">
    <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
-     <h3><%= @widget_instance.widget.name %> settings</h3>
      <ul class="tabs">
        <li><a href="#">Layout</a></li>
        <li><a href="#">Settings</a></li>
@@ -2248,86 +1734,72 @@ div.people_dir_edit a
       });
       $("#people_dir_widget_instance_edit").find("button").button();
    });
-</script>
-      ]]>
+</script>]]>
     </editform>
+    <preload>
+      <![CDATA[@people.present?]]>
+    </preload>
+    <render_view>
+      <![CDATA[<% if !@people.present? 
+            @people = Roxiware::Person.all();
+         end
+         if !@people_map.present?
+            @people_map = Hash[@people.collect{|person| [person.id, person]}]
+         end
+
+	 def show_person(person_param)
+	    person = @people_map[person_param.hash_params["person_id"].conv_value]
+	    content_tag(:li, :class=>"person_item") do
+	       link_to(:seo_index=>person.seo_index) do 
+                 result = content_tag(:div, person.full_name, :class=>"person_name") 
+                 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
+                 result
+               end
+             end
+	 end
+
+         def show_person_group(person_group) 
+             content_tag(:li, :class=>"person_group") do
+                result = content_tag(:div, person_group.hash_params["name"].conv_value)
+                children = person_group.hash_params["children"]
+                if children.present?
+                    result << content_tag(:ul) do 
+                      raw(children.array_params.collect{ |person| raw(show_person(person)) }.join)
+                    end
+               end
+               result
+             end
+          end
+%>
+      <nav class="people_directory"><ul>
+         <% people_dir_root.each do |person_entry|
+	    if(person_entry.description_guid == "82CE9542-06EB-4D3D-A877-1DCCFCCC812B") %>
+	      <%=  show_person_group(person_entry) %>
+	 <%   elsif(person_entry.description_guid == "709904C0-83A6-4FA6-924B-B69881FEAEB8") %>
+	       <%= show_person(person_entry) %>
+	 <%   end
+	 end
+	    %>
+      </ul></nav>]]>
+    </render_view>
     <style>
+      <![CDATA[]]>
     </style>
     <params>
-      <param class="local" name="people_dir_root">
-        <param_description guid="79EF7236-A48B-46E8-AD60-2F76EEB2A9AB">
-          <name>People Directory</name>
-          <description>People directory.</description>
-          <field_type>array</field_type>
-          <permissions></permissions>
-        </param_description>
-        <value>
-	  <param class="local" name="child_1">
-	    <param_description guid="82CE9542-06EB-4D3D-A877-1DCCFCCC812B">
-	      <name>People Class</name>
-	      <description>People Directory Class, such as 'Authors', or 'Board'.  This is a container element.</description>
-	      <field_type>hash</field_type>
-	      <permissions></permissions>
-	    </param_description>
-	    <value>
-		<param class="local" name="name">
-		  <value>Users</value>
-		  <param_description guid="58F02ABC-4863-4F77-B304-0F375C793FDB">
-		     <name>Name</name>
-		     <description>Name of a given class of people</description>
-		     <field_type>string</field_type>
-		     <permissions></permissions>
-		  </param_description>
-		</param>
-		<param class="local" name="children">
-		  <param_description guid="F783A27B-3409-4E75-99DE-941E2E610F9A">
-		    <name>People</name>
-		    <description>List of children in a given class.</description>
-		    <field_type>array</field_type>
-		    <permissions></permissions>
-		  </param_description>
-		  <value>
-		    <param class="local" name="person">
-		     <param_description guid="709904C0-83A6-4FA6-924B-B69881FEAEB8">
-		       <name>Person</name>
-		       <description>A reference to a person.</description>
-		       <field_type>hash</field_type>
-		       <permissions></permissions>
-		     </param_description>
-		     <value>
-		       <param class="local" name="person_id">
-			   <param_description guid="C94F5738-AEDF-46B1-99F1-8A526393DD54">
-			     <name>Person ID</name>
-			     <description>A reference to a person.</description>
-			     <field_type>integer</field_type>
-			     <permissions></permissions>
-			   </param_description>
-			   <value>1</value>
-			</param>
-		     </value>
-		    </param>
-		  </value>
-		</param>
-            </value>
-	  </param>
-	</value>
+      <param class="local" description="79EF7236-A48B-46E8-AD60-2F76EEB2A9AB" name="people_dir_root">
+        <param class="local" description="82CE9542-06EB-4D3D-A877-1DCCFCCC812B" name="child_1">
+          <param class="local" description="58F02ABC-4863-4F77-B304-0F375C793FDB" name="name">Users</param>
+          <param class="local" description="F783A27B-3409-4E75-99DE-941E2E610F9A" name="children">
+            <param class="local" description="709904C0-83A6-4FA6-924B-B69881FEAEB8" name="person">
+              <param class="local" description="C94F5738-AEDF-46B1-99F1-8A526393DD54" name="person_id">1</param>
+            </param>
+          </param>
+        </param>
       </param>
-      <param class="local" name="show_background">
-        <value>true</value>
-        <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F"/>
-      </param>
-      <param class="local" name="float">
-        <value>none</value>
-        <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C"/>
-      </param>
-      <param class="local" name="height">
-        <value>-1</value>
-        <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342"/>
-      </param>
-      <param class="local" name="widget_instance_id">
-        <value></value>
-        <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"/>
-      </param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">none</param>
+      <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">-1</param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
     </params>
   </widget>
 </widgets>

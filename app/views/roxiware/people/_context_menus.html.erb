@@ -1,0 +1,21 @@
+<ul id="person_context_menu" class="context_menu">
+   <li id="edit_person"><a menu_item="edit_person">Edit Biography</a></li>
+</ul>
+
+<script>
+  $(document).bind("ready", function() {
+    console.log("people context menu");
+    console.log($("article.person_listing"));
+    console.log($("article.person_listing"));
+    $("article.person_listing").context_menu("#person_context_menu");
+
+    $(".person_listing").on("context_menu", function(event, menu_item) {
+       var person_link=$(this).attr("rel");
+       switch (menu_item) {
+	  case "edit_person":
+	    settingsForm(person_link+"/edit", "Edit Biography");
+	    break;
+        }
+    });
+});
+</script>

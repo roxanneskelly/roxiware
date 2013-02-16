@@ -1,0 +1,9 @@
+<div class='wizard_instructions'>Pick the template for your website.</div>
+<%= render :partial=>"roxiware/templates/picker" %>
+<%= form_for(:books, :html=>{:method=>"put", :multipart=>true}) do |books| %>
+   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"back"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"submit" %></div>
+    <%= hidden_field_tag :layout_guid %>
+    <%= hidden_field_tag :layout_scheme %>
+    <%= hidden_field_tag :setup_step, @setup_step %>
+    <%= hidden_field_tag :setup_action, "save" %>
+<% end %>

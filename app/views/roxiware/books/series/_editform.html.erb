@@ -42,6 +42,7 @@ div.series_edit .upload_target
    margin:0.3em 0em 2em 0em;
    
 }
+
 #import_pane button#import_search
 {
    height:1.7em;
@@ -283,11 +284,7 @@ div#series_books .book_title, div#current_books .book_title
        <div id="series_books_pane">
 	   <div class="pane_content">
 	      <div class="wizard_step">Manage Series Books.</div>
-	      <% if new_series %>
-	         <div class="wizard_instructions">Check the box next to the books that you'd like to include in your series.<br/>You can always add or edit a series book later.</div>
-	      <% else %>
-	         <div class="wizard_instructions">Select books you'd like to add to the series and click the '>>' button, or select the books you'd like to remove and click the '<<' button.</div>
-	      <% end %>
+                 <div class="wizard_instructions">Select books you'd like to add to the series and click the '>>' button, or select the books you'd like to remove and click the '<<' button.</div>
 		<div id="manage_series_books">
 		   <div id="current_books">
 	           <% if new_series
@@ -297,7 +294,6 @@ div#series_books .book_title, div#current_books .book_title
                          current_series_books = @series.book_series_joins.order(:series_order).includes(:book)
 		         current_books = Roxiware::Book.find(:all, :conditions=>['id not in (?)', current_series_books.collect{|series_book| series_book.book_id}])
 		      end
-			print "CURRENT BOOKS: "+current_books.inspect+"\n\n"
 			current_books.each do |book| %>
 			  <div class="book" book_id="<%= book.id %>" goodreads_id="<%= book.goodreads_id %>">
 			    <img src="<%= book.small_image %>"/>
@@ -387,8 +383,7 @@ div#series_books .book_title, div#current_books .book_title
      $(".series_edit_form button").button();
      
      $("div#series_books .book, div#current_books .book").click(function() {
-	  $("div#series_books .book, div#current_books .book").removeClass("book_selected");
-	  $(this).addClass("book_selected");
+	  $(this).toggleClass("book_selected");
 	  if($(this).parent().is("div#series_books")) {
 	     console.log("is series");
 	     $("button#remove_from_series").button("enable");

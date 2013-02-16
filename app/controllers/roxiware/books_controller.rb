@@ -11,6 +11,9 @@ class Roxiware::BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
+
+    @title = @title + " : Books"
+
     authorize! :read, Roxiware::Book
     @series = Roxiware::BookSeries.all
     @books = Roxiware::Book.joins("left join book_series_joins bsj on books.id = bsj.book_id").where("bsj.id is null")
@@ -24,9 +27,13 @@ class Roxiware::BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
+
     @book = Roxiware::Book.where("isbn = ? OR isbn13 = ? OR seo_index = ? OR id = ?", params[:id], params[:id], params[:id], params[:id]).first
     raise ActiveRecord::RecordNotFound if @book.nil?
     authorize! :read, @book
+
+    @title = @title + " : Books : " + @book.title
+    @meta_keywords = @meta_keywords + ", " + @book.title
 
     respond_to do |format|
       format.html # show.html.erb
@@ -80,6 +87,7 @@ class Roxiware::BooksController < ApplicationController
       end
     end
 
+    puts "IMPORT " + result.inspect
     respond_to do |format|
       format.json { render :json => result }
     end
@@ -98,7 +106,9 @@ class Roxiware::BooksController < ApplicationController
     if params[:goodreads_id]
        goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)
        @book.from_goodreads_book(goodreads.get_book(params[:goodreads_id]))
+       @book.init_sales_links
     end
+
     respond_to do |format|
       format.html { render :partial =>"roxiware/books/editform" }
       format.json { render :json => @book.ajax_attrs(@role) }
@@ -150,8 +160,10 @@ class Roxiware::BooksController < ApplicationController
               end
 	  end
 	  if !@book.update_attributes(params[:book], :as=>@role)
+	      puts @book.errors.collect{|error| error[1]}.join("\n")
 	      raise ActiveRecord::Rollback
-	  end 
+	  end
+          @book.init_sales_links
        rescue Exception => e
            print e.message
 	   success = false

@@ -19,8 +19,15 @@ class Ability
       cannot [:create, :update, :delete], Roxiware::User, :role=>"super"
       cannot [:create, :destroy], [Roxiware::Layout::Layout, Roxiware::Layout::PageLayout, Roxiware::Layout::LayoutSection, Roxiware::Layout::WidgetInstance, Roxiware::Layout::Widget]
       can :manage, Roxiware::Book
-      can :manage, Roxiware::Series
+      can :manage, Roxiware::BookSeries
       cannot :move, Roxiware::Layout::WidgetInstance
+      cannot :edit, [Roxiware::Layout::Layout, Roxiware::Layout::PageLayout, Roxiware::Layout::LayoutSection, Roxiware::Layout::WidgetInstance, Roxiware::Layout::Widget]
+      cannot :manage, Roxiware::Param::Param do |param|
+         param_permissions = param.param_description.permissions.split(",")
+	 param_permissions.present? && (!param_permissions.include?("admin"))
+      end
+      cannot :manage, Roxiware::Param::ParamDescription
+
     when "user"
       can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page, Roxiware::Event, Roxiware::GalleryItem, Roxiware::Gallery, Roxiware::Service]
       can :read, Roxiware::Person, :show_in_directory=>true
@@ -42,7 +49,7 @@ class Ability
         resource==user
       end
       can :read, Roxiware::Book
-      can :read, Roxiware::Series
+      can :read, Roxiware::BookSeries
     else
       can :read, [Roxiware::NewsItem, 
                   Roxiware::PortfolioEntry, 

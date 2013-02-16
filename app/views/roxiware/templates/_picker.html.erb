@@ -1,0 +1,123 @@
+<div id="layout_search">
+<% @categories.each do |category| %>
+<div class='category_entry'>
+<%= check_box_tag category.name, 1, false, :id=>category.id %>
+<%= label_tag category.name, category.name %>
+</div>
+<% end %>
+</div>
+
+<div id="layout_display">
+   <div id="layout_display_left_pane"></div>
+   <div id="layout_display_right_pane">
+     <div id="layout_display_name"></div>
+     <div id="layout_display_description"></div>
+     <div id="layout_schemes"></div>
+   </div>
+</div>
+
+<div id="picker">
+<%= button_tag "<", :id=>"last", :type=>"button" %><div class="scrollable" id="layout_scrollable"><div class="items" id="layout_list"></div></div><%= button_tag ">", :id=>"next", :type=>"button" %></div>
+
+<script>
+$(function() {
+   var layouts = <%= raw @layouts.to_json %>;
+
+   $("button").button();
+
+   function updateLayoutList() {
+     var categories=[];
+     $(".category_entry input").each(function(index, check) {
+       if(($check).is(":checked")) {
+         categories.push(parseInt($(check).attr("id")));
+       }
+     });
+
+     var layout_list = $("div#layout_list");
+     layout_list.html("");
+     $.each(layouts, function(index, layout) {
+       var add_layout = (layout['categories'].length == 0);
+       if(!add_layout) {
+          for(var category_id in categories) {
+            if ((layout['categories'].length == 0) || (categories[category_id] && $.inArray(category_id, layout['categories']))) {
+              add_layout = true;
+              break;
+            }
+         }
+       }
+       if(add_layout) {
+          var layout_html = "<div class='layout_item' id='"+index+"' layout_guid='"+ layout['guid']+"'>" +
+                 "<img src='"+layout['thumbnail_url']+"'/>" +
+                 "<div class='layout_item_name'>"+layout['name']+"</div>" +
+                 "</div>";
+             layout_list.append(layout_html);
+        }
+       });
+
+       $(".layout_item").click(function() {
+            // we've selected a layout, so populate the layout info, including images, description, schemes
+	    var layout = layouts[parseInt($(this).attr("id"))];
+            $("input[name=layout_guid]").val($(this).attr("layout_guid"));
+	    $("div#layout_display_name").text(layout['name']);
+	    $("div#layout_display_description").html(layout['description']);
+	    $(".layout_item_selected").removeClass("layout_item_selected");
+	    $(this).addClass("layout_item_selected");
+           
+	    $("div#layout_schemes").html("");
+	    $("div#layout_display_left_pane").html("");
+            $.each(layout['layout_schemes'], function(index, layout_scheme){
+               $("div#layout_schemes").append($("<a class='layout_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_url']+"'/><div class='layout_scheme_name'>"+layout_scheme['name']+"</div></a>"));
+               var layout_images = $("<div class='layout_image_block'><div class='layout_image_block_images'></div><div class='layout_image_block_tabs'></div></div>");
+               $.each(layout_scheme['large_images'], function(index, image) {
+                  layout_images.find(".layout_image_block_images").append("<div><img src='"+image+"'/></div>");
+                  layout_images.find(".layout_image_block_tabs").append("<a class='layout_image_block_tab' href='#'>"+index+"</a>");
+               });
+               layout_images.find(".layout_image_block_tabs").tabs(layout_images.find(".layout_image_block_images > div",
+               {
+               }));
+               $("div#layout_display_left_pane").append(layout_images);
+            });
+
+            $("div#layout_schemes").tabs("div#layout_display_left_pane > div", {
+            });
+            var api = $("div#layout_schemes").data("tabs");
+            api.onClick(function(index) {
+               console.log(api.getCurrentTab());
+               $("input[name=layout_scheme]").val(api.getCurrentTab().attr("id"));
+            });
+            $("input[name=layout_scheme]").val($("div#layout_schemes a").first().attr("id"));
+       });
+
+       var current_layout = $("input[name=layout_guid]").val();
+       if(current_layout) {
+          $(".layout_item[layout_guid="+current_layout+"]").click();
+       }
+       else {
+          $("#last").click();
+          $(".layout_item").first().click();
+       }
+       var current_scheme = $("input[name=layout_scheme]").val();
+       if(current_scheme) {
+          $("div#layout_schemes a#"+current_scheme).click();
+       }
+       else {
+          $("div#layout_schemes a").first().click();
+       }
+   }
+   $(".scrollable").scrollable();
+
+   updateLayoutList();
+   $(".category_entry input").click(function() {
+      updateLayoutList();
+   });
+
+   $("#last,#next").click(function() {
+      var api=$("#layout_scrollable").data("scrollable");
+      api.move($(this).is("#last")?-4:4);
+      $("#last").button((api.getIndex() == 0)?"disable":"enable");
+      $("#next").button((Math.floor(api.getIndex()/4) == Math.floor(api.getSize()/4))?"disable":"enable");
+   });
+
+   $("#last").click();
+});
+</script>

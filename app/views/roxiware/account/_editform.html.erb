@@ -1,0 +1,33 @@
+<div class="account_edit_overlay popup_form overlay" id="account_edit_overlay">
+  <%= form_for @user do |user| %>
+      <%= user.label :role, "Role"%>
+      <% role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} %>
+      <% role_options["Super"] = :super if current_user.role == "super" %>
+      <%= user.select :role, options_for_select(role_options) %>
+      <br/>
+
+      <%= user.label :username, "Username" %>
+      <%= user.text_field :username, nil %>
+      <br/>
+
+      <%= user.label :name, "Name"%>
+      <%= user.text_field_ :first_name, nil, :altname=>:seo_index %>
+      <%= user.text_field :last_name, nil, :altname=>:seo_index %>
+      <br/>
+
+      <%= user.label :email, "Email"%>
+      <%= user.text_field :email, nil %>
+      <br/>
+
+      <%= user.label :password, "Password"%>
+      <%= user.password_field :password, nil, :autocomplete=>"off" %>
+      <br/>
+
+      <%= user.label :password_confirmation, "Confirm"%>
+      <%= user.password_field :password_confirmation, nil %>
+      <br/>
+      <%= button_tag "Save", :id=>"save", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
+  <% end %>
+</div>
+
+

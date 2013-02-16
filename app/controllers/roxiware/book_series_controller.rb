@@ -116,7 +116,7 @@ class Roxiware::BookSeriesController < ApplicationController
     @book_series = Roxiware::BookSeries.new
 
     respond_to do |format|
-      if _create_or_update
+      if _create_or_update(@book_series)
 	format.xml  { render :xml => {:success=>true} }
         format.html { redirect_to @book_series, :notice => 'Book was successfully created.' }
         format.json { head :no_content }
@@ -136,7 +136,7 @@ class Roxiware::BookSeriesController < ApplicationController
     authorize! :update, @book_series
 
     respond_to do |format|
-      if _create_or_update
+      if _create_or_update(@book_series)
 	format.xml  { render :xml => {:success=>true} }
         format.html { redirect_to @book_series, :notice => 'Book was successfully updated.' }
         format.json { head :no_content }
@@ -148,12 +148,12 @@ class Roxiware::BookSeriesController < ApplicationController
     end
   end
 
-  def _create_or_update
+  def _create_or_update(book_series)
     success = true
     ActiveRecord::Base.transaction do
        begin
 	  if params[:book_series][:params].present?
-	      @book_series.get_param_objs.values.each do |param|
+	      book_series.get_param_objs.values.each do |param|
 		 if params[:book][:params][param.name.to_sym].present?
 		     param.value = params[:book][:params][param.name.to_sym]
 		     param.save!
@@ -162,15 +162,15 @@ class Roxiware::BookSeriesController < ApplicationController
 	  end
 	  
 	  # remove any current series links
-	  @book_series.book_series_joins.each do |join|
+	  book_series.book_series_joins.each do |join|
 	     join.destroy
 	  end
 
-	  if !@book_series.update_attributes(params[:book_series], :as=>@role)
-	      puts @book_series.errors.inspect
+	  if !book_series.update_attributes(params[:book_series], :as=>@role)
+	      puts book_series.errors.inspect
 	      success = false
 	  end 
-	  @book_series.save!
+	  book_series.save!
           # create joins, linking books to the series
 	  order = 1
 	  books = params[:books][:book]
@@ -191,15 +191,15 @@ class Roxiware::BookSeriesController < ApplicationController
 	       if book.blank?
 	          book = Roxiware::Book.new
 		  book.from_goodreads_book(goodreads.get_book(series_book[:goodreads_id]))
+		  book.init_sales_links
 		  book.save!
 	       end
 	     end
 	     if(book.present?)
-                Roxiware::BookSeriesJoin.create({:book=>book, :book_series=>@book_series, :series_order=>order}, :as=>@role)
+                Roxiware::BookSeriesJoin.create({:book=>book, :book_series=>book_series, :series_order=>order}, :as=>@role)
 		order = order + 1
              end
           end
-	  puts params[:book_series].inspect
        rescue Exception => e
            print "FAILURE Creating or Updating Series: #{e.message}\n"
 	   puts e.backtrace

@@ -1,7 +1,4 @@
-
-
 <style>
-
 .book_edit_form 
 {
    margin-top:0.2em;
@@ -10,7 +7,7 @@
 .book_edit_form div.panes > div 
 {
     width:40em;
-    height:35em;
+    height:28em;
 }
 
 div.book_edit label
@@ -34,7 +31,7 @@ div.book_edit .upload_target
 textarea#book_description
 {
    clear:both;
-   height:21em;
+   height:14em;
    width:52em;
    margin:0px;
    overflow:scroll;
@@ -76,7 +73,7 @@ div#bookstore_right_pane input[name=link]
 div#bookstore_list
 {
     width:15em;
-    height:25em;
+    height:18em;
     padding:0px;
     margin:0px;
     overflow:scroll;
@@ -111,7 +108,7 @@ div#bookstore_list
    border: solid 1px #ccc;
    overflow: scroll;
    width: 100%;
-   height: 23em;
+   height: 16em;
 }
 
 #import_search_results .search_result
@@ -186,9 +183,8 @@ a#skip_import
    margin:5px;
    display:block;
 }
-
 </style>
-<div class="settings_title">Add Book</div>
+
 <div class="book_edit_form">
   <ul class="tabs">
     <li><a href="#">Import</a></li>
@@ -197,7 +193,6 @@ a#skip_import
   </ul>
   <div class="panes">
      <div id="import_pane">
-     <a href="#" id="skip_import">Add my book by hand >></a>
      <div class="wizard_step">Import your book.</div>
      <div class="wizard_instructions">Paste or type your book's title, ISBN, or ISBN13 into the search box, or paste in the Goodreads or Amazon link, and we'll find your book.</div>
        <%= search_field_tag(:import_search) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
@@ -207,27 +202,9 @@ a#skip_import
      </div>
      <div class="book_edit">
 	  <%= form_for @book do |book| %>
-	           <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
-		   <img id="book_image" src="<%= @book.image %>" class="upload_target" upload_sizes="large,medium,small,xsmall,thumbprint"/>
-		   <input type="hidden" name="image_thumbprint"/>
-		   <div class="wizard_step">Edit your book details.</div>
-		   <%= book.hidden_field :image %>
-		   <%= book.hidden_field :small_image %>
-		   <%= book.label :title, "Title"%>
-		   <%= book.text_field :title %>
-			   <br/>
-		   <%= book.label :isbn, "ISBN"%>
-		   <%= book.text_field :isbn %>
-			   <br/>
-		   <%= book.label :isbn13, "ISBN13" %>
-		   <%= book.text_field :isbn13 %>
-		   <br style="clear:both"/>
-
-		<%= book.label :description, "Description" %><br/>
-		<%= book.text_area :description %>
-		<br/>
-	     <% end %>
-             <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
+             <%= render :partial=>"roxiware/books/book_edit", :locals=>{:book_fields=>book} %>
+             <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
+          <% end %>
 	 </div>
          <div class="book_purchase_info">
 	   <div class="wizard_step">Manage your purchase links</div>
@@ -246,7 +223,7 @@ a#skip_import
 		<label>Link</label><input type="text" name="link" title="The link to your online edition.  You can get this by finding your book on the online store, copying the link at the top of your browser, and pasting it into the field."></br>
 	      </div>
            </div>
-           <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
+           <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
 	 </div>
      </div>
 </div>
@@ -254,27 +231,18 @@ a#skip_import
   <% bookstores = []
      print "STORES: " + @book.get_param("bookstores").inspect + "\n"
      bookstores = @book.get_param("bookstores").a if @book.get_param("bookstores")
-     
- %>
+   %>
   $(function() {
 
      $("#skip_import").click(function() {
         $(".book_edit_form ul.tabs").data("tabs").next();
      });
-     
-     $(".book_edit_form textarea").wysiwyg({ css: "<%= stylesheet_path('application') %>",
-                                       controls: {
-                                          undo: { visible: false },
-                                          redo: { visible: false},
-                                          insertHorizontalRule: { visible: true},
-                                          html: { visible: true},
-                                          insertTable: {visible: true},
-                                          'fileManager': {
-                                              visible: true,
-                                              tooltip: "File Manager"
-                                                  }
-                                           }});
 
+     $("img#book_image_url").attr("src", "<%= @book.image_url %>");
+     $("input#book_image_url").val("<%= @book.image_url %>");
+     $("input#book_large_image_url").val("<%= @book.large_image_url %>");
+     $("input#book_thumbnail_url").val("<%= @book.thumbnail_url %>");
+     
      var import_watermark = 'ISBN, Title, Goodreads Link, Amazon Link';
      $('.book_edit_form input#import_search').blur(function(){
                 if ($(this).val().length == 0) {
@@ -298,6 +266,7 @@ a#skip_import
             $(".book_edit_form button#import_search").button("enable");
         }
      });
+
     $('.book_edit_form input#import_search').bind("keypress", function(event) {
          if(event.keyCode == 13) {
            $("button#import_search").click();
@@ -384,6 +353,7 @@ a#skip_import
                                      $(".book_edit input#book_isbn").val(data.isbn);
                                      $(".book_edit input#book_isbn13").val(data.isbn13);
                                      $(".book_edit input#book_title").val(data.title);
+                                     $(".book_edit input#book_goodreads_id").val(goodreads_id);
                                      $(".book_edit input#book_image").val(data.image);
                                      $(".book_edit input#book_small_image").val(data.small_image);
                                      $(".book_edit img#book_image").attr("src", data.image);
@@ -484,17 +454,5 @@ a#skip_import
                     window.location.reload();
                  }}); 
       });
-      
-
-     $(".book_edit_form img.upload_target").bind("click", function() {
-      imageDialog({
-	     raw_upload: true,
-	     onSuccess: function(url, type, thumbprint) {
-                 $(".book_edit_form input[name=image]").val(url);
-                 $(".book_edit_form input[name=small_image").val(url);
-                 $(".book_edit_form img.upload_target").attr("src", url);
-             }
-      });
-    });
-   });
+});
 </script>

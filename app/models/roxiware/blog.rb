@@ -53,48 +53,37 @@ module Roxiware
       @@last_update = DateTime.now
     end
 
-    def set_term_ids(term_ids, taxonomy_id)
-        current_term_ids_for_taxonomy = self.terms.select {|term| term.term_taxonomy_id == taxonomy_id }.collect{|term| term.id}
-
-        term_ids_not_for_taxonomy = self.term_ids.to_set - current_term_ids_for_taxonomy
-	added_term_ids = term_ids.to_set - current_term_ids_for_taxonomy
-
-	deleted_term_ids = current_term_ids_for_taxonomy.to_set - term_ids
-	self.term_ids = term_ids_not_for_taxonomy.merge(term_ids).to_a
-    end
-
     def tag_ids
-      self.terms.select {|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy::TAG_ID }.collect{|term| term.id}
+      self.tags.collect{|term| term.id}
     end
 
     def tag_ids=(tag_ids)
-        self.set_term_ids(tag_ids, Roxiware::Terms::TermTaxonomy::TAG_ID)
+        self.term_ids = self.category_ids.to_set + tag_ids.to_set
     end
    
     def tag_csv
-       self.terms.where(:term_taxonomy_id => Roxiware::Terms::TermTaxonomy::TAG_ID).map{|term| term.name}.join(", ")
+       self.tags.collect{|term| term.name}.join(", ")
     end
 
     def tag_csv=(csv)
        tag_strings = csv.split(",").collect {|x| x.gsub(/[^a-z0-9]+/i,' ').gsub(/\s+/,' ').strip.capitalize}.select{|y| !y.empty?}
-       self.tag_ids = Roxiware::Terms::Term.get_or_create(tag_strings, Roxiware::Terms::TermTaxonomy::TAG_ID).map{|term| term.id}
+       self.tag_ids = Roxiware::Terms::Term.get_or_create(tag_strings, Roxiware::Terms::TermTaxonomy::TAG_NAME).map{|term| term.id}
     end
 
     def tags
-      self.terms.select {|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy::TAG_ID }
+      self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::TAG_NAME))
     end
 
     def category_ids
-      print "CATEGORY IDS " + self.terms.select {|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy::CATEGORY_ID }.collect{|term| term.id}.inspect + "\n\n"
-      self.terms.select {|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy::CATEGORY_ID }.collect{|term| term.id}
+      self.categories.collect{|category| category.id}
     end
 
     def category_ids=(category_ids)
-        self.set_term_ids(category_ids, Roxiware::Terms::TermTaxonomy::CATEGORY_ID)
+        self.term_ids = self.tag_ids.to_set + category_ids.to_set
     end
 
     def categories
-      self.terms.select {|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy::CATEGORY_ID }
+      self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::CATEGORY_NAME))
     end
 
     def category_name
@@ -106,7 +95,7 @@ module Roxiware
     end
     
     def category_name=(set_name)
-       self.category_ids = Roxiware::Terms::Term.get_or_create([set_name], Roxiware::Terms::TermTaxonomy::CATEGORY_ID).map{|term| term.id}
+       self.category_ids = Roxiware::Terms::Term.get_or_create([set_name], Roxiware::Terms::TermTaxonomy::CATEGORY_NAME).map{|term| term.id}
     end
 
     before_validation() do

@@ -40,11 +40,10 @@
 
     $.roxiware.alert = {
 	conf: {
-            alertTemplate: "<div class='overlay alert_popup'></div>",
-            alertLineTemplate: "<div class='alert_line'></div>",
-	    alertPopupNoticeClass: "alert_popup_notice",
-	    alertPopupAlertClass: "alert_popup_alert",
-	    alertPopupErrorClass: "alert_popup_error"
+            alertTemplate: "<div class='settings settings_dialog settings_alert'><a class='close'>x</a><div class='settings_title'>&nbsp;</div><div class='alert_content'></div></div>",
+	    alertPopupNoticeClass: "alert_notice",
+	    alertPopupAlertClass: "alert_alert",
+	    alertPopupErrorClass: "alert_error"
 	    
 	}, 
 	popup: null
@@ -52,19 +51,19 @@
     $.extend({
 	    notice: function(alert_string) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup($.roxiware.alert.conf);
+		    $.roxiware.alert.popup = new AlertPopup("Notice", $.roxiware.alert.conf);
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupNoticeClass);
 	    },
 	    alert: function(alert_string) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup($.roxiware.alert.conf);
+		    $.roxiware.alert.popup = new AlertPopup("Alert", $.roxiware.alert.conf);
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupAlertClass);
 	    },
 	    error: function(alert_string) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup($.roxiware.alert.conf);
+		    $.roxiware.alert.popup = new AlertPopup("Error", $.roxiware.alert.conf);
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupErrorClass);
 	    },
@@ -79,36 +78,34 @@
      );
 
     // Display an overlay popup for alert/error/notice content.
-    function AlertPopup(confStr) {
+    function AlertPopup(alert_type, confStr) {
 	var conf = confStr;
 	this.alertDialog = $(conf.alertTemplate);
 	$("body").append(this.alertDialog);
+	this.alertDialog.find("div.settings_title").text(alert_type);
 	this.alertDialog.overlay({
-		top: "center",
-			      oneInstance: false,
-			      load: true,
-			      zIndex: 99999,
-                              closeOnClick: false,
-			      mask: {
-			      zIndex: 99998,
-				 color: "#222",
-				 loadSpeed: 200,
-				 opacity: 0.6
-			      },
-		              onClose: function (event) {
-		                  $.roxiware.alert.popup = null;
-		                  delete this;
-		              }
+	    top: "center",
+            oneInstance: false,
+	    load: true,
+	    zIndex: 99999,
+            closeOnClick: false,
+	    mask: {
+	        zIndex: 99998,
+		color: "#222",
+		loadSpeed: 200,
+		opacity: 0.6
+	    },
+	    onClose: function (event) {
+	        $.roxiware.alert.popup = null;
+		delete this;
+	    }
         });
 	this.append = function(alert_string, alert_class) {
-	    var alertString = $(conf.alertLineTemplate);
-	    alertString.append(alert_string);
-	    alertString.addClass(alert_class);
-	    this.alertDialog.append(alertString);
+	    this.alertDialog.find(".alert_content").append("<div class='"+alert_class+"'>"+alert_string+'</div>');
 	}
 
 	this.appendHtml = function(alertHtml) {
-	    this.alertDialog.append(alertHtmlstring);
+	    this.alertDialog.find(".alert_content").append(alertHtmlstring);
 	}
     };
 
@@ -162,7 +159,7 @@
     $.roxiware.progressbar = {
 	instance: null,
 	conf: {
-            mainContent: "<div id='progress_bar_dialog' class='overlay'><h1>Upload Progress</h1></div>",
+            mainContent: "<div id='progress_bar_dialog' class='overlay'><a class='close'>x</a><div class='settings_title'>Upload Progress</div></div>",
             instanceContent: "<div class='progress_bar_instance'><div class='progress_bar'><div class='progress_status'>uploading</div><div class='instance_progress'></div></div><span class='progress_bar_title'></span></div>",
 	    mask: {
 		closeOnClick:false,
@@ -218,7 +215,7 @@
 	}
 
 	this.finished = function(id) {
-	    this.progressBarDialog.find("div#progress_bar_"+id).remove();
+	    this.progressBarDialog.find("div#progressbar_"+id).remove();
 	}
 	
 	this.close = function() {
@@ -442,17 +439,11 @@
 			var export_jstree_node = function(node_name, node) {
 			    var export_params = function(params) {
 
-				var xml_escape = function(value) {
-				    return value.replace(/&/g, '&amp;')
-				.replace(/</g, '&lt;')
-				.replace(/>/g, '&gt;')
-				.replace(/\"/g, '&quot;');
-				}
 				var xml_result = ""
 				for(var param_name in params) {
 				    xml_result = xml_result + "<param class='local' name='"+param_name+"'>" +
 				       "<param_description guid='"+params[param_name].guid+"'/>" +
-				    "<value>" + xml_escape(params[param_name].value)+"</value>" +
+				    "<value>" + xmlEscape(params[param_name].value)+"</value>" +
 				       "</param>";
 				}
 				return xml_result;
@@ -680,9 +671,12 @@
 
 })(jQuery);
 
-function settingsForm(url)
+function settingsForm(url, title)
 {
-   var overlay = $("<div id='edit_overlay' class='settings'><div class='contentWrap'> </div></div>");
+   title = typeof title  != 'undefined' ? title : "&nbsp;";
+   var overlay = $("<div id='edit_overlay' class='settings settings_dialog' style='z-index:2000'><a class='close'>x</a><div class='settings_title'>"+
+                   title +
+                   "</div><div class='contentWrap'> </div></div>");
    $("body").append(overlay);
    overlay.find(".contentWrap").load(url, function(responseText, textStatus, xhr) {
       if(xhr.status != 200) {
@@ -690,11 +684,13 @@ function settingsForm(url)
 	  return;
       }
       overlay.overlay({
-		top: "center",
+		top: "5%",
+		left: "center",
                 oneInstance: false,
 		load: true,
 		zIndex: 2000,
                 closeOnClick: false,
+                fixed:false, 
 		mask: {
 		     zIndex: 1999,
 		     color: "#222",
@@ -704,8 +700,24 @@ function settingsForm(url)
 		 onClose: function (event) {
 		         $.roxiware.alert.popup = null;
 		         overlay.remove();
+	         },
+		 onLoad: function(event) {
+    $("textarea.settings_wysiwyg").wysiwyg({ css: "<%= stylesheet_path('application') %>",
+                                       iFrameClass:"wysiwyg_iframe",
+                                       controls: {
+                                          undo: { visible: false },
+                                          redo: { visible: false},
+                                          insertHorizontalRule: { visible: true},
+                                          html: { visible: true},
+                                          insertTable: {visible: true},
+                                          'fileManager': {
+                                              visible: true,
+                                              tooltip: "File Manager"
+                                                  }
+                                           }});
 	         }
 	  });
+
       overlay.find(".contentWrap [title]").tooltip({
 	  predelay:1000,
 	  effect:'fade',
@@ -735,117 +747,147 @@ function colorToHex(color) {
 function imageDialog(conf)
 {
     var default_options = {
-	raw_upload: false
+	resizeOnUpload: false,
+	uploadRemoteURL: false,
+	allowUrl: false,
+	title: "Upload Image",
+	initialImage:false,
+	width:false,
+	height:false,
+	previewSize:"large",
+        sizeLimit:0,
+        minSizeLimit:0,
+        uploadParams: {
+	    image_sizes:{}
+	}
     };
    var options = $.extend(true, {}, default_options, conf);
    
-   var overlay_dialog = $('<div class="overlay" id="wysiwyg_add_image_overlay">' +
-		      '<form class="wysiwyg">' +
-		      '<div id="upload_target" class="upload_target">' +
-		       '</div>' + 
-			 '<input id="image_source_upload" name="image_source" type="radio" value="upload" checked>Upload Image</input>' +
-			 '<br style="clear:both"/>' +
-			 '<input id="image_source_url" name="image_source" type="radio" value="url">URL</input>' +
-			   '<input name="image_text_url" type="text" disabled/>' +
-			 '<br/><br/><input type="submit" class="button" value="Save" disabled/>' +
-		      '</form>' +
-			  '</div>');
-
+   var image_style = "";
+   if(options.width) {
+       image_style = image_style+"width:"+options.width+"px;";
+   }
+   if(options.height) {
+       image_style = image_style+"height:"+options.height+"px;";
+   }
+   var overlay_dialog = '<div id="image_selection_dialog" class="settings settings_dialog" style="z-index:3000"><a class="close">x</a>' +
+       '<div class="settings_title">'+options.title+'</div>'+
+           '<div id="image_preview"><img src="'+options.initialImage+'" style="'+image_style+'"/></div>' +
+           '<div id="upload_section">' +
+           '<button id="upload_button" type="button" name="upload" value="upload">Upload Image</button>' +
+           '<div id="progress_section" style="display:none"><div id="progress_bar"><div id="progress"></div></div><div id="upload_cancel">x</div></div>' +
+           '</div>';
+   if(options.allowUrl) {
+       overlay_dialog = overlay_dialog + "<div id='url_section'>" +
+	        '<label for="image_url">URL</label>&nbsp;<input name="image_url" type="text"/></div>';
+   }
+   overlay_dialog = overlay_dialog + '<button type="submit" name="save" value="save">Save</button>' +
+       '</div>';
+   overlay_dialog = $(overlay_dialog);
    $("body").append(overlay_dialog);
-   overlay_dialog.find("input:radio[name=image_source]").change(function() {
-      var new_image_url;
-      var image_type = overlay_dialog.find("input:radio[name=image_source]:checked").val();
-      if(image_type == "url") {
-	    // set the preview image to the image specified in the image_url input
-	    new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
-	    self.old_image = overlay_dialog.find("div#upload_target").image_upload().getImage();
-	    self.old_thumbprint = overlay_dialog.find("div#upload_target").image_upload().getThumbprint();
-	    overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url);
-	    overlay_dialog.find("div#upload_target").image_upload().setThumbprint(null);
-	    overlay_dialog.find("div#upload_target").image_upload().disable();
-	    overlay_dialog.find("input[name=image_text_url]").removeAttr("disabled");
-      }
-      else if (image_type == "upload") {
-	  new_image_url = self.old_image;
-	  overlay_dialog.find("div#upload_target").image_upload().setImage(self.old_image);
-	  overlay_dialog.find("div#upload_target").image_upload().setThumbprint(self.old_thumbprint);
-	  overlay_dialog.find("div#upload_target").image_upload().enable();
-	  overlay_dialog.find("input[name=image_text_url]").attr("disabled", "disabled");
-      }
+   overlay_dialog.find("button").button();
 
-      if((new_image_url != null) && (new_image_url != "")) {
-	  overlay_dialog.find("input:submit").removeAttr("disabled");
-      }
-      else {
-	   overlay_dialog.find("input:submit").attr("disabled", "disabled");
-      }
+   var csrf_token = $('meta[name="csrf-token"]').attr('content');
+   var csrf_param = $('meta[name="csrf-param"]').attr('content');
+   var upload_params = {};
+   if (csrf_param !== undefined && csrf_token !== undefined) {
+           upload_params[csrf_param] = csrf_token;
+   }
+   $.extend(upload_params, options.uploadParams);
 
-   });
-   overlay_dialog.find("input[name=image_text_url]").change(function(e) {
-      var new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
-      overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url).setThumbprint(null);
-      if((new_image_url != null) && (new_image_url != "")) {
-	  overlay_dialog.find("input:submit").removeAttr("disabled");
-       }
-       else {
-	  overlay_dialog.find("input:submit").attr("disabled", "disabled");
-       }
-
-   });
-   overlay_dialog.overlay({
-      oneInstance:false,
-      top: "center",
-      // some mask tweaks suitable for facebox-looking dialogs
-      mask: {
-	 color: '#222',
-	 loadSpeed: 200,
-	 opacity: 0.6,
-	    zIndex:2999
-	 },
-	 closeOnClick: true,
-	 load:true,
-	 onClose: function() {
-	    overlay_dialog.remove();
-	 },
-	 onBeforeLoad: function () {
-	    overlay_dialog.find("form").submit(function (e) {
-	       e.preventDefault();
-	       var image_type = overlay_dialog.find("input:radio[name=image_source]:checked").val();
-	       if(image_type == "url") {
-		   options.onSuccess(overlay_dialog.find("input[name=image_text_url]").val(), image_type, null);
+   var file_upload = new qq.FileUploaderBasic({
+       action: "/asset/image",
+       button: overlay_dialog.find("button#upload_button").get()[0],
+       multiple:false,
+       debug:true,
+       params: upload_params,
+       allowedExtensions:["jpg", "png", "jpeg", "gif"],
+       showMessage: function(message) {
+	       $.alert(message);
+       },
+       sizeLimit: options.sizeLimit,
+       minSizeLimit: options.minSizeLimit,
+       onSubmit: function(id, filename) {
+	   // replace upload button with progress bar
+	   console.log("submit " + filename);
+	   overlay_dialog.find("button#upload_button").css("display","none");
+	   overlay_dialog.find("div#progress_section").css("display",'');
+	   overlay_dialog.find("div#progres_bar div#progress").css("width", "0%");
+	   overlay_dialog.find("div#upload_cancel").click(function(e) {
+	       if(file_upload.getInProgress()) {
+		    file_upload.cancel(id);
 	       }
-               else if (image_type == "upload") {
-		   
-		   options.onSuccess(overlay_dialog.find("div#upload_target").image_upload().getImage(), image_type, null);
-	       }
-	       overlay_dialog.overlay().close();
-	       return false;
-	     });
-	    
-	    var default_upload_params = {
-		  uploadImagePreviewSize: "raw",
-		  complete: function(urls) {
-			  overlay_dialog.find("input:submit").removeAttr("disabled");
-		      }
-	    };
-	    
-	    var image_upload_conf = $.extend(true, {}, default_upload_params, options.uploadConf);
-	    if(options.raw_upload) {
-		image_upload_conf = $.extend(true, {}, image_upload_conf, {uploadImageParams: { unprocessed_raw:true}});
-	    }
-
-	    $("div#wysiwyg_add_image_overlay div#upload_target").image_upload(image_upload_conf);
+           });
+       },
+       onProgress: function(id, filename, loaded, total) {
+	   console.log("progress " + filename + " "+loaded+"/"+total);
+	   var progress = String(Math.round((loaded*90)/total));
+	   overlay_dialog.find("div#progress_bar div#progress").css("width", progress + "%");
+       },
+       onComplete: function(id, filename, json_data) {
+	   console.log("complete " + filename);
+	   console.log(json_data);
+	   overlay_dialog.find("button#upload_button").css("display",'');
+	   overlay_dialog.find("div#progress_section").css("display",'none');
+           console.log(json_data);
+	   if(json_data["success"]) {
+	       overlay_dialog.find("div#image_preview img").attr("src", json_data["urls"][options.previewSize]);
+	       overlay_dialog.data().upload_result = {urls:json_data["urls"], thumbprint:json_data["thumbprint"]};
 	   }
+	   else {
+	       $.alert(json_data["error"]);
+	   }
+       },
+       onCancel: function(id, filename) {
+	   overlay_dialog.find("button#upload_button").css("display",'');
+	   overlay_dialog.find("div#progress_section").css("display",'none');
        }
-   );
+   });
+
+   overlay_dialog.overlay({
+      zIndex: 3005,
+      oneInstance:false,
+      top: "15%",
+      left: "center",
+      fixed:false, 
+      mask: {
+	   color: '#222',
+	   loadSpeed: 200,
+	   opacity: 0.6,
+           zIndex:2999
+      },
+      closeOnClick: true,
+      load:true,
+      onClose: function() {
+          overlay_dialog.find("div#upload_cancel").click();	    
+	  overlay_dialog.remove();
+      },
+      onBeforeLoad: function () {
+          overlay_dialog.find("button[name=save]").click(function (e) {
+	      e.preventDefault();
+              console.log("setting up save");
+	      if(overlay_dialog.data().upload_result) {
+		   options.onSuccess(overlay_dialog.data().upload_result);
+	      }
+	      overlay_dialog.overlay().close();
+	      return false;
+	  });
+       }   
+   });
+}
+
+function xmlEscape(value) {
+   return value.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/\"/g, '&quot;');
 }
 
 
-$(document).bind("ready", function() {
-	$(document).bind("ajaxStart", function(event) {
+
+$(document).bind("ajaxStart", function(event) {
 		$.wait();
 	    });
-	$(document).bind("ajaxStop", function(event) {
+$(document).bind("ajaxStop", function(event) {
 		$.resume();
 	    });
-    });

@@ -98,7 +98,7 @@ module Roxiware
 	      if target_section.get_widget_instances.last.blank?
 	         last_order = 1
 	      else
-	         last_order += target_section.get_widget_instances.last.section_order
+	         last_order = target_section.get_widget_instances.last.section_order + 1
 	      end
 	      @widget_instance.section_order = last_order
 	   end

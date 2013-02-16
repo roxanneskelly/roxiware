@@ -41,10 +41,12 @@ module Roxiware
     end
 
     def load_layout
+       puts "load layout with #{@layout_scheme}"
        @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
+       @current_layout = @@current_layout
        @page_layout = @@current_layout.find_page_layout(params[:controller], params[:action])
        if(request.format == :html)
-         @layout_styles = @@current_layout.get_styles(params[:controller], params[:action])
+         @layout_styles = @@current_layout.get_styles(@layout_scheme, params[:controller], params[:action])
        end
     end
 
@@ -54,7 +56,7 @@ module Roxiware
 
     def resolve_layout
        # we need to ultimately cache this infor in-memory
-       if(request.format == :html)
+       if(@page_layout.present? && (request.format == :html))
           @page_layout.render_layout
        else
           false
@@ -62,17 +64,20 @@ module Roxiware
     end
 
     def populate_layout_params
-      @@current_layout.resolve_layout_params(params[:controller], params[:action]).each do |key, value|
+      return if @@current_layout.nil?
+      @@current_layout.resolve_layout_params(@layout_scheme, params[:controller], params[:action]).each do |key, value|
         self.instance_variable_set("@#{key}".to_sym, value)
       end
     end
 
     def populate_application_params(controller)
       Roxiware::Param::Param.application_params("system").each do |param|
+        puts "setting system @#{param.name} to #{param.conv_value.inspect}"
         controller.instance_variable_set("@#{param.name}".to_sym, param.conv_value)
       end
       if controller.application_name.present?
 	Roxiware::Param::Param.application_params(controller.application_name).each do |param|
+          puts "setting @#{param.name} to #{param.conv_value.inspect}"
 	  controller.instance_variable_set("@#{param.name}".to_sym, param.conv_value)
 	end
       end
@@ -196,5 +201,19 @@ module Roxiware
        locals[:events].present? 
      end
 
+     def check_setup
+        @setup_step = Roxiware::Param::Param.application_param_val('setup', 'setup_step')
+        @setup_type = Roxiware::Param::Param.application_param_val('setup', 'setup_type')
+	if(@setup_step != "complete")
+	   return false if (params[:controller] == "roxiware/asset")
+	   if (params[:controller] == "devise/sessions") 
+	      self.class.layout "roxiware/layouts/setup_layout"
+	   elsif params[:controller] != "roxiware/setup"
+              redirect_to setup_path
+           end
+	   return false
+ 	end
+	return true
+     end
   end
 end

@@ -69,10 +69,10 @@ module Roxiware
 	   end
 
 	   if params.has_key?(:category)
-              conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy::CATEGORY_ID, :seo_index=>params[:category]}
+              conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::CATEGORY_NAME), :seo_index=>params[:category]}
 	   end
 	   if params.has_key?(:tag)
-              conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy::TAG_ID, :seo_index=>params[:tag]}
+              conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::TAG_NAME), :seo_index=>params[:tag]}
 	   end
 	   if conditions.has_key?(:terms)
 	     @posts = Roxiware::Blog::Post.joins(:terms).visible(current_user)
@@ -95,8 +95,7 @@ module Roxiware
 
 	   respond_to do |format|
 	     format.html do 
-               @title = "Blog"
-	       @meta_description = @title
+               @title = @title + " : Blog"
 	       @posts.each do |post| 
 	         @meta_keywords = @meta_keywords + ", " + post.post_title
 	       end 
@@ -152,8 +151,7 @@ module Roxiware
              end
 	   end
 
-	   @title = @post.post_title
-	   @meta_description = @title
+	   @title = @title + " : Blog : " + @post.post_title
 	   @meta_keywords = @meta_keywords + ", " + @post.post_title
 
 	   respond_to do |format|
@@ -166,12 +164,14 @@ module Roxiware
 	 # GET /posts/1.json
 	 def show
 	   respond_to do |format|
+             format.html { render :partial =>"roxiware/blog/post/editform" }
 	     format.json { render :json => @post.ajax_attrs(@role) }
 	   end
 	 end
 
 	 def edit
 	   respond_to do |format|
+             format.html { render :partial =>"roxiware/blog/post/editform" }
 	     format.json { render :json => @post.ajax_attrs(@role) }
 	   end
 	 end
@@ -181,14 +181,10 @@ module Roxiware
 	 def edit_by_title
 	   @post = Roxiware::Blog::Post.where(:guid=>request.env['REQUEST_PATH']).first
 	   raise ActiveRecord::RecordNotFound if @post.nil?
-	   authorize! :read, @post
-
-	   @title = @title + " : Blog"
-	   @meta_description = @title
-	   @meta_keywords = @meta_keywords + ", " + @post.post_title
+	   authorize! :edit, @post
 
 	   respond_to do |format|
-	     format.html { render :action=>"edit"}
+             format.html { render :partial =>"roxiware/blog/post/editform" }
 	     format.json { render :json => @post.ajax_attrs(@role) }
 	   end
 	 end
@@ -196,6 +192,7 @@ module Roxiware
 	 # GET /posts/new
 	 # GET /posts/new.json
 	 def new
+           @robots="noindex,nofollow"
 	   authorize! :create, Roxiware::Blog::Post
 	   @post = Roxiware::Blog::Post.new({:person_id=>current_user.person.id, 
 					     :post_date=>DateTime.now.utc, 
@@ -204,7 +201,7 @@ module Roxiware
 
 
 	   respond_to do |format|
-	     format.html # new.html.erb
+             format.html { render :partial =>"roxiware/blog/post/editform" }
 	     format.json { render :json => @post.ajax_attrs(@role) }
 	   end
 	 end
@@ -221,7 +218,7 @@ module Roxiware
 					     :comment_permissions=>"default"}, :as=>"")
 
 	   respond_to do |format|
-	       if @post.update_attributes(params, :as=>@role)
+	       if @post.update_attributes(params[:blog_post], :as=>@role)
 		  format.html { redirect_to @post, :notice => 'Blog post was successfully created.' }
 		  format.json { render :json => @post.ajax_attrs(@role) }
 	       else
@@ -233,29 +230,13 @@ module Roxiware
 
 	 # PUT /posts/1
 	 # PUT /posts/1.json
-	 def update_by_title
-	   @post = Roxiware::Blog::Post.where(:guid=>request.env['REQUEST_PATH']).first
-	   raise ActiveRecord::RecordNotFound if @post.nil?
-	   authorize! :edit, @post
-
+	 def update
 	   respond_to do |format|
-	       if @post.update_attributes(params, :as=>@role)
+	       if @post.update_attributes(params[:blog_post], :as=>@role)
 		  format.html { redirect_to @post.post_link, :notice => 'Blog post was successfully updated.' }
 		  format.json { render :json => @post.ajax_attrs(@role) }
 	       else
 		  format.html { redirect_to @post, :alert => 'Failure updating post.' }
-		  format.json { render :json=>report_error(@post)}
-	       end
-	   end
-	 end
-
-	 # PUT /posts/1
-	 # PUT /posts/1.json
-	 def update
-	   respond_to do |format|
-	       if @post.update_attributes(params, :as=>@role)
-		  format.json { render :json => @post.ajax_attrs(@role) }
-	       else
 		  format.json { render :json=>report_error(@post)}
 	       end
 	   end

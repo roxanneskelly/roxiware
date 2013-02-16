@@ -9,8 +9,8 @@ class Roxiware::BookSeries < ActiveRecord::Base
   validates_presence_of :title
 
 
-  edit_attr_accessible :seo_index, :goodreads_id, :description, :image, :large_image, :small_image, :title, :as=>[:super, :admin, :user, nil]
-  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image, :large_image, :small_image, :title, :as=>[:super, :admin, :user, :guest, nil]
+  edit_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :large_image_url, :thumbnail_url, :title, :as=>[:super, :admin, :user, nil]
+  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :large_image_url, :thumbnail_url, :title, :as=>[:super, :admin, :user, :guest, nil]
 
   def goodreads_id
       self.goodreads_id_join.goodreads_id if self.goodreads_id_join.present?

@@ -1,11 +1,8 @@
 
-<% if (can? :create, Roxiware::Blog::Post) && @enable_blog_edit %>
-  <%= button_tag "New", :id=>"edit-post-item-new", :class=>"post_edit button_add", :type=>"button"  %>
-<% end %>
 <% unless @posts.nil? %>
     <section class="posts">
       <% @posts.each do |post|  %>
-        <div class="post_list_item">
+        <div class="post_list_item" rel="<%= blog_post_path(post.id) %>">
            <%= render :partial=>"post", :locals=>{:post=>post, :index=>true, :show_full_content=>false, :show_full_header=>true} %>
         </div>
       <% end %>
@@ -25,9 +22,36 @@
 <a href="<%= AppConfig::feedburner_url %>" rel="alternate" type="application/rss+xml"><img src="http://www.feedburner.com/fb/images/pub/feed-icon16x16.png" alt="&nbsp;RSS" style="vertical-align:top;border:0"/></a>
 </div>
 
-<%= render :partial=>"edit_post", :locals=>{:index=>true} if ((can? :edit, Roxiware::Blog::Post) || (can? :create, Roxiware::Blog::Post)) %>
+<% if can? :edit, Roxiware::Blog::Post %>
+    <%= render :partial=>"roxiware/blog/post/context_menus" %>
+<% end %>
+
+<% if can? :create, Roxiware::Blog::Post %>
+    <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_blog_post_path %>" form="New Post">New Post</a></li></ul>
+
+    <ul id="posts_context_menu" class="context_menu">
+       <li id="new_post"><a menu_item="new_post">New Post</a></li>
+    </ul>
+<% end %>
+
 <script>
 $(document).ready(function() {
+
+<% if can? :create, Roxiware::Blog::Post %>
+    $("#mainBody").context_menu("#posts_context_menu");
+    $("#mainBody").on("context_menu", function(event, menu_item) {
+       switch (menu_item) {
+	  case "new_post":
+	    settingsForm("<%= new_blog_post_path %>", "New Blog Post");
+	    break;
+       }});
+    $("button.application_button").click( function(event, menu_item) {
+       switch ($(this).attr("id")) {
+	  case "new_post":
+	    settingsForm("<%= new_blog_post_path %>", "New Blog Post");
+	    break;
+       }});
+<% end %>
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
 

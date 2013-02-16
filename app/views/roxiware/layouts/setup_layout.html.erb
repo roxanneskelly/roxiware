@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charseUTF-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+<meta name="generator" content="roxiware">
+<meta name="description" content="Roxiware Website Setup"/>
+<meta name="robots" content="noindex nofollow" />
+<title><%= @setup_step.gsub('_',' ').capitalize %></title>
+<%= stylesheet_link_tag    "application" %>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script src="http://cdn.jquerytools.org/1.2.7/full/jquery.tools.min.js"></script>
+<%= javascript_include_tag "application" %>
+<!--[if lt IE 9]> 
+<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> 
+<![endif]-->
+
+<%= csrf_meta_tags %>
+<%= favicon_link_tag "/assets/icons/favicon.ico"%>
+</head>
+<body class="setup_body">
+  <div class="settings setup_content_wrap">
+    <header>
+    </header>
+    <div class="settings_title"><%= @setup_step.sub('_',' ').capitalize %></div>
+    <% if flash[:notice].present? || flash[:alert].present? || flash[:error].present? %>
+      <div class="flash_section">
+	<% if flash[:notice].present? %>
+	  <div class="notice_flash"><%= raw flash[:notice] %></div>
+        <% end %>
+	<% if flash[:alert].present? %>
+	  <div class="alert_flash"><%= raw flash[:alert] %></div>
+        <% end %>
+	<% if flash[:error].present? %>
+	  <div class="error_flash"><%= raw flash[:error] %></div>
+        <% end %>
+      </div>
+    <% end %>
+    <div class="setup_<%= @setup_step %> setup_content">
+       <%= yield %>
+    </div>
+  </div>
+
+<script>
+   $(function() {
+
+      $("button").button();
+      $("input[watermark]").blur(function(){
+         if ($(this).val().length == 0)
+             $(this).val($(this).attr("watermark")).addClass("setup_watermark");
+       }).focus(function() {
+         if ($(this).hasClass("setup_watermark")) {
+            $(this).val('').removeClass("setup_watermark");
+         }
+       });
+   });
+</script>
+
+</body>
+</html>

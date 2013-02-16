@@ -8,23 +8,16 @@
 class Roxiware::User < ActiveRecord::Base
 end
 
-user = Roxiware::User.where(:username=>"admin").first
-if user.nil?
-  print "Creating admin user\n"
-  user = Roxiware::User.new({:username=>"admin", 
-                           :email=>"admin@roxiware.com", 
-                           :role=>"super", 
-			   :password=>"Password", 
-                           :password_confirmation=>"Password"}, 
-			   :without_protection=>true)
-  user.save!
-  user.create_person({:first_name=>"Admin", :last_name=>"User", :role=>"Admin", :bio=>"", :role=>""}, :without_protection=>true)
-  user.save!
+# create the admin user
+user = Roxiware::User.find_or_create_by_username({:username=>"admin", 
+                                                  :email=>"admin@roxiware.com", 
+                                                  :role=>"super", 
+			                          :password=>"Password", 
+                                                  :password_confirmation=>"Password"}, 
+			                          :without_protection=>true)
+user.create_person({:first_name=>"Admin", :last_name=>"User", :bio=>"", :role=>""}, :without_protection=>true) if user.person.blank?
 
-  Roxiware::Person.create({:first_name=>"First", :last_name=>"Last", :bio=>"", :role=>"", :show_in_directory=>true}, :without_protection=>true)
 
-else
-  print "User admin already exists\n"
-end
-categories = Roxiware::Terms::TermTaxonomy.create({:name=>"Category", :description=>"Category"}, :as=>"")
-tags = Roxiware::Terms::TermTaxonomy.create({:name=>"Tag", :description=>"tag"}, :as=>"")
+# create categories and tag taxonomies
+categories = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"Category", :description=>"Category"}, :as=>"")
+tags = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"Tag", :description=>"tag"}, :as=>"")

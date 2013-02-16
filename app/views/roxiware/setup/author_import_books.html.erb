@@ -1,0 +1,89 @@
+<div class="wizard_instructions">
+Pick the books you want to include on your website using the << or >> buttons.  Use the scroll wheel to
+scroll through the books.
+<br/>You may want to exclude collections or duplicate editions, even though they are listed.<br/>
+You'll be able to add, remove, and edit book details later.
+</div>
+<div class="book_list_title">Available Books</div>
+<div class="book_list_title">Included Books</div>
+</br/>
+<div id="goodreads_books">
+   <% @books.each do |book| %>
+      <div class="book" book_id="<%= book.id %>" goodreads_id="<%= book.goodreads_id %>">
+	  <img src="<%= book.thumbnail_url %>"/>
+	  <div class="book_details"><div class="book_title"><%= book.title %></div></div>
+	  <%= hidden_field_tag "books[#{book.goodreads_id}]".to_sym, book.goodreads_id %>
+      </div>
+   <% end %>
+</div>
+<div id="books_move_controls">
+    <%= button_tag ">>", :id=>"include", :type=>"button", :disabled=>"disabled" %>
+    <%= button_tag "<<", :id=>"remove", :type=>"button", :disabled=>"disabled" %>
+</div>
+<%= form_tag('/setup', :method=>"put", :style=>"display:inline") do %>
+   <div id="included_books">
+   </div>
+      <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"back"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"submit" %></div>
+
+      <%= hidden_field_tag :setup_step, @setup_step %>
+      <%= hidden_field_tag :setup_action, "import" %>
+<% end %>
+<script>
+$(function() {
+     $("div#goodreads_books .book, div#included_books .book").click(function(event) {
+
+          var last_selected = $(".last_selected");
+          var select_range = (last_selected.index() != -1) && (last_selected.index() != $(this).index());
+
+          if(event.metaKey) {
+	     $(".book").removeClass("last_selected");
+             if($(this).toggleClass("book_selected").is(".bookSelected")) {
+                $(this).addClass("last_selected");
+             }
+          } 
+          else if(event.shiftKey && select_range) {
+             var start = $(this);
+             var end = last_selected;
+             if(start.index() > end.index()) {
+                start = last_selected;
+                end = $(this);
+             }
+             console.log("range " + start.index() + " to " + end.index());
+             if (start.index() < end.index()) {
+                 start.nextUntil(end).andSelf().addClass("book_selected");
+              }
+              $(this).addClass("book_selected");
+          }
+          else {
+	     $(".book").removeClass("last_selected").removeClass("book_selected");
+             $(this).addClass("book_selected");
+             $(this).addClass("last_selected");
+          }
+	  if($(this).parent().is("div#included_books")) {
+             $("div#goodreads_books .book").removeClass("book_selected").removeClass("last_selected");
+	     $("button#remove").button("enable");
+	     $("button#include").button("disable");
+	  }
+	  else {
+             $("div#included_books .book").removeClass("book_selected").removeClass("last_selected");
+	     $("button#remove").button("disable");
+	     $("button#include").button("enable");
+	  }
+     });
+     $("button#include").click(function() {
+	  var selected_books = $("div#goodreads_books .book_selected");
+	  selected_books.prependTo("div#included_books");
+          $(".book").removeClass("book_selected").removeClass("last_selected");
+     });
+
+     $("button#remove").click(function() {
+	  var selected_books = $("div#included_books .book_selected");
+	  selecteds_book.prependTo("div#goodreads_books").click();
+          $(".book").removeClass("book_selected").removeClass("last_selected");
+     });
+     $("button#back").click(function() {
+        $("input#setup_action").attr($(this).attr("id"));
+        $("form").submit();
+     });
+});
+</script>

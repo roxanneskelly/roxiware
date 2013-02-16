@@ -1,8 +1,4 @@
    <%= render :partial=>"roxiware/shared/context_menus" %>
-
-  <% if can? :edit, Roxiware::Page %>
-     <%= render :partial=>"roxiware/page/page_edit" %>
-  <% end %>
   <script>
   $(".widget").context_menu($("#widget_context_menu"));
   $(document).bind("ready", function() {
@@ -24,22 +20,27 @@
         appendTo:"body",
         start:function() {
             $(this).addClass("widget_dragging");
+            $(".widget_drop_target").addClass("widget_drop_target_active");
         },
         stop:function() {
             $(this).removeClass("widget_dragging");
             $(this).css("top", 0).css("left", 0);
+            $(".widget_drop_target").removeClass("widget_drop_target_active");
      }});
-     $(".widget_vspace").droppable({accept:".widget, .new_widget",
-                                         hoverClass:"widget_vpsace_drop_hover",
+     $(".widget_drop_target div").droppable({accept:".widget, .new_widget",
+                                         hoverClass:"widget_drop_target_hover",
                                          tolerance: "pointer",
                                          drop: function(event, ui) {
+                                            console.log("dropped");
+                                            console.log($(ui.draggable));
+                                            console.log($(this));
                                             var drop_target = this;
                                             var target_section = $(this).attr("section");
                                             var target_order = $(this).attr("order");
                                             var source_widget = $(ui.draggable).attr("widget_id");
                                             if (source_widget == "new") {
                                               var guid = $(ui.draggable).attr("guid");
-					      var endpoint = $(this).parent().attr("rel") + "/widget/";
+					      var endpoint = $(this).parent().parent().attr("rel") + "/widget/";
 					      $.ajax({url: endpoint, 
 						      type: "POST",
 						      dataType: "json",
@@ -53,17 +54,17 @@
 					      if((source_section == target_section) && (target_order == $(ui.draggable).attr("order"))) {
 						 return;
 					      }
-					      var endpoint = $(this).parent().attr("rel") + "/widget/" + source_widget + "/move";
+					      var endpoint = $(this).parent().parent().attr("rel") + "/widget/" + source_widget + "/move";
 					      $.ajax({url: endpoint, 
 						      type: "PUT",
 						      dataType: "json",
 						      data: jQuery.param({target_section: target_section, target_order:target_order}),
 						      success: function(json_data, textStatus, jqXHR) {
-							 $(drop_target).before($(ui.draggable).prev());
-							 $(drop_target).before($(ui.draggable));
+							 $(drop_target).parent().before($(ui.draggable).prev());
+							 $(drop_target).parent().before($(ui.draggable));
 							 $.each(json_data, function(index, widget) {
 							   $(".widget#widget-"+index).attr("section", widget.section).attr("order", widget.position);
-							   $(".widget_vspace#widget-"+index).attr("section", widget.section).attr("order", widget.position);
+							   $(".widget_drop_target div#widget-"+index).attr("section", widget.section).attr("order", widget.position);
 							 });
                                                     }});
                                              }

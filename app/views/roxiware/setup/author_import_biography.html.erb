@@ -1,0 +1,86 @@
+<div class="wizard_instructions">
+Let's see if we can find your biography information online.<br/><br/>
+Paste or type your name, a link to your authors page on goodreads, or the link, ISBN, or ISBN13 of one of your books, and we'll search for your biography.</div>
+<%= search_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN") %><%= button_tag "Search", :id=>"import_search", :type=>"button"%>
+<div id="import_search_status"></div>
+<div id="import_search_results"></div>
+
+<%= form_tag '/setup', :method=>"put" do %>
+<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"submit"%><%= button_tag "Skip >>", :id=>"skip_import", :value=>"skip", :type=>"submit" %></div>
+<%= hidden_field_tag :goodreads_id, nil %>
+<%= hidden_field_tag :setup_action, "import" %>
+<%= hidden_field_tag :setup_step, @setup_step %>
+<% end %>
+<script>
+  $(function() {
+     $("form").submit(function() {
+        $("input.setup_watermark").val("");
+     });
+
+     $("button#back").click(function() {
+        $("input#setup_action").attr($(this).attr("id"));
+        $("form").submit();
+     });
+
+     $('input#import_search').bind("input propertychange", function() {
+        if ($(this).val().length == 0) {
+            $("button#import_search").button("disable");
+        }
+        else {
+            $("button#import_search").button("enable");
+        }
+     });
+    $('input#import_search').bind("keypress", function(event) {
+         if(event.keyCode == 13) {
+           $("button#import_search").click();
+         }
+    });
+
+    $("button#import_search").click(function() {
+         var search_val = $("input#import_search").val();
+         var endpoint = "<%= setup_import_path %>.json?type=author&search="+escape(search_val);
+         $("#import_search_status").html("Searching...");
+         $.getJSON(endpoint,
+              function(data) {
+                  $("div#import_search_results").html("");
+                  $("#import_search_status").html("Click on your bio.  If it's not there, try another search.");
+                       
+                  if(data.length > 0) {
+		      $.each(data, function(index, author) {
+                          var books = "<div class='author_books'>";
+		          $.each(author["books"], function(index, book) {
+                              var insert = (index?", ":"");
+                              if(index <= 5) {
+                                  books = books + insert + book["title"];
+                               }
+                          });
+			  if (author["books"].length > 5) {
+                              books = books + "...";
+                          }
+	                  books = books+"</div>";
+                          var author_html = $("<div class='search_result' goodreads_id='"+author["goodreads_id"]+"'>"+
+                                              "<img src='"+author["thumbnail_url"]+"'/><div class='author_info'>"+
+                                              "<div class='author_name'>"+author["name"]+"</div>"+
+                                              "<div class='author_about'>"+author["about"]+"</div>"+
+                                              books +
+	                                      "<br style='clear:both'/></div>"+
+                                              "</div>");
+			  author_html.data().author_data = author;
+			  $("div#import_search_results").append(author_html);
+		      });
+
+                      $(".search_result").click(function() {
+                          $("input[type=hidden]#goodreads_id").val($(this).attr("goodreads_id"));
+                          $("form").submit();
+                      });
+                  }
+                  else {
+                      $("div#import_search_status").html("<div class='no_results'>No author found.  Try another ISBN, Name, or Link.</div>");
+                  }
+              }
+         );
+    });
+     $("button#import_search").click();
+ });
+
+</script>

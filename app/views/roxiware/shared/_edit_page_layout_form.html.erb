@@ -22,7 +22,7 @@
 
 #page_layout_edit .panes > div
 {
- height: 40em;
+ height: 30em;
 }
 
 #page_layout_edit textarea.page_layout_style
@@ -46,7 +46,6 @@
 
 <div class="page_layout_edit" id="page_layout_edit">
    <%= form_tag(layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)), :method=>"put") do%>
-     <h3>Edit Page Layout: <%= @page.controller %> # <%= @page.action %></h3>
      <ul class="tabs">
        <li><a href="#">Settings</a></li>
        <li><a href="#">Style</a></li>
@@ -60,13 +59,13 @@
 	  <%= fields_for :params do |param_field_block| %>
 	     <%= param_fields(param_field_block, @page.get_param_objs) %>
 	  <% end %>
+          <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"submit" %>
        </div>
        <div>
           <%= text_area_tag :style, @page.style, :class=>"page_layout_style" %>
+          <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"submit" %>
        </div>
      </div>
-      
-     <%= button_tag "Save", :id=>"save_button", :type=>"submit" %>
    <% end %>
 </div>
 <script>

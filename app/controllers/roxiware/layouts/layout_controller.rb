@@ -6,15 +6,45 @@ module Roxiware
 
        # list all layouts
        def index
-          layouts = Roxiware::Layout::Layout.all
 	  @layouts = []
-	  layouts.each do |layout|
-  	     authorize! :read, layout
-	     @layouts << {:guid=>layout[:guid], :name=>layout[:name]}
+	  category_ids = Set.new([])
+	  Roxiware::Layout::Layout.all.each do |layout|
+	     next if cannot? :read, layout
+	     layout_schemes = []
+	     layout.get_param("layout_schemes").h.each do |scheme_id, scheme|
+		large_image_urls = scheme.h["large_images"].a.each.collect{|image| image.conv_value}
+		layout_schemes << {:id=>scheme_id,
+			  :name=>scheme.h["name"].to_s,
+			  :thumbnail_url=>scheme.h["thumbnail_image"].to_s,
+			  :large_images=>large_image_urls}
+	     end
+
+	     categories=layout.terms(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME)).collect{|category| category.id}
+	     category_ids.merge(categories)
+	     layout_data = {:name=>layout.name,
+			    :guid=>layout.guid,
+			    :thumbnail_url=>layout.get_param("chooser_image").to_s,
+			    :description=>layout.description,
+			    :categories=>categories,
+			    :layout_schemes=>layout_schemes}
+	     @layouts << layout_data
 	  end
-          respond_to do |format|
+	  @categories = Roxiware::Terms::Term.where(:id=>category_ids.to_a)
+
+	  respond_to do |format|
+	     format.html {render :partial => "roxiware/templates/choose_template" }
 	     format.json {render :json =>@layouts}
 	  end
+       end
+
+       # PUT /layouts - layout settings
+       def settings
+            Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:layout_guid])
+            Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:layout_scheme])
+	    refresh_layout
+	    respond_to do |format|
+	       format.json {render :json =>{:layout_guid=>params[:layout_guid], :layout_scheme=>params[:layout_scheme]}}
+	    end
        end
        
        def show

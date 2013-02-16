@@ -5,9 +5,9 @@ class CreateBooks < ActiveRecord::Migration
       t.string :isbn13
       t.string :title
       t.text :description
-      t.string :large_image
-      t.string :image
-      t.string :small_image
+      t.string :large_image_url
+      t.string :image_url
+      t.string :thumbnail_url
       t.string :seo_index
       t.timestamps
     end

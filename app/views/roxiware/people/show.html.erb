@@ -1,13 +1,5 @@
-<% if !@person.nil? %>
-  <section><article class="person_listing">
-    <% if (can? :edit, Roxiware::Person)  %>
-      <div class="edit_controls">
-        <%= button_tag "Edit", :id=>"edit-person-#{@person.id}", :class=>"person_edit button_edit", :type=>"button"  %>
-	<% if (!@single_person) && (@person.user_id.nil?) %>
-           <%= button_tag "Delete", :id=>"edit-person-#{@person.id}", :class=>"person_delete button_delete", :type=>"button"  %>
-	<% end %>
-      </div>
-    <% end %>
+<% if @person.present? %>
+  <section><article class="person_listing" rel="<%= person_path(@person.id) %>">
     <div class="social_network_icons">
       <% website = nil
        @person.social_networks.each do |network| %>
@@ -20,13 +12,9 @@
        end %>
       <% end %>
     </div>
-    <img src="<%= @person.send("#{@portrait_size}_image_url") %>" class="person_portrait"/>
+    <img src="<%= @person.large_image_url %>" class="person_portrait"/>
     <div>
-     <% if user_signed_in? && !@person.user_id.nil? 
-       user = Roxiware::User.find(@person.user_id)%>
-      <div class="person_user">Person entry for : <%= user.username %></div>
-     <% end %>
-     <div class="person_name"><%= @person.first_name %> <%= @person.last_name %></div>
+     <div class="person_name"><%= @person.full_name %></div>
      <% if !@person.role.blank? %><div class="person_role">, <%= @person.role %></div><% end %>
      <% if !@person.email.nil? && @person.email != ""%>
       <div><address><a href="mailto:<%= @person.email %>"><%= @person.email %></a></address></div>
@@ -38,7 +26,8 @@
     <div class="person_bio"><%= raw @person.bio %>
     <div style="clear:both"></div>
   </article></section>
-<% end %>
-<% if (can? :edit, Roxiware::Person) || (can? :add, Roxiware::Person) %>
-   <%= render :partial => 'roxiware/people/editform' %>
+   <% if (can? :edit, @person)  %>
+     <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= edit_person_path(@person.id) %>" form="Edit Biography">Edit Biography</a></li></ul>
+     <%= render :partial=>"roxiware/people/context_menus" %>
+   <% end %>
 <% end %>

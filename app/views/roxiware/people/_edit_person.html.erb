@@ -1,0 +1,80 @@
+  <ul class="tabs">
+    <li><a>Edit</a></li>
+    <li><a>Social Networks</a></li>
+  </ul>
+  <div class="panes">
+    <div id="details_pane">
+	<div class="pane_padding">
+	    <div id="left_section">
+		<%= person_form.label :name, "Name"%>
+		<%= person_form.text_field :first_name, :size=>25  %>
+		<%= person_form.text_field :middle_name, :size=>25 %>
+		<%= person_form.text_field :last_name, :size=>25 %>
+		<br/>
+		<% if @setup_type != "author" %>
+		   <%= person_form.label :role, "Role"%>
+		   <%= person_form.text_field :role, :size=>50 %>
+		<% end %>
+		<br/>
+		<%= person_form.label :email, "Email" %>
+		<%= person_form.text_field :email, :size=>255 %>
+		<br/>
+		<% if @setup_step == "complete" %> 
+		   <%= person_form.label :website, "Website"%>
+		   <%= person_form.text_field :website %>
+		<% end %>
+	    </div>
+	    <div id="right_section">
+		<span class="popup_help_text" style="float:right;">Click to change image</span><br/>
+		<img id="person_portrait" class="upload_target" src="<%= person.image_url %>" ></img>
+                <%= person_form.hidden_field :image_url %>
+		<%= person_form.hidden_field :large_image_url %>
+		<%= person_form.hidden_field :thumbnail_url %>
+		<input type="hidden" name="image_thumbprint"/>
+	    </div>
+	    <br style="clear:both"/>
+	    <br style="clear:both"/>
+	    <%= person_form.text_area :bio, :class=>"settings_wysiwyg" %>
+        </div>
+    </div>
+    <div id="social_networks_pane">
+      <div class="pane_padding">
+	<%= person_form.label :twitter, "Twitter"%>
+	<%= person_form.text_field :twitter %>
+        <br/>
+
+	<%= person_form.label :facebook, "Facebook"%>
+	<%= person_form.text_field :facebook %>
+        <br/>
+
+	<%= person_form.label :google, "Google+"%>
+	<%= person_form.text_field :google %>
+      </div>
+    </div>
+  </div>
+<script>
+ $(function() {
+     $(".person_edit_form ul.tabs").tabs($("div.panes > div"));
+     $(".person_edit_form img.upload_target").bind("click", function() {
+        console.log("image dialog");
+        imageDialog({
+	     initialImage: "<%= person.large_image_url %>",
+             previewSize:"large",
+             uploadParams:{
+               imageSizes: {
+                  large: {width:300, height:450},
+                  medium: {width:100, height:150},
+                  thumbnail:  {width:50, height:75}
+               }
+             },
+             sizeLimit: 10000000,
+	     onSuccess: function(upload_result){
+                 $(".person_edit_form input#person_image_url").val(upload_result["urls"]["medium"]);
+                 $(".person_edit_form input#person_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
+                 $(".person_edit_form input#person_large_image_url").val(upload_result["urls"]["large"]);
+                 $(".person_edit_form img#person_portrait").attr("src", upload_result["urls"]["medium"]);
+                 $("input#person_image_url, input#person_thumbnail_url, input#person_large_image_url").trigger("change");
+             }});
+       });
+ });
+</script>

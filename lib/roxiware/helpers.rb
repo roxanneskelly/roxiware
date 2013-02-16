@@ -17,12 +17,16 @@ module Roxiware
                when "string"
 	         result += field_group.label(param.name.to_sym, param.param_description.name)
                  result += field_group.text_field(param.name.to_sym, options.merge({:value=>param.value}))
+               when "select"
+	         result += field_group.label(param.name.to_sym, param.param_description.name)
+		 select_options = param.param_description.meta.split(",").collect{|option| option.split(":")}
+                 result += field_group.select(param.name.to_sym, select_options, options.merge({:selected=>param.value}))
                when "float"
 	         result += field_group.label(param.name.to_sym, param.param_description.name)
                  result += field_group.number_field(param.name.to_sym, options.merge({:value=>param.value}))
 	       when "bool"
+		 result += field_group.label(param.name.to_sym, param.param_description.name)
                  result += field_group.check_box(param.name.to_sym, options.merge({:checked=>param.conv_value}), "true", "false")
-		 result += "<span class='checkbox_label'>#{param.param_description.name}</span>"
                else
 	         result += field_group.label(param.name.to_sym, param.param_description.name)
                  result += field_group.text_field(param.name.to_sym, options.merge({:value=>param.value}))
@@ -32,7 +36,7 @@ module Roxiware
       end
 
       def param_fields(field_group, params, options = {})
-          raw params.collect {|key, param| param_field(field_group, param, options)}.join(" ")
+          raw params.collect {|param| param_field(field_group, param, options)}.join(" ")
       end
 
       def flash_from_object_errors(object, *params)

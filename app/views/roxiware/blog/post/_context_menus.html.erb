@@ -1,0 +1,29 @@
+<ul id="post_context_menu" class="context_menu">
+   <li id="edit_post"><a menu_item="edit_post">Edit Post</a></li>
+   <li id="delete_post"><a menu_item="delete_post">Delete Post</a></li>
+</ul>
+
+<script>
+$(document).bind("ready", function() {
+    $(".post_list_item").context_menu("#post_context_menu");
+    $(".post_list_item").on("context_menu", function(event, menu_item) {
+       var post_link=$(this).attr("rel");
+       switch (menu_item) {
+	  case "edit_post":
+	    settingsForm(post_link+"/edit", "Edit Post");
+	    break;
+          case "delete_book":
+            if(confirm("Remove Post\nAre you sure?")) {
+              $.ajax({url:post_link, 
+                      type:"DELETE",
+                      dataType: "json", 
+                      success: function(json_data, textStatus, jqXHR) {
+                         window.location.reload();
+                      }
+               });
+              }
+              break;
+        }
+    });
+});
+</script>

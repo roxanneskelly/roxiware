@@ -1,4 +1,4 @@
-  <article class="post" id="post-<%= post.id %>">
+  <article class="post" id="post-<%= post.id %>" rel="<%= blog_post_path(post.id) %>">
      <% if (can? :edit, post) && @enable_blog_edit %>
          <div class="post_manage_controls">
 	    <div class="post_status">
@@ -27,7 +27,7 @@
         <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
 	<div class="post_header">
          <% if show_full_header && post.person.present? %>
-          <img class="post_author_img" src="<%= post.person.thumbnail_image_url %>" class="person_thumbnail"/>
+          <img class="post_author_img" src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/>
          <% end %>
 	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%D %I:%M %p") %></div>
          <% if show_full_header %>

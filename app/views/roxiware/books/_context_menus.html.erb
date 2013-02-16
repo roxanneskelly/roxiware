@@ -1,11 +1,11 @@
 <ul id="book_context_menu" class="context_menu">
-   <li id="edit_book"><a href="#" menu_item="edit_book">Edit Book</a></li>
-   <li id="delete_book"><a href="#" menu_item="delete_book">Delete Book</a></li>
+   <li id="edit_book"><a  menu_item="edit_book">Edit Book</a></li>
+   <li id="delete_book"><a menu_item="delete_book">Delete Book</a></li>
 </ul>
 
 <ul id="series_context_menu" class="context_menu">
-   <li id="edit_series"><a href="#" menu_item="edit_series">Edit Series</a></li>
-   <li id="delete_series"><a href="#" menu_item="delete_series">Delete Series</a></li>
+   <li id="edit_series"><a menu_item="edit_series">Edit Series</a></li>
+   <li id="delete_series"><a menu_item="delete_series">Delete Series</a></li>
 </ul>
 
 <script>
@@ -18,7 +18,7 @@
        var series_link=$(this).attr("rel");
        switch (menu_item) {
 	  case "edit_series":
-	    settingsForm(series_link+"/edit");
+	    settingsForm(series_link+"/edit", "Add Book");
 	    break;
           case "delete_series":
             if(confirm("Remove Series\nAre you sure?")) {
@@ -38,7 +38,7 @@
        var book_link=$(this).attr("rel");
        switch (menu_item) {
 	  case "edit_book":
-	    settingsForm(book_link+"/edit");
+	    settingsForm(book_link+"/edit", "Edit Book");
 	    break;
           case "delete_book":
             if(confirm("Remove Book\nAre you sure?")) {

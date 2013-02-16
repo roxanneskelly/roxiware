@@ -143,5 +143,16 @@ namespace :param_descriptions do
 	    description.save!
 	 end
       end
+
+      task :export, [:description_file]=>:environment do |t,args|
+           xml = ::Builder::XmlMarkup.new(:indent=>2, :target=>$stdout)
+           xml.instruct! :xml, :version => "1.0"
+	     descriptions = Roxiware::Param::ParamDescription.all
+           xml.param_descriptions do |xml_description|
+	      descriptions.each do |description|
+	        description.export(xml_description)
+              end
+           end
+     end
 end
 

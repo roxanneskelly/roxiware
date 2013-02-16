@@ -1,13 +1,59 @@
-<div class="layout_edit_controls">
-  <%= button_tag "Edit Layout", :rel=>"/layout/#{@current_layout.guid}", :id=>"edit-layout", :class=>"settings_link layout_edit button_edit", :type=>"button"  %>
-  <%= button_tag "Edit Layout Page", :rel=>"/layout/#{@current_layout.guid}/page/"+ url_encode(@page_layout.get_url_identifier), :id=>"edit-layout-page", :class=>"settings_link layout_page_edit button_edit", :type=>"button"  %>
-  <%= button_tag "Site Settings", :rel=>"/settings", :id=>"edit-settings", :class=>"settings_link settings_edit button_edit", :type=>"button"  %>
+<% if current_user.present? && ["admin", "super"].include?(current_user.role) %>
+   <div id="settings_bar" class="settings">
+       <div id="settings_controls">
+       <div id="help_bar"><div id="help_bar_items"></div></div>
+       <div id="settings_menu" class="ddsmoothmenu"><ul><li id="account">Account<ul>
+	       <li><a href="<%= destroy_session_path('user') %>">Log Out</a></li>
+	       <li><a rel="<%= edit_account_path(@current_user.id) %>" form="Edit Account">Edit</a></li>
+	       <li><a rel="destroy_session_path<%= edit_account_path(@current_user.id) %>" form="Change Password">Change Password</a></li>
+	   </ul></li><li id="settings_menu">Settings<ul>
+		  <li id="layout_picker"><a rel="<%= layout_index_path %>" form="Choose Template">Template</a></li>
+		  <li id="system_settings"><a rel="<%= setting_path('system') %>" form="General Settings">General</a></li>
+		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("blog", "enable_blog") %>
+		      <li id="blog_settings"><a rel="<%= setting_path('blog') %>" form="Blog Settings">Blog</a></li>
+		  <% end %>
+		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("books", "enable_books") %>
+		      <li id="book_settings"><a rel="<%= setting_path('books') %>" form="Book Settings">Books</a></li>
+		  <% end %>
+		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("events", "enable_events") %>
+		      <li id="calendar_settings"><a rel="<%= setting_path('events') %>" form="Calendar Settings">Calendar</a></li>
+		  <% end %>
+		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("gallery", "enable_gallery") %>
+		      <li id="gallery_settings"><a rel="<%= setting_path('gallery') %>" form="Gallery Settings">Gallery</a></li>
+		  <% end %>
+	      </ul>
+	   </li><% if can? :edit, @current_layout %><li id="layout_menu">Layout<ul>
+		  <li id="edit_layout"><a rel="<%=layout_path(@current_layout.guid)%>" form="Template Settings">Template</a></li>
+		  <li id="edit_page"><a rel="<%=layout_page_path(@current_layout.guid, @page_layout.id)%>" form="Page Settings">Page</a></li>
+		</ul>
+	     </li>
+	   <% end %>
+	 </ul>
+       </div>
+     </div>
+   </div>
+   <div class="help_bar_entry">Go to <a href="http://wiki.roxiware.com/">http://wiki.roxiware.com</a> for more help.</div>
+   <script>
+     $(document).bind("ready", function() {
+        ddsmoothmenu.init({
+            mainmenuid: "settings_menu",
+            orientation: 'h',
+            classname: 'ddsmoothmenu_settings',
+            contentsource: "markup"
+        });
 
-  <% url = URI.parse(request.fullpath) 
-     params = url.query
-     params = CGI.parse(url.query) if url.query.present? 
-     params ||= {}
-     params["preview"]=nil
-     url.query = params.to_param %>
-  <%= button_tag "Preview",:rel=>url.to_s, :id=>"preview", :target=>"_blank", :class=>"button_link preview", :style=>"float:right", :type=>"button"  %>
-</div>
+        $("div#help_bar_items").append($(".help_bar_entry"));
+        $("div#help_bar").scrollable({circular:true, vertical:false}).autoscroll({interval:10000});
+
+
+        $("div#settings_menu > ul").prepend($("ul.application_menu li"));
+	$("div#settings_menu a[form]").click(function() {
+	   settingsForm($(this).attr("rel"), $(this).attr("form"));
+	});
+
+        $("div#application_buttons").append($(".application_button"));
+
+     });
+   </script>
+<% end %>
+

@@ -1,76 +1,20 @@
-
-  <div class="post_item_edit_overlay popup_form overlay" id="post_item_edit_overlay">
-      <%= form_tag do%>
-        <%= label_tag :category_name, "Category" %>
-        <%= text_field_tag(:category_name, nil, :class=>"category_input") %>
-        
-        <%= label_tag :person_id, "Author" %>
-        <%= select_tag(:person_id, options_from_collection_for_select(Roxiware::Person.where(:show_in_directory=>true), :id, :full_name ))%> 
-	<br/>
-        <%= label_tag :post_title, "Title"%>
-        <%= text_field_tag :post_title, nil, :altname=>:post_link %>
-	<br/>
-        <%= text_area_tag :post_content, nil, :class=>"popup_wysiwyg post_item_content" %>
-	<br/>
-	 
-        <%= label_tag :tag_csv, "Tags"%>
-        <%= text_field_tag :tag_csv, nil %>
-	<br/>
-        <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
-       <% end %>
-   </div>
+<div class="padding_box"><%= post_fields.label :category_name, "Category" %>
+  <%= post_fields.text_field(:category_name, :class=>"category_input") %>
+  <%= post_fields.label :person_id, "Author" %>
+  <%= post_fields.select(:person_id, Roxiware::Person.where(:show_in_directory => true).collect{|p| [p.full_name, p.id]}) %> 
+  <br/>
+  <%= post_fields.label :post_title, "Title"%>
+  <%= post_fields.text_field :post_title, :altname=>:post_link %>
+  <br/>
+  <%= post_fields.text_area :post_content, :class=>"settings_wysiwyg post_item_content" %>
+  <%= post_fields.label :tag_csv, "Tags"%>
+  <%= post_fields.text_field :tag_csv %>
+</div>
 <script>
-$(document).ready(function() {
+$(function() {
     var categories = [<%= raw Roxiware::Terms::Term.categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]
     $("#category_name").autocomplete({source:categories});
 
-    $("button.post_edit").overlay( {
-         onClose: function() { 
-         },
-         target: '#post_item_edit_overlay',
-         onBeforeLoad: function() {
-            var blog_post_id= this.getTrigger().attr("id").split("-")[3];
-            var endpoint = "<%= blog_post_index_path %>";
-            var method = "POST";
-            if (blog_post_id != "new") {
-               endpoint += "/"+blog_post_id;
-               method = "PUT";
-            }
-            $(".post_item_edit_overlay").popup_form(endpoint,
-                {
-                  wysiwyg_css: "<%= stylesheet_path('application') %>",
-                  canEdit: true,
-                  method: method,
-                  success: function(data, xhr, status) {
-                     <% if params[:action] != "show_by_title" %>
-                        window.location.reload();
-		     <% else %>
-                        window.location = data["post_link"];
-		     <% end %>
-                  },
-                  error: function(data, xhr, status) {
-                    window.location.reload();
-                  }
-                });
-       } 
-    });
-   
-    $(".post .post_delete").click(function(event) {
-       var blog_post_id = $(this).attr("id").split("-")[3];
-       var endpoint = "<%= blog_path %>/post/"+blog_post_id + ".json";
-       $.ajax({
-                url: endpoint,
-                type: "DELETE",
-                processData: false,
-                complete: function(event) {
-                     <% if params[:action] != "show_by_title" %>
-                        window.location.reload();
-		     <% else %>
-                        window.location = "/blog";
-		     <% end %>
-                   }
-               });
-        });
     $(".post .comment_delete").click(function(event) {
        var post_id = $(this).attr("id").split("-")[2];
        var comment_id = $(this).attr("id").split("-")[3];
@@ -86,5 +30,3 @@ $(document).ready(function() {
         });
 });
 </script>
-
-

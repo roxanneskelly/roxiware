@@ -9,14 +9,22 @@ class Roxiware::Person < ActiveRecord::Base
 
    belongs_to :user, :polymorphic=>true
    has_many :social_networks, :autosave=>true, :dependent=>:destroy
-   has_and_belongs_to_many :books
+   has_many :books
+   belongs_to :books
+   has_one :goodreads_id_join, :as=>:grent, :autosave=>true, :dependent=>:destroy
 
 
-   validates :first_name, :length=>{:minimum=>3,
+   validates :first_name, :length=>{:minimum=>2,
                                    :too_short => "The first name must be at least %{count} characters.", 
                                    :maximum=>32,
                                    :too_long => "The first name must be no more than %{count} characters." 
 				   }
+
+   validates :first_name, :length=>{
+                                   :maximum=>32,
+                                   :too_long => "The middle name must be no more than %{count} characters." 
+				   }
+
     validates_uniqueness_of :seo_index, :message=>"The name has already been taken."
 
     validates :email, :length=>{:maximum=>256,
@@ -35,11 +43,10 @@ class Roxiware::Person < ActiveRecord::Base
                                  :too_long => "The bio must be no more than %{count} characters." 
 				 }
 
-   edit_attr_accessible :first_name, :last_name, :show_in_directory, :role, :email, :image_thumbprint, :bio, :as=>[:super, :admin, :self, nil]
-   ajax_attr_accessible :first_name, :last_name, :role, :email, :image_thumbprint, :bio, :show_in_directory, :full_name, :seo_index
+   edit_attr_accessible :first_name, :middle_name, :last_name, :show_in_directory, :role, :email, :image_url, :thumbnail_url, :large_image_url, :bio, :goodreads_id, :as=>[:super, :admin, :self, nil]
+   ajax_attr_accessible :first_name, :middle_name, :last_name, :role, :email, :image_url, :thumbnail_url, :large_image_url, :bio, :show_in_directory, :full_name, :seo_index, :goodreads_id
 
    before_destroy :destroy_images
-   configure_image_handling(%w(thumbnail xsmall small medium large))
 
    def self.add_social_networks (*args)
       options = {}
@@ -73,10 +80,22 @@ class Roxiware::Person < ActiveRecord::Base
       end
    end
 
+   def goodreads_id
+      self.goodreads_id_join.goodreads_id if self.goodreads_id_join.present?
+   end
+
+   def goodreads_id=(gr_id)
+      if self.goodreads_id_join.blank?
+         self.goodreads_id_join = Roxiware::GoodreadsIdJoin.new
+      end
+      self.goodreads_id_join.goodreads_id = gr_id
+   end
+
    add_social_networks :twitter, :website, :facebook, :google, :as=>[:super, :admin, :self, nil]
 
    def full_name
       return_full_name = self.first_name || ""
+      return_full_name = (return_full_name + " "+ self.middle_name) unless self.middle_name.blank?
       return_full_name = (return_full_name + " "+ self.last_name) unless self.last_name.blank?
       return_full_name
    end

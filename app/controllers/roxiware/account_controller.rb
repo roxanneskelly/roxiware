@@ -48,7 +48,7 @@ class Roxiware::AccountController < ApplicationController
     authorize! :edit, @user
     
     respond_to do |format|
-      format.html { render }
+      format.html { render :partial =>"roxiware/account/editform" }
       format.json { render :json => @user.ajax_attrs(@role) }
     end
   end
@@ -138,5 +138,4 @@ class Roxiware::AccountController < ApplicationController
       end
     end
   end
-
 end

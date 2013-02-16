@@ -1,44 +1,644 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <param_descriptions>
+  <param_description guid="F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63">
+    <name>Enable Books</name>
+    <description>Enable book listings</description>
+    <field_type>bool</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">
+    <name>Book Excerpt Length</name>
+    <description>Length of a book excerpt on the book index page</description>
+    <field_type>integer</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+
+  <param_description guid="0ADB2780-3D21-409F-A7B4-670395F99CD5">
+    <name>Series Display Type</name>
+    <description>Type of display for Series on the book index page</description>
+    <field_type>select</field_type>
+    <permissions>super</permissions>
+    <meta>Accordion:accordion</meta>
+  </param_description>
+
   <param_description guid="6C16D934-0643-48EC-806C-95BDAF52E078">
     <name>Bookstores</name>
     <description>An hash of bookstores that support purchase of a given book</description>
     <field_type>array</field_type>
     <permissions></permissions>
+    <meta/>
   </param_description>
-
   <param_description guid="E59B2EB2-6867-475D-A691-ABF1A68E5BE7">
     <name>Bookstore</name>
     <description>A bookstore that supports purchase of a given book</description>
     <field_type>hash</field_type>
     <permissions></permissions>
+    <meta/>
   </param_description>
-
   <param_description guid="5B7766EA-3FAD-48DB-9894-756F1B14DB69">
     <name>Bookstore ID</name>
     <description>The ID of the bookstore</description>
     <field_type>string</field_type>
     <permissions></permissions>
+    <meta/>
   </param_description>
-
   <param_description guid="E73E1207-CB64-44AB-8F1C-2032AD6A34B4">
     <name>Bookstore Editions</name>
     <description>An array of book editions available at a bookstore.</description>
     <field_type>array</field_type>
     <permissions></permissions>
+    <meta/>
   </param_description>
-
   <param_description guid="4014F256-277D-4B58-8375-E1560524EA20">
     <name>Book Edition</name>
     <description>A book edition.</description>
     <field_type>hash</field_type>
     <permissions></permissions>
+    <meta/>
   </param_description>
-
   <param_description guid="2BEBB288-5015-4D05-A3A1-224EE4D3D37F">
     <name>Book Edition URL</name>
     <description>A string representing the url to the purchase location.</description>
     <field_type>string</field_type>
     <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="5C5D2A03-F90E-4F81-AF44-8C182EB338FB">
+    <name>Setup Type</name>
+    <description>The type of website being set up </description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="317C7D1C-7316-4B00-9E1F-931E2867B436">
+    <name>Setup Step</name>
+    <description>The step in setup for the website</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="62275C2A-29F9-4BAA-9893-BB0417917807">
+    <name>Color Schemes</name>
+    <description>List of color schemes for the given layout</description>
+    <field_type>hash</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+    <name>Color Scheme</name>
+    <description>Color Scheme</description>
+    <field_type>hash</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="620EE4B4-2615-4B03-ADCB-FCC7198455AC">
+    <name>Layout Scheme Name</name>
+    <description>Color Scheme Name</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="2124E080-D791-4784-A89D-B1984DB73657">
+    <name>Scheme Params</name>
+    <description>Hash of parameters for the scheme</description>
+    <field_type>hash</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="A8AC4FA7-9574-49B0-A38A-AE067C607745">
+    <name>Scheme Color</name>
+    <description>Color value for a scheme</description>
+    <field_type>color</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">
+    <name>Thumbnail URL</name>
+    <description>Thumbnail URL</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="975967EA-A9BC-40EE-8E1B-7F3CA8089E66">
+    <name>Large Images</name>
+    <description>Array of large images for the various pages</description>
+    <field_type>array</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="48C77594-AA7C-4424-90F8-BCA2EFFF7546">
+    <name>Enable Events</name>
+    <description>Enable event listings.</description>
+    <field_type>bool</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="B8A73EF2-9C65-4022-ABD3-2D4063827108">
+    <name>Template</name>
+    <description>Website template.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270">
+    <name>Webmaster Email</name>
+    <description>Webmaster Email.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="7D815EDA-93DA-411B-9B09-91BA774D6CE2">
+    <name>Site Copyright First Year</name>
+    <description>Site Copyright Holder</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7">
+    <name>Site Copyright</name>
+    <description>Site Copyright Holder</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="8C0998DC-050B-4C38-BB6F-D96A5ACD1AA9">
+    <name>Goodreads User</name>
+    <description>Goodreads user identifier.  To get this, go to &lt;a href="http://www.goodreads.com/"&gt;www.goodreads.com&lt;/a&gt; and select 'my books' in the menu.  In your address bar, you should see something like http://www.goodreads.com/review/list/1234567?shelf=to-read.  Your Goodreads User id is the number.  Note: You need to have a goodreads account.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415">
+    <name>Website Title</name>
+    <description>Title of your website.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="F0E1D8A9-33B9-4605-B10F-831D2BB3D423">
+    <name>Website Description</name>
+    <description>Simple description of your website.  Used by search engines</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="1843B11F-EBA1-4B9A-A01F-F98A3E458FA8">
+    <name>Search Keywords</name>
+    <description>Keywords used by search engines.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="DAAC4690-FF6A-480B-B157-D71CB4A085DA">
+    <name>Enable Blog</name>
+    <description>Enable the blog</description>
+    <field_type>bool</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="89139210-E699-4D47-A656-B2F860D2015B">
+    <name>Editor Email</name>
+    <description>Blog Editor Email</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="5A60C89E-4A1E-4D0C-B90F-E0D284883C89">
+    <name>Posts Per Page</name>
+    <description>Number of blog posts per page</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="16E96137-DC2D-47D8-A019-B8542FBCB71C">
+    <name>Max Posts Per Page</name>
+    <description>Maximum number of blog posts per page for the case where the viewer requests a larger number than the default.  Large numbers may impact performance.</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="4033493A-B00C-4196-B4CA-8564B2C6F342">
+    <name>Posts Per Feed</name>
+    <description>Default number of posts for an RSS feed.</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="A7A1B71A-B69C-49D3-AC8B-63C27284F8E0">
+    <name>Max Posts Per Feed</name>
+    <description>Maximum number of posts for an RSS feed.  Large numbers may impact performance.</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="F4AF8F08-955D-4800-992A-3E2912CA8740">
+    <name>Blog Excerpt Length</name>
+    <description>Maximum number of characters for a post excerpt.  Zero indicates the entire post is shown.</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="3D102055-8C9B-4838-90F7-2B3C7DB23A1D">
+    <name>Blog Title</name>
+    <description>Title of the blog used for the header and RSS feed.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="3869E57B-AADA-4418-8262-A55CE044A6F6">
+    <name>Blog Description</name>
+    <description>Description of the blog.  Used for the RSS feed.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="0060792B-8BE9-4F79-939E-8E6988C74048">
+    <name>Blog Language</name>
+    <description>Language of the blog.  Used for the RSS feed.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="9E8CD066-4F40-4B7E-BB23-060ADDCC5876">
+    <name>Comment Permissions</name>
+    <description>Permissions for comments.</description>
+    <field_type>select</field_type>
+    <permissions>admin</permissions>
+    <meta>Open:open,Moderate:moderate,Closed:closed,Hide:hide</meta>
+  </param_description>
+  <param_description guid="391E7C2E-A284-491A-8AB8-5FB9E002033D">
+    <name>Moderate Comments</name>
+    <description>Moderate Comments.</description>
+    <field_type>bool</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="98E7A520-2A28-4521-9AA7-33E3EDB104DA">
+    <name>Enable Gallery</name>
+    <description>Enable the Gallery feature.</description>
+    <field_type>bool</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="A5F16435-8A5F-48BD-A86B-4DF73D99F9FC">
+    <name>Galleries Per Row</name>
+    <description>Number of galleries shown per row in the galleries list.</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="6085A4B7-7E65-4172-91C4-D39581372C33">
+    <name>Gallery Rows Per Page</name>
+    <description>Number of gallery rows shown in a gallery listing.</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="A8B714E2-94EB-4604-9F56-86969962D3EF">
+    <name>Gallery Items Per Row</name>
+    <description>Number of pictures in a gallery row.</description>
+    <field_type>integer</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="D1DBD840-3D0A-4F3A-A45E-719B4DF67F66">
+    <name>Enable People Pages</name>
+    <description>Enable listings of registered users on the site.</description>
+    <field_type>bool</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="5A75D095-82D6-41A1-933A-E3F11A231729">
+    <name>Portrait Size</name>
+    <description>Size of portrait to display.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="B908FDB5-A0B5-48AC-8BAE-48741485CC06">
+    <name>Default Biography</name>
+    <description>SEO index of the default person shown when no seo-index is specified in the URL.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="99FA5423-147C-4929-A432-268BDED6DE44">
+    <name>Layout Scheme</name>
+    <description>Layout Scheme.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="7FF77CEB-65E0-4BF0-A05C-EF71C14EFBE0">
+    <name>Width</name>
+    <description>Width of the section in pixels</description>
+    <field_type>integer</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="E121E288-E726-46C3-8B1C-D2E8EE692531">
+    <name>Main Body Background</name>
+    <description>Background for the main body</description>
+    <field_type>asset</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">
+    <name>Widget Instance ID</name>
+    <description>Unique identifier for the given widget instance</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">
+    <name>Show Background</name>
+    <description>Display the background box for this widget.  If the widget is displayed, padding will be added.</description>
+    <field_type>bool</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="7D070496-AF2C-4C37-9A14-D9DC5FA1052C">
+    <name>Float</name>
+    <description>Float the content to the left, right, or none.</description>
+    <field_type>select</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342">
+    <name>Widget Height</name>
+    <description>Height of the widget.  Defaults to -1, which is 'auto'.</description>
+    <field_type>integer</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">
+    <name>Menu Name</name>
+    <description>Menu Name</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="43EE6D21-7BEB-4F45-8105-78ED08A931B0">
+    <name>URL</name>
+    <description>Menu URL</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659">
+    <name>Child Menus</name>
+    <description>Child Menus</description>
+    <field_type>array</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="FB30B299-B498-4848-AD22-7B973433C9F9">
+    <name>Menu Child</name>
+    <description>Menu child.</description>
+    <field_type>hash</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="45A433ED-7183-4A28-890B-08F585A0E41A">
+    <name>Menu Root</name>
+    <description>Menu root.</description>
+    <field_type>array</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="5032B423-3E1C-4E8E-B036-37F86777412F">
+    <name>Page Type</name>
+    <description>Unique identifier for the content of this page.</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="5AD23478-C90D-4BA8-81DF-7112B0762257">
+    <name>Recent Post Count</name>
+    <description>The number of posts listed in the recent posts widget</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="26F42447-4148-4F5F-AAE3-FE3744618E3F">
+    <name>Refresh Period</name>
+    <description>Refresh period for pulling down goodreads currently reading.  Typically one day.  Lowering this value can affect performance if goodreads is slow.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="536DB435-8652-4457-9374-199635264A81">
+    <name>Refresh Period</name>
+    <description>Refresh period for pulling down goodreads featured books.  Typically between 1 and 10 seconds.  Lowering this value can affect performance if goodreads is slow.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="5CABD8FC-F92C-4DAF-BEE7-0A5299F5DEAD">
+    <name>Display Count</name>
+    <description>Number of featured books to display.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="2E3FAB50-4A5A-4FEE-B6D7-9603A1CA178F">
+    <name>Batch Count</name>
+    <description>Number of featured books to fetch (multiplier of the display count).  Higher numbers may affect performance.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="6CD4546A-E350-46AC-BAF5-A788047DCD08">
+    <name>Number of Events</name>
+    <description>Number of events listed for this widget</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">
+    <name>Show Search</name>
+    <description>Show a search box</description>
+    <field_type>bool</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="AE42CE08-7AEA-49D0-90A0-6714CE599788">
+    <name>Items</name>
+    <description>List of items to display</description>
+    <field_type>array</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9">
+    <name>Item</name>
+    <description>Display Item</description>
+    <field_type>hash</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="DED6595E-7ABE-47F7-B536-328472C14990">
+    <name>Left</name>
+    <description>Position from left of widget widget in pixels</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="97643629-6F5C-4121-9141-BAC6731F1B04">
+    <name>Text</name>
+    <description>Text</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">
+    <name>Font</name>
+    <description>Font</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="DA84EE57-3D89-489E-8B81-08DA7A560550">
+    <name>Font Color</name>
+    <description>Font Color</description>
+    <field_type>color</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="289108C9-5CFA-4599-BC54-B4E3593E4FC5">
+    <name>Adsense Id</name>
+    <description>This is the Adsense publisher ID you received from Google Adsense.  You can go to
+               &lt;a href="https://www.google.com/adsense/v3/app?hl=en#account"&gt;Google Adsense Account&lt;/a&gt; and retrieve it from Account Information.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="CF1C5254-1644-447F-9D87-DE0CBC472E0E">
+    <name>Adsense Ad Slot</name>
+    <description>This is the Adsense Ad ID for this particular ad instance.  You can go to
+               &lt;a href="https://www.google.com/adsense/"&gt;Google Adsense&lt;/a&gt; and retrieve it from My Ads.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987">
+    <name>Adsense Ad Format</name>
+    <description>The width x height of the ad.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="5AC29485-DFD2-4D09-B80C-F32F59FF5680">
+    <name>Show Arrow</name>
+    <description>Show an arror for the menu.</description>
+    <field_type>bool</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">
+    <name>Permissions</name>
+    <description>Permissions to show a menu item.</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="E69D3C97-40EE-4A3D-91CC-0C1CA0844EAB">
+    <name>Script ID</name>
+    <description>Script block identifier.</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="4497B87B-8ECD-432A-9885-0EDF0BD9F8E3">
+    <name>URL</name>
+    <description>URL to an image.</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="6792C972-20F1-48EB-A263-E2DCF029A2E9">
+    <name>Image</name>
+    <description>URL to an image.</description>
+    <field_type>asset</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="06E72987-55E7-4C36-9620-776931B9B2F9">
+    <name>Top</name>
+    <description>Position from top of screen.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="63275631-EEB0-43E3-A2D9-407B6423CDC9">
+    <name>Font Size</name>
+    <description>Size of font.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F">
+    <name>Items Per Page</name>
+    <description>Number of blog items per page.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="79EF7236-A48B-46E8-AD60-2F76EEB2A9AB">
+    <name>People Directory</name>
+    <description>People directory.</description>
+    <field_type>array</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="82CE9542-06EB-4D3D-A877-1DCCFCCC812B">
+    <name>People Class</name>
+    <description>People Directory Class, such as 'Authors', or 'Board'.  This is a container element.</description>
+    <field_type>hash</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="58F02ABC-4863-4F77-B304-0F375C793FDB">
+    <name>Name</name>
+    <description>Name of a given class of people</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="F783A27B-3409-4E75-99DE-941E2E610F9A">
+    <name>People</name>
+    <description>List of children in a given class.</description>
+    <field_type>array</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="709904C0-83A6-4FA6-924B-B69881FEAEB8">
+    <name>Person</name>
+    <description>A reference to a person.</description>
+    <field_type>hash</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="C94F5738-AEDF-46B1-99F1-8A526393DD54">
+    <name>Person ID</name>
+    <description>A reference to a person.</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="1D3ACF31-02BB-4BFC-AB2E-F570FF69896E">
+    <name>Google Site Verification Key</name>
+    <description>Site verification key used for google analytics.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="F751356B-CB02-4891-9B56-BC9B163D3D00">
+    <name>Amazon Associate ID</name>
+    <description>Associate ID used for amazon revenue.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
   </param_description>
 </param_descriptions>

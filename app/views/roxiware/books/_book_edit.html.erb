@@ -1,0 +1,57 @@
+<%= book_fields.label :title, "Title"%>
+<%= book_fields.text_field :title %>
+<span class="popup_help_text" style="float:right;">Click to change image</span><br/>
+<img id="book_image_url" src="" class="upload_target" />
+<input type="hidden" name="image_thumbprint"/>
+<%= book_fields.hidden_field :goodreads_id %>
+<%= book_fields.hidden_field :image_url %>
+<%= book_fields.hidden_field :thumbnail_url %>
+<%= book_fields.hidden_field :large_image_url %>
+<br/>
+<%= book_fields.label :isbn, "ISBN"%>
+<%= book_fields.text_field :isbn %>
+<br/>
+<%= book_fields.label :isbn13, "ISBN13" %>
+<%= book_fields.text_field :isbn13 %>
+<br style="clear:both"/>
+<%= book_fields.label :description, "Description" %><br/>
+<%= book_fields.text_area :description %>
+<br/>
+<script>
+$(function() {     
+     $(".book_edit_form textarea").wysiwyg({ css: "<%= stylesheet_path('application') %>",
+                                       controls: {
+                                          undo: { visible: false },
+                                          redo: { visible: false},
+                                          insertHorizontalRule: { visible: true},
+                                          html: { visible: true},
+                                          insertTable: {visible: true},
+                                          'fileManager': {
+                                              visible: true,
+                                              tooltip: "File Manager"
+                                                  }
+                                           }});
+
+   $(".book_edit_form img.upload_target").bind("click", function() {
+      imageDialog({
+	     initialImage: $(".book_edit_form input#book_large_image_url").val(),
+             previewSize:"large",
+             uploadParams:{
+               imageSizes: {
+                  large: {width:300, height:450},
+                  medium: {width:100, height:150},
+                  thumbnail:  {width:50, height:75}
+               }
+             },
+             sizeLimit: 10000000,
+	     onSuccess: function(upload_result) {
+                 $(".book_edit_form input#book_image_url").val(upload_result["urls"]["medium"]);
+                 $(".book_edit_form input#book_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
+                 $(".book_edit_form input#book_large_image_url").val(upload_result["urls"]["large"]);
+                 $(".book_edit_form img#book_image_url").attr("src", upload_result["urls"]["medium"]);
+                 $("input#book_image_url, input#book_thumbnail_url, input#book_large_image_url").trigger("change");
+             }
+      });
+    });
+});
+</script>

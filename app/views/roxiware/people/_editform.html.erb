@@ -1,90 +1,86 @@
-<div class="person_edit_overlay popup_form overlay" id="person_edit_overlay">
-  <%= form_tag do%>
-      <div id="left_section">
-        <%= check_box_tag :show_in_directory%>
-        <%= label_tag :show_in_directory, "Show In Directory"%>
-        <br/>
-        <%= label_tag :name, "Name"%>
-        <%= text_field_tag :first_name, nil  %>
-        <%= text_field_tag :last_name, nil %>
-        <br/>
+<style>
+   .person_edit_form
+   {
+      margin:0em;
+      height:33em;
+      width:50em;
+   }
 
-        <%= label_tag :role, "Role"%>
-        <%= text_field_tag :role, nil %>
-        <br/>
+   .person_edit_form div.panes > div 
+   {
+       height:28em;
+       padding:0em;
+   }
+   .person_edit_form div.pane_padding {
+       padding:1em;
+   }
 
-	<%= label_tag :email, "Email"%>
-	<%= text_field_tag :email, nil %>
-        <br/>
+   .person_edit_form label
+   {
+       width:6em;
+   }
 
-	<%= label_tag :website, "Website"%>
-	<%= text_field_tag :website, nil %>
-        <br/>
+   .person_edit_form div#left_section
+   {
+      display:inline-block;
+      vertical-align:top;
+   }
 
-	<%= label_tag :twitter, "Twitter"%>
-	<%= text_field_tag :twitter, nil %>
-        <br/>
+   .person_edit_form div#right_section
+   {
+      float:right;
+      width:200px;
+      display:inline-block;
+      vertical-align:top;
+   }
 
-	<%= label_tag :facebook, "Facebook"%>
-	<%= text_field_tag :facebook, nil %>
-        <br/>
+    .person_edit_form .upload_target
+    {
+       float:right;
+       min-width:100px;
+       min-height:100px;
+       cursor: pointer;
+    }
 
-	<%= label_tag :google, "Google+"%>
-	<%= text_field_tag :google, nil %>
-      </div>
-      <div id="right_section">
-	<div class="upload_target" upload_sizes="large,medium,small,xsmall,thumbprint">
-	 </div>
-         <input type="hidden" name="image_thumbprint"/>
-       </div>
-       <br/>
-       <%= text_area_tag :bio, nil, :class=>"popup_wysiwyg bio_content" %>
-       <br/>
-       <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
-  <% end %>
+   .person_edit_form input[type=text]#person_role, 
+   .person_edit_form input[type=text]#person_email,
+   .person_edit_form input[type=text]#person_website
+   {
+      margin:0em;
+      width:30em;
+   }
+
+   .person_edit_form input[type=text]#person_twitter,
+   .person_edit_form input[type=text]#person_facebook,
+   .person_edit_form input[type=text]#person_google
+   {
+       width:24em;
+   }
+
+   .person_edit_form input[type=text]#person_first_name, 
+   .person_edit_form input[type=text]#person_middle_name
+   .person_edit_form input[type=text]#person_last_name
+   {
+	width:10em;
+   }
+
+   .person_edit_form iframe.wysiwyg_iframe
+   {
+         height:13em;
+   }
+
+   .person_edit_form textarea#person_bio
+   {
+      clear:both;
+      height:13em;
+      width:100%;
+      margin:0em;
+      margin-top:2em;
+   }
+</style>
+<div class="person_edit_form">
+   <%= form_for @person do |person| %>
+      <%= render :partial=>'roxiware/people/edit_person', :locals=>{:person_form=>person, :person=>@person} %>
+      <%= button_tag "Save", :id=>"save", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
+   <% end %>
 </div>
-<script>
-$(document).bind("ready", function() {
-    $("button.person_edit").overlay( {
-         onClose: function() { 
-         },
-         target:"#person_edit_overlay",
-         onBeforeLoad: function() {
-            var person_id= this.getTrigger().attr("id").split("-")[2];
-            var endpoint = "/person";
-            var method = "POST";
-            if (person_id != "new") {
-               endpoint = endpoint + "/" + person_id;
-               method = "PUT";
-            }
-            $(".person_edit_overlay").popup_form(endpoint,
-                  {
-                    canEdit: true,
-                    method: method,
-                    uploadImageParams: {
-                        image_sizes: ["thumbnail", "xsmall", "small", "medium","large"]
-                    },
-                    success: function(xhr, status) {
-                       window.location.reload();
-                    },
-                    error: function(xhr, status) {
-                      window.location.reload();
-                    }
-                  });
-        }
-    });
-   
-       $(".person_delete").click(function(event) {
-          var person = $(this).attr("id").split("-")[2];
-          endpoint = "/person/"+person + ".json";
-          $.ajax({
-                url: endpoint,
-                type: "DELETE",
-                processData: false,
-                complete: function(event) {
-                   window.location="/people"
-                   },
-               });
-       });      
-});
-</script>

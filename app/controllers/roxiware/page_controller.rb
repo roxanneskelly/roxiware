@@ -6,7 +6,7 @@ class Roxiware::PageController < ApplicationController
   end
 
 
-    def show
+  def show
       @page = Roxiware::Page.where(:page_type=>params[:page_type]).first || Roxiware::Page.new({:page_type=>params[:page_type], :content=>"New Content"}, :as=>"")
       authorize!  :read, @page
       respond_to do |format|

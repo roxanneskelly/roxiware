@@ -1,0 +1,78 @@
+<style>
+.post_edit_form .padding_box
+{
+   margin:20px 15px 20px 20px;
+   height:30em;
+   width:45em;
+}
+
+
+.post_edit_form label
+{
+   width:6em;
+}
+
+.post_edit_form input#blog_post_category_name
+{
+   width:28em;
+}
+
+.post_edit_form input#blog_post_post_title
+{
+   width:48.5em;
+}
+
+.post_edit_form select#blog_post_person_id 
+{
+   width:14em;
+}
+
+.post_edit_form iframe
+{
+   height:21em;
+}
+
+.post_edit_form textarea#blog_post_post_content
+{
+   width:100%;
+   height:21em;
+}
+
+.post_edit_form input#blog_post_tag_csv
+{
+   width:48.5em;
+}
+</style>
+<% if @post.id.present?
+       endpoint = blog_post_path(@post.id)
+       method = "PUT"
+   else 
+       endpoint = blog_post_index_path
+       method = "POST"
+   end
+%>
+<div class="post_edit_form">
+    <%= form_for(@post, {:url=>endpoint}) do |post| %>
+        <%= render(:partial=>"edit_post", :locals=>{:post_fields=>post}) %>
+        <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
+    <% end %>
+</div>
+<script>
+$(function() {
+    $(".post_edit_form button#save_button").click(function() {
+        $.ajax({type:"<%= method %>",
+                processData: false, 
+                 dataType:"json",
+                 url: "<%= endpoint %>.json",
+                 data:jQuery.param($(".post_edit_form form").serializeArray()),
+                 error: function(xhr, textStatus, errorThrown) {
+                    $.alert(textStatus);
+                 },
+                 complete: function() {
+                 },
+                 success: function() {
+                    window.location.reload();
+                 }}); 
+    });
+});
+</script>

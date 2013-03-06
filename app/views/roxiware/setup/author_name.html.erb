@@ -6,21 +6,39 @@ You can change this later, of course</br>
 </div>
 
 <%= form_tag '/setup', :method=>"put" do %>
-   <%= label_tag "Name" %><%= text_field_tag :first_name, "First", :class=>"setup_watermark", :watermark=>"First" %> <%= text_field_tag :middle_name, "Middle", :class=>"setup_watermark", :watermark=>"Middle" %><%= text_field_tag :last_name, "Last", :class=>"setup_watermark", :watermark=>"Last" %>
+   <%= label_tag "Name" %>
+   <%= text_field_tag :first_name, "First", :class=>"setup_watermark", :watermark=>"First" %> 
+   <%= text_field_tag :middle_name, "Middle", :class=>"setup_watermark", :watermark=>"Middle" %>
+   <%= text_field_tag :last_name, "Last", :class=>"setup_watermark", :watermark=>"Last" %>
 
+   <br/>
+   <br/>
+   <br/>
+   <br/>
    <div class="wizard_instructions">
       <h1>Have you been published?</h1>
    If you have, we can automatically gather your biographical information for your website,
    as well as information about your books.
    </div>
 
-   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "No, Skip import", :id=>"skip_import", :value=>"skip", :type=>"button" %><%= button_tag "Yes, Import my information", :id=>"import", :value=>"import", :type=>"submit" %></div>
    <%= hidden_field_tag :setup_action, "import" %>
    <%= hidden_field_tag :setup_step, @setup_step %>
 <% end %>
+<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "No, Skip import", :id=>"skip_import", :value=>"skip", :type=>"button", :disabled=>true %><%= button_tag "Yes, Import my information", :id=>"import", :value=>"import", :type=>"button", :disabled=>true %></div>
 <script>
   $(function() {
-     $("button#back_button,button#skip_import").click(function() {
+     $("button#import").button("disable");
+     $("#first_name, #middle_name, #last_name").bind("input blur propertychange", function() {
+        var button_enable = "disable";
+        $("#first_name, #middle_name, #last_name").each(function(index, value) {
+          if ((!$(this).is(".setup_watermark")) && ($(this).val().length > 0)) {
+             button_enable = "enable";
+          }
+        });
+        $("button#import").button(button_enable);
+        $("button#skip_import").button(button_enable);
+     });
+     $("button#back_button,button#skip_import,button#import").click(function() {
         $("input#setup_action").val($(this).attr("id"));
         $("form").submit();
      });

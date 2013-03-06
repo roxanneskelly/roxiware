@@ -58,7 +58,7 @@ module Roxiware
     end
 
     def tag_ids=(tag_ids)
-        self.term_ids = self.category_ids.to_set + tag_ids.to_set
+        self.term_ids = (self.category_ids.to_set + tag_ids.to_set).to_a
     end
    
     def tag_csv
@@ -79,7 +79,10 @@ module Roxiware
     end
 
     def category_ids=(category_ids)
-        self.term_ids = self.tag_ids.to_set + category_ids.to_set
+        puts "TAG IDS " + self.tag_ids.to_set.inspect
+        puts "CAT IDS " + category_ids.to_set.inspect
+        puts "TERM IDS " +( self.tag_ids.to_set + category_ids.to_set).inspect
+        self.term_ids = (self.tag_ids.to_set + category_ids.to_set).to_a
     end
 
     def categories

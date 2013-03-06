@@ -8,9 +8,9 @@ class Roxiware::SetupController < ApplicationController
    before_filter do
       @role = "guest"
       @role = current_user.role unless current_user.nil?
-      @setup_step = "welcome" if @setup_step.blank?
-      @setup_type = nil if @setup_type.blank?
-      authenticate_user! if @setup_step.blank?
+      @setup_step ||= "welcome"
+      authenticate_user! if @setup_step != "welcome"
+      @setup_type = nil if @setup_step == "welcome"
    end
 
 
@@ -118,14 +118,14 @@ class Roxiware::SetupController < ApplicationController
 	  end
           _set_setup_step("welcome")
       else
-          current_user.build_person({:first_name=>params[:first_name], :last_name=>params[:last_name], :last_name=>params[:last_name], :role=>"", :bio=>"", :email=>current_user.email}, :as=>"")
+          current_user.build_person({:first_name=>params[:first_name], :last_name=>params[:last_name], :middle_name=>params[:middle_name], :role=>"", :bio=>"", :email=>current_user.email}, :as=>"")
 	  if(!current_user.save)
               error_result = current_user.errors.collect{|error| error[1]}.join("<br/>")
               flash[:error] = error_result
 	  else
 	     if params[:setup_action] == "skip_import"
                 _set_setup_step("edit_biography")
-             elsif params[:button] == "import"
+             elsif params[:setup_action] == "import"
 	         _set_setup_step("import_biography")
              end
           end
@@ -133,25 +133,24 @@ class Roxiware::SetupController < ApplicationController
    end
 
    def _author_import_biography
-      if params[:button] == "back"
+      if params[:setup_action] == "back_button"
 	  if (current_user.present?)
 	     current_user.person.delete
 	  end
           _set_setup_step("name")
-      elsif params[:button] == "skip"
+      elsif params[:setup_action] == "skip_import"
+          current_user.person.update_attributes({:role=>"", :bio=>"", :email=>current_user.email, :thumbnail_url=>"", :image_url=>"", :large_image_url=>""}, :as=>"")
           _set_setup_step("edit_biography")
       elsif params[:goodreads_id].present?
           current_user.person.goodreads_id=params[:goodreads_id]
           goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)
 	  author = goodreads.search_author({:goodreads_id=>params[:goodreads_id]}).first;
 	  if(author.present?)
-	      puts "AUTHOR: " + author.inspect
 	      current_user.person.bio = author[:about]
 	      current_user.person.thumbnail_url = author[:small_image_url]
 	      current_user.person.image_url = author[:image_url]
 	      current_user.person.large_image_url = author[:large_image_url]
 	      # import image here
-	      puts "SMALL: #{author[:thumbnail_url]}\nMED: #{author[:image_url]}\nLARGE:#{author[:large_image_url]}\n"
 	      current_user.person.save!
 	  end
           _set_setup_step("edit_biography")
@@ -160,48 +159,80 @@ class Roxiware::SetupController < ApplicationController
 
    def _author_edit_biography
       @books = []
-      if params[:button] == "back"
+      if params[:setup_action] == "back_button"
           if current_user.person.goodreads_id_join.present?
 	      _set_setup_step("import_biography")
 	      current_user.person.goodreads_id_join.destroy
 	  else
 	     _set_setup_step("name")
 	  end
-      else
+      elsif params[:setup_action] == "save"
         current_user.person.show_in_directory = true;
         if(!current_user.person.update_attributes(params[:person], :as=>@role))
           error_result flash[:error] = @user.errors.collect{|error| error[1]}.join("<br/>")
 	else
-	   _set_setup_step("edit_books")
+	   Roxiware::Param::Param.set_application_param("people", "default_biography", "B908FDB5-A0B5-48AC-8BAE-48741485CC06", current_user.person.id)
+	   Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", current_user.person.email)
+	   Roxiware::Param::Param.set_application_param("system", "site_copyright_first_year", "7D815EDA-93DA-411B-9B09-91BA774D6CE2", Time.now.strftime("%Y"))
+	   Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", current_user.person.full_name)
+	   Roxiware::Param::Param.set_application_param("system", "title", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", current_user.person.full_name+", Author")
+	   Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", current_user.person.full_name)
+	   Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", current_user.person.full_name+", Author")
+	   Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", current_user.person.email)
+	   Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", current_user.person.full_name+", Author")
+	   _set_setup_step("social_networks")
 	end
       end
     end
 
-    def _show_author_edit_books
-       seo_books = {}
-       _get_goodreads_author_books.each do |book|
-           puts "ADDING BOOK #{book.seo_index}"
-           seo_books[book.title.to_seo] = book if (seo_books[book.title.to_seo].blank? || book.description.present?)
+   def _author_social_networks
+      @books = []
+      if params[:setup_action] == "back_button"
+	_set_setup_step("edit_biography")
+      elsif params[:setup_action] == "save"
+        if(!current_user.person.update_attributes(params[:person], :as=>@role))
+          error_result flash[:error] = @user.errors.collect{|error| error[1]}.join("<br/>")
+	else
+	   if current_user.person.goodreads_id
+	       seo_books = {}
+	       _get_goodreads_author_books.each do |book|
+		   seo_books[book.title.to_seo] = book if (seo_books[book.title.to_seo].blank? || book.description.present?)
+	       end
+	       @books = seo_books.values
+	   end
+	   _set_setup_step("manage_books")
+	end
+      end
+    end
+
+    def _show_author_manage_books
+       @books = Roxiware::Book.all
+       if @books.blank? && current_user.person.goodreads_id
+	   seo_books = {}
+	   _get_goodreads_author_books.each do |book|
+	       seo_books[book.title.to_seo] = book if (seo_books[book.title.to_seo].blank? || book.description.present?)
+	   end
+	   puts "ADDED " + seo_books.inspect
+	   @books = seo_books.values
        end
-       puts "ADDED " + seo_books.inspect
-       @books = seo_books.values
     end
 
 
-    def _author_edit_books
+    def _author_manage_books
         @books = []
-	if params[:button] == "back"
+	if params[:setup_action] == "back_button"
           destroy_books = Roxiware::Book.all
 	  destroy_books.each do |book|
 	     book.destroy
 	  end
-          @books = _get_goodreads_author_books
-	  _set_setup_step("edit_biography")
-	else
+	  _set_setup_step("social_networks")
+	elsif params[:setup_action] == "save"
+            Roxiware::Book.all.each do |book|
+	       book.destroy
+            end
 	    @books = []
-	    books = params[:books][:book]
-            puts books.inspect
-            puts books.class.inspect
+	    books = params[:books][:book] if params[:books]
+	    books ||= []
 	    if books.class != Array
 	       books = [books]
             end
@@ -212,35 +243,55 @@ class Roxiware::SetupController < ApplicationController
 	       new_book.save!
 	       @books << new_book
 	    end
-	    _set_setup_step("import_series")
+	    if @books.present?
+	       _set_setup_step("series")
+	    else
+	       _set_setup_step("choose_template")
+	    end
         end
     end
 
-    def _show_author_import_series
-       goodreads_series = _get_goodreads_author_series
+    def _author_series
+      if params[:setup_action] == "back_button"
+	  _set_setup_step("manage_books")
+      else
+          if params[:setup_action] == "skip_series"
+	       _set_setup_step("choose_template")
+	  elsif params[:setup_action] == "import"
+	       _set_setup_step("manage_series")
+	  end
+      end
+    end
+
+    def _show_author_manage_series
        @books = Roxiware::Book.all
        # filter series by books
-       book_ids = Set.new(@books.collect{|book| book.goodreads_id})
-       puts "BOOK IDS " + book_ids.inspect
+       @books_by_goodreads_id = Hash[@books.select{|book| book.goodreads_id.present?}.collect{|book| [book.goodreads_id, book]}]
+       puts "BOOKS BY IDS " + @books_by_goodreads_id.inspect
+
        @series = []
-       goodreads_series.each do |series|
-          series_book_ids = Set.new(series[:books].collect{|book| book[:id].to_i})
-	  puts "SERIES_BOOKID " + series_book_ids.inspect
-	  if(series_book_ids & book_ids).present?
-	     @series << series
-	  end
-       end
+       if current_user.person.goodreads_id
+	    goodreads_series = _get_goodreads_author_series
+	    goodreads_series.each do |series|
+	       series[:book_ids] = []
+	       series[:books].each do |book|
+		  book[:book_id] = @books_by_goodreads_id[book[:id].to_i].id if @books_by_goodreads_id[book[:id].to_i].present?
+		  series[:book_ids] << book[:book_id] if book[:book_id]
+		  puts book[:order] + " " +book[:title]
+	       end
+
+	       if series[:book_ids].present?
+		  @series << series
+	       end
+	    end
+        end
     end
 
 
-    def _author_import_series
-      if params[:button] == "back"
-          destroy_books = Roxiware::Book.all
-	  destroy_books.each do |book|
-	     book.destroy
-	  end
-	  _set_setup_step("edit_books")
-      else
+    def _author_manage_series
+      if params[:setup_action] == "back_button"
+	  _set_setup_step("series")
+      elsif params[:setup_action] == "save"
           series_list = params[:series][:series]
 	  if(series_list.class != Array)
 	      series_list = [series_list]
@@ -291,7 +342,7 @@ class Roxiware::SetupController < ApplicationController
 			:large_images=>large_image_urls}
 	   end
 	    
-	   categories=layout.terms(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_ID).collect{|category| category.id}
+	   categories=layout.terms(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME)).collect{|category| category.id}
 	   category_ids.merge(categories)
 	   layout_data = {:name=>layout.name,
                           :guid=>layout.guid,
@@ -299,25 +350,30 @@ class Roxiware::SetupController < ApplicationController
 			  :description=>layout.description,
 	                  :categories=>categories,
                           :layout_schemes=>layout_schemes}
+	   if(@default_template.blank? && categories.blank?) 
+	       @default_template = layout.guid
+	       @default_scheme=layout_schemes[0][:id]
+           end
 	   @layouts << layout_data
 	end
         @categories = Roxiware::Terms::Term.where(:id=>category_ids.to_a)
+	
     end
 
     def _author_choose_template
-	if params[:button] == "back"
-            destroy_series = Roxiware::BookSeries.all
-	    destroy_series.each do |book_series|
-	       book_series.destroy
+	if params[:setup_action] == "back_button"
+            @books = Roxiware::Book.all
+	    if @books.present?
+	        _set_setup_step("manage_series")
+            else
+                _set_setup_step("manage_books")
 	    end
-            @books = _get_goodreads_author_books
-	    _set_setup_step("import_series")
-	else
+	elsif params[:setup_action] == "save_template"
             # we've chosen the template, so set it, do the setup, and go to completion page
 	    refresh_layout
 	    Roxiware::Param::Param.refresh_application_params
-            Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:layout_guid])
-            Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:layout_scheme])
+            Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:template_guid])
+            Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:template_scheme])
 	    _set_setup_step("complete")
         end
     end

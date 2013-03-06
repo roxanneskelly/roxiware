@@ -319,8 +319,8 @@
   </param_description>
   <param_description guid="B908FDB5-A0B5-48AC-8BAE-48741485CC06">
     <name>Default Biography</name>
-    <description>SEO index of the default person shown when no seo-index is specified in the URL.</description>
-    <field_type>string</field_type>
+    <description>ID of the default person shown when no seo-index is specified in the URL.</description>
+    <field_type>integer</field_type>
     <permissions>super</permissions>
     <meta/>
   </param_description>

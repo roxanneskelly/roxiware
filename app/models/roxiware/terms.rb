@@ -37,7 +37,7 @@ module Roxiware::Terms
           term = Term.create({:name=>name, :term_taxonomy_id=>TermTaxonomy.taxonomy_id(term_taxonomy_string)}, :as=>"")
           current_terms << term
 	  if(term_taxonomy_string == TermTaxonomy::CATEGORY_NAME)
-	     @@categories[term.id] = term
+	     categories[term.id] = term
 	  end
        end
        current_terms

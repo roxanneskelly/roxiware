@@ -1,6 +1,8 @@
 require 'xml'
 
 class Roxiware::BooksController < ApplicationController
+  application_name "books"
+
   include Roxiware::BooksHelper
 
   before_filter do

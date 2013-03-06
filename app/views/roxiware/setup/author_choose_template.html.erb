@@ -1,9 +1,27 @@
-<div class='wizard_instructions'>Pick the template for your website.</div>
-<%= render :partial=>"roxiware/templates/picker" %>
-<%= form_for(:books, :html=>{:method=>"put", :multipart=>true}) do |books| %>
-   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"back"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"submit" %></div>
-    <%= hidden_field_tag :layout_guid %>
-    <%= hidden_field_tag :layout_scheme %>
-    <%= hidden_field_tag :setup_step, @setup_step %>
-    <%= hidden_field_tag :setup_action, "save" %>
-<% end %>
+<div id="setup_choose_template_form">
+   <%= render :partial=>"roxiware/templates/picker", :locals=>{:selected_scheme=>@default_scheme, :selected_template=>@default_template } %>
+</div>
+<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%></div>
+
+<script>
+$(function() {
+    $("div#template_popup button#save_template,button#back_button").click(function() {
+	 $.ajax({type:"PUT",
+		 processData: true,
+		  url: "<%= setup_path %>",
+		  data: {template_guid:$("div#template_popup_form").attr("template_guid"),
+                         template_scheme:$("div#template_popup_form").attr("template_scheme"),
+                         setup_step:"<%=@setup_step%>",
+                         setup_action:$(this).attr("id")
+                         },
+		  error: function(xhr, textStatus, errorThrown) {
+		  },
+		  complete: function() {
+                      window.location="<%= setup_path %>";
+		  },
+		  success: function() {
+		  }}); 
+
+    });
+});
+</script>

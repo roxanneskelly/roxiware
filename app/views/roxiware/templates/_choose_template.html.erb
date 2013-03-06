@@ -1,24 +1,13 @@
-<style>
-  #choose_template_form {
-     height:41em;
-  }
-</style>
-<div id="choose_template_form">
-    <%= form_for(:settings, :url=>layout_index_path, :method=>"put") do |layout| %>
-	<%= hidden_field_tag :layout_guid, @current_layout.guid %>
-	<%= hidden_field_tag :layout_scheme, @layout_scheme %>
-        <%= render :partial=>"roxiware/templates/picker" %>
-        <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
-    <% end %>
+<div id="choose_template_form", class="large_form">
+    <%= render :partial=>"roxiware/templates/picker" , :locals=>{:selected_scheme=>@layout_scheme, :selected_template=>@current_layout.guid} %>
 </div>
 <script>
 $(function() {
-    $("div#choose_template_form button#save_button").click(function() {
+    $("div#template_popup button#save_template").click(function() {
 	 $.ajax({type:"PUT",
-		 processData: false, 
-		  dataType:"json",
 		  url: "<%= layout_index_path %>.json",
-		  data:jQuery.param($("form").serializeArray()),
+		  data: {template_guid:$("div#template_popup_form").attr("template_guid"),
+                         template_scheme:$("div#template_popup_form").attr("template_scheme") },
 		  error: function(xhr, textStatus, errorThrown) {
 		     $.alert(textStatus);
 		  },

@@ -1,123 +1,123 @@
-<div id="layout_search">
-<% @categories.each do |category| %>
-<div class='category_entry'>
-<%= check_box_tag category.name, 1, false, :id=>category.id %>
-<%= label_tag category.name, category.name %>
-</div>
-<% end %>
+<div id="layout_picker">
+   <li id="category_list"><ul>
+     <li class="category_entry" id=0><a>All</a><ul>
+     <% @categories.each do |category| %>
+	<li class='category_entry' id="<%= category.id %>">
+	  <a><%=category.name%></a>
+	</li>
+      <% end %>
+   </ul></li></ul></li>
+   <div id="template_pane"><div id="template_list"></div></div>
 </div>
 
-<div id="layout_display">
-   <div id="layout_display_left_pane"></div>
-   <div id="layout_display_right_pane">
-     <div id="layout_display_name"></div>
-     <div id="layout_display_description"></div>
-     <div id="layout_schemes"></div>
+<div id="template_popup" class="medium_form"><a id="template_popup_close">x</a>
+  <div id="template_popup_form">
+   <div id="left_pane"></div>
+   <div id="right_pane">
+      <div id="pane_content">
+         <div id="name"></div>
+         <div id="description"></div>
+         <div id="schemes"></div>
+       
+         <%= button_tag "Select", :id=>"save_template", :type=>"button", :class=>"save_button" %>
+      </div>
    </div>
-</div>
-
-<div id="picker">
-<%= button_tag "<", :id=>"last", :type=>"button" %><div class="scrollable" id="layout_scrollable"><div class="items" id="layout_list"></div></div><%= button_tag ">", :id=>"next", :type=>"button" %></div>
+</div></div>
 
 <script>
 $(function() {
    var layouts = <%= raw @layouts.to_json %>;
-
+   if(layouts["<%=selected_template%>"] &&
+       layouts["<%=selected_template%>"]['layout_schemes'] &&
+       layouts["<%=selected_template%>"]['layout_schemes']["<%=selected_scheme%>"]) {
+       layouts["<%=selected_template%>"]['layout_schemes']["<%=selected_scheme%>"]['selected'] = true;
+   }
    $("button").button();
 
-   function updateLayoutList() {
-     var categories=[];
-     $(".category_entry input").each(function(index, check) {
-       if(($check).is(":checked")) {
-         categories.push(parseInt($(check).attr("id")));
-       }
-     });
+    $("#category_list").jstree({
+        "themes" : {"no_load" : true, url:"/assets/themes/default/style.css", theme:"default", "icons":false, "dots":false},
+        "html_data" : {
+        },
+        "ui" : {
+           "select_limit" : 1,
+           "selected_parent_close" : "select_parent",
+            "initially_select" : [ "0" ]
+        },
 
-     var layout_list = $("div#layout_list");
-     layout_list.html("");
-     $.each(layouts, function(index, layout) {
-       var add_layout = (layout['categories'].length == 0);
-       if(!add_layout) {
-          for(var category_id in categories) {
-            if ((layout['categories'].length == 0) || (categories[category_id] && $.inArray(category_id, layout['categories']))) {
-              add_layout = true;
-              break;
-            }
-         }
-       }
-       if(add_layout) {
-          var layout_html = "<div class='layout_item' id='"+index+"' layout_guid='"+ layout['guid']+"'>" +
-                 "<img src='"+layout['thumbnail_url']+"'/>" +
-                 "<div class='layout_item_name'>"+layout['name']+"</div>" +
-                 "</div>";
-             layout_list.append(layout_html);
-        }
+        "plugins" : [ "themes", "html_data", "ui" ]
+    });
+
+    $("#category_list").bind("loaded.jstree", function () {
+       $("#category_list").jstree("open_all");
+   });
+   $("#category_list").bind("select_node.jstree", function(event, data) {
+       $(".category_entry_selected").removeClass("category_entry_selected");
+       $(this).addClass("category_entry_selected");
+       var template_list = $("div#template_list");
+       template_list.html("");
+       var cat_id = parseInt(data.rslt.obj.attr("id"));
+       $.each(layouts, function(index, layout) {
+           if((!cat_id) || 
+              (layout['categories'].length == 0) || 
+              ($.inArray(cat_id, layout['categories']) == 1)) {
+		  var layout_html = "<div class='template_item' id='"+index+"' template_guid='"+ layout['guid']+"'>" +
+			 "<img src='"+layout['thumbnail_url']+"'/>" +
+			 "<div class='template_item_name'>"+layout['name']+"</div>" +
+			 "</div>";
+		  template_list.append(layout_html);
+               }
+        
+       });
+       $(".template_item").overlay({
+               close:$("#template_popup_close"),
+               target:$("#template_popup"),
+	       top: "10%",
+               oneInstance: false,
+	       zIndex: 100000,
+               closeOnClick: true,
+               closeOnEsc: true,
+               onBeforeLoad: function(e) {
+                  // we've selected a layout, so populate the layout info, including images, description, schemes
+                  var trigger = this.getTrigger();
+	          var layout = layouts[parseInt($(trigger).attr("id"))];
+		  $("div#template_popup_form").attr("template_guid", $(trigger).attr("template_guid"));
+		  $("div#name").text(layout['name']);
+		  $("div#description").html(layout['description']);
+
+		  $("div#template_popup div#schemes").html("");
+		  $("div#template_popup div#left_pane").html("");
+		  $.each(layout['layout_schemes'], function(index, layout_scheme){
+		     $("div#template_popup div#schemes").append($("<a class='template_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_url']+"'/><div class='template_scheme_name'>"+layout_scheme['name']+"</div></a>"));
+		     var layout_images = $("<div class='layout_image_block'><div class='layout_image_block_images'></div><div class='layout_image_block_tabs'></div></div>");
+		     $.each(layout_scheme['large_images'], function(index, image) {
+			layout_images.find(".layout_image_block_images").append("<div><img src='"+image+"'/></div>");
+			layout_images.find(".layout_image_block_tabs").append("<a class='layout_image_block_tab'>"+index+"</a>");
+		     });
+                     
+		     layout_images.find(".layout_image_block_tabs").tabs(layout_images.find(".layout_image_block_images > div",
+		     {
+		     }));
+		     $("div#template_popup div#left_pane").append(layout_images);
+		  });
+
+		  $("div#template_popup div#schemes").tabs("div#template_popup div#left_pane > div", { });
+		  var api = $("div#template_popup div#schemes").data("tabs");
+                  current_scheme=$("div#template_popup div#schemes a#<%=selected_scheme%>");
+		  $("div#template_popup_form").attr("template_scheme", current_scheme.attr("id"));
+		  api.onClick(function(index) {
+		     $("div#template_popup_form").attr("template_scheme", api.getCurrentTab().attr("id"));
+		  });
+		  console.log("current_scheme " + current_scheme.index());
+                  if(current_scheme.index() < 0) {
+		     current_scheme = $("div#template_popup div#schemes a").first();
+                  }
+		  console.log("current_scheme fixed " + current_scheme.index());
+                  api.click(current_scheme.index());
+               }
        });
 
-       $(".layout_item").click(function() {
-            // we've selected a layout, so populate the layout info, including images, description, schemes
-	    var layout = layouts[parseInt($(this).attr("id"))];
-            $("input[name=layout_guid]").val($(this).attr("layout_guid"));
-	    $("div#layout_display_name").text(layout['name']);
-	    $("div#layout_display_description").html(layout['description']);
-	    $(".layout_item_selected").removeClass("layout_item_selected");
-	    $(this).addClass("layout_item_selected");
-           
-	    $("div#layout_schemes").html("");
-	    $("div#layout_display_left_pane").html("");
-            $.each(layout['layout_schemes'], function(index, layout_scheme){
-               $("div#layout_schemes").append($("<a class='layout_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_url']+"'/><div class='layout_scheme_name'>"+layout_scheme['name']+"</div></a>"));
-               var layout_images = $("<div class='layout_image_block'><div class='layout_image_block_images'></div><div class='layout_image_block_tabs'></div></div>");
-               $.each(layout_scheme['large_images'], function(index, image) {
-                  layout_images.find(".layout_image_block_images").append("<div><img src='"+image+"'/></div>");
-                  layout_images.find(".layout_image_block_tabs").append("<a class='layout_image_block_tab' href='#'>"+index+"</a>");
-               });
-               layout_images.find(".layout_image_block_tabs").tabs(layout_images.find(".layout_image_block_images > div",
-               {
-               }));
-               $("div#layout_display_left_pane").append(layout_images);
-            });
-
-            $("div#layout_schemes").tabs("div#layout_display_left_pane > div", {
-            });
-            var api = $("div#layout_schemes").data("tabs");
-            api.onClick(function(index) {
-               console.log(api.getCurrentTab());
-               $("input[name=layout_scheme]").val(api.getCurrentTab().attr("id"));
-            });
-            $("input[name=layout_scheme]").val($("div#layout_schemes a").first().attr("id"));
-       });
-
-       var current_layout = $("input[name=layout_guid]").val();
-       if(current_layout) {
-          $(".layout_item[layout_guid="+current_layout+"]").click();
-       }
-       else {
-          $("#last").click();
-          $(".layout_item").first().click();
-       }
-       var current_scheme = $("input[name=layout_scheme]").val();
-       if(current_scheme) {
-          $("div#layout_schemes a#"+current_scheme).click();
-       }
-       else {
-          $("div#layout_schemes a").first().click();
-       }
-   }
-   $(".scrollable").scrollable();
-
-   updateLayoutList();
-   $(".category_entry input").click(function() {
-      updateLayoutList();
-   });
-
-   $("#last,#next").click(function() {
-      var api=$("#layout_scrollable").data("scrollable");
-      api.move($(this).is("#last")?-4:4);
-      $("#last").button((api.getIndex() == 0)?"disable":"enable");
-      $("#next").button((Math.floor(api.getIndex()/4) == Math.floor(api.getSize()/4))?"disable":"enable");
-   });
-
-   $("#last").click();
+       $(".template_item[template_guid=<%=selected_template%>]").addClass("template_item_selected");
+      $(".category_entry").first().click();
+  });
 });
 </script>

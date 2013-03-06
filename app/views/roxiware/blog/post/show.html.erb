@@ -1,4 +1,4 @@
-<section class="post">
+<section class="post_listing">
     <div class="blog_nav">
       <%= link_to("<< Previous Post", @prev_post_link, :class=>"prev_post") if @prev_post_link %>
       <%= link_to("Next Post >>", @next_post_link, :class=>"next_post") if @next_post_link %>
@@ -31,20 +31,13 @@
   <% end %>
 </div>
 
-<ul id="post_context_menu" class="context_menu">
-   <li id="edit_post"><a href="#" menu_item="edit_post">Edit Post</a></li>
-</ul>
+<% if can? :edit, @post %>
+<ul id="blog_show_application_menu" class="application_menu"><li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit Post">Edit Post</a></li></ul>
+<%= render :partial=>"roxiware/blog/post/context_menus" %>
+<% end %>
 
 <script>
 $(document).ready(function() {
-    $("#mainBody").context_menu("#post_context_menu");
-
-    $("#mainBody").on("context_menu", function(event, menu_item) {
-       switch (menu_item) {
-	  case "edit_post":
-	    settingsForm("<%= edit_blog_post_path(@post.id) %>", "Edit Blog Post");
-	    break;
-       }});
 
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');

@@ -39,8 +39,8 @@ module Roxiware
 
        # PUT /layouts - layout settings
        def settings
-            Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:layout_guid])
-            Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:layout_scheme])
+            Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:template_guid])
+            Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:template_scheme])
 	    refresh_layout
 	    respond_to do |format|
 	       format.json {render :json =>{:layout_guid=>params[:layout_guid], :layout_scheme=>params[:layout_scheme]}}

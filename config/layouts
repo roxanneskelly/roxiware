@@ -217,6 +217,7 @@ div.widget_background, div.content_background
        overflow:hidden;
        margin-left:0px;
        margin-right:0px;
+       border:solid 1px white;
 
        div.series_book_tab:hover {
 	  background:#444;
@@ -226,7 +227,6 @@ div.widget_background, div.content_background
 	  background:#333;
 	  border:solid 1px white;
 	  float:left;
-	  height:20em;
 	  width:1.5em;
 	  position:relative;
 	  display:inline-block;
@@ -257,9 +257,7 @@ div.widget_background, div.content_background
            float:left;
 	   div.book_listing {
                position:relative;
-	       height:20em;
 	       overflow:hidden;
-	       border:solid 1px white;
 	       background:#000;
 	       color:#fff;
 	       display:inline-block;
@@ -270,27 +268,32 @@ div.widget_background, div.content_background
           }
       }
   }
-
 }
 
 
 .book_listings {
       div.book_listing {
           position:relative;
-          height:20em;
           border:solid 1px white;
           background:#000;
 	  color:#fff;
-          img {
-	      float:left;
-              padding:20px;
-	  }
+          margin:1em;
+      }
+      .bookstore_list {
+          padding-top:1em;
       }
 }
 
+
+div.book_listing {
+    clear:both;
+    img {
+       float:left;
+       padding:20px;
+     }
+}
+
 .bookstore_list {
-      position:absolute;
-      bottom:0em;
       ul.book_purchase_bar {
           list-style-type:none;
           display:hidden;
@@ -314,7 +317,8 @@ div.widget_background, div.content_background
     <params>
       <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
       <param class="local" description="0ADB2780-3D21-409F-A7B4-670395F99CD5" name="series_display_type">accordion</param>
-      <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_excerpt_length">500</param>
+      <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_description_length">200</param>
+      <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_description_length">500</param>
       <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
       <param class="local" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="layout_schemes">
         <param class="local" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="C6148B79-4931-4032-BB3D-2DBFAD705F46">

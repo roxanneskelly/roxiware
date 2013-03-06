@@ -1,7 +1,10 @@
-<div class="padding_box"><%= post_fields.label :category_name, "Category" %>
+  <%= post_fields.label :category_name, "Category" %>
   <%= post_fields.text_field(:category_name, :class=>"category_input") %>
-  <%= post_fields.label :person_id, "Author" %>
-  <%= post_fields.select(:person_id, Roxiware::Person.where(:show_in_directory => true).collect{|p| [p.full_name, p.id]}) %> 
+  <% people = Roxiware::Person.where(:show_in_directory => true)
+     if people.count > 1 %>
+     <%= post_fields.label :person_id, "Author" %>
+     <%= post_fields.select(:person_id, people.collect{|p| [p.full_name, p.id]}) %> 
+  <% end %>
   <br/>
   <%= post_fields.label :post_title, "Title"%>
   <%= post_fields.text_field :post_title, :altname=>:post_link %>
@@ -9,7 +12,7 @@
   <%= post_fields.text_area :post_content, :class=>"settings_wysiwyg post_item_content" %>
   <%= post_fields.label :tag_csv, "Tags"%>
   <%= post_fields.text_field :tag_csv %>
-</div>
+
 <script>
 $(function() {
     var categories = [<%= raw Roxiware::Terms::Term.categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]

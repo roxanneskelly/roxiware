@@ -1,94 +1,12 @@
-<style>
-   .person_edit_form
-   {
-      margin:0em 0.2em 0em 0.2em;
-   }
-
-   .person_edit_form div.panes > div 
-   {
-       height:30em;
-       padding:0em;
-   }
-   .person_edit_form div.pane_padding {
-       padding:1em;
-   }
-
-   .person_edit_form label
-   {
-       width:6em;
-   }
-
-   .person_edit_form div#left_section
-   {
-      display:inline-block;
-      vertical-align:top;
-   }
-
-   .person_edit_form div#right_section
-   {
-      float:right;
-      width:200px;
-      display:inline-block;
-      vertical-align:top;
-   }
-
-    .person_edit_form .upload_target
-    {
-       float:right;
-       min-width:100px;
-       min-height:100px;
-       cursor: pointer;
-    }
-
-   .person_edit_form input[type=text]#person_role, 
-   .person_edit_form input[type=text]#person_email,
-   .person_edit_form input[type=text]#person_website
-   {
-      margin:0em;
-      width:30em;
-   }
-
-   .person_edit_form input[type=text]#person_twitter,
-   .person_edit_form input[type=text]#person_facebook,
-   .person_edit_form input[type=text]#person_google
-   {
-       width:24em;
-   }
-
-   .person_edit_form input[type=text]#person_first_name, 
-   .person_edit_form input[type=text]#person_middle_name, 
-   .person_edit_form input[type=text]#person_last_name
-   {
-	width:10em;
-   }
-
-   div.wysiwyg iframe {
-      height:14em;
-   }
-   .person_edit_form textarea#person_bio
-   {
-      clear:both;
-      padding:0em;
-      height:14em;
-      width:100%;
-      margin:0em;
-      margin-top:2em;
-   }
-</style>
-<div class="wizard_instructions">
-Make any changes to your biography.  Biographies often include details on your preferred writing genres,
-your day job, your hobbies.  You may also want to include information about your family, and you can
-include the city in which you live.  This information will be searchable, and will help attract
-potential readers
-</div>
-<div class="person_edit_form">
 <%= form_for current_user.person, :url=>setup_path do |person| %>
-   <%= render :partial=>'roxiware/people/edit_person', :locals=>{:person_form=>person, :person=>current_user.person} %>
-   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"back"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"submit" %></div>
+<div class="wizard_instructions">Make changes to your biography if needed.</div>
+<div id="biography_edit">
+   <%= render :partial=>'roxiware/people/edit_biography', :locals=>{:person_form=>person, :person=>current_user.person} %>
     <%= hidden_field_tag :setup_step, @setup_step %>
-    <%= hidden_field_tag :setup_action, "import" %>
-<% end %>
+    <%= hidden_field_tag :setup_action, "none" %>
 </div>
+<% end %>
+<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"button" %></div>
 <script>
   $(function() {
     $("textarea.settings_wysiwyg").wysiwyg({ css: "<%= stylesheet_path('application') %>",
@@ -105,8 +23,8 @@ potential readers
                                                   }
                                            }});
 
-     $("button#back").click(function() {
-        $("input#setup_action").attr($(this).attr("id"));
+     $("button#back_button,button#save").click(function() {
+        $("input#setup_action").val($(this).attr("id"));
         $("form").submit();
      });
   });

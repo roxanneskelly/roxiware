@@ -12,7 +12,7 @@
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("blog", "enable_blog") %>
 		      <li id="blog_settings"><a rel="<%= setting_path('blog') %>" form="Blog Settings">Blog</a></li>
 		  <% end %>
-		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("books", "enable_books") %>
+		  <% if (current_user.role == "super") %>
 		      <li id="book_settings"><a rel="<%= setting_path('books') %>" form="Book Settings">Books</a></li>
 		  <% end %>
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("events", "enable_events") %>

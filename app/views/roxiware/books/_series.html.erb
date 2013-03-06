@@ -3,20 +3,31 @@
     <div class="series_description"><%= raw series.description %></div>
     <div class="series_books">
         <% series.books.order(:series_order).each do |book| %>
-	   <div class="series_book_tab"><div class="series_book_title"><%= book.title %></div></div><div class="book_pane"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@series_book_excerpt_length}  %></div>
+	   <div class="series_book_tab"><div class="series_book_title"><%= book.title %></div></div><div class="book_pane"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>series_book_description_length}  %></div>
 	<% end %>
     </div>
 </article>
 <script>
 $(function() {
    var series = $("article#series_<%= series.id %>");
+   var pane_height = 0;
    var pane_width = series.find(".series_books").width();
    series.find(".series_book_tab").each(function(index, tab) {
       pane_width = pane_width - $(tab).outerWidth();
+      pane_width = pane_width-1;
    });
+   series.find(".book_pane").each(function(index, pane) {
+       console.log($(pane).height());
+       if(pane_height < $(pane).height()) {
+           pane_height = $(pane).height();
+       }
+   });
+
    console.log("PANE WIDTH " + pane_width);
    series.find(".book_pane").first().css("display","block").css("width",pane_width+"px");
    series.find(".book_listing").css("width",pane_width+"px");
-   series.find(".series_books").tabs(series.find("div.book_pane"), {tabs:series.find("div.series_book_tab"), effect:"horizontal"});
+   series.find(".book_listing").css("height",pane_height+"px");
+   series.find(".series_book_tab").css("height",pane_height+"px");
+   series.find(".series_books").tabs(series.find("div.book_pane"), {tabs:series.find("div.series_book_tab")});
 });
 </script>

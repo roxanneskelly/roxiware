@@ -674,7 +674,7 @@
 function settingsForm(url, title)
 {
    title = typeof title  != 'undefined' ? title : "&nbsp;";
-   var overlay = $("<div id='edit_overlay' class='settings settings_dialog' style='z-index:2000'><a class='close'>x</a><div class='settings_title'>"+
+   var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close'>x</a><div class='settings_title'>"+
                    title +
                    "</div><div class='contentWrap'> </div></div>");
    $("body").append(overlay);

@@ -1,24 +1,26 @@
+<div class="author_import_biography">
 <div class="wizard_instructions">
 Let's see if we can find your biography information online.<br/><br/>
 Paste or type your name, a link to your authors page on goodreads, or the link, ISBN, or ISBN13 of one of your books, and we'll search for your biography.</div>
-<%= search_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN") %><%= button_tag "Search", :id=>"import_search", :type=>"button"%>
+<div id="import_search_field"><%= search_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN") %><%= button_tag "Search", :id=>"import_search", :type=>"button"%></div>
 <div id="import_search_status"></div>
 <div id="import_search_results"></div>
 
 <%= form_tag '/setup', :method=>"put" do %>
-<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"submit"%><%= button_tag "Skip >>", :id=>"skip_import", :value=>"skip", :type=>"submit" %></div>
 <%= hidden_field_tag :goodreads_id, nil %>
 <%= hidden_field_tag :setup_action, "import" %>
 <%= hidden_field_tag :setup_step, @setup_step %>
 <% end %>
+</div>
+<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "Skip >>", :id=>"skip_import", :value=>"skip", :type=>"button" %></div>
 <script>
   $(function() {
      $("form").submit(function() {
         $("input.setup_watermark").val("");
      });
 
-     $("button#back").click(function() {
-        $("input#setup_action").attr($(this).attr("id"));
+     $("button#back_button,button#skip_import").click(function() {
+        $("input#setup_action").val($(this).attr("id"));
         $("form").submit();
      });
 
@@ -63,7 +65,6 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
                                               "<div class='author_name'>"+author["name"]+"</div>"+
                                               "<div class='author_about'>"+author["about"]+"</div>"+
                                               books +
-	                                      "<br style='clear:both'/></div>"+
                                               "</div>");
 			  author_html.data().author_data = author;
 			  $("div#import_search_results").append(author_html);

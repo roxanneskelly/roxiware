@@ -5,20 +5,20 @@
 
 <script>
 $(document).bind("ready", function() {
-    $(".post_list_item").context_menu("#post_context_menu");
-    $(".post_list_item").on("context_menu", function(event, menu_item) {
+    $(".post").context_menu("#post_context_menu");
+    $(".post").on("context_menu", function(event, menu_item) {
        var post_link=$(this).attr("rel");
        switch (menu_item) {
 	  case "edit_post":
 	    settingsForm(post_link+"/edit", "Edit Post");
 	    break;
-          case "delete_book":
+          case "delete_post":
             if(confirm("Remove Post\nAre you sure?")) {
               $.ajax({url:post_link, 
                       type:"DELETE",
                       dataType: "json", 
                       success: function(json_data, textStatus, jqXHR) {
-                         window.location.reload();
+                         window.location = "<%= blog_path %>";
                       }
                });
               }

@@ -6,8 +6,8 @@
   <param class="system" description="7D815EDA-93DA-411B-9B09-91BA774D6CE2" name="site_copyright_first_year">2012</param>
   <param class="system" description="4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7" name="site_copyright">Roxiware</param>
   <param class="system" description="8C0998DC-050B-4C38-BB6F-D96A5ACD1AA9" name="goodreads_user">5648190</param>
-  <param class="system" description="0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415" name="title">Blogxxx</param>
-  <param class="system" description="F0E1D8A9-33B9-4605-B10F-831D2BB3D423" name="meta_description">Blogxxxyyy</param>
+  <param class="system" description="0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415" name="title">Blog</param>
+  <param class="system" description="F0E1D8A9-33B9-4605-B10F-831D2BB3D423" name="meta_description">Blog</param>
   <param class="system" description="1843B11F-EBA1-4B9A-A01F-F98A3E458FA8" name="meta_keywords">Meta Keywords</param>
   <param class="system" description="1D3ACF31-02BB-4BFC-AB2E-F570FF69896E" name="google_site_verification_key">3rIuwOZ_n2yWEO5owurLW5GRr2Rp-twFAEDuUr6zofc</param>
   <param class="system" description="F751356B-CB02-4891-9B56-BC9B163D3D00" name="amazon_associate_id">V20070822/US/roxaskel-20/8005/4f9ac9f8-d137-42e9-947b-e4185d6ad7f8</param>
@@ -21,7 +21,7 @@
   <param class="blog" description="F4AF8F08-955D-4800-992A-3E2912CA8740" name="blog_excerpt_length">100</param>
   <param class="blog" description="3D102055-8C9B-4838-90F7-2B3C7DB23A1D" name="blog_title">Blog Title2</param>
   <param class="blog" description="3869E57B-AADA-4418-8262-A55CE044A6F6" name="blog_description">Blog Description</param>
-  <param class="blog" description="0060792B-8BE9-4F79-939E-8E6988C74048" name="blog_language">en-us2</param>
+  <param class="blog" description="0060792B-8BE9-4F79-939E-8E6988C74048" name="blog_language">en-us</param>
   <param class="blog" description="9E8CD066-4F40-4B7E-BB23-060ADDCC5876" name="blog_comment_permissions">open</param>
   <param class="blog" description="391E7C2E-A284-491A-8AB8-5FB9E002033D" name="blog_moderate_comments">true</param>
   <param class="books" description="F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63" name="enable_books">true</param>
@@ -31,6 +31,6 @@
   <param class="gallery" description="A8B714E2-94EB-4604-9F56-86969962D3EF" name="gallery_items_per_row">4</param>
   <param class="people" description="D1DBD840-3D0A-4F3A-A45E-719B4DF67F66" name="enable_people">true</param>
   <param class="people" description="5A75D095-82D6-41A1-933A-E3F11A231729" name="portrait_size">image</param>
-  <param class="people" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" name="default_biography"></param>
+  <param class="people" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" name="default_biography">1</param>
   <param class="events" description="48C77594-AA7C-4424-90F8-BCA2EFFF7546" name="enable_events">false</param>
 </settings>

@@ -90,6 +90,7 @@ module Roxiware
          result_series = response["GoodreadsResponse"]["series"]
 	       
 	 works = []
+	 puts "SERIES ID #{result_series['title'].strip} #{series_id}"
 	 result_series["series_works"]["series_work"].each do |work_data|
 	    order = work_data["user_position"]["__content__"]
 	    parser = ::XML::Parser.io(StringIO.new(work_data["__content__"]))
@@ -99,13 +100,15 @@ module Roxiware
 	    if(!options[:simple_book_info])
 	       works << get_book(book_id, goodreads_options)
 	    else
-	       title = work_node.find_first('title').content
-	       title=title.strip
+	       title = work_node.find_first('title').content.strip
+	       match = /^\s*([^\(]*).*/.match(title)
+	       title = match[1] if match.present?
 	       author = {:author_name=>work_node.find_first('//author//name').content, :goodreads_id=>work_node.find_first('//author/id').content}
-	       works << {:id=>work_node.find_first("id").content, :title=>title.strip, :authors=>[author]}
+	       works << {:id=>work_node.find_first("id").content, :title=>title, :authors=>[author]}
 	    end
             works[-1][:order] = order
 	 end
+	 works.sort!{|x, y| x[:order].to_f <=> y[:order].to_f}
 	 result = {:title=>result_series['title'].strip, 
 		   :goodreads_id=>series_id,
 		   :books=>works,
@@ -124,8 +127,10 @@ module Roxiware
 
         if series_ids.blank? && options[:goodreads_author_id].present?
 	      response = self.class.get("/series/list/#{options[:goodreads_author_id]}.xml", :query=>options)
-	      raise ::Roxiware::Goodreads::GoodreadsServerException.new("Our book dataservice is currently offine.  Please try again later.") if response.blank? || response["GoodreadsResponse"].blank? || response["GoodreadsResponse"]["series_works"].blank? || response["GoodreadsResponse"]["series_works"]["series_work"].blank?
-	      series_works = response["GoodreadsResponse"]["series_works"]["series_work"]
+	      raise ::Roxiware::Goodreads::GoodreadsServerException.new("Our book dataservice is currently offine.  Please try again later.") if response.blank? || response["GoodreadsResponse"].blank? 
+	      series_works = []
+	      series_works = response["GoodreadsResponse"]["series_works"]["series_work"] if response["GoodreadsResponse"]["series_works"].present? &&response["GoodreadsResponse"]["series_works"]["series_work"].present? 
+
 	      if series_works.class == Hash
 	         series_works = [series_works]
 	      end
@@ -194,8 +199,11 @@ module Roxiware
 	    if match
 	       large_image = match[1]+"l"+match[2]
 	    end
+               title = result_book['title'].strip
+	       match = /^\s*([^\(]*).*/.match(title)
+	       title = match[1] if match.present?
 
-	    result = {    :title=>result_book['title'].strip,
+	    result = {    :title=>title,
 			  :large_image_url=>large_image,
 			  :image_url=>result_book['image_url'],
 			  :thumbnail_url=>result_book['small_image_url'],
@@ -277,9 +285,7 @@ module Roxiware
         goodreads_options = options
         goodreads_options.merge!({:key=>@goodreads_key, :v=>2})
 	goodreads_options[:format] = "xml"
-        puts "GETTING FOR AUTHOR #{goodreads_id}"
 	response = self.class.get("/author/list/#{goodreads_id}.xml", :query=>goodreads_options)
-	puts response.inspect
         raise ::Roxiware::Goodreads::GoodreadsServerException.new("Our book dataservice is currently offine.  Please try again later.") if response.blank? || response["GoodreadsResponse"].blank? || response["GoodreadsResponse"]["author"].blank? || response["GoodreadsResponse"]["author"]["books"].blank?
         books = response["GoodreadsResponse"]["author"]["books"]["book"]
 	if (books.class == Hash)

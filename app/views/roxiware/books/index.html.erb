@@ -1,12 +1,12 @@
 
 <section class="series_listings">
   <% @series.each do |series| %>
-    <%= render :partial=>"series",  :locals=>{:series=>series} %>
+    <%= render :partial=>"series",  :locals=>{:series=>series, :series_book_description_length=>@series_book_description_length} %>
    <% end %>
 </section>
 <section class="book_listings">
   <% @books.each do |book| %>
-    <%= render :partial=>"book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_excerpt_length} %>
+    <%= render :partial=>"book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
   <% end %>
 </section>
 <% if can? :edit, Roxiware::Book %>

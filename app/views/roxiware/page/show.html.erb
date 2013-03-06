@@ -1,10 +1,26 @@
 <div class="span-1">&nbsp;</div>
 <section class="page_content">
   <% if (can? :edit, @page) %>
-    <%= button_tag "Edit", :id=>"edit-#{@page.page_type}", :class=>"page_edit button_edit", :type=>"button" %>
-    <br/>
+    <ul id="page_index_application_menu" class="application_menu"><li><a rel="<%= edit_page_path(@page.page_type) %>" form="Edit <%= @page.page_type.titleize %>">Edit <%= @page.page_type.titleize %></a></li></ul>
+ 
+    <ul id="page_context_menu" class="context_menu">
+       <li id="edit_page"><a menu_item="edit_page">Edit <%= @page.page_type.titleize %></a></li>
+    </ul>
   <% end %>
   <%= raw @page.content %>
 </section>
+<script>
+$(function() {
+    $("#mainBody").context_menu("#page_context_menu");
+
+    $("#mainBody").on("context_menu", function(event, menu_item) {
+       switch (menu_item) {
+	  case "edit_page":
+	    settingsForm("<%= edit_page_path(@page.page_type) %>", "Edit <%= @page.page_type.titleize %>");
+	    break;
+       }});
+
+});
+</script>
 
 

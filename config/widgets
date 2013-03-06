@@ -1220,6 +1220,7 @@ $(document).bind("ready", function() {
 		     oneInstance: true,
 		     zIndex: 20000,
 		     load:false,
+                     fixed:false,
 		     closeOnClick: true,
 		     mask: {
 		       zIndex: 99997,

@@ -9,8 +9,9 @@
           book_description = book.description
        end 
     %>
-    <div class="book_description"><%= raw book_description %></div><br/>
+    <div class="book_description"><%= raw book_description %></div>
 
+    <br style="clear:both"/>
     <% bookstores = book.get_param("bookstores")
        bookstore_list = []
        if bookstores.present? && bookstores.a.present?
@@ -22,7 +23,7 @@
        end
        if bookstore_list.present? %>
           <div class="bookstore_list">
-	   Buy It: <ul class="book_purchase_bar">
+	     <ul class="book_purchase_bar">
 	       <% bookstore_list.each do |bookstore| %>
 		   <li class="book_store" id="<%= bookstore.h['store_id'].to_s %>">
 		       <% edition = bookstore.h['children'].a[0] %>

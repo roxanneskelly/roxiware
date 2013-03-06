@@ -15,7 +15,7 @@ class Roxiware::PeopleController < ApplicationController
   def index
     @title = @title + " : People"
     people = Roxiware::Person.all
-    @person = Roxiware::Person.where(:seo_index=>@default_biography).first if @default_biography.present?
+    @person = Roxiware::Person.where(:id=>@default_biography).first if @default_biography.present?
     @person = nil if cannot? :read, @person
     # iterate each person to see if user can read them
     @people = people.select { |person| can? :read, person }
@@ -101,10 +101,10 @@ class Roxiware::PeopleController < ApplicationController
   def create
     respond_to do |format|
       if @person.update_attributes(params[:person], :as=>@role)
-        format.html { redirect_to @person, :notice => 'Person was successfully created.' }
+        format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully created.' }
         format.json { render :json => @person, :status => :created, :location => @person }
       else
-        format.html { redirect_to @persone, :notice => "Couldn't create person." }
+        format.html { redirect_to "/biography/#{@person.seo_index}", :notice => "Couldn't create person." }
         format.json { render :json => report_error(@person) }
       end
     end
@@ -115,10 +115,10 @@ class Roxiware::PeopleController < ApplicationController
   def update
     respond_to do |format|
         if @person.update_attributes(params[:person], :as=>@role)
-	   format.html { redirect_to @person, :notice => 'Person was successfully updated.' }
+	   format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully updated.' }
            format.json { render :json => @person }
 	else
-	   format.html { redirect_to @person, :notice => 'Failure updating person.' }
+	   format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Failure updating person.' }
 	   format.json { head :fail }
 	end
     end

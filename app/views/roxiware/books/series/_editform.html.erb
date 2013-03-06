@@ -261,13 +261,8 @@ div#series_books .book_title, div#current_books .book_title
      <div class="series_edit">
        <div class="pane_content">
 	 <%= form_for @series do |series| %>
-	           <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
-                   <img id="book_image" src="<%= @series.image %>" class="upload_target" upload_sizes="large,medium,small,xsmall,thumbprint"/>
-		   <input type="hidden" name="image_thumbprint"/>
 		   <div class="wizard_step">Edit your series details.</div>
 		   <div class="wizard_instructions">These details will be displayed to people who visit your site.  You can optionally upload an image that's associated with your series, such as a book cover or image of your characters.</div>
-		   <%= series.hidden_field :image %>
-		   <%= series.hidden_field :small_image %>
 		   <%= series.label :title, "Title"%>
 		   <%= series.text_field :title %>
 		   <br style="clear:both"/>
@@ -570,15 +565,5 @@ div#series_books .book_title, div#current_books .book_title
       });
       
 
-     $(".series_edit_form img.upload_target").bind("click", function() {
-      imageDialog({
-	     raw_upload: true,
-	     onSuccess: function(url, type, thumbprint) {
-                 $(".series_edit_form input[name=image]").val(url);
-                 $(".series_edit_form input[name=small_image").val(url);
-                 $(".series_edit_form img.upload_target").attr("src", url);
-             }
-      });
-    });
    });
 </script>

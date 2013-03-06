@@ -9,6 +9,7 @@
   <% end %>
   <%= raw @page.content %>
 </section>
+<% if (can? :edit, @page) %>
 <script>
 $(function() {
     $("#mainBody").context_menu("#page_context_menu");
@@ -22,5 +23,5 @@ $(function() {
 
 });
 </script>
-
+<% end %>
 

@@ -92,7 +92,7 @@ module Roxiware
 	    xml_layouts.layout(:version=>"1.0", :guid=>self.guid) do |xml_layout|
 	       xml_layout.name self.name
 	       xml_layout.description {|s| s.cdata!(self.description.strip)}
-	       xml_layout.setup {|s| s.cdata!(self.setup.strip)}
+	       xml_layout.setup {|s| s.cdata!((self.setup || "").strip)}
 	       xml_layout.categories do |xml_categories|
                   self.terms.each do |term|
 		     xml_categories.category do |xml_category|
@@ -170,7 +170,12 @@ module Roxiware
 	  end
 
 	  def get_layout_scheme_params(layout_scheme)
-	     Hash[get_param("layout_schemes").h[layout_scheme].h["scheme_params"].h.collect{|name, param| [name, param.conv_value]}]
+	     result = {}
+	     layout_scheme = get_param("layout_schemes").h[layout_scheme] if get_param("layout_schemes").present?
+	     if(layout_scheme.present? && layout_scheme.h["scheme_params"].present?) 
+	       result = Hash[layout_scheme.h["scheme_params"].h.collect{|name, param| [name, param.conv_value]}]
+	     end
+	     result
 	  end
 
 	  def resolve_layout_params(layout_scheme, controller, action)

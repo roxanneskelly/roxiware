@@ -1,6 +1,10 @@
+   <% if can? :edit, Roxiware::Layout::Layout %>
    <%= render :partial=>"roxiware/shared/context_menus" %>
+   <% end %>
   <script>
+   <% if can? :edit, Roxiware::Layout::Layout %>
   $(".widget").context_menu($("#widget_context_menu"));
+   <% end %>
   $(document).bind("ready", function() {
      $("BUTTON").button();
    <%  if (can? :move, Roxiware::Layout::WidgetInstance) %>

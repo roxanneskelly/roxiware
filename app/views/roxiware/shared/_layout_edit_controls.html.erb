@@ -5,7 +5,7 @@
        <div id="settings_menu" class="ddsmoothmenu"><ul><li id="account">Account<ul>
 	       <li><a href="<%= destroy_session_path('user') %>">Log Out</a></li>
 	       <li><a rel="<%= edit_account_path(@current_user.id) %>" form="Edit Account">Edit</a></li>
-	       <li><a rel="destroy_session_path<%= edit_account_path(@current_user.id) %>" form="Change Password">Change Password</a></li>
+	       <li><a rel="<%= account_update_password_path %>" form="Change Password">Change Password</a></li>
 	   </ul></li><li id="settings_menu">Settings<ul>
 		  <li id="layout_picker"><a rel="<%= layout_index_path %>" form="Choose Template">Template</a></li>
 		  <li id="system_settings"><a rel="<%= setting_path('system') %>" form="General Settings">General</a></li>

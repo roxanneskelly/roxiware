@@ -669,6 +669,33 @@
 	return  jtp_api;
     }
 
+
+    $.fn.watermark =  function() {
+	this.each(function() {
+            if($(this).val() == "") {
+                $(this).val($(this).attr("watermark"));
+                $(this).addClass("watermark");
+             }
+
+	     $(this).blur(function(){
+		if ($(this).val().length == 0)
+		    $(this).val($(this).attr("watermark")).addClass("watermark");
+	      }).focus(function() {
+		if ($(this).hasClass("watermark")) {
+		   $(this).val('').removeClass("watermark");
+		}
+	      });
+	});
+
+	var self = this;
+	$("form").submit(function() {
+	    self.each(function() {
+	        if($(this).hasClass("watermark")) {$(this).val(""); }
+		});
+	});
+
+    }
+
 })(jQuery);
 
 function settingsForm(url, title)
@@ -741,8 +768,6 @@ function colorToHex(color) {
     var rgb = blue | (green << 8) | (red << 16);
     return digits[1] + '#' + rgb.toString(16);
 };
-
-
 
 function imageDialog(conf)
 {

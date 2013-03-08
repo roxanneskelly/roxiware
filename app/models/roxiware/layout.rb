@@ -19,12 +19,13 @@ module Roxiware
 	end
 
         def style_params
+	    puts "STYLE PARAMS for " + self.inspect
 	    Hash[self.params.where(:param_class=>:style).collect {|param| [param.name, param.conv_value]}]
         end
 
         def eval_style(params)
-	      style_class = StyleRenderClass.new(params)
-	      ERB.new(self.style).result(style_class.get_binding)
+	    style_class = StyleRenderClass.new(params)
+	    ERB.new(self.style).result(style_class.get_binding)
 	end
      end
 
@@ -150,22 +151,26 @@ module Roxiware
              page_layout = find_page_layout(controller, action)
 
 	     if(layout_scheme != @current_layout_scheme) 
+	         @current_layout_scheme = layout_scheme
 	         @layout_params_cache = nil
+	         @compiled_style_cache = nil
              end
 	     
 	     if(@layout_params_cache.blank?) 
+	        puts "CREATE LAYOUT PARAMS CACHE"
 	        @layout_params_cache = get_layout_scheme_params(layout_scheme).merge(style_params)
                 @compiled_style_cache = nil
 		page_layout.refresh_styles
              end
 
              if(@compiled_style_cache.nil?)
+	        puts "CREATE STYLE PARAMS CACHE"
                  @compiled_style_cache = Sass::Engine.new(eval_style(@layout_params_cache).strip, {
 	             :style=>:expanded,
 		     :syntax=>:scss,
                      :cache=>false
                  }).render() 
-            end
+             end
 	     @compiled_style_cache + page_layout.get_styles(@layout_params_cache)
 	  end
 

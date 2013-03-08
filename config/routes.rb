@@ -30,6 +30,8 @@ Roxiware::Engine.routes.draw do
 
   get "/account/edit" => "account#edit", :id => 0, :as=>"edit_self"
   put "/account/edit" => "account#update", :id => 0, :as=>"edit_self"
+  get "/account/update_password" => "account#edit_password"
+  put "/account/update_password" => "account#update_password"
   get "/admin" => "account#index"
   resources :account
 

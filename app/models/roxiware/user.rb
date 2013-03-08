@@ -42,6 +42,14 @@ module Roxiware
       self.person.first_name=name unless self.person.nil?
     end
 
+    def middle_name
+      self.person.middle_name unless self.person.nil?
+    end
+
+    def middle_name=(name)
+      self.person.middle_name=name unless self.person.nil?
+    end
+
     def last_name
       self.person.last_name unless self.person.nil?
     end

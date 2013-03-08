@@ -1,5 +1,5 @@
-<div class="account_edit_overlay popup_form overlay" id="account_edit_overlay">
-  <%= form_for @user do |user| %>
+<div class="account_edit_form small_form" id="account_edit_form">
+  <%= form_for @user, :url=>account_path do |user| %>
       <%= user.label :role, "Role"%>
       <% role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} %>
       <% role_options["Super"] = :super if current_user.role == "super" %>
@@ -7,27 +7,34 @@
       <br/>
 
       <%= user.label :username, "Username" %>
-      <%= user.text_field :username, nil %>
+      <%= user.text_field :username %>
       <br/>
 
       <%= user.label :name, "Name"%>
-      <%= user.text_field_ :first_name, nil, :altname=>:seo_index %>
-      <%= user.text_field :last_name, nil, :altname=>:seo_index %>
+      <%= user.text_field :first_name, :altname=>:seo_index, :watermark=>"First" %>
+      <%= user.text_field :middle_name, :altname=>:seo_index, :watermark=>"Middle" %>
+      <%= user.text_field :last_name, :altname=>:seo_index, :watermark=>"Last" %>
       <br/>
 
       <%= user.label :email, "Email"%>
-      <%= user.text_field :email, nil %>
+      <%= user.text_field :email %>
       <br/>
 
-      <%= user.label :password, "Password"%>
-      <%= user.password_field :password, nil, :autocomplete=>"off" %>
-      <br/>
+      <% if(@role != "self") %>
+	 <%= user.label :password, "Password"%>
+	 <%= user.password_field :password, :autocomplete=>"off", :watermark=>"*******" %>
+	 <br/>
 
-      <%= user.label :password_confirmation, "Confirm"%>
-      <%= user.password_field :password_confirmation, nil %>
+	 <%= user.label :password_confirmation, "Confirm"%>
+	 <%= user.password_field :password_confirmation  %>
+      <% end %>
       <br/>
       <%= button_tag "Save", :id=>"save", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
   <% end %>
 </div>
+<script>
+$(function() {
+  $("input[watermark]").watermark();
+});
 
 

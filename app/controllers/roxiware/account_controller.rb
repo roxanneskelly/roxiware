@@ -101,25 +101,68 @@ class Roxiware::AccountController < ApplicationController
     if params.has_key?("user")
       update_params=params["user"]
     end
-    if update_params[:password].blank?
+    if (@role == "self") || update_params[:password].blank?
       update_params.delete(:password)
       update_params.delete(:password_confirmation) if update_params[:password_confirmation].blank?
     end
 
     respond_to do |format|
       if !@user.update_attributes(update_params, :as=>current_user.role)
-         format.html { redirect_to "/account/edit", :notice=>flash_from_object_errors(@user) } 
+         format.html { redirect_to "/", :notice=>flash_from_object_errors(@user) } 
          format.json { render :json=>report_error(@user)}
       else
-          format.json { render :json => @user.ajax_attrs(@role) }
-        if update_params.has_key?("password")
-          format.html { redirect_to "/", :notice=>"User successfully updated.  You must log in again."}
-	else
-	  format.html { redirect_to "/account/edit",  :notice=>"User successfully updated" }
-	end
+         format.json { render :json => @user.ajax_attrs(@role) }
+         if update_params.has_key?("password")
+             format.html { redirect_to "/", :notice=>"User successfully updated.  You must log in again."}
+	 else
+	     format.html { redirect_to "/",  :notice=>"User successfully updated" }
+	 end
       end
     end
   end
+
+  # GET - return form for editing the current users password
+  def edit_password
+    @robots="noindex,nofollow"
+    @user = Roxiware::User.find(current_user.id) unless current_user.nil?
+    raise ActiveRecord::RecordNotFound if @user.nil?
+    authorize! :edit, @user
+    
+    respond_to do |format|
+      format.html { render :partial =>"roxiware/account/change_password" }
+    end
+  end
+
+  # PUT - update a users password
+  def update_password
+    @robots="noindex,nofollow"
+    @user = Roxiware::User.find(current_user.id)
+    @role = "self"
+    raise ActiveRecord::RecordNotFound if @user.nil?
+    authorize! :edit, @user
+    update_params = params
+    if params.has_key?("user")
+      update_params=params["user"]
+    end
+
+    respond_to do |format|
+        if(update_params[:password].blank?) 
+	    format.html { redirect_to "/",  :alert=>"Password cannot be blank." }
+	elsif @user.valid_password?(update_params[:current_password]) 
+	    puts "updating attributes " + update_params.inspect
+	    if !@user.update_attributes(update_params, :as=>current_user.role)
+	       format.html { redirect_to "/", :alert=>flash_from_object_errors(@user) } 
+	    else
+	      format.html { redirect_to "/",  :notice=>"Password successfully updated.  You will need to log in again." }
+	    end
+	else
+	    format.html { redirect_to "/",  :alert=>"Current password is invalid" }
+	end
+
+     end
+  end
+
+
 
   # DELETE - delete a user
   def destroy

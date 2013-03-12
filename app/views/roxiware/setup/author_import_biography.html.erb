@@ -15,9 +15,6 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
 <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "Skip >>", :id=>"skip_import", :value=>"skip", :type=>"button" %></div>
 <script>
   $(function() {
-     $("form").submit(function() {
-        $("input.setup_watermark").val("");
-     });
 
      $("button#back_button,button#skip_import").click(function() {
         $("input#setup_action").val($(this).attr("id"));

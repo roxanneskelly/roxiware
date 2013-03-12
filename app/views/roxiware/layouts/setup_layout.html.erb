@@ -44,24 +44,7 @@
 <script>
    $(function() {
       $("button").button();
-      $("input[watermark]").each(function(index, input) {
-         if($(input).val() == "") {
-            $(input).val($(input).attr("watermark"));
-            $(input).addClass("setup_watermark");
-         }
-      });
-     $("form").submit(function() {
-        console.log("clear watermarks");
-        $("input.setup_watermark").val("");
-     });
-      $("input[watermark]").blur(function(){
-         if ($(this).val().length == 0)
-             $(this).val($(this).attr("watermark")).addClass("setup_watermark");
-       }).focus(function() {
-         if ($(this).hasClass("setup_watermark")) {
-            $(this).val('').removeClass("setup_watermark");
-         }
-       });
+      $("input[watermark]").watermark();
    });
 </script>
 

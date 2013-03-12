@@ -28,9 +28,9 @@
 $(function() {
    var layouts = <%= raw @layouts.to_json %>;
    if(layouts["<%=selected_template%>"] &&
-       layouts["<%=selected_template%>"]['layout_schemes'] &&
-       layouts["<%=selected_template%>"]['layout_schemes']["<%=selected_scheme%>"]) {
-       layouts["<%=selected_template%>"]['layout_schemes']["<%=selected_scheme%>"]['selected'] = true;
+       layouts["<%=selected_template%>"]['schemes'] &&
+       layouts["<%=selected_template%>"]['schemes']["<%=selected_scheme%>"]) {
+       layouts["<%=selected_template%>"]['schemes']["<%=selected_scheme%>"]['selected'] = true;
    }
    $("button").button();
 
@@ -86,8 +86,8 @@ $(function() {
 
 		  $("div#template_popup div#schemes").html("");
 		  $("div#template_popup div#left_pane").html("");
-		  $.each(layout['layout_schemes'], function(index, layout_scheme){
-		     $("div#template_popup div#schemes").append($("<a class='template_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_url']+"'/><div class='template_scheme_name'>"+layout_scheme['name']+"</div></a>"));
+		  $.each(layout['schemes'], function(index, layout_scheme){
+		     $("div#template_popup div#schemes").append($("<a class='template_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_image']+"'/><div class='template_scheme_name'>"+layout_scheme['name']+"</div></a>"));
 		     var layout_images = $("<div class='layout_image_block'><div class='layout_image_block_images'></div><div class='layout_image_block_tabs'></div></div>");
 		     $.each(layout_scheme['large_images'], function(index, image) {
 			layout_images.find(".layout_image_block_images").append("<div><img src='"+image+"'/></div>");

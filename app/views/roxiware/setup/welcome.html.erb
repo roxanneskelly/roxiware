@@ -8,25 +8,21 @@ Let's get started.  First, lets set up an account.  You will use this account to
 <br/>
 <br/>
 <%= form_tag '/setup', :method=>"put", :authenticity_token=>false do -%>
-  <%= label_tag "Email" %><%= email_field_tag :email, params[:email] || "my@email.com", { :autocomplete=>"off", :class=>"setup_watermark", :watermark=>"my@email.com"}  %><br/><br/>
-  <%= label_tag "Username" %><%= text_field_tag :username, "myusername", { :autocomplete=>"off", :class=>"setup_watermark", :watermark=>"myusername"}  %><br/><br/>
-  <%= label_tag "Password" %><%= password_field_tag :password, "********", { :autocomplete=>"off", :class=>"setup_watermark", :watermark=>"********" }  %><br/>
-  <%= label_tag "Password Confirmation" %><%= password_field_tag :password_confirmation, "********", { :autocomplete=>"off", :class=>"setup_watermark", :watermark=>"********"} %><br/><br/>
+  <%= label_tag "Email" %><%= email_field_tag :email, params[:email] , { :autocomplete=>"off", :watermark=>"my@email.com"}  %><br/><br/>
+  <%= label_tag "Username" %><%= text_field_tag :username, "", { :autocomplete=>"off", :watermark=>"myusername"}  %><br/><br/>
+  <%= label_tag "Password" %><%= password_field_tag :password,  "", { :autocomplete=>"off", :watermark=>"********" }  %><br/>
+  <%= label_tag "Password Confirmation" %><%= password_field_tag :password_confirmation, "", { :autocomplete=>"off", :watermark=>"********"} %><br/><br/>
   <%= hidden_field_tag :setup_type, @setup_type %>
   <%= hidden_field_tag :setup_step, @setup_step %>
 <% end -%>
 <div class="setup_buttons"><%= button_tag "Create Account", :type=>"submit", :id=>"create_account", :disabled=>true %></div>
 <script>
 $(function() {
-     $("form").submit(function() {
-        $("input.setup_watermark").val("");
-     });
-
      $("#email, #username, #password, #password_confirmation").bind("input blur propertychange", function() {
         console.log("checking");
         var button_enable = "enable";
         $("#email, #username, #password, #password_confirmation").each(function(index, value) {
-          if ($(this).is(".setup_watermark") || ($(this).val().length == 0)) {
+          if ($(this).is(".watermark") || ($(this).val().length == 0)) {
              button_enable = "disable";
           }
         });

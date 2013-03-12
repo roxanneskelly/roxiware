@@ -60,8 +60,31 @@ module Roxiware
 				      :too_long => "The description can be no larger than ${count} characters."
 				      }
 
-	  edit_attr_accessible :description, :style, :setup, :name, :as=>[:super, nil]
-	  ajax_attr_accessible :guid, :as=>[:super, :admin, nil]
+	  edit_attr_accessible :description, :style, :setup, :name, :category_csv, :as=>[:super, nil]
+	  ajax_attr_accessible :guid, :category_csv, :as=>[:super, :admin, nil]
+
+
+	  def category_ids
+	    self.categories.collect{|term| term.id}
+	  end
+
+	  def category_ids=(category_ids)
+	      self.term_ids = (self.category_ids.to_set + category_ids.to_set).to_a
+	  end
+
+	  def category_csv
+	     self.categories.collect{|term| term.name}.join(", ")
+	  end
+
+	  def category_csv=(csv)
+	     category_strings = csv.split(",").collect {|x| x.gsub(/[^a-z0-9]+/i,' ').gsub(/\s+/,' ').strip.capitalize}.select{|y| !y.empty?}
+	     self.category_ids = Roxiware::Terms::Term.get_or_create(category_strings, Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME).map{|term| term.id}
+	  end
+
+	  def categories
+	    self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME))
+	  end
+
 
 	  def import(layout_node)
 	     self.guid = layout_node["guid"]
@@ -147,18 +170,18 @@ module Roxiware
 	     result
 	  end
 
-	  def get_styles(layout_scheme, controller, action)
+	  def get_styles(scheme, controller, action)
              page_layout = find_page_layout(controller, action)
 
-	     if(layout_scheme != @current_layout_scheme) 
-	         @current_layout_scheme = layout_scheme
+	     if(scheme != @current_scheme) 
+	         @current_scheme = scheme
 	         @layout_params_cache = nil
 	         @compiled_style_cache = nil
              end
 	     
 	     if(@layout_params_cache.blank?) 
 	        puts "CREATE LAYOUT PARAMS CACHE"
-	        @layout_params_cache = get_layout_scheme_params(layout_scheme).merge(style_params)
+	        @layout_params_cache = get_params(scheme).merge(style_params)
                 @compiled_style_cache = nil
 		page_layout.refresh_styles
              end
@@ -174,16 +197,16 @@ module Roxiware
 	     @compiled_style_cache + page_layout.get_styles(@layout_params_cache)
 	  end
 
-	  def get_layout_scheme_params(layout_scheme)
+	  def get_params(scheme)
 	     result = {}
-	     layout_scheme = get_param("layout_schemes").h[layout_scheme] if get_param("layout_schemes").present?
-	     if(layout_scheme.present? && layout_scheme.h["scheme_params"].present?) 
-	       result = Hash[layout_scheme.h["scheme_params"].h.collect{|name, param| [name, param.conv_value]}]
+	     scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
+	     if(scheme.present? && scheme.h["params"].present?) 
+	       result = Hash[scheme.h["params"].h.collect{|name, param| [name, param.conv_value]}]
 	     end
 	     result
 	  end
 
-	  def resolve_layout_params(layout_scheme, controller, action)
+	  def resolve_layout_params(scheme, controller, action)
 	     if @layout_params.nil?
 	        @layout_params = {}
 	        self.params.where(:param_class=>:local).each do |param|

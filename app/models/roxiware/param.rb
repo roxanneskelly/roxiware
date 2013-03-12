@@ -22,15 +22,22 @@ module Roxiware
 	      @param_objs[name.to_sym]
 	    end
 
-	    def set_param(name, value)
+	    def set_param(name, value, description_guid=nil, param_class=nil)
 	      get_param_objs
-	      if (@param_objs[name.to_sym].param_object_type != "Roxiware::Layout::WidgetInstance")
-		 @param_objs[name.to_sym] = self.params.build(
-		    {:param_class=> @param_objs[name.to_sym].param_class,
-		     :name=> @param_objs[name.to_sym].name,
-		     :description_guid=>@param_objs[name.to_sym].description_guid,
-		     :value=>value})
-	      end
+	      return nil if (@param_objs[name.to_sym].present? && (@param_objs[name.to_sym].param_object_type == "Roxiware::Layout::WidgetInstance"))
+	      if (@param_objs[name.to_sym].present?) 
+	         param_class ||= @param_objs[name.to_sym].param_class
+		 description_guid ||= @param_objs[name.to_sym].description_guid
+	         @param_objs[name.to_sym].destroy
+              end
+	      param_class ||= :local
+	      puts "SETTING PARAM #{param_class}|#{name}(#{description_guid}) #{value}"
+	      @param_objs[name.to_sym] = self.params.build(
+		    {:param_class=> param_class,
+		     :name=> name,
+		     :description_guid=>description_guid,
+		     :value=>value}, :as=>"")
+	      @param_objs[name.to_sym]
 	    end
 
 	    def get_param_objs
@@ -46,6 +53,7 @@ module Roxiware
 
       class Param < ActiveRecord::Base
           include Roxiware::BaseModel
+	  include ParamClientBase
           self.table_name= "params"
 
 	  

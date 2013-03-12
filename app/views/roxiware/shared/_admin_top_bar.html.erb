@@ -22,8 +22,8 @@
 		      <li id="gallery_settings"><a rel="<%= setting_path('gallery') %>" form="Gallery Settings">Gallery</a></li>
 		  <% end %>
 	      </ul>
-	   </li><% if can? :edit, @current_layout %><li id="layout_menu">Layout<ul>
-		  <li id="edit_layout"><a rel="<%=layout_path(@current_layout.guid)%>" form="Template Settings">Template</a></li>
+	   </li><% if can? :edit, @current_layout %><li id="layout_menu">Design<ul>
+		  <li id="edit_layout"><a rel="<%=layout_path(@current_layout.guid)%>" form="Layout Settings">Layout</a></li>
 		  <li id="edit_page"><a rel="<%=layout_page_path(@current_layout.guid, @page_layout.id)%>" form="Page Settings">Page</a></li>
 		</ul>
 	     </li>

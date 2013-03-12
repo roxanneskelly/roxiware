@@ -79,9 +79,6 @@ module Roxiware
     end
 
     def category_ids=(category_ids)
-        puts "TAG IDS " + self.tag_ids.to_set.inspect
-        puts "CAT IDS " + category_ids.to_set.inspect
-        puts "TERM IDS " +( self.tag_ids.to_set + category_ids.to_set).inspect
         self.term_ids = (self.tag_ids.to_set + category_ids.to_set).to_a
     end
 

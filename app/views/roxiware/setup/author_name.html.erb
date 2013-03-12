@@ -7,9 +7,9 @@ You can change this later, of course</br>
 
 <%= form_tag '/setup', :method=>"put" do %>
    <%= label_tag "Name" %>
-   <%= text_field_tag :first_name, "First", :class=>"setup_watermark", :watermark=>"First" %> 
-   <%= text_field_tag :middle_name, "Middle", :class=>"setup_watermark", :watermark=>"Middle" %>
-   <%= text_field_tag :last_name, "Last", :class=>"setup_watermark", :watermark=>"Last" %>
+   <%= text_field_tag :first_name, "", :watermark=>"First" %> 
+   <%= text_field_tag :middle_name, "", :watermark=>"Middle" %>
+   <%= text_field_tag :last_name, "", :watermark=>"Last" %>
 
    <br/>
    <br/>
@@ -31,7 +31,7 @@ You can change this later, of course</br>
      $("#first_name, #middle_name, #last_name").bind("input blur propertychange", function() {
         var button_enable = "disable";
         $("#first_name, #middle_name, #last_name").each(function(index, value) {
-          if ((!$(this).is(".setup_watermark")) && ($(this).val().length > 0)) {
+          if ((!$(this).is(".watermark")) && ($(this).val().length > 0)) {
              button_enable = "enable";
           }
         });
@@ -41,9 +41,6 @@ You can change this later, of course</br>
      $("button#back_button,button#skip_import,button#import").click(function() {
         $("input#setup_action").val($(this).attr("id"));
         $("form").submit();
-     });
-     $("form").submit(function() {
-        $("input.setup_watermark").val("");
      });
   });
 </script>

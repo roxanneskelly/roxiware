@@ -729,7 +729,7 @@ function settingsForm(url, title)
 		         overlay.remove();
 	         },
 		 onLoad: function(event) {
-    $("textarea.settings_wysiwyg").wysiwyg({ css: "<%= stylesheet_path('application') %>",
+    $("textarea.settings_wysiwyg").wysiwyg({ css: "<%= raw stylesheet_path('application') %>",
                                        iFrameClass:"wysiwyg_iframe",
                                        controls: {
                                           undo: { visible: false },
@@ -834,7 +834,6 @@ function imageDialog(conf)
        minSizeLimit: options.minSizeLimit,
        onSubmit: function(id, filename) {
 	   // replace upload button with progress bar
-	   console.log("submit " + filename);
 	   overlay_dialog.find("button#upload_button").css("display","none");
 	   overlay_dialog.find("div#progress_section").css("display",'');
 	   overlay_dialog.find("div#progres_bar div#progress").css("width", "0%");
@@ -845,16 +844,12 @@ function imageDialog(conf)
            });
        },
        onProgress: function(id, filename, loaded, total) {
-	   console.log("progress " + filename + " "+loaded+"/"+total);
 	   var progress = String(Math.round((loaded*90)/total));
 	   overlay_dialog.find("div#progress_bar div#progress").css("width", progress + "%");
        },
        onComplete: function(id, filename, json_data) {
-	   console.log("complete " + filename);
-	   console.log(json_data);
 	   overlay_dialog.find("button#upload_button").css("display",'');
 	   overlay_dialog.find("div#progress_section").css("display",'none');
-           console.log(json_data);
 	   if(json_data["success"]) {
 	       overlay_dialog.find("div#image_preview img").attr("src", json_data["urls"][options.previewSize]);
 	       overlay_dialog.data().upload_result = {urls:json_data["urls"], thumbprint:json_data["thumbprint"]};
@@ -890,7 +885,6 @@ function imageDialog(conf)
       onBeforeLoad: function () {
           overlay_dialog.find("button[name=save]").click(function (e) {
 	      e.preventDefault();
-              console.log("setting up save");
 	      if(overlay_dialog.data().upload_result) {
 		   options.onSuccess(overlay_dialog.data().upload_result);
 	      }

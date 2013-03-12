@@ -89,7 +89,6 @@ class Roxiware::BooksController < ApplicationController
       end
     end
 
-    puts "IMPORT " + result.inspect
     respond_to do |format|
       format.json { render :json => result }
     end

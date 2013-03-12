@@ -1,0 +1,217 @@
+<div class="layout_edit_form large_form" id="layout_edit_form">
+   <%= form_for @layout, :as=>:layout, :url=>"/layout/#{@layout.guid}", :method=>"put" do |layout_form|%>
+     <div class="tab_form">
+       <ul class="tabs">
+	 <li><a href="#">General</a></li>
+	 <li><a href="#">Schemes</a></li>
+	 <li><a href="#">Style</a></li>
+	 <li><a href="#">Setup</a></li>
+       </ul>
+       <div class="panes">
+	 <div id="general_pane">
+	   <%= layout_form.label :name, "Name"%><%= layout_form.text_field :name %>
+	   <%= layout_form.fields_for :params do |fields_for_params| %>
+	     <div id="layout_chooser_image">
+		 <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
+		 <img id="layout_image_upload" class="upload_target" src="<%= @layout.get_param('chooser_image').to_s %>" />
+	         <%= fields_for_params.hidden_field :chooser_image, :value=>@layout.get_param("chooser_image").to_s %>
+	     </div>
+	     <%= layout_form.text_area :description, :class=>"settings_wysiwyg" %>
+	     <div id="template_settings">
+	          <%= layout_form.label :category_csv, "Categories"%><%= layout_form.text_field :category_csv  %>
+		  <% @layout.params.where(:param_class=>:local).order(:name).each do |param| %>
+		      <%= param_field(fields_for_params, param) %>
+		  <% end %>
+		  <%= layout_form.fields_for :param_descriptions do |param_description_fields| %>
+		      <% @layout.params.where(:param_class=>:local).order(:name).each do |param| %>
+		         <%= param_description_fields.hidden_field param.name, :value=>param.description_guid %>
+		      <% end %>
+		  <% end %>
+	     </div>
+	   <% end %>
+	 </div>
+	 <div id="schemes_pane">
+	   <div id="scheme_list_box" class="list_box">
+	       <div id="scheme_list" class="list_box_content">
+		 <% @schemes.each do |scheme_id, scheme| %>
+		     <div class="layout_scheme list_box_item" id="<%= scheme_id %>">
+		       <img class="scheme_thumbnail" src="<%= scheme[:thumbnail_image] %>" scheme_id="<%= scheme_id %>">
+		       <div class="layout_scheme_title"><%= scheme[:name] %></div>
+		     </div>
+		 <% end %>
+	       </div>
+	   </div>
+	   <div id="scheme_forms">
+	      <%= layout_form.fields_for :schemes do |schemes_fields| %>
+	         <% @schemes.each do |scheme_id, scheme| %>
+		    <div class="scheme_form" id="<%=scheme_id %>">
+		       <%= schemes_fields.fields_for scheme_id.to_sym do |fields_for_scheme| %>
+			  <div class="scheme_top_block">
+			    <%= fields_for_scheme.label :name, "Name"%><%= fields_for_scheme.text_field :name, :value=>scheme[:name], :class=>"scheme_name_field", :scheme_id=>scheme[:id] %>			  
+			    <img class="upload_target scheme_thumbnail" src="<%= scheme[:thumbnail_image] %>" scheme_id="<%= scheme_id %>"/>
+			  <%= fields_for_scheme.hidden_field :thumbnail_image, :value=>scheme[:thumbnail_image], :class=>"thumbnail_url" %></div>
+
+			  <br/>
+			  <div class="scheme_params">
+			      <%= fields_for_scheme.fields_for :params do |param_fields| %>
+				  <% scheme[:params].sort().collect{|scheme_dup| scheme_dup[1]}.each do |param| %>
+				     <%= param_field(param_fields, param) %>
+				  <% end %>
+			      <% end %>
+			      <%= fields_for_scheme.fields_for :param_descriptions do |param_description_fields| %>
+		                 <% scheme[:params].sort().collect{|scheme_dup| scheme_dup[1]}.each do |param| %>
+				    <%= param_description_fields.hidden_field param.name, :value=>param.description_guid %>
+				 <% end %>
+			      <% end %>
+			  </div>
+			  <div class="scheme_large_images">
+			    <%= fields_for_scheme.hidden_field :large_images, :class=>"template_large_image" %>
+			    <div class="scheme_large_image_panes">
+			      <% (scheme[:large_images] || []).each do |large_image_url| %>
+			         <div><img src="<%=large_image_url%>"/><div class="scheme_large_image_delete">x</div></div>
+			      <% end %>
+			    </div>
+			    <div class="scheme_large_image_tabs">
+			      <% if scheme[:large_images].present? %>
+				 <% for index in 1..(scheme[:large_images].length) %>
+				     <a class="layout_image_block_tab"><%=index%></a>
+				 <% end %>
+			      <% end %>
+			     <a class="scheme_large_image_add">+</a>
+			    </div>
+			  </div>
+	               <% end %>
+		   </div>
+	         <% end %>
+	      <% end %>
+	   </div>
+	 </div>
+	 <div id="style_pane">
+	    <%= layout_form.text_area :style, :class=>"layout_style" %>
+	 </div>
+	 <div id="setup_pane">
+	    <%= layout_form.text_area :setup, :class=>"layout_setup" %>
+	 </div>
+       </div>
+       </div>
+       <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
+       <%= button_tag "Save and Close", :id=>"save_and_close_button", :type=>"button", :class=>"save_button" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+
+      var config_large_image_tabs = function(self) {
+          var tabs_api = self.find(".scheme_large_image_tabs").data("tabs");
+          if(tabs_api) {
+             tabs_api.destroy();
+          }
+          self.find(".scheme_large_image_tabs .layout_image_block_tab").remove();
+          self.find(".scheme_large_image_tabs input").remove();
+          self.find(".scheme_large_image_panes > div").each(function(index, image) {
+              var input_template = self.find("input.template_large_image").clone();
+              input_template.attr("id", input_template.attr("id")+"_"+(index+1));
+              input_template.attr("name", input_template.attr("name")+"["+(index+1)+"]");
+              input_template.val($(image).find("img").attr("src"));
+              input_template.removeClass("template_large_image");
+
+              self.find(".scheme_large_image_tabs .scheme_large_image_add").before("<a class='layout_image_block_tab'>"+(index+1)+"</a>");
+              self.find(".scheme_large_image_tabs").append(input_template);
+	   });
+          self.find(".scheme_large_image_tabs").tabs(self.find(".scheme_large_image_panes > div"), {tabs:"a.layout_image_block_tab"});
+     }
+      $("#layout_edit_form ul.tabs").tabs($("div.panes > div"));
+      $("#scheme_list").tabs($("#scheme_forms > div"), 
+          {
+              current:"list_box_item_selected"
+          });
+
+      $("#scheme_forms .scheme_form .scheme_large_images").each(function(index, form) {
+         config_large_image_tabs($(form));
+      });
+
+      $(".scheme_large_image_delete").click(function() {
+          var self = $(this).parents(".scheme_large_images");
+          $(this).parent().remove();
+          config_large_image_tabs(self);
+      });
+      $(".scheme_large_image_add").click(function() {
+             var self = $(this).parents(".scheme_large_images");
+	     imageDialog({
+		  initialImage: "",
+		  previewSize:"large",
+		  uploadParams:{
+		    imageSizes: {
+		       large:  {width:300, height:360}
+		    }
+		  },
+		  sizeLimit: 10000000,
+		  onSuccess: function(upload_result){
+                      var new_image=$("<div><img src='"+upload_result["urls"]["large"]+"'><div class='scheme_large_image_delete'>x</div></div>");
+		      self.find(".scheme_large_image_panes").append(new_image);
+		      new_image.find(".scheme_large_image_delete").click(function() {
+			  $(this).parent().remove();
+			  config_large_image_tabs(self);
+		      });
+                      config_large_image_tabs(self);
+                }
+	    });
+       });
+
+      $("img#layout_image_upload").bind("click", function() {
+        imageDialog({
+	     initialImage: "<%= @layout.get_param('chooser_image').to_s %>",
+             previewSize:"thumbnail",
+             uploadParams:{
+               imageSizes: {
+                  thumbnail:  {width:120, height:120}
+               }
+             },
+             sizeLimit: 10000000,
+	     onSuccess: function(upload_result){
+                 $("input#layout_params_chooser_image").val(upload_result["urls"]["thumbnail"]);
+                 $("#layout_chooser_image img").attr("src", upload_result["urls"]["thumbnail"]);
+             }});
+       });
+
+      $("input.scheme_name_field").bind("input blur propertychange", function() {
+          var scheme_id = $(this).parents(".scheme_form").attr("id");
+          $("#"+scheme_id+".layout_scheme .layout_scheme_title").text($(this).val());
+      });
+
+      $(".layout_edit_form img.scheme_thumbnail").bind("click", function() {
+        var self=this;
+        imageDialog({
+	     initialImage: $(this).attr("src"),
+             previewSize:"thumbnail",
+             uploadParams:{
+               imageSizes: {
+                  thumbnail:  {width:32, height:32}
+               }
+             },
+             sizeLimit: 10000000,
+	     onSuccess: function(upload_result){
+                 var scheme_form = $(self).parents(".scheme_form");
+                 $(scheme_form).find("input.thumbnail_url").val(upload_result["urls"]["thumbnail"]);
+                 $("img[scheme_id="+scheme_form.attr("id")+"]").attr("src", upload_result["urls"]["thumbnail"]);
+             }});
+       });
+
+       $("#save_button,#save_and_close_button").click(function() {
+	   var endpoint = "<%= layout_path(@layout.guid) %>";
+           $("input.template_large_image").remove();
+	   $.ajax({
+	       url:endpoint,
+	       data:jQuery.param($("form").serializeArray()),
+	       processData:true,
+	       type:'PUT',
+	       success:function() {
+                  if($(this).is("#save_and_close_button")) {
+		      //window.location.reload();
+                  }
+	       }
+	   });         
+       });
+
+   });
+</script>

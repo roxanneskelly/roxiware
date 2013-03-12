@@ -18,7 +18,6 @@ class Roxiware::SetupController < ApplicationController
    def show
       template = [@setup_type, @setup_step].compact.join("_")
       setup_function = "_show_"+[@setup_type, @setup_step].compact.join("_")
-      puts "SETUP FUNCTION IS " + setup_function
       send("_show_"+[@setup_type, @setup_step].compact.join("_")) if respond_to?(setup_function, true)
       respond_to do |format|
         format.html {render :template=>"roxiware/setup/#{template}"}
@@ -83,7 +82,6 @@ class Roxiware::SetupController < ApplicationController
    end
 
    def _set_setup_step(setup_step)
-      puts "setting setup step to " + setup_step
       Roxiware::Param::Param.set_application_param("setup", "setup_step", "317C7D1C-7316-4B00-9E1F-931E2867B436", setup_step)
    end
 
@@ -212,7 +210,6 @@ class Roxiware::SetupController < ApplicationController
 	   _get_goodreads_author_books.each do |book|
 	       seo_books[book.title.to_seo] = book if (seo_books[book.title.to_seo].blank? || book.description.present?)
 	   end
-	   puts "ADDED " + seo_books.inspect
 	   @books = seo_books.values
        end
     end
@@ -237,7 +234,6 @@ class Roxiware::SetupController < ApplicationController
 	       books = [books]
             end
 	    books.each do |book|
-	       puts "ADDING BOOK " + book[:title]
 	       new_book = Roxiware::Book.new(book, :as=>@role)
 	       new_book.init_sales_links
 	       new_book.save!
@@ -267,7 +263,6 @@ class Roxiware::SetupController < ApplicationController
        @books = Roxiware::Book.all
        # filter series by books
        @books_by_goodreads_id = Hash[@books.select{|book| book.goodreads_id.present?}.collect{|book| [book.goodreads_id, book]}]
-       puts "BOOKS BY IDS " + @books_by_goodreads_id.inspect
 
        @series = []
        if current_user.person.goodreads_id
@@ -277,7 +272,6 @@ class Roxiware::SetupController < ApplicationController
 	       series[:books].each do |book|
 		  book[:book_id] = @books_by_goodreads_id[book[:id].to_i].id if @books_by_goodreads_id[book[:id].to_i].present?
 		  series[:book_ids] << book[:book_id] if book[:book_id]
-		  puts book[:order] + " " +book[:title]
 	       end
 
 	       if series[:book_ids].present?
@@ -301,7 +295,6 @@ class Roxiware::SetupController < ApplicationController
 	     ActiveRecord::Base.transaction do
 	        begin
 		  if !book_series.update_attributes(series, :as=>@role)
-		      puts book_series.errors.inspect
 		      success = false
 		  end 
 		  book_series.save!
@@ -333,12 +326,12 @@ class Roxiware::SetupController < ApplicationController
         category_ids = Set.new([])
         Roxiware::Layout::Layout.all.each do |layout|
   	   next if cannot? :read, layout
-	   layout_schemes = []
-	   layout.get_param("layout_schemes").h.each do |scheme_id, scheme|
+	   schemes = []
+	   layout.get_param("schemes").h.each do |scheme_id, scheme|
               large_image_urls = scheme.h["large_images"].a.each.collect{|image| image.conv_value}
-	      layout_schemes << {:id=>scheme_id,
+	      schemes << {:id=>scheme_id,
                         :name=>scheme.h["name"].to_s,
-                        :thumbnail_url=>scheme.h["thumbnail_image"].to_s,
+                        :thumbnail_image=>scheme.h["thumbnail_image"].to_s,
 			:large_images=>large_image_urls}
 	   end
 	    
@@ -349,10 +342,10 @@ class Roxiware::SetupController < ApplicationController
                           :thumbnail_url=>layout.get_param("chooser_image").to_s,
 			  :description=>layout.description,
 	                  :categories=>categories,
-                          :layout_schemes=>layout_schemes}
+                          :schemes=>schemes}
 	   if(@default_template.blank? && categories.blank?) 
 	       @default_template = layout.guid
-	       @default_scheme=layout_schemes[0][:id]
+	       @default_scheme=schemes[0][:id]
            end
 	   @layouts << layout_data
 	end

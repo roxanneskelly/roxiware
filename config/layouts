@@ -320,35 +320,35 @@ div.book_listing {
       <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_description_length">200</param>
       <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_description_length">500</param>
       <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
-      <param class="local" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="layout_schemes">
-        <param class="local" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="C6148B79-4931-4032-BB3D-2DBFAD705F46">
-          <param class="local" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White</param>
-          <param class="local" description="2124E080-D791-4784-A89D-B1984DB73657" name="scheme_params">
+      <param class="scheme" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="schemes">
+        <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="C6148B79-4931-4032-BB3D-2DBFAD705F46">
+          <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White</param>
+          <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#ffffff</param>
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#000000</param>
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">#c0c0c0</param>
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">#808080</param>
           </param>
-          <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_small.jpeg</param>
-          <param class="local" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-1">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
-            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-2">/assets/uploads/f5312a303e88013024cc002332d4c684_large.jpg</param>
-            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-3">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_small.jpeg</param>
+          <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
+            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-1">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
+            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-2">/assets/uploads/f5312a303e88013024cc002332d4c684_large.jpg</param>
+            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-3">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
           </param>
         </param>
-        <param class="local" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="FAD3C4B8-9C1C-40FC-86AF-946FDA6D91B6">
-          <param class="local" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Black</param>
-          <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image">/assets/uploads/e1669dc04023013024ea002332d4c684_small.jpg</param>
-          <param class="local" description="2124E080-D791-4784-A89D-B1984DB73657" name="scheme_params">
+        <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="FAD3C4B8-9C1C-40FC-86AF-946FDA6D91B6">
+          <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Black</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image">/assets/uploads/e1669dc04023013024ea002332d4c684_small.jpg</param>
+          <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#000000</param>
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#ffffff</param>
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">#707070</param>
             <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">#c0c0c0</param>
           </param>
-          <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">/assets/uploads/e1669dc04023013024ea002332d4c684_medium.jpg</param>
-          <param class="local" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-1">/assets/uploads/e1669dc04023013024ea002332d4c684_large.jpg</param>
-            <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-2">/assets/uploads/d18ef8a03f49013024d6002332d4c684_large.jpg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">/assets/uploads/e1669dc04023013024ea002332d4c684_medium.jpg</param>
+          <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
+            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-1">/assets/uploads/e1669dc04023013024ea002332d4c684_large.jpg</param>
+            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="image-2">/assets/uploads/d18ef8a03f49013024d6002332d4c684_large.jpg</param>
           </param>
         </param>
       </param>

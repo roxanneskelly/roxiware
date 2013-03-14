@@ -194,9 +194,12 @@
 						});
 					} else { //wysiwyg is shown
 						this.saveContent();
+						var iframe_container = this.element.find(".wysiwyg_iframe_container");
 						$(this.original).css({
-							width:	this.element.outerWidth() - 6,
-							height: this.element.height() - this.ui.toolbar.height() - 6,
+							width:	iframe_container.outerWidth(),
+							height: iframe_container.outerHeight(),
+							    margin:0,
+							    padding:0,
 							resize: "none"
 						}).show();
 						this.editor.hide();
@@ -1351,8 +1354,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 					.css({
 						clear: "both"
 					}))
-				.append(self.editor);
-
+			.append($("<div class='wysiwyg_iframe_container'/>").append(self.editor));
 			self.editorDoc = self.innerDocument();
 
 			if (self.isDestroyed) {

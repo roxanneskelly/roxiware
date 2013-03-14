@@ -9,7 +9,7 @@
   <%= post_fields.label :post_title, "Title"%>
   <%= post_fields.text_field :post_title, :altname=>:post_link %>
   <br/>
-  <%= post_fields.text_area :post_content, :class=>"settings_wysiwyg post_item_content" %>
+  <div class="content_pos"><div class="settings_wysiwyg"><%= post_fields.text_area :post_content, :class=>"post_item_content" %></div></div>
   <%= post_fields.label :tag_csv, "Tags"%>
   <%= post_fields.text_field :tag_csv %>
 

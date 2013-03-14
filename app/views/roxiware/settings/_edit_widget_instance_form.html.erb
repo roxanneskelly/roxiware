@@ -1,0 +1,28 @@
+<div class="medium_form" id="widget_instance_edit">
+  <%= form_tag(edit_layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier()), @layout_section.name, @widget_instance.id), :method=>"put") do%>
+     <%= fields_for :params do |param_field_block| %>
+        <%= param_fields(param_field_block, @widget_instance.get_param_objs.sort{ |l, r| l[0].to_s<=>r[0].to_s }.collect{|param_dup| param_dup[1]}) %>
+     <% end %>
+     <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
+  <% end %>
+</div>
+<script>
+   $(function() {
+      $("#widget_instance_edit #save_button").click(function() {
+         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.json";
+         
+         $.ajax({type:"PUT",
+		 processData: false,
+		 dataType:"json",
+		 url: endpoint,
+		 data:jQuery.param($("form").serializeArray()),
+                 error: function(xhr, textStatus, errorThrown) {
+                      $.alert(textStatus);
+                 },
+                 success: function() {
+                    window.location.reload();
+                 }});
+      });
+
+   });
+</script>

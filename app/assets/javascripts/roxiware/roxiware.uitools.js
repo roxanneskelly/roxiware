@@ -8,8 +8,8 @@
    Copyright (c) 2012 Roxiware
 */
 (function($) {
-
     $.roxiware = $.roxiware || {version: '@VERSION'};
+    $.roxiware.main_css = "/assets/application.css";
     $.roxiware.jstree_param = {
 	conf: {
 	    description_guid:"",  /* description of the primary param */
@@ -698,18 +698,14 @@
 
 })(jQuery);
 
-function settingsForm(url, title)
+function settingsForm(source, title)
 {
    title = typeof title  != 'undefined' ? title : "&nbsp;";
    var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close'>x</a><div class='settings_title'>"+
                    title +
                    "</div><div class='contentWrap'> </div></div>");
-   $("body").append(overlay);
-   overlay.find(".contentWrap").load(url, function(responseText, textStatus, xhr) {
-      if(xhr.status != 200) {
-	  $.error(xhr.statusText);
-	  return;
-      }
+
+   var instantiateOverlay = function() {
       overlay.overlay({
 		top: "5%",
 		left: "center",
@@ -729,7 +725,7 @@ function settingsForm(url, title)
 		         overlay.remove();
 	         },
 		 onLoad: function(event) {
-    $("textarea.settings_wysiwyg").wysiwyg({ css: "<%= raw stylesheet_path('application') %>",
+		  $("div.settings_wysiwyg textarea").wysiwyg({ css: $.roxiware.main_css,
                                        iFrameClass:"wysiwyg_iframe",
                                        controls: {
                                           undo: { visible: false },
@@ -751,7 +747,21 @@ function settingsForm(url, title)
 	  position: "top right",
 	  offset: [10, -20]
 	});
-   });
+   };
+   $("body").append(overlay);
+   if(source instanceof jQuery) {
+       overlay.find(".contentWrap").append(source.css("display","block"));
+       instantiateOverlay()
+   }
+   else {
+       overlay.find(".contentWrap").load(source, function(responseText, textStatus, xhr) {
+	  if(xhr.status != 200) {
+	      $.error(xhr.statusText);
+	      return;
+	  }
+	  instantiateOverlay()
+       });
+   }
 }
 
 

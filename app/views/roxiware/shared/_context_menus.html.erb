@@ -3,10 +3,10 @@
   $(document).bind("ready", function() {
      $("#mainBody").context_menu($("#page_context_menu"));
      <% if !@page_layout.is_root? %>
-         $("#mainBody").context_menu().addInstanceMenus("<li id='page_delete'><a href='#' menu_item='page_delete' class='page_delete'>Collapse Page</a></li>");
+         $("#mainBody").context_menu().addInstanceMenus("<li id='page_delete'><a menu_item='page_delete' class='page_delete'>Collapse Page</a></li>");
      <% end %>
      <% if @page_layout.is_root? %>
-         $("#mainBody").context_menu().addInstanceMenus("<li id='page_fork'><a href='#' menu_item='page_fork' class='page_fork'>Fork Page</a></li>");
+         $("#mainBody").context_menu().addInstanceMenus("<li id='page_fork'><a menu_item='page_fork' class='page_fork'>Fork Page</a></li>");
      <% end %>
      $("#mainBody").on("context_menu", function(event, menu_item) {
         switch (menu_item) {
@@ -57,7 +57,7 @@
           console.log("section " + menu_item);
           switch (menu_item) {
             case "section_settings": 
-              settingsForm(section_link, $(this).attr("section_name")+" Settings"); break;
+              settingsForm(section_link +"/edit", $(this).attr("section_name")+" Settings"); break;
             case "section_delete": 
               if(!confirm("Collapse Section\nAre you sure?")) {
                    return;
@@ -95,7 +95,7 @@
 	  var widget_link = $(this).attr("rel");
           switch (menu_item) {
             case "widget_settings": 
-                settingsForm(widget_link, $(this).attr("name")); 
+                settingsForm(widget_link+"/edit", $(this).attr("name")); 
                 break;
             case "widget_delete" :
                 if (!confirm("Delete Widget\nAre you sure?")) {

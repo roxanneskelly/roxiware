@@ -364,7 +364,7 @@
     <description>Float the content to the left, right, or none.</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta/>
+    <meta>Left:left,Right:right,None:none</meta>
   </param_description>
   <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342">
     <name>Widget Height</name>
@@ -514,6 +514,20 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+  <param_description guid="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987">
+    <name>Adsense Ad Units</name>
+    <description>Hash of available ad units.</description>
+    <field_type>hash</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="3C04866A-27BD-4CBA-994A-FF3CB44514C4">
+    <name>Adsense Ad Unit</name>
+    <description>Hash of Ad Unit information.</description>
+    <field_type>hash</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
   <param_description guid="CF1C5254-1644-447F-9D87-DE0CBC472E0E">
     <name>Adsense Ad Slot</name>
     <description>This is the Adsense Ad ID for this particular ad instance.  You can go to
@@ -522,10 +536,24 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
-  <param_description guid="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987">
-    <name>Adsense Ad Format</name>
-    <description>The width x height of the ad.</description>
+  <param_description guid="909A66CB-D847-43D5-B4FB-015081BD90D9">
+    <name>Adsense Ad Slot Name</name>
+    <description>The name of the ad slot.</description>
     <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="183E10DE-2D80-4BBF-BA87-6ABB799E7A25">
+    <name>Adsense Ad Width</name>
+    <description>The width of the ad.</description>
+    <field_type>integer</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="0772A598-D0F6-4DED-B684-0070C9B53FB9">
+    <name>Adsense Ad Height</name>
+    <description>The height of the ad.</description>
+    <field_type>integer</field_type>
     <permissions>super</permissions>
     <meta/>
   </param_description>

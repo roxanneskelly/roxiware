@@ -34,6 +34,7 @@
      $(".widget_drop_target div").droppable({accept:".widget, .new_widget",
                                          hoverClass:"widget_drop_target_hover",
                                          tolerance: "pointer",
+                                         greedy:true,
                                          drop: function(event, ui) {
                                             console.log("dropped");
                                             console.log($(ui.draggable));

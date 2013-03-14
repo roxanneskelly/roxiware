@@ -13,7 +13,7 @@ module Roxiware
       requested_sizes.each do |name, size|
          sizes = requested_sizes[name]
          puts "NAME: #{name} SIZES: #{sizes.inspect}"
-	 if sizes
+	 if name != "raw"
 	    image_watermark = nil
 	    if(sizes["width"].to_i > 200)
 	       image_watermark = options[:watermark]
@@ -46,6 +46,9 @@ module Roxiware
 	    resize_image.destroy!
 	    result[:urls][name] = File.join(AppConfig.upload_url, base_filename + "_#{name}"+extension)
 	    result[:success] = true;
+	 else
+	    image.write( processed_image_root + extension)
+	    result[:urls][name] = File.join(AppConfig.upload_url, base_filename + extension)
 	 end
       end
       result

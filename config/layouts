@@ -380,7 +380,6 @@ div.book_listing {
               </instance>
               <instance order="4" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
                 <params>
-                  <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">right</param>
                   <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
                   <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">main_menu</param>
                   <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">
@@ -419,7 +418,6 @@ div.book_listing {
               </instance>
               <instance order="1" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
                 <params>
-                  <param class="local" description="8E2B8249-C8F5-4FDD-BA82-B40E3B221342" name="height">70</param>
                   <param class="local" description="AE42CE08-7AEA-49D0-90A0-6714CE599788" name="display_items">
                     <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-0">
                       <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">10</param>
@@ -443,7 +441,6 @@ div.book_listing {
               <instance order="6" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
                 <params>
                   <param class="local" description="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987" name="google_ad_format">728x90</param>
-                  <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">center</param>
                 </params>
               </instance>
             </widget_instances>
@@ -480,7 +477,6 @@ div.book_listing {
                 <params>
                   <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">sitemap_menu</param>
                   <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                  <param class="local" description="7D070496-AF2C-4C37-9A14-D9DC5FA1052C" name="float">center</param>
                   <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">false</param>
                   <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">
                     <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="menu_root_0">

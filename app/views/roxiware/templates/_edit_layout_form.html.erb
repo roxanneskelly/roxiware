@@ -16,7 +16,7 @@
 		 <img id="layout_image_upload" class="upload_target" src="<%= @layout.get_param('chooser_image').to_s %>" />
 	         <%= fields_for_params.hidden_field :chooser_image, :value=>@layout.get_param("chooser_image").to_s %>
 	     </div>
-	     <%= layout_form.text_area :description, :class=>"settings_wysiwyg" %>
+	     <div class="description_pos"><div class="settings_wysiwyg"><%= layout_form.text_area :description %></div></div>
 	     <div id="template_settings">
 	          <%= layout_form.label :category_csv, "Categories"%><%= layout_form.text_field :category_csv  %>
 		  <% @layout.params.where(:param_class=>:local).order(:name).each do |param| %>

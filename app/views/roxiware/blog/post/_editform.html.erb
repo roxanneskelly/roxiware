@@ -6,12 +6,12 @@
        method = "POST"
    end
 %>
-    <div class="large_form" id="post_edit_form">
-<%= form_for(@post, {:url=>endpoint}) do |post| %>
+<div class="large_form" id="post_edit_form">
+    <%= form_for(@post, {:url=>endpoint}) do |post| %>
         <%= render(:partial=>"edit_post", :locals=>{:post_fields=>post}) %>
         <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
-<% end %>
-    </div>
+    <% end %>
+</div>
 <script>
 $(function() {
     $("#post_edit_form button#save_button").click(function() {

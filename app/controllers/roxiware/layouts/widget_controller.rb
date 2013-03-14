@@ -36,15 +36,24 @@ module Roxiware
 	  end
        end
        
-       def show
+       def edit
            @widget_instance = Roxiware::Layout::WidgetInstance.where(:id=>params[:id]).first
 	   raise ActiveRecord::RecordNotFound if @widget_instance.nil?
 	   authorize! :read, @widget_instance
+	   locals = {}
+	   locals[:widget_instance]=@widget_instance 
+	   widget_instance_id = @widget_instance.get_param("widget_instance_id").to_s 
+	   widget_instance_id = "widget-#{@widget_instance.id}" if @widget_instance_id.blank?
+	   locals[:widget_instance_id] = widget_instance_id
+	   locals[:layout_section]=@layout_section 
+	   locals[:page_layout]=@page_layout
+	   locals[:layout]=@current_layout 
+	   puts locals.inspect
            respond_to do |format|
 	     if @widget_instance.widget.editform.present?
-               format.html { render :inline => @widget_instance.widget.editform }
+               format.html { render :inline => @widget_instance.widget.editform, :locals=>locals }
 	     else
-               format.html { render :partial => "roxiware/shared/edit_widget_instance_form" }
+               format.html { render :partial => "roxiware/settings/edit_widget_instance_form", :locals=>locals }
 	     end
 	   end
        end

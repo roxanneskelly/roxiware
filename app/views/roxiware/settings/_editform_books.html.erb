@@ -1,0 +1,24 @@
+<div class="medium_form" id="book_settings_edit">
+   <% general_params = @settings.values_at("enable_books").compact %>
+   <%= form_tag(setting_path("books"), :method=>"put") do %>
+       <%= fields_for :books do |book_fields| %>
+	  <ul class="tabs">
+	      <% if general_params.present? %><li><a>General</a></li><% end %>
+	  </ul>
+          <div class="panes">
+	      <% if general_params.present? %>
+		<div>
+		   <%= param_fields(book_fields, general_params) %>
+		</div>
+              <% end %>
+          </div>
+      <% end %>
+      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
+   <% end %>
+</div>
+
+<script>
+$(function() {
+    $("#book_settings_edit ul.tabs").tabs($("div.panes > div"))
+});
+</script>

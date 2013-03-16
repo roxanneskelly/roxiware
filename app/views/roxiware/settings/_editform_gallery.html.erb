@@ -1,0 +1,72 @@
+<style>
+
+#gallery_settings_edit {
+  height:26em;
+}
+
+#gallery_settings_edit .panes > div
+{
+  width: 30em;
+  height:26em;
+  padding:1em;
+}
+
+
+#gallery_settings_edit label
+{
+  width: 12em;
+  font-size:0.7em;
+  text-align:left;
+}
+
+#gallery_settings_edit input {
+  width:25em;
+}
+
+
+#gallery_settings_edit .panes
+{
+ color:#000;
+}
+
+
+#gallery_settings_edit .settings_pane
+{
+  padding:0px;
+  margin:0px;
+}
+
+#gallery_settings_edit textarea.settings_description
+{
+  width:100%;
+  height:10em;
+  padding:0px;
+  margin:0px;
+}
+
+</style>
+
+<div class="settings_edit" id="gallery_settings_edit">
+   <% general_params = @settings.values_at("enable_gallery", "galleries_per_row", "gallery_rows_per_page", "gallery_items_per_row").compact %>
+   <%= form_tag(setting_path("gallerys"), :method=>"put") do %>
+       <%= fields_for :gallery do |gallery_fields| %>
+	  <ul class="tabs">
+	      <% if general_params.present? %><li><a>General</a></li><% end %>
+	  </ul>
+          <div class="panes">
+	      <% if general_params.present? %>
+		<div>
+		   <%= param_fields(gallery_fields, general_params) %>
+		</div>
+              <% end %>
+          </div>
+      <% end %>
+      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
+   <% end %>
+</div>
+
+<script>
+$(function() {
+    $("#gallery_settings_edit ul.tabs").tabs($("div.panes > div"))
+});
+</script>

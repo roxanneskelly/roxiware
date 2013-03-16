@@ -1,0 +1,38 @@
+<div class="medium_form" id="blog_settings_edit">
+   <% general_params = @settings.values_at("enable_blog", "blog_title", "blog_description", "blog_comment_permissions", "blog_moderate_comments","default_category").compact %>
+   <% feed_params = @settings.values_at("blog_posts_per_feed", "max_blog_posts_per_feed","blog_editor_email", "blog_language").compact %>
+   <% layout_params = @settings.values_at("blog_posts_per_page", "max_blog_posts_per_page", "blog_excerpt_length").compact %>
+   <%= form_tag(setting_path("blog"), :method=>"put") do %>
+       <%= fields_for :blog do |blog_fields| %>
+	  <ul class="tabs">
+	      <% if general_params.present? %><li><a>General</a></li><% end %>
+	      <% if feed_params.present? %><li><a>Feed</a></li><% end %>
+	      <% if layout_params.present? %><li><a>Layout</a></li><% end %>
+	  </ul>
+          <div class="panes">
+	      <% if general_params.present? %>
+		<div>
+		   <%= param_fields(blog_fields, general_params) %>
+		</div>
+              <% end %>
+	      <% if feed_params.present? %>
+		<div>
+		   <%= param_fields(blog_fields, feed_params) %>
+		</div>
+              <% end %>
+	      <% if layout_params.present? %>
+		<div>
+		   <%= param_fields(blog_fields, layout_params) %>
+		</div>
+              <% end %>
+          </div>
+      <% end %>
+      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
+   <% end %>
+</div>
+
+<script>
+$(function() {
+    $("#blog_settings_edit ul.tabs").tabs($("div.panes > div"))
+});
+</script>

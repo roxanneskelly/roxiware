@@ -32,12 +32,18 @@
 </div>
 
 <% if can? :edit, @post %>
-<ul id="blog_show_application_menu" class="application_menu"><li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit Post">Edit Post</a></li></ul>
+<ul id="blog_show_application_menu" class="application_menu"><li>Post<ul>
+<li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit">Edit</a></li>
+<li><a id="delete_post_app_menu">Delete</a></li>
+</ul></li></ul>
 <%= render :partial=>"roxiware/blog/post/context_menus" %>
 <% end %>
 
 <script>
 $(document).ready(function() {
+    $("#delete_post_app_menu").click(function() {
+        $(".post").trigger("context_menu", "delete_post");
+    });
 
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
@@ -67,20 +73,6 @@ $(document).ready(function() {
 						  }
 		  });
     });
-    $("div.comment_permissions").on("change", "select", function() {
-        var upload_params = {comment_permissions:$(this).val()};
-        if (csrf_param !== undefined && csrf_token !== undefined) {
-            upload_params[csrf_param] = csrf_token;
-        };
-       $.ajax("<%= blog_post_index_url %>/"+$(this).attr("post"), {
-						type:"PUT",
-				                data: upload_params,
-						error: function (jqXHR, textStatus, errorThrown) {
-						    $.error(errorThrown);
-                                                    window.location.reload();
-						  }
-						});
-          });
-
 });
 </script>
+<%= render :partial=>"post_manage_control" %>

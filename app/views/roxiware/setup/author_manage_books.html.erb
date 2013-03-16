@@ -62,7 +62,7 @@ $(function() {
       $("#book_edit_form input#book_image_url").val($(book).data().book.image_url);
       $("#book_edit_form input#book_thumbnail_url").val($(book).data().book.thumbnail_url);
       $("#book_edit_form input#book_large_image_url").val($(book).data().book.large_image_url);
-      $("#book_edit_form img#book_image_url").attr("src", $(book).data().book.image_url);
+      $("#book_edit_form img#book_upload_image_url").attr("src", $(book).data().book.image_url);
    }
 
      $("#book_edit_form textarea").wysiwyg({ css: "<%= stylesheet_path('application') %>",

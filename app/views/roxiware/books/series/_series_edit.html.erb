@@ -1,24 +1,24 @@
-<%= series_fields.label :title, "Title"%>
-<%= series_fields.text_field :title, :watermark=>"Title" %>
-<br/>
-<%= series_fields.hidden_field :goodreads_id %>
-<div id="description_section"><%= series_fields.text_area :description, :class=>"settings_wysiwyg" %></div>
-<div id="series_book_chooser">
-   <div id="titles"><div>Available Books</div><div>Books In Series</div></div>
-   <div id="series_chooser_help"><span class="popup_help_text">&rarr; Drag books to and from your series, and re-order them as needed. &rarr;</span></div>
-   <div id="series_book_selector">
-    <div id="current_books">
-      <div id="current_books_list" class="books_sortable"><% @books.each do |book| %>
-          <div class="series_book draggable_tile" id="<%= book.id %>" title="<%= book.title %>"><span class="ui-icon">&nbsp;</span><div class="book_title"><%= book.title %></div></div>
-      <% end %></div>
+<div id="series_details_form">
+    <%= series_fields.label :title, "Title"%><%= series_fields.text_field :title, :watermark=>"Title" %>
+    <br/>
+    <%= series_fields.hidden_field :goodreads_id %>
+    <div id="description_section"><div class="settings_wysiwyg"><%= series_fields.text_area :description, :class=>"settings_wysiwyg" %></div></div>
+    <div id="series_book_chooser">
+       <div id="titles"><div>Available Books</div><div>Books In Series</div></div>
+       <div id="series_chooser_help"><span class="popup_help_text">&rarr; Drag books to and from your series, and re-order them as needed. &rarr;</span></div>
+       <div id="series_book_selector">
+	<div id="current_books">
+	  <div id="current_books_list" class="books_sortable"><% @books.each do |book| %>
+	      <div class="series_book draggable_tile" goodreads_id="<%= book.goodreads_id %>" book_id="<%= book.id %>" title="<%= book.title %>"><span class="ui-icon">&nbsp;</span><div class="book_title"><%= book.title %></div></div>
+	  <% end %></div>
+	</div>
+	<div id="series_books"><div id="series_books_list" class="books_sortable"></div></div>
+      </div>
     </div>
-    <div id="series_books"><div id="series_books_list" class="books_sortable"></div></div>
-  </div>
 </div>
 <script>
-function populate_series(book_ids) {
-    console.log(book_ids)
 
+function populate_series(book_ids) {
     $("div#current_books_list").append($("div#series_books_list div.series_book"));
 
     var sorted_books = $("div#current_books_list div.series_book").sort(function(a, b) { return $(a).attr("id") - $(b).attr("id")}).remove();
@@ -26,12 +26,12 @@ function populate_series(book_ids) {
 
     $("div#series_books_list").html("");
     for (var index in book_ids) {
-       var new_series_book = $("div#current_books_list div#"+book_ids[index]+".series_book");
+       var new_series_book = $("div#current_books_list div[book_id="+book_ids[index]+"].series_book");
        $("div#series_books_list").append(new_series_book);
     }
 }
-$(function() {
 
+$(function() {
     $("div#series_books_list, div#current_books_list").sortable({helper:"clone",
                                                                  appendTo:$("div#series_book_selector"), 
                                                                  containment:$("div#series_book_selector"), 

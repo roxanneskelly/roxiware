@@ -198,6 +198,13 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+  <param_description guid="B8AEFAA4-6EE2-4550-88E7-5FD7A4BD3D99">
+    <name>Default Category</name>
+    <description>Default Category for blog posts</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
   <param_description guid="89139210-E699-4D47-A656-B2F860D2015B">
     <name>Editor Email</name>
     <description>Blog Editor Email</description>

@@ -35,7 +35,7 @@ class Roxiware::SetupController < ApplicationController
       @setup_type = nil if(@setup_type.blank?)
 
       respond_to do |format|
-         format.html {show}
+         format.html {redirect_to "/"}
          format.xml { render :xml=>{}}
       end
    end
@@ -145,7 +145,7 @@ class Roxiware::SetupController < ApplicationController
 	  author = goodreads.search_author({:goodreads_id=>params[:goodreads_id]}).first;
 	  if(author.present?)
 	      current_user.person.bio = author[:about]
-	      current_user.person.thumbnail_url = author[:small_image_url]
+	      current_user.person.thumbnail_url = author[:thumbnail_url]
 	      current_user.person.image_url = author[:image_url]
 	      current_user.person.large_image_url = author[:large_image_url]
 	      # import image here
@@ -311,7 +311,7 @@ class Roxiware::SetupController < ApplicationController
 		  end
 	       rescue Exception => e
 		   print "FAILURE Creating Series: #{e.message}\n"
-		   puts e.backtrace
+		   puts e.backtrace.join(",")
 		   success = false
 		   raise ActiveRecord::Rollback
 	       end

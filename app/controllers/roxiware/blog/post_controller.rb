@@ -170,6 +170,7 @@ module Roxiware
 	 end
 
 	 def edit
+	   @post_category = @post.category_name
 	   respond_to do |format|
              format.html { render :partial =>"roxiware/blog/post/editform" }
 	     format.json { render :json => @post.ajax_attrs(@role) }
@@ -197,9 +198,11 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.new({:person_id=>current_user.person.id, 
 					     :post_date=>DateTime.now.utc, 
 					     :post_content=>"Content",
-					     :post_title=>"Title", :category_name=>"News"}, :as=>"")
+					     :post_title=>"Title"}, :as=>"")
 
-
+	   # We need to pass the post category in separately as on new post creation, the
+	   # category joins are not yet created for the post.
+	   @post_category = Roxiware::Param::Param.application_param_val('blog', 'default_category')
 	   respond_to do |format|
              format.html { render :partial =>"roxiware/blog/post/editform" }
 	     format.json { render :json => @post.ajax_attrs(@role) }

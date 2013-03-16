@@ -20,6 +20,14 @@
   <div class="help_bar_entry">Left-click and select <b>New Series</b> to collect your books in a series.</div>
   <div class="help_bar_entry">Import details for a book via the <b>Import</b> tab of the edit dialog.</div>
   <div class="help_bar_entry">Left-click and select <b>New Book</b> to add another book.</div>
+
+    <ul id="series_show_application_menu" class="application_menu"><li>Series<ul>
+       <li><a rel="<%= new_book_series_path %>" form="New Series">New</a></li>
+    </ul></li></ul>
+    <ul id="series_show_application_menu" class="application_menu"><li>Book<ul>
+       <li><a rel="<%= new_book_path %>" form="New Book">New</a></li>
+    </ul></li></ul>
+
   <script>
     $(document).bind("ready", function() {
 	$("#mainBody").context_menu("#books_context_menu");

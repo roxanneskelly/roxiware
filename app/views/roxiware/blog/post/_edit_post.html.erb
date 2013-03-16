@@ -1,10 +1,7 @@
   <%= post_fields.label :category_name, "Category" %>
-  <%= post_fields.text_field(:category_name, :class=>"category_input") %>
-  <% people = Roxiware::Person.where(:show_in_directory => true)
-     if people.count > 1 %>
-     <%= post_fields.label :person_id, "Author" %>
-     <%= post_fields.select(:person_id, people.collect{|p| [p.full_name, p.id]}) %> 
-  <% end %>
+  <%= post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category) %>
+  <%= post_fields.label :person_id, "Author" %>
+  <%= post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]}) %> 
   <br/>
   <%= post_fields.label :post_title, "Title"%>
   <%= post_fields.text_field :post_title, :altname=>:post_link %>

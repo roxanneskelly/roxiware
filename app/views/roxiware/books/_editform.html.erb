@@ -1,191 +1,5 @@
-<style>
-.book_edit_form 
-{
-   margin-top:0.2em;
-}
-
-.book_edit_form div.panes > div 
-{
-    width:40em;
-    height:28em;
-}
-
-div.book_edit label
-{
-   width:4em;
-}
-
-div.book_edit input#book_title
-{
-   width:30em;
-}
-
-div.book_edit .upload_target
-{
-   float:right;
-   min-width:110px;
-   min-height:160px;
-   cursor: pointer;
-}
-
-textarea#book_description
-{
-   clear:both;
-   height:14em;
-   width:52em;
-   margin:0px;
-   overflow:scroll;
-}
-
-div#bookstore_left_pane
-{
-    margin:0px;
-    padding:0px;
-    width:15em;
-    border:solid 1px #ccc;
-    display:inline-block;
-    vertical-align:top;
-}
-
-div#bookstore_right_pane
-{
-    margin:0px;
-    padding:5px;
-    display:inline-block;
-    vertical-align:top;
-}
-
-div#bookstore_right_pane label
-{
-   text-align:left;
-   width:4em;
-}
-
-div#bookstore_right_pane input[name=name]
-{
-    width:23em;
-}
-div#bookstore_right_pane input[name=link]
-{
-    width:23em;
-}
-
-div#bookstore_list
-{
-    width:15em;
-    height:18em;
-    padding:0px;
-    margin:0px;
-    overflow:scroll;
-}
-
-#import_pane input#import_search
-{
-   width:43em;
-   margin:0.3em 0em 2em 0em;
-   
-}
-#import_pane button#import_search
-{
-   height:1.7em;
-   margin-left: 1em;
-   font-size:0.8em;
-   line-height:1em;
-}
-
-#import_pane button#import_search .ui-button-text 
-{
-   line-height:1em;
-}
-
-.import_watermark
-{
-   color:grey;
-}
-
-#import_search_results
-{
-   border: solid 1px #ccc;
-   overflow: scroll;
-   width: 100%;
-   height: 16em;
-}
-
-#import_search_results .search_result
-{
-   clear:both;
-   padding:5px;
-   cursor:pointer;
-   text-align:top;
-}
-#import_search_results .search_result:hover
-{
-   background:#eeeeff;
-}
-
-#import_search_results .book_info
-{
-   display:inline-block;
-   width:28em;
-}
-
-#import_search_results .import_links
-{
-   display:none;
-   vertical-align:center;
-}
-
-#import_search_results .search_result:hover .import_links
-{
-   display:inline-block;
-}
-
-#import_search_status {
-    text-align:center;
-    width:100%;
-    height:1.5em;
-}
-
-#import_search_results .import_links a
-{
-   display:block;
-   padding:0.2em;
-}
-
-#import_search_results .import_links a:hover
-{
-   background:none;
-}
-
-#import_search_results .search_result img
-{
-   float:left;
-   margin:5px;
-}
-
-#import_search_results .search_result .search_result_title
-{
-   margin: 10px 0px 5px 0px;
-   font-size:1.2em;
-   font-weight:700;
-}
-
-#import_search_results .search_result .search_result_author
-{
-   font-size:0.9em
-   font-weight:100;
-}
-
-a#skip_import
-{
-   float:right;
-   text-align:right;
-   margin:5px;
-   display:block;
-}
-</style>
-
-<div class="book_edit_form">
+<div id="book_edit_form" class="large_form">
+ <div class="tab_form">
   <ul class="tabs">
     <li><a href="#">Import</a></li>
     <li><a href="#">Edit</a></li>
@@ -193,39 +7,36 @@ a#skip_import
   </ul>
   <div class="panes">
      <div id="import_pane">
-     <div class="wizard_step">Import your book.</div>
-     <div class="wizard_instructions">Paste or type your book's title, ISBN, or ISBN13 into the search box, or paste in the Goodreads or Amazon link, and we'll find your book.</div>
-       <%= search_field_tag(:import_search) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
-     <div id="import_search_status"></div>
-     <div id="import_search_results">
+	<div class="wizard_step">Import your book.</div>
+	<div class="wizard_instructions">Paste or type your book's title, ISBN, or ISBN13 into the search box, or paste in the Goodreads or Amazon link, and we'll find your book.</div>
+	<%= search_field_tag(:import_search, "", {:watermark=>"ISBN, Title, Goodreads Link, Amazon Link"}) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
+	<div id="import_search_status"></div>
+	<div id="import_search_results"></div>
      </div>
-     </div>
-     <div class="book_edit">
-	  <%= form_for @book do |book| %>
+     <div id="book_description_pane">
+        <%= form_for @book do |book| %>
              <%= render :partial=>"roxiware/books/book_edit", :locals=>{:book_fields=>book} %>
-             <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
-          <% end %>
-	 </div>
-         <div class="book_purchase_info">
+         <% end %>
+         <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
+     </div>
+     <div id="book_purchase_pane">
 	   <div class="wizard_step">Manage your purchase links</div>
 	   <div class="wizard_instructions">You can add(+) or remove(-) links to the various editions (paperbacks, hardbacks, special printings) of your book for each online store.  To add, select the bookstore and push the (+) key.</div>
-	   <div>
-	      <div id="bookstore_left_pane">
-		 <div id="bookstore_list" tabindex=1>
-
-		 </div>
-		 <div class="edit_bar">
-		     <div id="new_edition" class="edit_bar_button" title="Add an edition">+</div><div id="delete_edition" class="edit_bar_button" title="Remove the edition">-</div>
-		 </div>
+	   <div id="book_purchase_form">
+		  <div id="bookstore_left_section"><div id="bookstore_edit_tree" class="tree_box">
+		     <div id="bookstore_list_content" class="tree_box_content" tabindex=1></div>
+		     <div id="bookstore_list_edit_bar" class="edit_bar"><div id="new_edition" class="edit_bar_button" title="Add an edition">+</div><div id="delete_edition" class="edit_bar_button" title="Remove the edition">-</div></div>
+		  </div>
 	      </div>
-	      <div id="bookstore_right_pane">
+	      <div id="bookstore_right_section">
 		<label>Name</label><input type="text" name="name" title="The name of your edition (Paperback, Trade Paperback, Hardback, etc."></br>
 		<label>Link</label><input type="text" name="link" title="The link to your online edition.  You can get this by finding your book on the online store, copying the link at the top of your browser, and pasting it into the field."></br>
 	      </div>
            </div>
-           <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
 	 </div>
+         <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
      </div>
+  </div>
 </div>
 <script>
   <% bookstores = []
@@ -233,9 +44,10 @@ a#skip_import
      bookstores = @book.get_param("bookstores").a if @book.get_param("bookstores")
    %>
   $(function() {
+     $("#book_edit_form ul.tabs").tabs($("div.panes > div"));
 
      $("#skip_import").click(function() {
-        $(".book_edit_form ul.tabs").data("tabs").next();
+        $("#book_edit_form ul.tabs").data("tabs").next();
      });
 
      $("img#book_image_url").attr("src", "<%= @book.image_url %>");
@@ -243,43 +55,29 @@ a#skip_import
      $("input#book_large_image_url").val("<%= @book.large_image_url %>");
      $("input#book_thumbnail_url").val("<%= @book.thumbnail_url %>");
      
-     var import_watermark = 'ISBN, Title, Goodreads Link, Amazon Link';
-     $('.book_edit_form input#import_search').blur(function(){
-                if ($(this).val().length == 0) {
-                   $(this).val(import_watermark).addClass('import_watermark');
-                   $(".book_edit_form button#import_search").button("disable");
-                  }
-                  else {
-                  if ($(this).val() != import_watermark)
-                      $(".book_edit_form button#import_search").button("enable");
-                  }
-                }).focus(function(){
-                  if ($(this).val() == import_watermark)
-                   $(this).val('').removeClass('import_watermark');
-                }).val(import_watermark).addClass('import_watermark');
-
-     $('.book_edit_form input#import_search').bind("input propertychange", function() {
-        if ($(this).val().length == 0) {
-            $(".book_edit_form button#import_search").button("disable");
-        }
-        else {
-            $(".book_edit_form button#import_search").button("enable");
-        }
+     $("#book_edit_form input#import_search").watermark();
+     $("#book_edit_form input#import_search").bind("input blur propertychange", function(){
+          if ($(this).is(".watermark")) {
+               $("#book_edit_form button#import_search").button("disable");
+          }
+          else {
+               $("#book_edit_form button#import_search").button("enable");
+          }
      });
 
-    $('.book_edit_form input#import_search').bind("keypress", function(event) {
+    $('#book_edit_form input#import_search').bind("keypress", function(event) {
          if(event.keyCode == 13) {
            $("button#import_search").click();
          }
     });
-     $(".book_edit_form ul.tabs").tabs($("div.panes > div"));
+     $("#book_edit_form ul.tabs").tabs($("div.panes > div"));
      <% if params[:id] %>
-        $(".book_edit_form ul.tabs").data("tabs").next();
+        $("#book_edit_form ul.tabs").data("tabs").next();
      <% end %>
-     $(".book_edit_form button").button();
+     $("#book_edit_form button").button();
 
       var bookstore_map = <%= raw bookstores.collect{|bookstore| bookstore.to_jstree_data}.to_json %>
-      var jstree = $(".book_edit_form #bookstore_list");
+      var jstree = $("#book_edit_form #bookstore_edit_tree #bookstore_list_content");
       var stores = <%= raw Roxiware::Book::STORES.to_json %>;
       $(jstree).jstree_param(bookstore_map, {
                              description_guid: "6C16D934-0643-48EC-806C-95BDAF52E078",
@@ -311,7 +109,6 @@ a#skip_import
        });
 
       $(".book_edit input").bind("change", function () {
-
         if ($(".book_edit input#book_isbn").val() || $(".book_edit input#book_isbn13").val()) {
             $(".book_edit button#import_button").button("enable");
         }
@@ -335,40 +132,34 @@ a#skip_import
                               $.each(book['authors'], function(index, author) {
                                   authors.append("<div class='search_result_author'>"+author['author_name']+"</div>");
                               });
-			      var book_html = $("<div class='search_result'><div class='book_info'><img src='"+book["small_image"]+"'/>"+
+			      var book_html = $("<div class='search_result'><div class='book_info'><img src='"+book["thumbnail_url"]+"'/>"+
                                                   "<div class='search_result_title'>"+book["title"]+"</div>"+
                                                  authors.html()+
-	                                         "<br style='clear:both'/></div>"+
-                                                 "<div class='import_links'><a href='#' class='import_and_edit'>import and edit >></a><a href='#' class='import_and_save'>import and save >></a></div></div>");
+	                                         "<br style='clear:both'/></div>");
 			      book_html.data().book_data = book;
 			      $("div#import_search_results").append(book_html)
 			   });
-                           $("div#import_search_results .import_and_edit, div#import_search_results .import_and_save").click(function() {
-                               var goodreads_id = $(this).parents(".search_result").data().book_data.goodreads_id;
-                               var save_after = $(this).is("div#import_search_results .import_and_save");
+                           $("#import_search_results .search_result").click(function() {
+                               var goodreads_id = $(this).data().book_data.goodreads_id;
                                var endpoint = "<%= new_book_path %>.json?goodreads_id="+goodreads_id;
                                $.getJSON(endpoint,
                                   function(data) {
                                      console.log(data);
-                                     $(".book_edit input#book_isbn").val(data.isbn);
-                                     $(".book_edit input#book_isbn13").val(data.isbn13);
-                                     $(".book_edit input#book_title").val(data.title);
-                                     $(".book_edit input#book_goodreads_id").val(goodreads_id);
-                                     $(".book_edit input#book_image").val(data.image);
-                                     $(".book_edit input#book_small_image").val(data.small_image);
-                                     $(".book_edit img#book_image").attr("src", data.image);
+                                     $("#book_description_form input#book_isbn").val(data.isbn);
+                                     $("#book_description_form input#book_isbn13").val(data.isbn13);
+                                     $("#book_description_form input#book_title").val(data.title);
+                                     $("#book_description_form input#book_goodreads_id").val(goodreads_id);
+                                     $("#book_description_form input#book_large_image_url").val(data.large_image_url);
+                                     $("#book_description_form input#book_image_url").val(data.image_url);
+                                     $("#book_description_form input#book_thumbnail_url").val(data.thumbnail_url);
+                                     $("#book_description_form img#book_upload_image_url").attr("src", data.image_url);
                               
-                                     $(".book_edit textarea#book_description").html(data.description);
-                                     $(".book_edit_form textarea").wysiwyg("setContent", data.description);
+                                     $("#book_description_form textarea#book_description").html(data.description);
+                                     $("#book_description_form textarea").wysiwyg("setContent", data.description);
        
                                      $(jstree).jstree_param().reload(data["bookstores[]"]);
-                                     if(save_after) {
-                                       $(".book_edit_form div.book_edit button#save_button").click();
-                                     }
-                                     else {
-                                        $("ul.tabs").data("tabs").next();
-                                     }
-                               });
+                                     $("ul.tabs").data("tabs").next();
+                                });
                            });
                        }
                        else {
@@ -384,15 +175,15 @@ a#skip_import
         var currently_selected = $(jstree).jstree("get_selected");
         var type = jQuery.jstree._reference($(jstree))._get_type(currently_selected);
         if(type == "4014F256-277D-4B58-8375-E1560524EA20") {
-           $("#bookstore_right_pane input[name=link]").val(currently_selected.data().params.link.value);
-           $("#bookstore_right_pane input[name=name]").val(currently_selected.data().params.name.value);
-           $("#bookstore_right_pane").css("display", "inline-block");
+           $("#bookstore_right_section input[name=link]").val(currently_selected.data().params.link.value);
+           $("#bookstore_right_section input[name=name]").val(currently_selected.data().params.name.value);
+           $("#bookstore_right_section").css("display", "inline-block");
         }
         else {
           $("#bookstore_right_pane").css("display","none");
         }
       });
-      $("#bookstore_right_pane input").bind("change", function() {
+      $("#bookstore_right_section input").bind("change", function() {
          var currently_selected = $(jstree).jstree("get_selected");
          var type = jQuery.jstree._reference($(jstree))._get_type(currently_selected);
          if(type == "4014F256-277D-4B58-8375-E1560524EA20") {
@@ -405,7 +196,7 @@ a#skip_import
             $(currently_selected).trigger("data_changed.jstree_param");
          }
       });
-      $("#bookstore_right_pane input[name=link]").bind("change", function() {
+      $("#bookstore_right_section input[name=link]").bind("change", function() {
          var currently_selected = $(jstree).jstree("get_selected");
          var type = jQuery.jstree._reference($(jstree))._get_type(currently_selected);
          if(type == "4014F256-277D-4B58-8375-E1560524EA20") {
@@ -414,7 +205,7 @@ a#skip_import
          }
       });
 
-      $("#bookstore_left_pane #delete_edition").click(function() {
+      $("#bookstore_edit_tree #delete_edition").click(function() {
          var currently_selected = $(jstree).jstree("get_selected");
          if (currently_selected) {
             var type = jQuery.jstree._reference($(jstree))._get_type(currently_selected);
@@ -424,7 +215,7 @@ a#skip_import
          }
       });
 
-      $("#bookstore_left_pane #new_edition").click(function() {
+      $("#bookstore_edit_tree #new_edition").click(function() {
          var currently_selected = $(jstree).jstree("get_selected");
          var type = jQuery.jstree._reference($(jstree))._get_type(currently_selected);
         if(type == "4014F256-277D-4B58-8375-E1560524EA20") {
@@ -435,14 +226,15 @@ a#skip_import
         }
       });
 
-      $(".book_edit_form button#save_button").click(function() {
+      $("#book_edit_form button#save_button").click(function() {
          var xml_result = '<?xml version="1.0" encoding="UTF-8"?><book><params>' +
              $(jstree).jstree_param().export_xml("bookstores") + '</params></book>';
+         console.log(xml_result);
          <% if @book.id.present? %>
-	    var endpoint = "<%= book_path(@book.id) %>.xml?" + $(".book_edit_form form").serialize();
+	    var endpoint = "<%= book_path(@book.id) %>.xml?" + $("#book_edit_form form").serialize();
 	    var method = "PUT";
          <% else %>
-	    var endpoint = "<%= books_path %>.xml?" + $(".book_edit_form form").serialize();
+	    var endpoint = "<%= books_path %>.xml?" + $("#book_edit_form form").serialize();
             var method="POST";
 	 <% end %>
          $.ajax({type:method,
@@ -450,8 +242,9 @@ a#skip_import
                  contentType: "application/xml",
                  url: endpoint,
                  data:xml_result,
-                 success: function() {
-                    window.location.reload();
+                 success: function(data) {
+	           // TODO: Detect whether we were called on book-specific page, and refresh to the proper location if title was changed
+                   window.location = "<%= books_path %>";
                  }}); 
       });
 });

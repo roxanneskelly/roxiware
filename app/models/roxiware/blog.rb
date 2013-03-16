@@ -75,7 +75,7 @@ module Roxiware
     end
 
     def category_ids
-      self.categories.collect{|category| category.id}
+       self.categories.collect{|category| category.id}
     end
 
     def category_ids=(category_ids)

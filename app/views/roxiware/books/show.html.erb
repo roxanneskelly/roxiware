@@ -1,10 +1,19 @@
 <% if @book.present? %>
   <section>
-<div class="book_listing" rel="<%= book_path(@book.id)%>" id="<%= @book.seo_index %>">
      <%= render :partial=>"roxiware/books/book", :locals=>{:book=>@book, :book_image_url=>@book.large_image_url, :book_description_length=>0} %>
   </section>
 <% end %>
 <% if can? :edit, @book %>
-    <div class="help_bar_entry">Left-click to manage the book.</div>
     <%= render :partial=>"roxiware/books/context_menus" %>
+    <ul id="book_show_application_menu" class="application_menu"><li>Book<ul>
+    <li><a rel="<%= edit_book_path(@book.id)%>" form="Edit Book">Edit</a></li>
+    <li><a id="delete_book_app_menu" >Delete</a></li>
+   </ul></li></ul>
+    <div class="help_bar_entry">Left-click to manage the book.</div>
 <% end %>
+<script>
+$(function() {
+   $("#delete_series_app_menu").click(function() {
+       $(".book_listing").trigger("context_menu", "delete_book");
+   });
+});

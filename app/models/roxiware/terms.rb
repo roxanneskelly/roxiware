@@ -28,7 +28,10 @@ module Roxiware::Terms
     @@categories = nil
 
     def self.get_or_create(term_strings, term_taxonomy_string)
+       # Find the taxonomy
        taxonomy = Roxiware::Terms::TermTaxonomy.where(:name=>term_taxonomy_string).first
+
+       # index the terms by seo_index
        term_string_set = Set.new(term_strings)
        term_str_hash = Hash[term_string_set.collect{|str| [str.to_seo, str]}]
        current_terms = self.where(:term_taxonomy_id=>TermTaxonomy.taxonomy_id(term_taxonomy_string), :seo_index=>term_str_hash.keys)
@@ -37,7 +40,7 @@ module Roxiware::Terms
           term = Term.create({:name=>name, :term_taxonomy_id=>TermTaxonomy.taxonomy_id(term_taxonomy_string)}, :as=>"")
           current_terms << term
 	  if(term_taxonomy_string == TermTaxonomy::CATEGORY_NAME)
-	     categories[term.id] = term
+	     @@categories[term.id] = term
 	  end
        end
        current_terms

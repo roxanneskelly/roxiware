@@ -102,7 +102,6 @@ class Roxiware::BooksController < ApplicationController
     @robots="noindex,nofollow"
     authorize! :create, Roxiware::Book
     
-
     @book = Roxiware::Book.new
     if params[:goodreads_id]
        goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)
@@ -130,53 +129,33 @@ class Roxiware::BooksController < ApplicationController
   # POST /books.json
   def create
     authorize! :create, @book
-    @book = Roxiware::Book.new
-
-    success = true
-    ActiveRecord::Base.transaction do
-       begin
-	  if params[:book][:params].present?
-	      @book.get_param_objs.values.each do |param|
-		 if params[:book][:params][param.name.to_sym].present?
-		     param.value = params[:book][:params][param.name.to_sym]
-		     param.save!
-		 end
-	      end
-	  end
-          if params[:format] == "xml"
-	      parser = XML::Parser.io(request.body)
-	      if parser.blank?
-		  raise ActiveRecord::Rollback
-	      end
-	      doc = parser.parse
-	      param_nodes = doc.find("/book/params/param")
-	      param_nodes.each do |param_node|
-		  param = @book.get_param(param_node["name"])
-		  param.destroy if param.present? && (param.param_object_type == "Roxiware::Book")
-		  param = @book.params.build
-		  if param.blank?
-			raise ActiveRecord::Rollback
-		  end
-		  param.import(param_node, false)
-              end
-	  end
-	  if !@book.update_attributes(params[:book], :as=>@role)
-	      puts @book.errors.collect{|error| error[1]}.join("\n")
-	      raise ActiveRecord::Rollback
-	  end
-          @book.init_sales_links
-       rescue Exception => e
-           print e.message
-	   success = false
+    if params[:book][:goodreads_id]
+       goodreads_book = Roxiware::GoodreadsIdJoin.where(:goodreads_id=>params[:book][:goodreads_id]).first
+       if goodreads_book
+           @book = goodreads_book.grent
        end
     end
+    if @book.blank?
+        @book = Roxiware::Book.new
+    end
 
+    duplicate_book = Roxiware::Book.where(:seo_index=>params[:book][:title].to_seo).first
+    index = 0
+    while(duplicate_book.present?)
+        index = index+1
+        duplicate_book = Roxiware::Book.where(:seo_index=>(params[:book][:title]+" (#{index})").to_seo).first
+    end
+    if(index > 0) 
+        params[:book][:title] = params[:book][:title]+" (#{index})"
+    end
 
+    success = _create_or_update(@book)
     respond_to do |format|
       if success
-	format.xml  { render :xml => {:success=>true} }
+	format.xml  { render :xml => {:success=>true}}
+	format.json  { render :json => {:success=>true, :book => @book.ajax_attrs(@role) }}
         format.html { redirect_to @book, :notice => 'Book was successfully created.' }
-        format.json { head :no_content }
+
       else
         format.html { render :action => "edit" }
 	format.xml  { head :fail }
@@ -185,17 +164,12 @@ class Roxiware::BooksController < ApplicationController
     end
   end
 
-  # PUT /books/1
-  # PUT /books/1.json
-  def update
-    @book = Roxiware::Book.find(params[:id])
-    raise ActiveRecord::RecordNotFound if @book.nil?
-    authorize! :update, @book
+  def _create_or_update(book)
     success = true
     ActiveRecord::Base.transaction do
        begin
 	  if params[:book][:params].present?
-	      @book.get_param_objs.values.each do |param|
+	      book.get_param_objs.values.each do |param|
 		 if params[:book][:params][param.name.to_sym].present?
 		     param.value = params[:book][:params][param.name.to_sym]
 		     param.save!
@@ -210,28 +184,41 @@ class Roxiware::BooksController < ApplicationController
 	      doc = parser.parse
 	      param_nodes = doc.find("/book/params/param")
 	      param_nodes.each do |param_node|
-		  param = @book.get_param(param_node["name"])
+		  param = book.get_param(param_node["name"])
 		  param.destroy if param.present? && (param.param_object_type == "Roxiware::Book")
-		  param = @book.params.build
+		  param = book.params.build
 		  if param.blank?
 			raise ActiveRecord::Rollback
 		  end
 		  param.import(param_node, false)
               end
 	  end
-	  if !@book.update_attributes(params[:book], :as=>@role)
+	  if !book.update_attributes(params[:book], :as=>@role)
 	      raise ActiveRecord::Rollback
 	  end 
        rescue Exception => e
            print e.message
+	   puts e.backtrace.join("\n")
 	   success = false
        end
     end
+    success
+  end
+
+
+  # PUT /books/1
+  # PUT /books/1.json
+  def update
+    @book = Roxiware::Book.find(params[:id])
+    raise ActiveRecord::RecordNotFound if @book.nil?
+    authorize! :update, @book
+    success = _create_or_update(@book)
     respond_to do |format|
       if success
-	format.xml  { render :xml => {:success=>true} }
+	format.xml  { render :xml => {:success=>true}}
+	format.json  { render :json => {:success=>true, :book => @book.ajax_attrs(@role) }}
         format.html { redirect_to @book, :notice => 'Book was successfully updated.' }
-        format.json { head :no_content }
+
       else
         format.html { render :action => "edit" }
 	format.xml  { head :fail }

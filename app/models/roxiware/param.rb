@@ -31,7 +31,6 @@ module Roxiware
 	         @param_objs[name.to_sym].destroy
               end
 	      param_class ||= :local
-	      puts "SETTING PARAM #{param_class}|#{name}(#{description_guid}) #{value}"
 	      @param_objs[name.to_sym] = self.params.build(
 		    {:param_class=> param_class,
 		     :name=> name,
@@ -117,7 +116,8 @@ module Roxiware
 	     if description.field_type == "array"
 	        array_params
 	     else
-	        raise Exception("Invalid type")
+	        #raise Exception("Invalid type")
+		[]
 	     end
 	  end
 
@@ -125,7 +125,8 @@ module Roxiware
 	     if description.field_type == "hash"
 	        hash_params
 	     else
-	        raise Exception("Invalid type")
+	        {}
+	        # raise Exception("Invalid type")
 	     end
 	  end
 

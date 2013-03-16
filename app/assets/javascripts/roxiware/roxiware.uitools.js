@@ -441,43 +441,36 @@
 
 				var xml_result = ""
 				for(var param_name in params) {
-				    xml_result = xml_result + "<param class='local' name='"+param_name+"'>" +
-				       "<param_description guid='"+params[param_name].guid+"'/>" +
-				    "<value>" + xmlEscape(params[param_name].value)+"</value>" +
-				       "</param>";
+				    xml_result = xml_result + "<param class='local' name='"+param_name+"' description='"+params[param_name].guid+"'>" +
+				    xmlEscape(params[param_name].value)+"</param>";
 				}
 				return xml_result;
 			    }
 			    var object_info = conf.objects[node.attr("rel")];
 
-			    var xml_result = "<param class='local' name='" + node_name + "'>" +
-			    "<param_description guid='"+node.attr("rel")+"'/>" + 
-				     "<value>" +
-					  export_params(node.data().params);
+			    var xml_result = "<param class='local' name='" + node_name + "' description='"+node.attr("rel")+"'>" + 
+			    export_params(node.data().params);
 			    var children = node.find("> ul > li");
 
 			    if (object_info.children_guid && (children.length > 0)) {
-				xml_result = xml_result + "<param class='local' name='children'>" +
-				    "<param_description guid='"+object_info.children_guid+"'/><value>";
+				xml_result = xml_result + "<param class='local' name='children' description='"+object_info.children_guid+"'>"+
 				children.each(function(index, child_node){
 					xml_result = xml_result + export_jstree_node(node_name+"_"+index, $(child_node));
 				    });
-				xml_result = xml_result + "</value></param>";
+				xml_result = xml_result + "</param>";
 			    }
-			    xml_result = xml_result +  "</value></param>";
+			    xml_result = xml_result + "</param>";
 			    return xml_result;
 			};
 
 
-			var xml_result = "<param name='"+param_name+"' class='local'>" +
-			    "<param_description guid='"+conf.description_guid+"'/>" + 
-			    "<value>";
+			var xml_result = "<param name='"+param_name+"' class='local' description='"+conf.description_guid+"'>"; 
 			$(jstree).find("> ul > li").each(function(index, node) {
 				xml_result = xml_result + export_jstree_node("child_"+index, $(node), $(jstree));
 			    });
-			xml_result = xml_result + "</value></param>";
+			xml_result = xml_result + "</param>";
 			return xml_result;
-		    }
+		   }
 		});
 	    /* scrub through init data, preparing it for jstree */
 	    var scrubInitData = function(jstree_data) {
@@ -647,11 +640,11 @@
 		  });
 	  });
       $(jstree).focus(function() {
-	      $(jstree).css("border", "solid 1px red");
+	      $(jstree).parent().css("outline", "dotted 1px #777");
 	      $(jstree).jstree("enable_hotkeys");
 	  });
       $(jstree).blur(function() {
-	      $(jstree).css("border", "solid 1px green");
+	      $(jstree).parent().css("outline", "none");
 	      $(jstree).jstree("disable_hotkeys");
 	  });
     }
@@ -693,9 +686,7 @@
 	        if($(this).hasClass("watermark")) {$(this).val(""); }
 		});
 	});
-
     }
-
 })(jQuery);
 
 function settingsForm(source, title)
@@ -877,7 +868,7 @@ function imageDialog(conf)
    overlay_dialog.overlay({
       zIndex: 3005,
       oneInstance:false,
-      top: "15%",
+      top: "10%",
       left: "center",
       fixed:false, 
       mask: {

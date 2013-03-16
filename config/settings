@@ -24,6 +24,7 @@
   <param class="blog" description="0060792B-8BE9-4F79-939E-8E6988C74048" name="blog_language">en-us</param>
   <param class="blog" description="9E8CD066-4F40-4B7E-BB23-060ADDCC5876" name="blog_comment_permissions">open</param>
   <param class="blog" description="391E7C2E-A284-491A-8AB8-5FB9E002033D" name="blog_moderate_comments">true</param>
+  <param class="blog" description="B8AEFAA4-6EE2-4550-88E7-5FD7A4BD3D99" name="default_category">News</param>
   <param class="books" description="F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63" name="enable_books">true</param>
   <param class="gallery" description="98E7A520-2A28-4521-9AA7-33E3EDB104DA" name="enable_gallery">false</param>
   <param class="gallery" description="A5F16435-8A5F-48BD-A86B-4DF73D99F9FC" name="galleries_per_row">4</param>

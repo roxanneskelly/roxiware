@@ -26,7 +26,7 @@
 	<%= person_form.hidden_field :thumbnail_url %>
 	<input type="hidden" name="image_thumbprint"/>
     </div>
-   <div id="bottom_section"><div class="settings_wysiwyg"><%= person_form.text_area :bio %></div></div>
+   <div id="bottom_section"><div class="settings_wysiwyg"><%= person_form.text_area :bio, :class=>"settings_wysiwyg" %></div></div>
 </div>
 <script>
  $(function() {

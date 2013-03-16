@@ -10,8 +10,8 @@
 
 <script>
   $(document).bind("ready", function() {
-    $("article.book_listing").context_menu("#book_context_menu");
-    $("article.series_listing").context_menu("#series_context_menu");
+    $("div.book_listing").context_menu("#book_context_menu");
+    $("div.series_listing").context_menu("#series_context_menu");
 
     $(".series_listing").on("context_menu", function(event, menu_item) {
        console.log("context menu " + menu_item);

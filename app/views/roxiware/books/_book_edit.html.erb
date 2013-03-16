@@ -1,29 +1,31 @@
-<div id="top_section">
- <div id="left_section"><%= book_fields.label :title, "Title"%>
-  <%= book_fields.text_field :title %>
-  <%= book_fields.hidden_field :goodreads_id %>
-  <%= book_fields.hidden_field :image_url %>
-  <%= book_fields.hidden_field :thumbnail_url %>
-  <%= book_fields.hidden_field :large_image_url %>
+<div id="book_description_form">
+   <div id="left_section"><%= book_fields.label :title, "Title"%>
+    <%= book_fields.text_field :title %>
+    <%= book_fields.hidden_field :goodreads_id %>
+    <%= book_fields.hidden_field :image_url %>
+    <%= book_fields.hidden_field :thumbnail_url %>
+    <%= book_fields.hidden_field :large_image_url %>
+    <br/>
+    <%= book_fields.label :isbn, "ISBN"%>
+    <%= book_fields.text_field :isbn %>
+    <br/>
+    <%= book_fields.label :isbn13, "ISBN13" %>
+    <%= book_fields.text_field :isbn13 %>
+   </div>
+   <div id="right_section">
+    <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
+    <img id="book_upload_image_url" src="" class="upload_target" />
+    <input type="hidden" name="image_thumbprint"/>
+   </div>
+  <br style="clear:both"/>
+  <div id="bottom_section"><div class="settings_wysiwyg"><%= book_fields.text_area :description, :class=>"settings_wysiwyg" %></div></div>
   <br/>
-  <%= book_fields.label :isbn, "ISBN"%>
-  <%= book_fields.text_field :isbn %>
-  <br/>
-  <%= book_fields.label :isbn13, "ISBN13" %>
-  <%= book_fields.text_field :isbn13 %>
- </div>
- <div id="right_section">
-  <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
-  <img id="book_image_url" src="" class="upload_target" />
-  <input type="hidden" name="image_thumbprint"/>
- </div>
 </div>
-<br style="clear:both"/>
-<div id="bottom_section"><%= book_fields.text_area :description, :class=>"settings_wysiwyg" %></div>
-<br/>
 <script>
 $(function() {     
-   $("img#book_image_url").bind("click", function() {
+   
+   $("img#book_upload_image_url").attr("src", $("#book_image_url").val());
+   $("img#book_upload_image_url").bind("click", function() {
       imageDialog({
 	     initialImage: $("input#book_large_image_url").val(),
              previewSize:"large",
@@ -39,7 +41,7 @@ $(function() {
                  $("input#book_image_url").val(upload_result["urls"]["medium"]);
                  $("input#book_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
                  $("input#book_large_image_url").val(upload_result["urls"]["large"]);
-                 $("img#book_image_url").attr("src", upload_result["urls"]["medium"]);
+                 $("img#book_upload_image_url").attr("src", upload_result["urls"]["medium"]);
                  $("input#book_image_url, input#book_thumbnail_url, input#book_large_image_url").trigger("change");
              }
       });

@@ -34,7 +34,12 @@
    </div>
    <div class="help_bar_entry">Go to <a href="http://wiki.roxiware.com/">http://wiki.roxiware.com</a> for more help.</div>
    <script>
-     $(document).bind("ready", function() {
+$(function() {
+        $("div#settings_menu > ul").prepend($("ul.application_menu > li"));
+	$("div#settings_menu a[form]").click(function() {
+	   settingsForm($(this).attr("rel"), $(this).attr("form"));
+	});
+
         ddsmoothmenu.init({
             mainmenuid: "settings_menu",
             orientation: 'h',
@@ -45,11 +50,6 @@
         $("div#help_bar_items").append($(".help_bar_entry"));
         $("div#help_bar").scrollable({circular:true, vertical:false}).autoscroll({interval:10000});
 
-
-        $("div#settings_menu > ul").prepend($("ul.application_menu li"));
-	$("div#settings_menu a[form]").click(function() {
-	   settingsForm($(this).attr("rel"), $(this).attr("form"));
-	});
 
         $("div#application_buttons").append($(".application_button"));
 

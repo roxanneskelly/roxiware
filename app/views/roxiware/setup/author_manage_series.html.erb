@@ -59,8 +59,6 @@ $(function() {
    function updateForm(series) {
       $("textarea#series_fields_description").wysiwyg("setContent", $(series).data().series.description);
       $("#series_edit_form input#series_fields_title").val($(series).data().series.title);
-      console.log("series data");
-      console.log($(series).data().series);
       populate_series($(series).data().series.book_ids);
    }
 
@@ -82,7 +80,6 @@ $(function() {
    });
    
    $("button#save").click(function() {
-      console.log("clicked");
       var current_selected_series = $(".list_box_item_selected");
       if(current_selected_series.length != 0) {
         updateSeries(current_selected_series);
@@ -91,7 +88,6 @@ $(function() {
       var xml_data = '<?xml version="1.0" encoding="UTF-8"?><series>';
       $(".series").each(function(index, series_node) {
           series = $(series_node).data().series
-          console.log(series);
           var goodreads_id = "";
           if(series["goodreads_id"]) {
              goodreads_id="goodreads_id='"+series.goodreads_id+"'";

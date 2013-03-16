@@ -1,0 +1,43 @@
+<script>
+$(function() {
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    var csrf_param = $('meta[name="csrf-param"]').attr('content');
+
+    $("article.post div.comment_permissions select").on("change", function() {
+        var post = $(this).parents(".post");
+        var upload_params = {blog_post:{comment_permissions:$(this).val()}};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
+       $.ajax($(post).attr("rel")+".json", {
+           type:"PUT",
+	   data: upload_params,
+           dataType: "json",
+	   error: function (jqXHR, textStatus, errorThrown) {
+	       $.alert(errorThrown);
+               window.location.reload();
+           }
+         
+	});
+    });
+
+    $("article.post input#post_status").on("change", function() {
+       var post = $(this).parents(".post");
+       var upload_params = {blog_post:{post_status:$(this).attr("checked")?"publish":"draft"}};
+       if (csrf_param !== undefined && csrf_token !== undefined) {
+           upload_params[csrf_param] = csrf_token;
+       };
+       $.ajax($(post).attr("rel")+".json", {
+           type:"PUT",
+	   data: upload_params,
+           dataType: "json",
+           complete: function() {},
+	   error: function (jqXHR, textStatus, errorThrown) {
+	       $.alert(errorThrown);
+	    },
+            success: function (data, jqXHR, textStatus) {}
+	});
+   });
+});
+</script>
+

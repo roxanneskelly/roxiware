@@ -9,6 +9,21 @@ namespace :settings do
 	 end
       end
 
+      desc "Update settings (not overwriting)"
+      task :update, [:settings_file]=>:environment do |t, args|
+	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/config/settings")
+	 doc_obj = parser.parse
+	 param_nodes = doc_obj.find("/settings/param")
+	 param_nodes.each do |param_node|
+	    old_param = Roxiware::Param::Param.where(:name=>param_node["name"], :param_class=>param_node["class"]).first
+	    if(old_param.blank?)
+	       param = Roxiware::Param::Param.new
+	       param.import(param_node, true)
+	       param.save!
+	    end
+	 end
+      end
+
       desc "Import settings"
       task :import, [:settings_file]=>:environment do |t, args|
 	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/config/settings")

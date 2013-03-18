@@ -9,6 +9,9 @@
 	   </ul></li><li id="settings_menu">Settings<ul>
 		  <li id="layout_picker"><a rel="<%= layout_index_path %>" form="Choose Template">Template</a></li>
 		  <li id="system_settings"><a rel="<%= setting_path('system') %>" form="General Settings">General</a></li>
+		  <% if (current_user.role == "admin") || Roxiware::Param::Param.application_param_val("people", "enable_people") %>
+		      <li id="people_settings"><a rel="<%= setting_path('people') %>" form="Biography Settings">Biography</a></li>
+		  <% end %>
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("blog", "enable_blog") %>
 		      <li id="blog_settings"><a rel="<%= setting_path('blog') %>" form="Blog Settings">Blog</a></li>
 		  <% end %>

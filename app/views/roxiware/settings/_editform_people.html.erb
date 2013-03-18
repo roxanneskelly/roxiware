@@ -1,0 +1,11 @@
+<div class="small_form" id="people_settings_edit">
+   <%= form_tag(setting_path("people"), :method=>"put") do %>
+       <%= label :default_biography, "Default Biography" %><%= collection_select :people, :default_biography, Roxiware::Person.all, :id, :full_name, {:selected=>@settings["default_biography"].conv_value} %>
+      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
+   <% end %>
+</div>
+
+<script>
+$(function() {
+});
+</script>

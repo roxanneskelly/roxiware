@@ -19,7 +19,6 @@ module Roxiware
 	end
 
         def style_params
-	    puts "STYLE PARAMS for " + self.inspect
 	    Hash[self.params.where(:param_class=>:style).collect {|param| [param.name, param.conv_value]}]
         end
 
@@ -162,7 +161,7 @@ module Roxiware
 
 	     result = []
 	     @page_layout_cache.each do |page_layout|
-	        if(page_layout.is_root? || (page_layout.controller == controller) && (page_layout.action == action))
+	        if(page_layout.is_root? || (page_layout.controller == controller) && (page_layout.action.blank? || (page_layout.action == action)))
 		   page_layout.refresh_sections_if_needed(result[-1])
 		   result <<  page_layout
 		end
@@ -180,14 +179,12 @@ module Roxiware
              end
 	     
 	     if(@layout_params_cache.blank?) 
-	        puts "CREATE LAYOUT PARAMS CACHE"
 	        @layout_params_cache = get_params(scheme).merge(style_params)
                 @compiled_style_cache = nil
 		page_layout.refresh_styles
              end
 
              if(@compiled_style_cache.nil?)
-	        puts "CREATE STYLE PARAMS CACHE"
                  @compiled_style_cache = Sass::Engine.new(eval_style(@layout_params_cache).strip, {
 	             :style=>:expanded,
 		     :syntax=>:scss,

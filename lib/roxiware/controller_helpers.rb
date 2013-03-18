@@ -55,7 +55,7 @@ module Roxiware
     end
 
     def resolve_layout
-       # we need to ultimately cache this infor in-memory
+       # we need to ultimately cache this info in-memory
        if(@page_layout.present? && (request.format == :html))
           @page_layout.render_layout
        else

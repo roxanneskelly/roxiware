@@ -90,7 +90,7 @@ div.menu_edit
     left:0;
     top:0;
     bottom:0;
-    width:20%;
+    width:30%;
     vertical-align:top;
 }
 
@@ -100,7 +100,7 @@ div.menu_edit
     right:0;
     top:0;
     bottom:0;
-    width:75%;
+    width:65%;
     vertical-align:top;
 }
 
@@ -137,7 +137,7 @@ div.menu_edit
 	       <div id="menu_item_edit_bar" class="edit_bar"><div id="new_menu_item" class="edit_bar_button">+</div><div id="delete_menu_item" class="edit_bar_button">-</div></div>
 	    </div>
 	    <div id="menu_edit_right_pane">
-	      <%= label_tag :permissions, "Permissions" %><%= select_tag :permissions, options_for_select({"Guest"=>"guest", "User"=>"user", "Admin"=>"admin", "Super"=>"super"}) %><br/><br/>
+	      <%= label_tag :permissions, "Permissions" %><%= select_tag :permission, options_for_select({"Guest"=>"guest", "User"=>"user", "Admin"=>"admin", "Super"=>"super"}) %><br/><br/>
               <%= label_tag :name, "Name" %><%= text_field_tag :name %><br/>
 	      <%= label_tag :url, "URL" %><%= text_field_tag :url %><br/>
 	    </div>
@@ -213,8 +213,14 @@ div.menu_edit
         selected_node.data().params[$(this).attr("name")].value = $(this).val();
         $(selected_node).trigger("data_changed.jstree_param");
      });
+     right_pane.find("select").bind("input blur propertychange",function() {
+        var selected_node = $(this_jstree).jstree("get_selected");
+        selected_node.data().params[$(this).attr("name")].value = $(this).val();
+        $(selected_node).trigger("data_changed.jstree_param");
+     });
 
      $(this_jstree).bind("select_node.jstree", function(event, data) {
+
         var selected_item = $(this_jstree).jstree("get_selected");
         right_pane.find("input#url").val(selected_item.data().params.url.value);
         right_pane.find("input#name").val(selected_item.data().params.name.value);
@@ -222,7 +228,7 @@ div.menu_edit
         if(selected_item.data().params.permission) {
            permission = selected_item.data().params.permission;
         }
-        right_pane.find("select#permissions").val(permission);
+        right_pane.find("select#permissions").val(permission.value);
       });
 
       $("#menu_widget_instance_edit #delete_menu_item").click(function() {
@@ -1557,160 +1563,93 @@ nav.blog_page_nav div.blog_page_nav_next
     <editform>
       <![CDATA[<style>
 
-#people_dir_widget_instance_edit .panes > div
-{
-  width:  40em;
-  height: 25em;
-}
 
-div.people_dir_edit 
+div.people_dir_edit_form
 {
+  position:relative;
   width:100%;
   height:100%;
 }
 
-#people_dir_edit_left_pane
+
+#people_dir_edit_form .panes > div
 {
-    margin:0px;
-    padding:0px;
-    height:25em;
-    width:12em;
-    display:inline-block;
-    vertical-align:top;
-   border:solid 1px black;
-}
-#people_dir_edit_right_pane
-{
-    margin:0px;
-    padding:0px;
-    height:25em;
-    width:12em;
-    display:inline-block;
-    vertical-align:top;
+  position:absolute;
+  top:1em;
+  bottom:3em;
+  left:2em;
+  right:2em;
 }
 
-div.people_dir_root_edit
+#people_list
 {
-   border:solid 1px black;
-   background:white;
-   margin:0px;
-   padding:0px;
-   vertical-align:top;
-   height:23em;
-   overflow:scroll;
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:45%;
+    vertical-align:top; 
 }
 
-#people_dir_item_edit_bar
-{
-   margin:0px;
-   padding:0px;
-   border:solid 1px #777;
-   font-size:14px;
-   vertical-align:center;
-   background-image: -ms-linear-gradient(top, #DDDDDD 0%, #777777 100%);
-   background-image: -moz-linear-gradient(top, #DDDDDD 0%, #777777 100%);
-   background-image: -o-linear-gradient(top, #DDDDDD 0%, #777777 100%);
-
-   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #DDDDDD), color-stop(1, #777777));
-   background-image: -webkit-linear-gradient(top, #DDDDDD 0%, #777777 100%);
-   background-image: linear-gradient(to bottom, #DDDDDD 0%, #777777 100%);
-   cursor:default;
-}
-
-div.people_dir_item_edit_bar_button
-{
-   width:1em;
-   border-right:solid 1px #222222;
-   border-left:solid 1px #777777;
-   display:inline-block;
+.people_list_person {
    cursor:pointer;
-   text-align:center;
-   padding:3px 5px 3px 5px;
+  color: #955144;
+  background: none;
+  font-weignt: 700;
+  text-decoration: none;
+  font-size:0.8em;
 }
 
-div.people_dir_item_edit_bar_button:active
-{
-   background-color:#777;
+#people_list_content div:nth-child(even) {
+    background: #eeeeff;
 }
 
-div.people_dir_item_edit_bar_button:hover
-{
-   background-image: -ms-linear-gradient(top, #CCCCCC 0%, #666666 100%);
-   background-image: -moz-linear-gradient(top, #CCCCCC 0%, #666666 100%);
-   background-image: -o-linear-gradient(top, #CCCCCC 0%, #666666 100%);
-
-   background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #CCCCCC), color-stop(1, #666666));
-   background-image: -webkit-linear-gradient(top, #CCCCCC 0%, #666666 100%);
-   background-image: linear-gradient(to bottom, #CCCCCC 0%, #666666 100%);
+#people_directory_tree {
+    position:absolute;
+    right:0;
+    top:0;
+    bottom:0;
+    width:45%;
+    vertical-align:top; 
 }
 
-#people_dir_widget_instance_edit {
-  width:43em;
-}
 
-div#people_list div:nth-child(even)
-{
-   background:#eeeeff;
-}
-div#people_list div
-{
-   cursor:pointer;
-}
-
-div#people_list div:hover
-{
-   background:#ccccff;
-}
-
-div.people_dir_root_edit ul
-{
-   padding:0px;
-   margin:0px;
-}
-
-div.people_dir_edit a
-{
-   width:10em;
-}
-
-#people_dir_edit_right_pane fieldset label
+#settings_pane label
 {
    text-align:left;
+   width:12em;
 }
 
 </style>
-
 <% people_dir_root = @widget_instance.get_param("people_dir_root").conv_value %>
-<div class="widget_instance_edit" id="people_dir_widget_instance_edit">
+<div class="widget_instance_edit medium_form" id="people_dir_edit_form">
    <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
-     <ul class="tabs">
-       <li><a href="#">Layout</a></li>
-       <li><a href="#">Settings</a></li>
-     </ul>
-     <div class="panes">
-       <div class="people_dir_layout">
-	 <div class="people_dir_edit" id="people_dir-edit-<%= people_dir_root.id %>">
-	    <div id="people_dir_edit_left_pane">
-	      <div id="people_list">
-                <% Roxiware::Person.order(:seo_index).each do |person| %>
-		   <div class="jstree-draggable jstree-drop people_list_person" rel="709904C0-83A6-4FA6-924B-B69881FEAEB8" id="<%= person.id %>"><%= person.full_name %></div>
-		<% end %>
-              </div>
+     <div class="tab_form">
+	 <ul class="tabs">
+	   <li><a href="#">Layout</a></li>
+	   <li><a href="#">Settings</a></li>
+	 </ul>
+	 <div class="panes">
+	   <div id="layout_pane">
+		<div id="people_list" class="list_box">
+		  <div id="people_list_content" class="list_box_content">
+		    <% Roxiware::Person.order(:seo_index).each do |person| %>
+		       <div class="jstree-draggable jstree-drop people_list_person" rel="709904C0-83A6-4FA6-924B-B69881FEAEB8" id="<%= person.id %>"><%= person.full_name %></div>
+		    <% end %>
+		  </div>
+		</div>
+		<div id="people_directory_tree" class="tree_box">
+		   <div id="people_directory_tree_content"  class="tree_box_content"></div>
+		   <div id="people_dir_edit_bar" class="edit_bar"><div id="new_people_dir_item" class="edit_bar_button">+</div><div id="delete_people_dir_item" class="edit_bar_button">-</div>
+		   </div>
+		</div>
 	    </div>
-	    <div id="people_dir_edit_right_pane">
-	       <div id="root_edit_<%= people_dir_root.id %>"  class='people_dir_root_edit'>
-	       </div>
-	       <div id="people_dir_item_edit_bar">
-                  <div id="new_people_dir_item" class="people_dir_item_edit_bar_button">+</div><div id="delete_people_dir_item" class="people_dir_item_edit_bar_button">-</div>
-               </div>
-	    </div>
-	  </div>
-        </div>
-       <div class="settings">
-         <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
-       </div>
+	   <div id="settings_pane">
+	     <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
+	   </div>
+	 </div>
      </div>
-     <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
+     <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
    <% end %>
 </div>
 <script>
@@ -1718,13 +1657,13 @@ div.people_dir_edit a
       var people_dir_map = <%= raw people_dir_root.collect{|people_dir_node| people_dir_node.to_jstree_data}.to_json %>;
       var people_name_map = <%= raw Hash[Roxiware::Person.all().collect{|person| [person.id, person.full_name]}].to_json %>;
 
-      var this_jstree = "#people_dir_widget_instance_edit div#root_edit_<%= people_dir_root.id %>";
+      var this_jstree = $("#people_dir_edit_form #people_directory_tree_content");
 
-      $("#people_dir_widget_instance_edit  button#save_button").click(function() {
+      $("#people_dir_edit_form  button#save_button").click(function() {
          var xml_result = '<?xml version="1.0" encoding="UTF-8"?><widget_params>' +
            $(this_jstree).jstree_param().export_xml("people_dir_root", "82CE9542-06EB-4D3D-A877-1DCCFCCC812B") +
            "</widget_params>";
-         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.xml?" + $("#people_dir_widget_instance_edit form").serialize();
+         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.xml?" + $("#people_dir_edit_form form").serialize();
          $.ajax({type:"PUT",
                  processData: false, 
                  contentType: "application/xml",
@@ -1735,7 +1674,7 @@ div.people_dir_edit a
                  }}); 
       });
 
-      $("#people_dir_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
+      $("#people_dir_edit_form .tab_form ul.tabs").tabs($("div.panes > div"));
 
       $(this_jstree).jstree_param(people_dir_map,
          { 
@@ -1792,28 +1731,25 @@ div.people_dir_edit a
        data.args[0].data().params.name.value = data.args[1];
    });
 
-
-     var left_pane = $("#people_dir_widget_instance_edit  #people_dir_edit_left_pane");
-
      $(this_jstree).bind("select_node.jstree", function(event, data) {
         var selected_item = $(this_jstree).jstree("get_selected");
       });
 
-      $("#people_dir_widget_instance_edit #delete_people_dir_item").click(function() {
+      $("#people_dir_edit_form #delete_people_dir_item").click(function() {
          var currently_selected = $(this_jstree).jstree("get_selected");
          if (currently_selected) {
             $(this_jstree).jstree("delete_node", currently_selected);
          }
       });
-      $("#people_dir_widget_instance_edit #new_people_dir_item").click(function() {
+      $("#people_dir_edit_form #new_people_dir_item").click(function() {
          var new_node = $(this_jstree).jstree_param().new_node("82CE9542-06EB-4D3D-A877-1DCCFCCC812B");
       });
-      $("#people_dir_widget_instance_edit").find("button").button();
+      $("#people_dir_edit_form").find("button").button();
    });
 </script>]]>
     </editform>
     <preload>
-      <![CDATA[@people.present?]]>
+      <![CDATA[true]]>
     </preload>
     <render_view>
       <![CDATA[<% if !@people.present? 
@@ -1824,27 +1760,33 @@ div.people_dir_edit a
          end
 
 	 def show_person(person_param)
-	    person = @people_map[person_param.hash_params["person_id"].conv_value]
-	    content_tag(:li, :class=>"person_item") do
-	       link_to(:seo_index=>person.seo_index) do 
-                 result = content_tag(:div, person.full_name, :class=>"person_name") 
-                 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
-                 result
-               end
+            if person_param.h.present? && person_param.h['person_id'].present?
+		person = @people_map[person_param.h["person_id"].conv_value]
+		if(person.present?)
+		    content_tag(:li, :class=>"person_item") do
+		       link_to(:seo_index=>person.seo_index) do 
+			 result = content_tag(:div, person.full_name, :class=>"person_name") 
+			 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
+			 result
+		       end
+		     end
+		 end
              end
 	 end
 
-         def show_person_group(person_group) 
-             content_tag(:li, :class=>"person_group") do
-                result = content_tag(:div, person_group.hash_params["name"].conv_value)
-                children = person_group.hash_params["children"]
-                if children.present?
-                    result << content_tag(:ul) do 
-                      raw(children.array_params.collect{ |person| raw(show_person(person)) }.join)
-                    end
-               end
-               result
-             end
+         def show_person_group(person_group)
+             if person_group.h.present? && person_group.h["name"].present? 
+		 content_tag(:li, :class=>"person_group") do
+		    result = content_tag(:div, person_group.hash_params["name"].conv_value)
+		    children = person_group.hash_params["children"]
+		    if children.present?
+			result << content_tag(:ul) do 
+			  raw(children.array_params.collect{ |person| raw(show_person(person)) }.join)
+			end
+		   end
+		   result
+		 end
+              end
           end
 %>
       <nav class="people_directory"><ul>

@@ -90,10 +90,11 @@ module Roxiware
 
 			scheme_params = scheme_data[:params]
 			scheme_param_descriptions = scheme_data[:param_descriptions]
-			scheme_params.each do |name, value|
-			    layout_scheme_params.set_param(name, value, scheme_param_descriptions[name], "style") 
-			end
-		     
+			if(scheme_params.present?) 
+			    scheme_params.each do |name, value|
+			        layout_scheme_params.set_param(name, value, scheme_param_descriptions[name], "style") 
+			    end
+		        end
 		        layout_scheme.set_param("name", scheme_data[:name], "620EE4B4-2615-4B03-ADCB-FCC7198455AC", "scheme")
 		        layout_scheme.set_param("thumbnail_image", scheme_data[:thumbnail_image], "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
 		        large_images = layout_scheme.set_param("large_images", nil, "975967EA-A9BC-40EE-8E1B-7F3CA8089E66", "scheme")

@@ -439,28 +439,28 @@
 			var export_jstree_node = function(node_name, node) {
 			    var export_params = function(params) {
 
-				var xml_result = ""
+				var params_xml_result = ""
 				for(var param_name in params) {
-				    xml_result = xml_result + "<param class='local' name='"+param_name+"' description='"+params[param_name].guid+"'>" +
+				    params_xml_result = params_xml_result + "<param class='local' name='"+param_name+"' description='"+params[param_name].guid+"'>" +
 				    xmlEscape(params[param_name].value)+"</param>";
 				}
-				return xml_result;
+				return params_xml_result;
 			    }
 			    var object_info = conf.objects[node.attr("rel")];
 
-			    var xml_result = "<param class='local' name='" + node_name + "' description='"+node.attr("rel")+"'>" + 
+			    var node_xml_result = "<param class='local' name='" + node_name + "' description='"+node.attr("rel")+"'>" + 
 			    export_params(node.data().params);
 			    var children = node.find("> ul > li");
 
 			    if (object_info.children_guid && (children.length > 0)) {
-				xml_result = xml_result + "<param class='local' name='children' description='"+object_info.children_guid+"'>"+
+				node_xml_result = node_xml_result + "<param class='local' name='children' description='"+object_info.children_guid+"'>";
 				children.each(function(index, child_node){
-					xml_result = xml_result + export_jstree_node(node_name+"_"+index, $(child_node));
+					node_xml_result = node_xml_result + export_jstree_node(node_name+"_"+index, $(child_node));
 				    });
-				xml_result = xml_result + "</param>";
+				node_xml_result = node_xml_result + "</param>";
 			    }
-			    xml_result = xml_result + "</param>";
-			    return xml_result;
+			    node_xml_result = node_xml_result + "</param>";
+			    return node_xml_result;
 			};
 
 

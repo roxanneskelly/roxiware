@@ -43,12 +43,11 @@ module Roxiware
 	   locals = {}
 	   locals[:widget_instance]=@widget_instance 
 	   widget_instance_id = @widget_instance.get_param("widget_instance_id").to_s 
-	   widget_instance_id = "widget-#{@widget_instance.id}" if @widget_instance_id.blank?
+	   widget_instance_id = "widget-#{@widget_instance.id}" if widget_instance_id.blank?
 	   locals[:widget_instance_id] = widget_instance_id
 	   locals[:layout_section]=@layout_section 
 	   locals[:page_layout]=@page_layout
 	   locals[:layout]=@current_layout 
-	   puts locals.inspect
            respond_to do |format|
 	     if @widget_instance.widget.editform.present?
                format.html { render :inline => @widget_instance.widget.editform, :locals=>locals }

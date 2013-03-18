@@ -416,13 +416,13 @@
 				new_node.attr("rel", obj_type);
 				new_node.data().params = init_params;
 				$(jstree).jstree("deselect_all");
-				$(jstree).jstree("select_node", new_node);
                                 if($.isFunction(init_object.onNew)) {
 				    init_object.onNew(new_node);
 				}
 				if(callback) {
 				    callback(new_node);
 				}
+				$(jstree).jstree("select_node", new_node);
 				new_node.bind("data_changed.jstree_param", function() {
 				    var object_info = conf.objects[$(this).attr("rel")];
 				    if($.isFunction(object_info.title)) {

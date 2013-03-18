@@ -137,7 +137,7 @@ div.menu_edit
 	       <div id="menu_item_edit_bar" class="edit_bar"><div id="new_menu_item" class="edit_bar_button">+</div><div id="delete_menu_item" class="edit_bar_button">-</div></div>
 	    </div>
 	    <div id="menu_edit_right_pane">
-	      <%= label_tag :permissions, "Permissions" %><%= select_tag :permission, options_for_select({"Guest"=>"guest", "User"=>"user", "Admin"=>"admin", "Super"=>"super"}) %><br/><br/>
+	      <%= label_tag :permission, "Permissions" %><%= select_tag :permission, options_for_select({"Guest"=>"guest", "User"=>"user", "Admin"=>"admin", "Super"=>"super"}) %><br/><br/>
               <%= label_tag :name, "Name" %><%= text_field_tag :name %><br/>
 	      <%= label_tag :url, "URL" %><%= text_field_tag :url %><br/>
 	    </div>
@@ -213,7 +213,7 @@ div.menu_edit
         selected_node.data().params[$(this).attr("name")].value = $(this).val();
         $(selected_node).trigger("data_changed.jstree_param");
      });
-     right_pane.find("select").bind("input blur propertychange",function() {
+     right_pane.find("select#permission").bind("input blur propertychange change",function() {
         var selected_node = $(this_jstree).jstree("get_selected");
         selected_node.data().params[$(this).attr("name")].value = $(this).val();
         $(selected_node).trigger("data_changed.jstree_param");
@@ -228,7 +228,7 @@ div.menu_edit
         if(selected_item.data().params.permission) {
            permission = selected_item.data().params.permission;
         }
-        right_pane.find("select#permissions").val(permission.value);
+        right_pane.find("select#permission").val(permission.value);
       });
 
       $("#menu_widget_instance_edit #delete_menu_item").click(function() {

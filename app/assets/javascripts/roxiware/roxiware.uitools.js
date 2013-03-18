@@ -796,9 +796,10 @@ function imageDialog(conf)
    if(options.height) {
        image_style = image_style+"height:"+options.height+"px;";
    }
+   var initialimage = (options.initialImage?"src='"+options.initialImage+"'":"");
    var overlay_dialog = '<div id="image_selection_dialog" class="settings settings_dialog" style="z-index:3000"><a class="close">x</a>' +
        '<div class="settings_title">'+options.title+'</div>'+
-           '<div id="image_preview"><img src="'+options.initialImage+'" style="'+image_style+'"/></div>' +
+           '<div id="image_preview"><img '+initialimage+' style="'+image_style+'"/></div>' +
            '<div id="upload_section">' +
            '<button id="upload_button" type="button" name="upload" value="upload">Upload Image</button>' +
            '<div id="progress_section" style="display:none"><div id="progress_bar"><div id="progress"></div></div><div id="upload_cancel">x</div></div>' +

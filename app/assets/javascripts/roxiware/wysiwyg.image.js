@@ -43,124 +43,25 @@
 		init: function (Wysiwyg) {
 		var self = this, elements, adialog, dialog, formImageHtml, regexp, dialogReplacements, key, translation;
 
-			dialogReplacements = {
-				legend	: "Insert Image",
-				preview : "Preview",
-				url     : "URL",
-			        upload  : "Upload a file from your computer",
-				upload_help : "Click to upload.",
-				submit  : "Insert Image",
-				reset   : "Cancel"
-			};
-			var formImageHtml = '<div class="overlay" id="wysiwyg_add_image_overlay">' +
-                                           '<form class="wysiwyg">' +
-	                                   '<div id="upload_target" class="upload_target">' +
-	                                    '</div>' + 
-                                              '<input id="image_source_upload" name="image_source" type="radio" value="upload" checked>{upload}</input>' +
-			                      '<br style="clear:both"/>' +
-                                              '<input id="image_source_url" name="image_source" type="radio" value="url">{url}</input>' +
-			                        '<input name="image_text_url" type="text" disabled/>' +
-			                      '<br/><br/><input type="submit" class="button" value="{submit}" disabled/>' +
-			                      '<input type="reset" class="button" value="{reset}"/>' +
-			                   '</form>' +
-                                         '</div>';
-
-			for (key in dialogReplacements) {
-				if ($.wysiwyg.i18n) {
-					translation = $.wysiwyg.i18n.t(dialogReplacements[key], "dialogs.image");
-
-					if (translation === dialogReplacements[key]) { // if not translated search in dialogs 
-						translation = $.wysiwyg.i18n.t(dialogReplacements[key], "dialogs");
-					}
-
-					dialogReplacements[key] = translation;
-				}
-
-				regexp = new RegExp("{" + key + "}", "g");
-				formImageHtml = formImageHtml.replace(regexp, dialogReplacements[key]);
+                imageDialog({
+			previewSize:"large",
+			uploadParams:{
+			    imageSizes: {
+				thumbnail:{width:64, height:64},
+				    xsmall:{width:100, height:100},
+				    small:{width:150, height:150},
+				    medium:{width:250, height:250},
+				    large:{width:350, height:350},
+				    xlarge:{width:500, height:500},
+				    huge:{width:600, height:600}
+			           }
+				},
+			onSuccess: function(result) {
+	                    Wysiwyg.insertHtml("<img src='" + result["urls"]["large"]+"'/>");
+			    $(Wysiwyg.editorDoc).trigger("editorRefresh.wysiwyg");
 			}
-
-			var overlay_dialog = $(formImageHtml);
-			$("body").append(overlay_dialog);
-
-			overlay_dialog.find("input[name=image_source]:radio").change(function() {
-			  var new_image_url;
-			  if($(this).val() == "url") {
-				// set the preview image to the image specified in the image_url input
-				new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
-				self.old_image = overlay_dialog.find("div#upload_target").image_upload().getImage();
-				self.old_thumbprint = overlay_dialog.find("div#upload_target").image_upload().getThumbprint();
-				overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url).setThumbprint(null).disable();
-				overlay_dialog.find("input[name=image_text_url]").removeAttr("disabled");
-				
-			    }
-			  else if ($(this).val() == "upload") {
-			      new_image_url = self.old_image;
-			      overlay_dialog.find("div#upload_target").image_upload().setImage(self.old_image).setThumbprint(self.old_thumbprint).enable();
-			      overlay_dialog.find("input[name=image_text_url]").attr("disabled", "disabled");
-			  }
-
-			   if((new_image_url != null) && (new_image_url != "")) {
-			      overlay_dialog.find("input:submit").removeAttr("disabled");
-			    }
-			    else {
-				overlay_dialog.find("input:submit").attr("disabled", "disabled");
-			    }
-
-			});
-                        overlay_dialog.find("input[name=image_text_url]").change(function(e) {
-			   var new_image_url = overlay_dialog.find("input[name=image_text_url]").val();
-			   overlay_dialog.find("div#upload_target").image_upload().setImage(new_image_url).setThumbprint(null);
-			   if((new_image_url != null) && (new_image_url != "")) {
-			      overlay_dialog.find("input:submit").removeAttr("disabled");
-			    }
-			    else {
-				overlay_dialog.find("input:submit").attr("disabled", "disabled");
-			    }
-			    
-			});
-			overlay_dialog.overlay({
-				oneInstance:false,
-				top: "center",
-				// some mask tweaks suitable for facebox-looking dialogs
-				mask: {
-				    color: '#222',
-				    loadSpeed: 200,
-					opacity: 0.5,
-					zIndex:2999
-				},
-				closeOnClick: false,
-                                load:true,
-			        onClose: function() {
-				    overlay_dialog.remove();
-				},
-				onBeforeLoad: function () {
-                                  overlay_dialog.find("form").submit(function (e) {
-				      e.preventDefault();
-				      self.processInsert(overlay_dialog, Wysiwyg);
-                                      overlay_dialog.find("a.close").click();
-				      return false;
-				   });
-			       
-                                   $("div#wysiwyg_add_image_overlay div#upload_target").image_upload({
-					uploadImagePreviewSize: "medium",
-				       complete: function(urls, thumbprint) {
-					       overlay_dialog.find("input:submit").removeAttr("disabled");
-					   }
-				       });
-                                    overlay_dialog.find("input:reset").click(function (e) {
-                                        overlay_dialog.find("a.close").click();
-				    });
-
-				    $(Wysiwyg.editorDoc).trigger("editorRefresh.wysiwyg");
-				}
 		    });
 			
-	    },
-            processInsert: function (context, Wysiwyg) {
-               var url = context.find("div#upload_target").image_upload().getImage();
-	       var image_html = "<img src='" + url + "'/>";
-	       Wysiwyg.insertHtml(image_html);
 	    }
 	}
 
@@ -214,12 +115,12 @@
 
 	    conf: {
 	        onExit: function () { },
-		dialog: '<div class="image_attribute_dialog" style="display:none;position:absolute;">' +
+		dialog: '<div class="image_attribute_dialog settings_dialog" style="display:none;position:absolute;">' +
                             '<div id="float_label">Image Float</div>' +
 		            '<div id="float"><a id="left">left</a> <a id="none">none</a> <a id="right">right</a></div>' +
 		        '</div>',
-		sizes: ['xsmall','small','medium','large','xlarge','huge'],
-		closeTimeout: 300,
+		sizes: ['thumbnail', 'xsmall','small','medium','large','xlarge','huge'],
+		closeTimeout: 30000,
 		hoverDelay: 700
 		
 	    }
@@ -233,11 +134,20 @@
 		     {
 			 dialog: null,
 			 launch_dialog: function (image) {
-			     // bring up dialog over center/bottom of image
+			     // bring up dialog over center of image
 			     self.dialog = $(conf.dialog).clone();
 			     var size_regex_string = "("+conf.sizes.join("|")+")";
 
-			     var url_regex_string = new RegExp("^\/.*\/[0-9a-f]{32}_"+size_regex_string+".(png|jpg|gif)$");
+			     var set_dialog_position = function() {
+				 var doc_x = image.parents("body").scrollLeft();
+				 var doc_y = image.parents("body").scrollTop();
+				 var image_horz_center = Math.max(0, Math.min(image.offset().left + image.width()/2 - doc_x, iframe.width()));
+				 var dialog_bottom = Math.max(0, Math.min(image.offset().top + image.height()/2 - doc_y, iframe.height()));
+			     
+				 self.dialog.css("top", dialog_bottom+"px");
+				 self.dialog.css("left", (image_horz_center-(self.dialog.width()/2))+"px");
+			     };
+			     var url_regex_string = new RegExp("^\/assets/uploads/[0-9a-f]{32}_"+size_regex_string+".(png|jpg|gif|jpeg)$");
 			     var match = url_regex_string.exec(image.attr("src"));
 			     if(match) {
 				 var size_div = $("<div id='size'></div>");
@@ -250,6 +160,7 @@
 					     self.dialog.find("div#size a").removeAttr("disabled");
 					     self.dialog.find("div#size a#"+size).attr("disabled","disabled");
 					     Wysiwyg.saveContent();
+					     self.cleanup();
 					     
 					 });
 				     size_div.append(size_specifier);
@@ -262,15 +173,6 @@
 			     var iframe = $(window.document).find("iframe#"+iframe_id+"-wysiwyg-iframe");
                              // find the iframe pertaining to this image
                              iframe.after(self.dialog);
-			     var set_dialog_position = function() {
-				 var doc_x = image.parents("body").scrollLeft();
-				 var doc_y = image.parents("body").scrollTop();
-				 var image_center = Math.max(0, Math.min(image.offset().left + image.width()/2 - doc_x, iframe.width()));
-				 var dialog_bottom = Math.max(0, Math.min(image.offset().top + image.height() - doc_y, iframe.height()));
-			     
-				 self.dialog.css("top", dialog_bottom+"px");
-				 self.dialog.css("left", (image_center-(self.dialog.width()/2))+"px");
-			     };
 			     set_dialog_position();
 			     image.parents("html").parent().scroll(function(e) {
 				     set_dialog_position();
@@ -282,6 +184,7 @@
 				     image.css("float", $(this).attr("id"));
 			             self.dialog.find("a#"+image.css("float")).attr("disabled", "disabled");
                                      Wysiwyg.saveContent();
+				     self.cleanup();
 				 });
 			     if(match) {
 				 self.dialog.find("div#size a#"+match[1]).attr("disabled","disabled");

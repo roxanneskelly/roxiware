@@ -1764,7 +1764,7 @@ div.people_dir_edit_form
 		person = @people_map[person_param.h["person_id"].conv_value]
 		if(person.present?)
 		    content_tag(:li, :class=>"person_item") do
-		       link_to(:seo_index=>person.seo_index) do 
+		       link_to(people_url+"/"+person.seo_index) do 
 			 result = content_tag(:div, person.full_name, :class=>"person_name") 
 			 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
 			 result

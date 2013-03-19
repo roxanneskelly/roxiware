@@ -34,7 +34,7 @@ class Roxiware::EventsController < ApplicationController
     @meta_description = @meta_description +" : Events"
     @meta_keywords = @meta_keywords + ", " + @event.start.to_s
     respond_to do |format|
-      format.html { render }
+      format.html { render :partial =>"roxiware/events/editform" }
       format.json { render :json => @event.ajax_attrs(@role) }
     end
   end
@@ -42,9 +42,9 @@ class Roxiware::EventsController < ApplicationController
   def new
     @robots="noindex,nofollow"
     authorize! :create, Roxiware::Event
-    @event = Roxiware::Event.new({:start_date=>Time.now.utc.strftime("%F"), :start_time=>"8:00 AM", :description=>"Description", :location=>"", :location_url=>""}, :as=>@role)
+    @event = Roxiware::Event.new({:start_date=>Time.now.utc.strftime("%F"), :start_time=>"8:00 AM", :description=>"Description", :location=>"", :location_url=>"", :duration_units=>"hours", :duration=>"1"}, :as=>@role)
     respond_to do |format|
-      format.html
+      format.html { render :partial =>"roxiware/events/editform" }
       format.json { render :json => @event.ajax_attrs(@role) }
     end
   end
@@ -52,19 +52,25 @@ class Roxiware::EventsController < ApplicationController
   
   def create
      @robots="noindex,nofollow"
+     if (params[:event][:duration].blank?)
+         params[:event][:duration_units] = "none"
+     end
      respond_to do |format|
-       if !@event.update_attributes(params, :as=>@role)
-         format.json { render :json=>report_error(@event) }
-       else
+       if @event.update_attributes(params[:event], :as=>@role)
          format.json { render :json=> @event.ajax_attrs(@role) }
+       else
+         format.json { render :json=>report_error(@event) }
        end
      end
   end
 
   def update
      @robots="noindex,nofollow"
+     if (params[:event][:duration].blank?)
+         params[:event][:duration_units] = "none"
+     end
      respond_to do |format|
-       if !@event.update_attributes(params, :as=>@role)
+       if !@event.update_attributes(params[:event], :as=>@role)
          format.json { render :json=>report_error(@event)}
        else
          format.json { render :json=> @event.ajax_attrs(@role) }

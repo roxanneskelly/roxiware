@@ -1,0 +1,19 @@
+<ul id="event_context_menu" class="context_menu">
+   <li id="edit_event"><a menu_item="edit_event">Edit Event</a></li>
+   <li id="delete_event"><a menu_item="delete_event">Delete Event</a></li>
+</ul>
+
+<script>
+  $(document).bind("ready", function() {
+    $("div.event").context_menu("#event_context_menu");
+
+    $("div.event").on("context_menu", function(event, menu_item) {
+       var event_link=$(this).attr("rel");
+       switch (menu_item) {
+	  case "edit_event":
+	    settingsForm(event_link+"/edit", "Edit Event");
+	    break;
+        }
+    });
+});
+</script>

@@ -1,0 +1,76 @@
+<div id="event_edit_form" class="medium_form">
+ <% puts @event.inspect %>
+<%= form_for @event do |event|%>
+  <div id="left_section">
+    <%= event.label :start_time, "Start" %>
+    <%= event.text_field :start_date, :class=>"jquerytools_date" %>
+    <%= event.select :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}) %>
+    <br/>
+    <%= event.label :duration, "Duration" %>
+    <%= event.select :duration, options_for_select((1..40).collect(), @event.duration), :include_blank=>true %>
+    <%= event.select :duration_units, options_for_select({"Days"=>"days", "Hours"=>"hours", "Minutes"=>"minutes"}, @event.duration_units), :include_blank=>false %>
+  </div><div id="right_section">
+    <%= event.text_field :location, :watermark=>"Location", :title=>"Location" %>
+    <br/>
+    <%= event.text_field :city, :watermark=>"City", :title=>"City" %>
+    <%= event.text_field :state, :watermark=>"State", :title=>"State" %>
+  </div>
+  <div id="url_box">
+    <%= event.label :location_url, "URL" %>
+    <%= event.text_field :location_url, :watermark=>"MAP URL, Facebook URL, etc.", :title=>"URL associated with this event" %>
+  </div>
+    <div id="description"><div class="settings_wysiwyg"><%= event.text_area :description, :class=>"event_description settings_wysiwyg" %></div></div>
+    <br/>
+    <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
+<% end %>
+</div>
+<script>
+
+<% if @event.id.present?
+       endpoint = event_path(@event.id)
+       method = "PUT"
+   else 
+       endpoint = events_path
+       method = "POST"
+   end
+%>
+
+$(function() {
+   $("input[watermark]").watermark();
+   $("input.jquerytools_date").dateinput({
+                               format: 'mm/dd/yyyy',
+                               trigger: true,
+                               min: -1
+                         });
+
+   if(!$("#event_edit_form select#event_duration").val()) {
+           $("#event_edit_form select#event_duration_units").attr("disabled", "disabled");
+   }
+   $("#event_edit_form select#event_duration").change(function() {
+       if($(this).val()) {
+           $("#event_edit_form select#event_duration_units").removeAttr("disabled");
+       }
+       else {
+           $("#event_edit_form select#event_duration_units").attr("disabled", "disabled");
+       }
+   });
+
+    $("#event_edit_form button#save_button").click(function() {
+        $("form input.watermark").val("");
+        $.ajax({type:"<%= method %>",
+                processData: false, 
+                 dataType:"json",
+                 url: "<%= endpoint %>.json",
+                 data:jQuery.param($("#event_edit_form form").serializeArray()),
+                 error: function(xhr, textStatus, errorThrown) {
+                    $.alert(textStatus);
+                 },
+                 complete: function() {
+                 },
+                 success: function() {
+                    window.location.reload();
+                 }}); 
+    });
+
+});
+</script>

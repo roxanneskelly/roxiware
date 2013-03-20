@@ -1,0 +1,30 @@
+<div class="section_layout_edit large_form" id="section_layout_form">
+   <%= form_for @section, :as=>:layout_section, :url=>(layout_page_section_path(@layout.guid, url_encode(@page.get_url_identifier), @section.name)), :method=>"put" do |layout_section_form|%>
+   <div class="tab_form">
+     <ul class="tabs">
+       <% if @section.get_param_objs.present? %> 
+          <li><a href="#">Settings</a></li>
+       <% end %>
+       <li><a href="#">Style</a></li>
+     </ul>
+     <div class="panes">
+       <% if @section.get_param_objs.present? %> 
+	  <div id="settings_pane">
+	     <%= fields_for :params do |param_field_block| %>
+		<%= param_fields(layout_section_form, @section.get_param_objs) %>
+	     <% end %>
+	  </div>
+       <% end %>
+       <div id="style_pane">
+          <%= layout_section_form.text_area :style, :class=>"section_layout_style" %>
+       </div>
+     </div>
+   </div>      
+    <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"submit" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      $("#section_layout_form").find("ul.tabs").tabs($("div.panes > div"));
+   });
+</script>

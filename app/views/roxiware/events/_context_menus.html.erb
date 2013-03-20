@@ -13,6 +13,17 @@
 	  case "edit_event":
 	    settingsForm(event_link+"/edit", "Edit Event");
 	    break;
+          case "delete_event":
+            if(confirm("Remove Event\nAre you sure?")) {
+              $.ajax({url:event_link, 
+                      type:"DELETE",
+                      dataType: "json", 
+                      success: function(json_data, textStatus, jqXHR) {
+                         window.location = "<%= events_path %>";
+                      }
+               });
+              }
+              break;
         }
     });
 });

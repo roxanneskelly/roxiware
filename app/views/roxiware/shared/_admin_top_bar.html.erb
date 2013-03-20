@@ -27,7 +27,13 @@
 	      </ul>
 	   </li><% if can? :edit, @current_layout %><li id="layout_menu">Design<ul>
 		  <li id="edit_layout"><a rel="<%=layout_path(@current_layout.guid)%>" form="Layout Settings">Layout</a></li>
-		  <li id="edit_page"><a rel="<%=layout_page_path(@current_layout.guid, @page_layout.id)%>" form="Page Settings">Page</a></li>
+		  <li id="edit_page"><a rel="<%=layout_page_path(@current_layout.guid, @page_layout.id)%>" form="<%=@page_layout.get_text_name %> Page Settings">Page</a></li>
+                  <% if @page_layout.action.blank? %>
+		     <li id="page_fork"><a>Fork Page</a></li>
+	          <% end %>
+                  <% if !@page_layout.is_root? %>
+		     <li id="page_delete"><a>Collapse Page</a></li>
+	          <% end %>
 		</ul>
 	     </li>
 	   <% end %>
@@ -42,6 +48,9 @@ $(function() {
 	$("div#settings_menu a[form]").click(function() {
 	   settingsForm($(this).attr("rel"), $(this).attr("form"));
 	});
+        $("div#settings_menu li#page_fork, div#settings_menu li#page_delete").click(function() {
+           $("#mainBody").trigger("context_menu", $(this).attr("id"));
+        });
 
         ddsmoothmenu.init({
             mainmenuid: "settings_menu",

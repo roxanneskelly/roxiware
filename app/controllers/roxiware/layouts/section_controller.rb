@@ -26,12 +26,12 @@ module Roxiware
 	  end
        end
        
-       def show
+       def edit
            @section = @page.section(params[:id])
 	   raise ActiveRecord::RecordNotFound if @section.nil?
 	   authorize! :read, @section
            respond_to do |format|
-	     format.html { render :partial => "roxiware/shared/edit_section_layout_form" }
+	     format.html { render :partial => "roxiware/templates/edit_section_layout_form" }
 	   end
        end
 
@@ -42,15 +42,15 @@ module Roxiware
 	   success = true
            ActiveRecord::Base.transaction do
 	      begin
-	         if params[:params].present?
+	         if params[:layout_section][:params].present?
 	            @section.params.each do |section_param|
-		       if params[:params][section_param.name.to_sym].present?
-		          section_param.value = params[:params][section_param.name.to_sym]
+		       if params[:layout_section][:params][section_param.name.to_sym].present?
+		          section_param.value = params[:layout_section][:params][section_param.name.to_sym]
 			  section_param.save!
 		       end
 		    end
 		 end
-		 if !@section.update_attributes(params, :as=>@role)
+		 if !@section.update_attributes(params[:layout_section], :as=>@role)
 		    raise ActiveRecord::Rollback
 		 end 
 	      rescue Exception => e

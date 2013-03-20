@@ -1,0 +1,33 @@
+<div class="page_layout_edit large_form" id="page_layout_edit_form">
+   <%= form_tag(layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)), :method=>"put") do%>
+   <div class="tab_form">
+     <ul class="tabs">
+       <li><a href="#">Settings</a></li>
+       <li><a href="#">Style</a></li>
+     </ul>
+     <div class="panes">
+       <div id="settings_pane">
+          <div title="Select the form of layout for the page" style="display:inline-block">
+	    <%= label_tag :render_layout, "Page Layout" %>
+	    <%=  select_tag :render_layout, options_for_select({"Widget|Content|Widget"=> "roxiware/layouts/threecolumn", "Content|Widget"=>"roxiware/layouts/twocolumn_left", "Widget|Content"=>"roxiware/layouts/twocolumn_right", "One Column"=>"roxiware/layouts/onecolumn", "Widget|Widget|Content"=>"roxiware/layouts/double_left", "Content|Widget|Widget"=>"roxiware/layouts/double_right"}, @page.render_layout) %>
+	  </div>
+	  <%= fields_for :params do |param_field_block| %>
+	     <%= param_fields(param_field_block, @page.get_param_objs) %>
+	  <% end %>
+       </div>
+       <div id="style_pane">
+          <%= text_area_tag :style, @page.style, :class=>"page_layout_style" %>
+       </div>
+     </div>
+    </div>
+     <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"submit" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      $("#page_layout_edit_form").find("ul.tabs").tabs($("div.panes > div"));
+      $("#page_layout_edit_form").find("button").button().click(function() {
+         
+      });
+   });
+</script>

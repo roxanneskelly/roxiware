@@ -28,7 +28,7 @@ module Roxiware
 	   raise ActiveRecord::RecordNotFound if @page.nil?
 	   authorize! :read, @page
            respond_to do |format|
-	     format.html { render :partial => "roxiware/shared/edit_page_layout_form" }
+	     format.html { render :partial => "roxiware/templates/edit_page_layout_form" }
 	   end
        end
 
@@ -75,8 +75,8 @@ module Roxiware
            page_params = params[:params]
 	   
 	   @page = @current_layout.page_layouts.build
-	   if (page_params[:clone].present?)
-               clone_page = Roxiware::Layout::PageLayout.find(page_params[:clone])
+	   if (params[:clone].present?)
+               clone_page = Roxiware::Layout::PageLayout.find(params[:clone])
 	       raise ActiveRecord::RecordNotFound if clone_page.nil?
 	       @page.update_attributes(clone_page.attributes, :as=>"")
 	       clone_page.params.each do |page_param|
@@ -84,7 +84,7 @@ module Roxiware
 	          @page.params << page_param.dup
 	       end
 	   end
-           @page.set_url_identifier(URI.decode(page_params[:url_identifier]))
+           @page.set_url_identifier(URI.decode(params[:url_identifier]))
            @page.save!
 	   success = true
            ActiveRecord::Base.transaction do

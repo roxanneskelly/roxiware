@@ -4,11 +4,11 @@
   <div id="left_section">
     <%= event.label :start_time, "Start" %>
     <%= event.text_field :start_date, :class=>"jquerytools_date" %>
-    <%= event.select :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}) %>
+    <%= event.select :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}, @event.start_time) %>
     <br/>
     <%= event.label :duration, "Duration" %>
-    <%= event.select :duration, options_for_select((1..40).collect(), @event.duration), :include_blank=>true %>
-    <%= event.select :duration_units, options_for_select({"Days"=>"days", "Hours"=>"hours", "Minutes"=>"minutes"}, @event.duration_units), :include_blank=>false %>
+    <%= event.select :duration, options_for_select((1..24).collect(), @event.duration), :include_blank=>true %>
+    <%= event.select :duration_units, options_for_select([["Minutes","minutes"], ["Hours","hours"],  ["Days","days"]], @event.duration_units), :include_blank=>false %>
   </div><div id="right_section">
     <%= event.text_field :location, :watermark=>"Location", :title=>"Location" %>
     <br/>
@@ -43,10 +43,9 @@ $(function() {
                                min: -1
                          });
 
-   if(!$("#event_edit_form select#event_duration").val()) {
-           $("#event_edit_form select#event_duration_units").attr("disabled", "disabled");
-   }
+
    $("#event_edit_form select#event_duration").change(function() {
+       console.log("change trigger");
        if($(this).val()) {
            $("#event_edit_form select#event_duration_units").removeAttr("disabled");
        }
@@ -54,6 +53,43 @@ $(function() {
            $("#event_edit_form select#event_duration_units").attr("disabled", "disabled");
        }
    });
+
+   $("#event_edit_form select#event_duration_units").change(function() {
+       console.log("units trigger");
+       if($(this).val() != "days") {
+           $("#event_edit_form select#event_start_time").removeAttr("disabled");
+       }
+       else {
+           $("#event_edit_form select#event_start_time").attr("disabled", "disabled");
+       }
+       $("select#event_duration").html("");
+       if($(this).val() == "minutes") {
+            $([15,30,45, 60, 90, 120]).each(function(index, i) {
+               $("select#event_duration").append("<option value='"+i+"'>"+i+"</option>");
+            });
+            $("select#event_duration").val(15);
+       }
+       if($(this).val() == "hours") {
+            for (var i=1; i<=24; i++) {
+               $("select#event_duration").append("<option value='"+i+"'>"+i+"</option>");
+            }
+            $("select#event_duration").val(1);
+       }
+       if($(this).val() == "days") {
+            for (var i=1; i<=31; i++) {
+               $("select#event_duration").append("<option value='"+i+"'>"+i+"</option>");
+            }
+            $("select#event_duration").val(1);
+       }
+       console.log("units trigger done");
+    });
+
+   $("#event_edit_form select#event_duration_units").change();
+   console.log("trigger done");
+   $("#event_edit_form select#event_duration_units").val("<%= @event.duration_units %>");
+   $("#event_edit_form select#event_duration").val("<%= @event.duration %>");
+   console.log("set value done");
+   $("#event_edit_form select#event_duration").change();
 
     $("#event_edit_form button#save_button").click(function() {
         $("form input.watermark").val("");

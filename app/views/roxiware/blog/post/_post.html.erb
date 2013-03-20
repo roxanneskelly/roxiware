@@ -10,10 +10,6 @@
 	      <% allowed_permissions = Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.collect {|permission| [permission != "default"?permission:"default(#{@blog_comment_permissions})", permission]} %> 
 	      <%= select_tag "comment_permissions-#{post.id}", options_for_select(allowed_permissions, post.comment_permissions), :post=>post.id %>
 	    </div>
-	    <div class="edit_controls">
-              <%= button_tag "Edit", :id=>"edit-post-item-#{post.id}", :class=>"post_edit button_edit", :type=>"button"  %>
-              <%= button_tag "Delete", :id=>"delete-post-item-#{post.id}", :class=>"post_delete button_delete", :type=>"button"  %>
-	    </div>
 	  </div>
 	<% end %>
 

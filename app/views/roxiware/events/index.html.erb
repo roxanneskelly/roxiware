@@ -4,15 +4,16 @@
 <% @events.each do |event|  %>
   <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">
     <h3 class="event_title last">
-      <%= show_time = event.start.strftime("%b %e")
-          if (event.duration_units == "days" && event.duration.present?)
-  	    end_time = event.start + event.duration.days
-	    show_time = event.start.strftime("%b %e, %Y") unless end_time.year == event.start.year
-	    show_time += " - "
-	    show_time += end_time.strftime("%b %e, %Y") if event.start.month != end_time.month
-	    show_time += end_time.strftime("%e, %Y") if event.start.month == end_time.month
+      <%= 
+	  show_date = event.start.strftime("%b %e")
+          if (event.duration_units == "days" && event.duration.present? && event.duration > 1)
+  	    end_time = event.start + (event.duration.days - 1)
+	    show_date = event.start.strftime("%b %e, %Y") unless end_time.year == event.start.year
+	    show_date += " - "
+	    show_date += end_time.strftime("%b %e, %Y") if event.start.month != end_time.month
+	    show_date += end_time.strftime("%e, %Y") if event.start.month == end_time.month
           end
-          show_time %>
+          show_date %>
       <%= ": " + event.city unless event.city.blank? %> 
       <%= ", " + event.state unless event.state.blank? %>
     </h3>

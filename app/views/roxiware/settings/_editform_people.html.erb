@@ -1,11 +1,80 @@
-<div class="small_form" id="people_settings_edit">
+<div class="large_form" id="people_settings_edit">
    <%= form_tag(setting_path("people"), :method=>"put") do %>
-       <%= label :default_biography, "Default Biography" %><%= collection_select :people, :default_biography, Roxiware::Person.all, :id, :full_name, {:selected=>@settings["default_biography"].conv_value} %>
-      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
+     <div class="tab_form">
+       <ul class="tabs">
+         <li><a href="#">People</a></li>
+         <li><a href="#">Settings</a></li>
+       </ul>
+       <div class="panes">
+	 <div id="people_pane">
+	   <div class="list_box" id="people_list">
+	     <div class="list_box_header" id="people_list_header"><div id="header_name">Name</div><div id="header_email">Email</div><div id="header_linked_user">Linked User</div></div>
+	     
+	     <div class="list_box_content" id="people_list_content">
+	       <% Roxiware::Person.all.each do |person| %>
+	           <% user = Roxiware::User.find(person.user_id) if person.user_id.present?%>
+	          <div class="person" person_id="<%=person.id%>" user_id="<%= person.user_id %>"><div class="person_name"><%= person.full_name %></div><div class="person_email"><%= person.email%></div><div class="person_linked_user"><%= user.username if user %></div></div>
+	       <% end %>
+	     </div>
+             <div class="edit_bar"><div id="new_person" class="edit_bar_button" title="Add a person">+</div><div id="delete_person" class="edit_bar_button" title="Remove a person">-</div><div id="edit_person_button" class="edit_bar_button" title="Edit a person">o</div></div>
+	   </div>
+	 </div>
+	 <div id="settings_pane">
+             <%= label :default_biography, "Default Biography" %><%= collection_select :people, :default_biography, Roxiware::Person.all, :id, :full_name, {:selected=>@settings["default_biography"].conv_value} %>
+	 </div>
+       </div>
+     </div>
+     <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
    <% end %>
 </div>
 
 <script>
 $(function() {
+   $("#people_settings_edit").find("ul.tabs").tabs($("#people_settings_edit div.panes > div"));
+   $("#people_settings_edit .person").click(function() {
+      var current_selected_person = $(".list_box_item_selected");
+      current_selected_person.removeClass("list_box_item_selected");
+      $(this).addClass("list_box_item_selected");
+
+      console.log($(this).attr("user_id"));
+      if($(this).attr("user_id")) {
+         console.log("adding");
+         $("#people_settings_edit div#delete_person").addClass("edit_bar_button_disabled");
+      }
+      else {
+         console.log("removing");
+         $("#people_settings_edit div#delete_person").removeClass("edit_bar_button_disabled");
+      }
+   });
+
+   $("#edit_person_button").click(function() {
+      var current_selected_person = $(".list_box_item_selected");
+      settingsForm("/person/"+current_selected_person.attr("person_id")+"/edit", "Edit Person");
+   });
+   $("#delete_person").click(function() {
+      var current_selected_person = $(".list_box_item_selected");
+      if (current_selected_person.attr("user_id")) {
+         return;
+      }
+      if(confirm("Remove "+current_selected_person.find(".person_name").text()+"\nAre you sure?")) {
+	  $.ajax({url:"/person/"+current_selected_person.attr("person_id")+".json",
+		  type:"DELETE",
+		  dataType: "json",
+                  complete: function(jqXHR, textStatus) {
+                  },
+                  error: function(jqXHR, textStatus, errorThrown){
+                     $.alert(textStatus);
+                  },
+		  success: function(json_data, textStatus, jqXHR) {
+                      current_selected_person.remove();
+		  }
+	   });
+      }
+   });
+   $("#new_person").click(function() {
+      settingsForm("<%= new_person_path %>", "New Person");
+
+   });
+   $("#people_settings_edit .person").first().click();
 });
 </script>

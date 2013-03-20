@@ -35,7 +35,6 @@ class Roxiware::PeopleController < ApplicationController
     end
   end
 
-
   def show
     people = Roxiware::Person.all
     # iterate each person to see if user can read them
@@ -90,7 +89,7 @@ class Roxiware::PeopleController < ApplicationController
 				   :email=>"email@email.com", 
 				   :bio=>"Bio"}, :as=>@role)
     respond_to do |format|
-      format.html # new.html.erb
+      format.html { render :partial =>"roxiware/people/editform" }
       format.json { render :json => @person.ajax_attrs(@role) }
     end
   end
@@ -133,8 +132,7 @@ class Roxiware::PeopleController < ApplicationController
           format.json { render :json=>{:error=>[nil, "This person is associated with a user.  Delete the user instead."]}}
 	else
            if @person.destroy
-	      format.html { redirect_to people_url }
-              format.json { head :ok }
+              format.json { render :json=>{:success=>true} }
 	   else
 	      format.json { render :json=>report_error(@person)}
 	   end

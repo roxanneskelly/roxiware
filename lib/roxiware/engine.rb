@@ -14,6 +14,7 @@ require 'roxiware/base_model'
 require 'roxiware/goodreads'
 require 'roxiware/seo_string'
 require 'roxiware/image_helpers'
+require 'roxiware/sanitizer'
 module Roxiware
   class Engine < ::Rails::Engine
     engine_name "roxiware"
@@ -25,6 +26,7 @@ module Roxiware
            include Roxiware::ImageHelpers
            include Roxiware::JQueryPopupForm
            include Roxiware::Helpers
+           include Roxiware::Sanitizer
            after_filter :store_location
            helper :all
        end

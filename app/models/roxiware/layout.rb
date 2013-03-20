@@ -215,6 +215,9 @@ module Roxiware
 	     page_layout = self.find_page_layout(controller, action)
 	     @layout_params.merge(page_layout.resolve_layout_params)
 	  end
+	  before_validation do
+	     self.description = Sanitize.clean(self.description, Roxiware::Sanitizer::BASIC_SANITIZER)
+	  end
       end
 
 

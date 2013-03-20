@@ -220,6 +220,12 @@ module Roxiware
 					     :post_title=>"Title", 
 					     :comment_permissions=>"default"}, :as=>"")
 
+	   if((@role == "super") || (@role == "admin")) 
+	       params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::EXTENDED_SANITIZER)
+	   else
+	       params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::BASIC_SANITIZER)
+           end
+
 	   respond_to do |format|
 	       if @post.update_attributes(params[:blog_post], :as=>@role)
 		  format.html { redirect_to @post, :notice => 'Blog post was successfully created.' }
@@ -234,6 +240,11 @@ module Roxiware
 	 # PUT /posts/1
 	 # PUT /posts/1.json
 	 def update
+	   if((@role == "super") || (@role == "admin")) 
+	       params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::EXTENDED_SANITIZER)
+	   else
+	       params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::BASIC_SANITIZER)
+           end
 	   respond_to do |format|
 	       if @post.update_attributes(params[:blog_post], :as=>@role)
 		  format.html { redirect_to @post.post_link, :notice => 'Blog post was successfully updated.' }

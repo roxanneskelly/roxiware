@@ -24,6 +24,7 @@ class Roxiware::Event < ActiveRecord::Base
          parsed_uri.path = "/"+split_path[1..-1].join("/")
        end
        self.location_url = parsed_uri.to_s
+       self.description = Sanitize.clean(self.description, Roxiware::Sanitizer::BASIC_SANITIZER)
      end
    end
 

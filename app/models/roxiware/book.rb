@@ -136,5 +136,6 @@ class Roxiware::Book < ActiveRecord::Base
 
   before_validation do
      self.seo_index = (self.title || "").to_seo
+     self.description = Sanitize.clean(self.description, Roxiware::Sanitizer::BASIC_SANITIZER)
   end
 end

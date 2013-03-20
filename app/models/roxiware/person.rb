@@ -102,5 +102,6 @@ class Roxiware::Person < ActiveRecord::Base
 
     before_validation do
        self.seo_index = self.full_name.to_seo
+       self.bio = Sanitize.clean(self.bio, Roxiware::Sanitizer::BASIC_SANITIZER)
     end
 end

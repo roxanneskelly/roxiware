@@ -4,7 +4,7 @@
        <div id="help_bar"><div id="help_bar_items"></div></div>
        <div id="settings_menu" class="ddsmoothmenu"><ul><li id="account">Account<ul>
 	       <li><a href="<%= destroy_session_path('user') %>">Log Out</a></li>
-	       <li><a rel="<%= edit_account_path(@current_user.id) %>" form="Edit Account">Edit</a></li>
+	       <li><a rel="<%= edit_account_path(current_user.id) %>" form="Edit Account">Edit</a></li>
 	       <li><a rel="<%= account_update_password_path %>" form="Change Password">Change Password</a></li>
 	       <% if can? :create, Roxiware::User %>
 	       <hr/>

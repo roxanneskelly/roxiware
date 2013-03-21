@@ -11,7 +11,7 @@
        <% if @section.get_param_objs.present? %> 
 	  <div id="settings_pane">
 	     <%= fields_for :params do |param_field_block| %>
-		<%= param_fields(layout_section_form, @section.get_param_objs) %>
+		<%= param_fields(layout_section_form, @section.get_param_objs.values) %>
 	     <% end %>
 	  </div>
        <% end %>

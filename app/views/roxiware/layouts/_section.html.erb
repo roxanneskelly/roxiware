@@ -3,7 +3,6 @@
 <% if layout_section.present?  %>
   <% edit_section_class = "edit_section" if can? :edit, Roxiware::Layout::LayoutSection %>
   <% style = "" %>
-  <% style += "width:#{layout_section.get_param('width').conv_value}px;" if layout_section.get_param('width').present? %>
   <div id="<%= section %>_section" section_name="<%= layout_section.get_text_name %>" section="<%= section %>" section_id="<%= u layout_section.id %>" class="<%= section %>_class <%= edit_section_class %>" style="<%= style %>" rel="<%= layout_page_section_path(@current_layout.guid, layout_section.page_layout.get_url_identifier, layout_section.name) %>">
     <% layout_section.get_widget_instances.each do |widget_instance| %>
        <% show_widget = true %>

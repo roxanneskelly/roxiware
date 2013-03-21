@@ -3,7 +3,7 @@
       <%= link_to("<< Previous Post", @prev_post_link, :class=>"prev_post") if @prev_post_link %>
       <%= link_to("Next Post >>", @next_post_link, :class=>"next_post") if @next_post_link %>
     </div>
-   <%= render :partial=>"post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header=>true} %>
+   <%= render :partial=>"roxiware/blog/post/post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header=>true} %>
    <% if can? :read_comments, @post %>
        <% can_reply = can? :comment, @post 
 	  can_manage = can? :edit, @post %>

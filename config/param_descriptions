@@ -676,4 +676,11 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+  <param_description guid="AE10A07E-03BF-4583-BCA0-B2550786E5F4">
+    <name>Home Page Type</name>
+    <description>Type of page to show on root page.</description>
+    <field_type>select</field_type>
+    <permissions>super</permissions>
+    <meta>Blog:blog,Content:content</meta>
+  </param_description>
 </param_descriptions>

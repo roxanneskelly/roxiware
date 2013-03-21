@@ -2,7 +2,7 @@
     <section class="posts">
       <% @posts.each do |post|  %>
         <div class="post_list_item" rel="<%= blog_post_path(post.id) %>">
-           <%= render :partial=>"post", :locals=>{:post=>post, :index=>true, :show_full_content=>false, :show_full_header=>true} %>
+           <%= render :partial=>"roxiware/blog/post/post", :locals=>{:post=>post, :index=>true, :show_full_content=>false, :show_full_header=>true} %>
         </div>
       <% end %>
     </section>
@@ -54,4 +54,4 @@ $(document).ready(function() {
 });
 </script>
 
-<%= render :partial=>"post_manage_control" %>
+<%= render :partial=>"roxiware/blog/post/post_manage_control" %>

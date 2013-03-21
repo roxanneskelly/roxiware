@@ -102,16 +102,18 @@ $(function() {
 
 		  $("div#template_popup div#schemes").tabs("div#template_popup div#left_pane > div", { });
 		  var api = $("div#template_popup div#schemes").data("tabs");
-                  current_scheme=$("div#template_popup div#schemes a#<%=selected_scheme%>");
+                  <% if selected_scheme.present? %>
+                     current_scheme=$("div#template_popup div#schemes a#<%=selected_scheme%>");
+		  <% else %>
+                     current_scheme=$("div#template_popup div#schemes a").first();
+		  <% end %>
 		  $("div#template_popup_form").attr("template_scheme", current_scheme.attr("id"));
 		  api.onClick(function(index) {
 		     $("div#template_popup_form").attr("template_scheme", api.getCurrentTab().attr("id"));
 		  });
-		  console.log("current_scheme " + current_scheme.index());
                   if(current_scheme.index() < 0) {
 		     current_scheme = $("div#template_popup div#schemes a").first();
                   }
-		  console.log("current_scheme fixed " + current_scheme.index());
                   api.click(current_scheme.index());
                }
        });

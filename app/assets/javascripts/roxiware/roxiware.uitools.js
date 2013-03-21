@@ -716,6 +716,7 @@ function settingsForm(source, title)
 		         overlay.remove();
 	         },
 		 onLoad: function(event) {
+		  $("button").button();
 		  $("div.settings_wysiwyg textarea").wysiwyg({ css: $.roxiware.main_css,
                                        iFrameClass:"wysiwyg_iframe",
                                        controls: {

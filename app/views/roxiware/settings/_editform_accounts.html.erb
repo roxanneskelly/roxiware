@@ -1,0 +1,91 @@
+<div class="large_form" id="accounts_settings_edit">
+   <%= form_tag(setting_path("accounts"), :method=>"put") do %>
+     <div class="tab_form">
+       <ul class="tabs">
+         <li><a href="#">Accounts</a></li>
+         <li><a href="#">Settings</a></li>
+       </ul>
+       <div class="panes">
+	 <div id="accounts_pane">
+	   <div class="list_box" id="accounts_list">
+	     <div class="list_box_header" id="accounts_list_header"><div id="header_name">Username</div><div id="header_email">Email</div><div id="header_role">Role</div></div>
+	     
+	     <div class="list_box_content" id="accounts_list_content">
+	       <% Roxiware::User.all.each do |account| %>
+	          <div class="account" account_id="<%=account.id%>"><div class="account_name"><%= account.username %></div><div class="account_email"><%= account.email%></div><div class="account_role"><%= account.role %></div></div>
+	       <% end %>
+	     </div>
+             <div class="edit_bar"><div id="new_account" class="edit_bar_button" title="Add a account">+</div><div id="delete_account" class="edit_bar_button" title="Remove a account">-</div><div id="edit_account_button" class="edit_bar_button" title="Edit a account">o</div></div>
+	   </div>
+	 </div>
+	 <div id="settings_pane">
+	 </div>
+       </div>
+     </div>
+     <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
+   <% end %>
+</div>
+
+<script>
+$(function() {
+   $("#accounts_settings_edit").find("ul.tabs").tabs($("#accounts_settings_edit div.panes > div"));
+   $("#accounts_settings_edit .account").click(function() {
+      var current_selected_account = $(".list_box_item_selected");
+      current_selected_account.removeClass("list_box_item_selected");
+      $(this).addClass("list_box_item_selected");
+
+      if($(this).attr("user_id")) {
+         $("#accounts_settings_edit div#delete_account").addClass("edit_bar_button_disabled");
+      }
+      else {
+         $("#accounts_settings_edit div#delete_account").removeClass("edit_bar_button_disabled");
+      }
+      <% if current_user.role != "super" %>
+	  if($(this).find(".account_role").text() == "super") {
+	     $("#accounts_settings_edit div#edit_account_button").addClass("edit_bar_button_disabled");
+	     $("#accounts_settings_edit div#delete_account").addClass("edit_bar_button_disabled");
+	  }
+	  else {
+	     $("#accounts_settings_edit div#delete_account").removeClass("edit_bar_button_disabled");
+	     $("#accounts_settings_edit div#edit_account_button").removeClass("edit_bar_button_disabled");
+	  }
+      <% end %>
+   });
+
+   $("#edit_account_button").click(function() {
+      if($(this).is(".edit_bar_button_disabled")) {
+          return;
+      }
+      var current_selected_account = $(".list_box_item_selected");
+      settingsForm("/account/"+current_selected_account.attr("account_id")+"/edit", "Edit Account");
+   });
+   $("#delete_account").click(function() {
+      if($(this).is(".edit_bar_button_disabled")) {
+          return;
+      }
+      var current_selected_account = $(".list_box_item_selected");
+      if (current_selected_account.attr("user_id")) {
+         return;
+      }
+      if(confirm("Remove "+current_selected_account.find(".account_name").text()+"\nAre you sure?")) {
+	  $.ajax({url:"/account/"+current_selected_account.attr("account_id")+".json",
+		  type:"DELETE",
+		  dataType: "json",
+                  complete: function(jqXHR, textStatus) {
+                  },
+                  error: function(jqXHR, textStatus, errorThrown){
+                     $.alert(textStatus);
+                  },
+		  success: function(json_data, textStatus, jqXHR) {
+                      current_selected_account.remove();
+		  }
+	   });
+      }
+   });
+   $("#new_account").click(function() {
+      settingsForm("<%= new_account_path %>", "New Account");
+
+   });
+   $("#accounts_settings_edit .account").first().click();
+});
+</script>

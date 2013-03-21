@@ -19,7 +19,6 @@ Let's get started.  First, lets set up an account.  You will use this account to
 <script>
 $(function() {
      $("#email, #username, #password, #password_confirmation").bind("input blur propertychange", function() {
-        console.log("checking");
         var button_enable = "enable";
         $("#email, #username, #password, #password_confirmation").each(function(index, value) {
           if ($(this).is(".watermark") || ($(this).val().length == 0)) {

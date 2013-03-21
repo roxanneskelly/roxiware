@@ -1,13 +1,21 @@
 <div class="account_edit_form small_form" id="account_edit_form">
-  <%= form_for @user, :url=>account_path do |user| %>
+<% if @user.id.blank?
+   endpoint = account_index_path
+   method = "post"
+else
+   endpoint = account_path(@user.id)
+   method = "put"
+end %>
+  <%= form_for @user, :url=>endpoint, :method=>method do |user| %>
       <%= user.label :role, "Role"%>
-      <% role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} %>
-      <% role_options["Super"] = :super if current_user.role == "super" %>
-      <%= user.select :role, options_for_select(role_options) %>
-      <br/>
-
+      <% if ((current_user.role == "super") || (current_user.role == "admin")) && (@user != current_user) %> 
+          <% role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} %>
+          <% role_options["Super"] = :super if current_user.role == "super" %>
+          <%= user.select :role, options_for_select(role_options, @user.role), {:disabled=>"disabled"}%>
+          <br/>
+      <% end %>
       <%= user.label :username, "Username" %>
-      <%= user.text_field :username %>
+      <%= user.text_field :username, :watermark=>"username" %>
       <br/>
 
       <%= user.label :name, "Name"%>
@@ -17,7 +25,7 @@
       <br/>
 
       <%= user.label :email, "Email"%>
-      <%= user.text_field :email %>
+      <%= user.text_field :email, :watermark=>"email" %>
       <br/>
 
       <% if(@role != "self") %>
@@ -26,15 +34,28 @@
 	 <br/>
 
 	 <%= user.label :password_confirmation, "Confirm"%>
-	 <%= user.password_field :password_confirmation  %>
+	 <%= user.password_field :password_confirmation, :watermark=>"*******"  %>
       <% end %>
       <br/>
-      <%= button_tag "Save", :id=>"save", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
+      <%= button_tag "Save", :id=>"save_account", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
   <% end %>
 </div>
 <script>
 $(function() {
   $("input[watermark]").watermark();
+     $("#user_email, #user_username").bind("input blur propertychange", function() {
+        console.log("change");
+        var button_enable = "enable";
+        $("#user_username, #user_email").each(function(index, value) {
+          if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+             button_enable = "disable";
+          }
+        });
+          console.log("button " + button_enable);
+        $("button#save_account").button(button_enable);
+     });
+
+  
 });
 
 

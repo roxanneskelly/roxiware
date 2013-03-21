@@ -57,11 +57,11 @@ class Roxiware::AccountController < ApplicationController
   def new
     @robots="noindex,nofollow"
     authorize! :create, Roxiware::User
-    @user = Roxiware::User.new({:email => "email@email.com", :username=>"username", :role=>"guest"}, :as=>@role )
-    @user.build_person({:first_name=>"First", :last_name=>"Last", :role=>"Guest", :bio=>""}, :as=>@role)
+    @user = Roxiware::User.new({:role=>"guest"}, :as=>@role )
+    @user.build_person({}, :as=>@role)
 
     respond_to do |format|
-        format.html
+        format.html { render :partial =>"roxiware/account/editform" }
         format.json { render :json => @user.ajax_attrs(@role) }
     end
   end
@@ -73,15 +73,17 @@ class Roxiware::AccountController < ApplicationController
     @user = Roxiware::User.new
     @user.build_person
     @user.person.bio = ""
-    @user.person.role = params[:role] if params.has_key?("role")
+    @user.person.role = params[:user][:role] if params.has_key?("role")
     respond_to do |format|
-      if @user.update_attributes(params, :as=>current_user.role)
+      if !@user.update_attributes(params[:user], :as=>current_user.role)
+         format.html { redirect_to "/", :notice=>flash_from_object_errors(@user) } 
+         format.json { render :json=>report_error(@user)}
+      else
          @user.reload
          @user.person.user_id = @user.id
 	 @user.save
          format.json { render :json => @user.ajax_attrs(@role) }
-      else
-         format.json { render :json=>report_error(@user)}
+         format.html { redirect_to "/", :notice=>"User successfully created."}
       end
     end
   end

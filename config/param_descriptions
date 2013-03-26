@@ -683,4 +683,11 @@
     <permissions>super</permissions>
     <meta>Blog:blog,Content:content</meta>
   </param_description>
+  <param_description guid="CDC341F5-9EFB-41DB-8B84-B1101A58704D">
+    <name>Date Display Format String</name>
+    <description>Format string for date display</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta></meta>
+  </param_description>
 </param_descriptions>

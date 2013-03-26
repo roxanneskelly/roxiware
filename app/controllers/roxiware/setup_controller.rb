@@ -82,6 +82,7 @@ class Roxiware::SetupController < ApplicationController
    end
 
    def _set_setup_step(setup_step)
+      puts "SETTING SETUP STEP TO " + setup_step
       Roxiware::Param::Param.set_application_param("setup", "setup_step", "317C7D1C-7316-4B00-9E1F-931E2867B436", setup_step)
    end
 
@@ -355,8 +356,10 @@ class Roxiware::SetupController < ApplicationController
 
     def _author_choose_template
 	if params[:setup_action] == "back_button"
+	    puts "CHOOSE TEMPLATE BACK"
             @books = Roxiware::Book.all
-	    if @books.present?
+            @series = Roxiware::BookSeries.all
+	    if @series.present?
 	        _set_setup_step("manage_series")
             else
                 _set_setup_step("manage_books")

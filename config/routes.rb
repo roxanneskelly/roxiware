@@ -19,7 +19,6 @@ Roxiware::Engine.routes.draw do
 	  end
        end
     end
-    put "" => "layout#settings", :on=>:collection 
   end
 
   # resources for managing widgets

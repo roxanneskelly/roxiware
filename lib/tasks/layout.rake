@@ -95,8 +95,27 @@ namespace :widget do
 
 end
 
-
 namespace :layout do
+      desc "Import a layout"
+      task :import, [:layout_file]=>:environment do |t, args|
+         if(args[:layout_file].blank?)
+	    puts "Must specify a layout file"
+	    return
+	 end
+	 parser = XML::Parser.file(args[:layout_file])
+	 doc_obj = parser.parse
+	 layout_nodes = doc_obj.find("/layout")
+	 layout_nodes.each do |layout_node|
+	    layout = Roxiware::Layout::Layout.new
+	    old_layout = Roxiware::Layout::Layout.where(:guid=>layout_node["guid"]).first
+	    old_layout.destroy if old_layout.present?
+	    layout.import(layout_node)
+	    layout.save!
+	 end
+      end
+end
+
+namespace :layouts do
 
       desc "style"
       task :style, [:controller,:action]=>:environment do |t, args|
@@ -110,7 +129,7 @@ namespace :layout do
          end
       end
 
-      desc "Import a layout"
+      desc "Import layouts"
       task :import, [:layout_file]=>:environment do |t, args|
 	 parser = XML::Parser.file(args[:layout_file] || "#{Roxiware::Engine.root}/config/layouts")
 	 doc_obj = parser.parse
@@ -124,7 +143,7 @@ namespace :layout do
 	 end
       end
 
-      desc "Export a layout"
+      desc "Export layouts"
       task :export, [:layout]=>:environment do |t,args|
            xml = ::Builder::XmlMarkup.new(:indent=>2, :target=>$stdout)
            xml.instruct! :xml, :version => "1.0"

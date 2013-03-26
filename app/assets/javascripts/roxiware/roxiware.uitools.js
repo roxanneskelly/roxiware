@@ -72,7 +72,6 @@
 		    $.roxiware.alert.popup = new AlertPopup($.roxiware.alert.conf);
 		}
 		$.roxiware.alert.popup.appendHtml(alert_string);
-		
 	    }
 	}
      );
@@ -906,6 +905,32 @@ function xmlEscape(value) {
 }
 
 
+/* Generate a UUID.  We should probably move this to a web service on a centralized server */
+/* Taken from http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript */
+function genUUID() {
+    var nbr, randStr = "";
+    do {
+        randStr += (nbr = Math.random()).toString(16).substr(2);
+    } while (randStr.length < 30);
+    return [
+	    randStr.substr(0, 8), "-",
+	    randStr.substr(8, 4), "-4",
+	    randStr.substr(12, 3), "-",
+	    ((nbr*4|0)+8).toString(16), // [89ab]
+	    randStr.substr(15, 3), "-",
+	    randStr.substr(18, 12)
+	    ].join("");
+}
+
+function getNextUniqueName(name, name_list) {
+    console.log(name);
+    console.log(name_list);
+    var index = 1;
+    while($.inArray(name + "("+index+")", name_list) > -1) {
+        index++;
+    }
+    return name + "("+index+")";
+}
 
 $(document).bind("ajaxStart", function(event) {
 		$.wait();

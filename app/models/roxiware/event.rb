@@ -28,6 +28,31 @@ class Roxiware::Event < ActiveRecord::Base
      end
    end
 
+   def converted_duration
+      case self.duration_units
+	 when "minutes"
+	    self.duration.minutes
+         when "hours"
+	    self.duration.hours
+	 when "days"
+	    self.duration.days
+	 when "months"
+	    self.duration.months
+	 else
+	    0.minutes
+      end         
+   end
+
+
+   def end_time
+      if !["hours", "minutes"].include?(self.duration_units)
+         self.start + (converted_duration - 1.second)
+      else
+         self.start + converted_duration 
+      end
+   end
+
+
    after_validation do |event|
      self.start = DateTime.strptime(event.start_date + " " + event.start_time, "%m/%d/%Y %l:%M %p")
    end

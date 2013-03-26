@@ -111,7 +111,7 @@ $(function() {
 
       $("input#setup_action").val("save");
       console.log(xml_data);
-      var endpoint = "<%= setup_path %>?" + $("form").serialize();
+      var endpoint = "<%= setup_path %>.xml?" + $("form").serialize();
 
       $.ajax({
           url:endpoint,
@@ -120,7 +120,13 @@ $(function() {
           contentType: "application/xml",
           cache:false,
           type:'PUT',
+          error:function(error, status, foo) {
+             console.log("error " + error);
+             console.log("error " + status);
+             console.log("error " + foo);
+          },
           success:function() {
+             console.log("series updated, reloading");
              window.location.reload();
           }
       });
@@ -147,7 +153,6 @@ $(function() {
         $("#series_list").append(series_html);
       }
       series.click(function() {
-           console.log("clicked series");
 	   var current_selected_series = $(".list_box_item_selected");
 	   current_selected_series.removeClass("list_box_item_selected");
 	   if((current_selected_series.length != 0) && (!$(this).is(".list_box_item_selected"))){

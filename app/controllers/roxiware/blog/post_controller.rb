@@ -240,10 +240,12 @@ module Roxiware
 	 # PUT /posts/1
 	 # PUT /posts/1.json
 	 def update
-	   if((@role == "super") || (@role == "admin")) 
-	       params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::EXTENDED_SANITIZER)
-	   else
-	       params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::BASIC_SANITIZER)
+	   if params[:blog_post].include?(:post_content)
+	       if((@role == "super") || (@role == "admin")) 
+		   params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::EXTENDED_SANITIZER)
+	       else
+		   params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::BASIC_SANITIZER)
+	       end
            end
 	   respond_to do |format|
 	       if @post.update_attributes(params[:blog_post], :as=>@role)

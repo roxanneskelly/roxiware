@@ -316,9 +316,10 @@ div.book_listing {
 ]]>
     </style>
     <params>
-      <param class="local" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
+      <param class="template" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
       <param class="local" description="0ADB2780-3D21-409F-A7B4-670395F99CD5" name="series_display_type">accordion</param>
       <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_description_length">200</param>
+      <param class="local" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" name="home_page_type">content</param>
       <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_description_length">500</param>
       <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
       <param class="scheme" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="schemes">

@@ -31,11 +31,24 @@ module Roxiware
 	         @param_objs[name.to_sym].destroy
               end
 	      param_class ||= :local
+	      param_value = nil
+              param_description = Roxiware::Param::ParamDescription.where(:guid=>description_guid).first
+
+	      children = []
+	      case param_description.field_type
+	        when "hash"
+		  children = value.values
+		when "array"
+		  children = value
+		else
+	          param_value = value
+	      end
 	      @param_objs[name.to_sym] = self.params.build(
 		    {:param_class=> param_class,
 		     :name=> name,
 		     :description_guid=>description_guid,
-		     :value=>value}, :as=>"")
+		     :value=>param_value}, :as=>"")
+	      @param_objs[name.to_sym].params = children if children.present?
 	      @param_objs[name.to_sym]
 	    end
 
@@ -68,6 +81,13 @@ module Roxiware
           edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[nil]
 	  edit_attr_accessible :value, :as=>[:super, :admin, nil]
 	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[:super, :admin]
+
+
+	  def deep_dup
+	      new_param = dup
+	      new_param.params = params.collect{|p| p.deep_dup}
+	      new_param
+	  end
 
           def self.refresh_application_params
 	     @application_params = {}

@@ -41,10 +41,12 @@ module Roxiware
     end
 
     def load_layout
-       puts "load layout with #{@layout_scheme}"
+       puts "load layout #{@current_template} with #{@layout_scheme}"
        @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
+       puts "loaded " + @current_layout.inspect
        @current_layout = @@current_layout
        @page_layout = @@current_layout.find_page_layout(params[:controller], params[:action])
+       puts "loaded  page" + @page_layout.inspect
        if(request.format == :html)
          @layout_styles = @@current_layout.get_styles(@layout_scheme, params[:controller], params[:action])
        end

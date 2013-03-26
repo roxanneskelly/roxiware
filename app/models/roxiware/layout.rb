@@ -1,5 +1,6 @@
 require 'uri'
 require 'sass'
+require 'securerandom'
 module Roxiware
    module Layout
      module LayoutBase
@@ -62,6 +63,35 @@ module Roxiware
 	  edit_attr_accessible :description, :style, :setup, :name, :category_csv, :as=>[:super, nil]
 	  ajax_attr_accessible :guid, :category_csv, :as=>[:super, :admin, nil]
 
+	  def deep_dup
+	      new_layout = dup
+	      # update to SecureRandom.uuid when we switch to ruby 1.9
+	      new_layout.guid = SecureRandom.hex.sub(/(.{8})(.{4})(.{4})(.{4})(.*)/, '\1-\2-\3-\4-\5')
+	      index = 1
+	      while Roxiware::Layout::Layout.where(:name=>"#{new_layout.name}(#{index})").first.present?
+	         index = index + 1
+	      end
+	      new_layout.name = "#{new_layout.name}(#{index})"
+
+	      new_layout.page_layouts = page_layouts.collect{|p| p.deep_dup}
+	      new_layout.params = params.collect{|p| p.deep_dup}
+	      new_layout.params.each do |param|
+	         puts param.inspect
+	      end
+	      new_layout.term_relationships = term_relationships.collect{|r| r.dup}
+
+	     # fixup scheme UUIDs
+             schemes = {}
+             get_param("schemes").h.each do |scheme_id, scheme|
+	        new_scheme = scheme.deep_dup
+		# update to SecureRandom.uuid when we switch to ruby 1.9
+	     	new_scheme.name = SecureRandom.hex.sub(/(.{8})(.{4})(.{4})(.{4})(.*)/, '\1-\2-\3-\4-\5')
+	        puts "ADDING NEW SCHEME #{new_scheme.name} " + new_scheme.inspect 
+	     	schemes[new_scheme.name] = new_scheme
+             end
+	     new_layout.set_param("schemes", schemes) 
+	     new_layout
+	  end
 
 	  def category_ids
 	    self.categories.collect{|term| term.id}
@@ -119,7 +149,7 @@ module Roxiware
 	       xml_layout.categories do |xml_categories|
                   self.terms.each do |term|
 		     xml_categories.category do |xml_category|
-                        xml_category.category = term.name
+                        xml_category.category term.name
                      end
                   end
                end
@@ -195,12 +225,12 @@ module Roxiware
 	  end
 
 	  def get_params(scheme)
-	     result = {}
-	     scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
-	     if(scheme.present? && scheme.h["params"].present?) 
-	       result = Hash[scheme.h["params"].h.collect{|name, param| [name, param.conv_value]}]
-	     end
-	     result
+		 result = {}
+		 scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
+		 if(scheme.present? && scheme.h["params"].present?) 
+		   result = Hash[scheme.h["params"].h.collect{|name, param| [name, param.conv_value]}]
+		 end
+		 result
 	  end
 
 	  def resolve_layout_params(scheme, controller, action)
@@ -237,6 +267,14 @@ module Roxiware
 	  edit_attr_accessible :render_layout, :style, :as=>[:super, nil]
 	  edit_attr_accessible :controller, :action, :layout_id, :as=>[nil]
 	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:super, nil]
+
+	  def deep_dup
+	      new_page_layout = dup
+	      new_page_layout.layout_sections = layout_sections.collect{|s| s.deep_dup}
+	      new_page_layout.params = params.collect{|p| p.deep_dup}
+	      puts "DUPPED NEW PAGE LAYOUT TO " + new_page_layout.inspect
+	      new_page_layout
+	  end
 
 	  def get_url_identifier
 	      URI.encode("#{controller}##{action}", "/")
@@ -374,6 +412,13 @@ module Roxiware
 	  edit_attr_accessible :name, :as=>[nil]
 	  ajax_attr_accessible :name, :style, :page_layout_id, :as=>[:super, nil]
 
+	  def deep_dup
+	      new_layout_section = dup
+	      new_layout_section.widget_instances = widget_instances.collect{|w| w.deep_dup}
+	      new_layout_section.params = params.collect{|p| p.deep_dup}
+	      new_layout_section
+	  end
+
 	  def get_text_name
               "#{name.split("_").join(" ")} section of #{self.page_layout.get_text_name}".titleize
           end
@@ -413,6 +458,7 @@ module Roxiware
 
 	  def get_widget_instances
 	     @ordered_instances ||= self.widget_instances.order(:section_order)
+	     puts "ordered widget instances for #{name}" + @ordered_instances.inspect
 	     @ordered_instances
 	  end
 
@@ -484,6 +530,13 @@ module Roxiware
 
 	  edit_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 	  ajax_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
+
+	  def deep_dup
+	      new_widget_instance = dup
+	      new_widget_instance.params = params.collect{|p| p.deep_dup}
+	      new_widget_instance
+	  end
+
 
 	  def globals
 	    @@globals ||= {}

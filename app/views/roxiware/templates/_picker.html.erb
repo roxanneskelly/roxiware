@@ -18,7 +18,10 @@
          <div id="name"></div>
          <div id="description"></div>
          <div id="schemes"></div>
-       
+
+	 <% if can? :edit, Roxiware::Layout %>
+             <a id="export_template" target="_blank">Export</a>
+	 <% end %>
          <%= button_tag "Select", :id=>"save_template", :type=>"button", :class=>"save_button" %>
       </div>
    </div>
@@ -83,6 +86,7 @@ $(function() {
 		  $("div#template_popup_form").attr("template_guid", $(trigger).attr("template_guid"));
 		  $("div#name").text(layout['name']);
 		  $("div#description").html(layout['description']);
+		  $("a#export_template").attr("href", "<%= layout_index_path %>/"+$(trigger).attr("template_guid")+".xml");
 
 		  $("div#template_popup div#schemes").html("");
 		  $("div#template_popup div#left_pane").html("");
@@ -104,9 +108,14 @@ $(function() {
 		  var api = $("div#template_popup div#schemes").data("tabs");
                   <% if selected_scheme.present? %>
                      current_scheme=$("div#template_popup div#schemes a#<%=selected_scheme%>");
-		  <% else %>
-                     current_scheme=$("div#template_popup div#schemes a").first();
 		  <% end %>
+		  if (current_scheme.length == 0) {
+                     current_scheme=$("div#template_popup div#schemes a").first();
+		  }
+		  console.log("schemes");
+		  console.log($("div#template_popup div#schemes a"));
+		  console.log("current scheme ");
+		  console.log(current_scheme);
 		  $("div#template_popup_form").attr("template_scheme", current_scheme.attr("id"));
 		  api.onClick(function(index) {
 		     $("div#template_popup_form").attr("template_scheme", api.getCurrentTab().attr("id"));

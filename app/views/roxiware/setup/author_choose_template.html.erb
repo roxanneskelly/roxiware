@@ -2,10 +2,18 @@
    <%= render :partial=>"roxiware/templates/picker", :locals=>{:selected_scheme=>@default_scheme, :selected_template=>@default_template } %>
 </div>
 <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%></div>
+<%= form_tag("setup", :method=>"put") do |template_form| %>
+    <%= hidden_field_tag :setup_step, @setup_step %>
+     <%= hidden_field_tag :setup_action, "save" %>
+<% end %>
 
 <script>
 $(function() {
-    $("div#template_popup button#save_template,button#back_button").click(function() {
+     $("button#back_button").click(function() {
+        $("input#setup_action").val($(this).attr("id"));
+        $("form").submit();
+     });
+    $("div#template_popup button#save_template").click(function() {
 	 $.ajax({type:"PUT",
 		 processData: true,
 		  url: "<%= setup_path %>",

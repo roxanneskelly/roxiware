@@ -5,20 +5,20 @@
   <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">
     <h3 class="event_title last">
       <%= 
-	  show_date = event.start.strftime("%b %e")
-          if (event.duration_units == "days" && event.duration.present? && event.duration > 1)
-  	    end_time = event.start + (event.duration.days - 1)
-	    show_date = event.start.strftime("%b %e, %Y") unless end_time.year == event.start.year
-	    show_date += " - "
-	    show_date += end_time.strftime("%b %e, %Y") if event.start.month != end_time.month
-	    show_date += end_time.strftime("%e, %Y") if event.start.month == end_time.month
+	 # generate the date range string
+          show_date = event.start.strftime(@event_date_format)
+	  end_time = event.end_time
+	  puts "END TIME: " + end_time.inspect
+          
+          if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
+	    show_date += " - " + end_time.strftime(@event_date_format)
           end
           show_date %>
-      <%= ": " + event.city unless event.city.blank? %> 
+      <%= event.city unless event.city.blank? %> 
       <%= ", " + event.state unless event.state.blank? %>
     </h3>
       <% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
-        <div class="event_start_time last"><%= event.start.strftime("%l:%M %p") %> <%= ", " unless event.location.blank? %></div>
+        <div class="event_start_time last"><%= event.start.strftime("%l:%M %p") %> </div>
       <% end %>
     <div class="event_location">
       <% if !event.location_url.blank? %>

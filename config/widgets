@@ -432,7 +432,8 @@ div.ddsmoothmenu_widget {
     .toplevelshadow { /*shadow opacity for NON CSS3 capable browsers. Doesn't work in IE*/
         opacity: 0.8;
     }
-}]]>
+}
+]]>
     </style>
     <params>
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>

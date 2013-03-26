@@ -9,21 +9,21 @@ module Roxiware
 	    result += field_group.label(param.name.to_sym, param.name.titleize)
             case param.param_description.field_type
                when "color"
-                 result += field_group.text_field(param.name.to_sym, options.merge({:type=>"color", :value=>param.value}))
+                 result += field_group.text_field(param.name.to_sym, options.merge({:type=>"color", :value=>param.value, :param_name=>param.name}))
 	       # number field doesn't grab focus as far as 'backspace', which affects jstree
                # when "integer"
-               #  result += field_group.number_field(param.name.to_sym, options.merge({:value=>param.value}))
+               #  result += field_group.number_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
                when "string"
-                 result += field_group.text_field(param.name.to_sym, options.merge({:value=>param.value}))
+                 result += field_group.text_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
                when "select"
 		 select_options = param.param_description.meta.split(",").collect{|option| option.split(":")}
-                 result += field_group.select(param.name.to_sym, select_options, options.merge({:selected=>param.value}))
+                 result += field_group.select(param.name.to_sym, select_options, options.merge({:selected=>param.value, :param_name=>param.name}))
                when "float"
-                 result += field_group.number_field(param.name.to_sym, options.merge({:value=>param.value}))
+                 result += field_group.number_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
 	       when "bool"
-                 result += field_group.check_box(param.name.to_sym, options.merge({:checked=>param.conv_value}), "true", "false")
+                 result += field_group.check_box(param.name.to_sym, options.merge({:checked=>param.conv_value, :param_name=>param.name}), "true", "false")
                else
-                 result += field_group.text_field(param.name.to_sym, options.merge({:value=>param.value}))
+                 result += field_group.text_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
              end
 	     result += "</div><br/>"
 	     raw result

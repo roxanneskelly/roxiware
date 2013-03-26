@@ -1,13 +1,13 @@
 <div id="choose_template_form", class="large_form">
-    <%= render :partial=>"roxiware/templates/picker" , :locals=>{:selected_scheme=>@layout_scheme, :selected_template=>@current_layout.guid} %>
+    <%= render :partial=>"roxiware/templates/picker" , :locals=>{:selected_scheme=>selected_scheme, :selected_template=>selected_template} %>
 </div>
 <script>
 $(function() {
     $("div#template_popup button#save_template").click(function() {
 	 $.ajax({type:"PUT",
-		  url: "<%= layout_index_path %>.json",
-		  data: {template_guid:$("div#template_popup_form").attr("template_guid"),
-                         template_scheme:$("div#template_popup_form").attr("template_scheme") },
+		  url: "<%= setting_path('system') %>.json",
+		  data: jQuery.param({system: {current_template:$("div#template_popup_form").attr("template_guid"),
+                                               layout_scheme:$("div#template_popup_form").attr("template_scheme") }}),
 		  error: function(xhr, textStatus, errorThrown) {
 		     $.alert(textStatus);
 		  },

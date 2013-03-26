@@ -1,5 +1,6 @@
 require 'builder'
 require 'xml'
+require 'fileutils'
 
 namespace :settings do
       desc "list"
@@ -10,8 +11,10 @@ namespace :settings do
       end
 
       desc "Update settings (not overwriting)"
+
       task :update, [:settings_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/config/settings")
+         Rake::Task["param_descriptions:import"].invoke()
+	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/lib/defaults/author_settings.xml")
 	 doc_obj = parser.parse
 	 param_nodes = doc_obj.find("/settings/param")
 	 param_nodes.each do |param_node|
@@ -26,7 +29,8 @@ namespace :settings do
 
       desc "Import settings"
       task :import, [:settings_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/config/settings")
+         Rake::Task["param_descriptions:import"].invoke()
+	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/lib/defaults/author_settings.xml")
 	 doc_obj = parser.parse
 	 param_nodes = doc_obj.find("/settings/param")
 	 param_nodes.each do |param_node|
@@ -55,7 +59,7 @@ namespace :settings do
      end
 end
 
-namespace :widget do
+namespace :widgets do
       desc "list"
       task :list =>:environment do |t|
          Roxiware::Layout::Widget.all.each do |widget|
@@ -65,16 +69,26 @@ namespace :widget do
 
       desc "Import widgets"
       task :import, [:widget_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:widget_file] || "#{Roxiware::Engine.root}/config/widgets")
-	 doc_obj = parser.parse
-	 widget_nodes = doc_obj.find("/widgets/widget")
-	 widget_nodes.each do |widget_node|
-	    widget = Roxiware::Layout::Widget.new
-	    old_widget = Roxiware::Layout::Widget.where(:guid=>widget_node["guid"]).first
-	    old_widget.destroy if old_widget.present?
-	    widget.import(widget_node)
-	    widget.save!
+         Rake::Task["param_descriptions:import"].invoke()
+	 if args[:widget_file].present?
+             files = [args[:widget_file]]
+	 else
+	     files = Dir.glob("#{Roxiware::Engine.root}/lib/widgets/*.xml")
 	 end
+	 puts "FILES #{files.inspect}"
+	 files.each do |filename|
+	     puts "IMPORTING WIDGET FILE #{filename}"
+	     parser = XML::Parser.file(filename)
+	     doc_obj = parser.parse
+	     widget_nodes = doc_obj.find("/widgets/widget")
+	     widget_nodes.each do |widget_node|
+		widget = Roxiware::Layout::Widget.new
+		old_widget = Roxiware::Layout::Widget.where(:guid=>widget_node["guid"]).first
+		old_widget.destroy if old_widget.present?
+		widget.import(widget_node)
+		widget.save!
+	     end
+         end
       end
 
       desc "Export a widget"
@@ -98,6 +112,7 @@ end
 namespace :layout do
       desc "Import a layout"
       task :import, [:layout_file]=>:environment do |t, args|
+         Rake::Task["param_descriptions:import"].invoke()
          if(args[:layout_file].blank?)
 	    puts "Must specify a layout file"
 	    return
@@ -115,8 +130,7 @@ namespace :layout do
       end
 end
 
-namespace :layouts do
-
+namespace :templates do
       desc "style"
       task :style, [:controller,:action]=>:environment do |t, args|
          print Roxiware::Layout::Layout.all.first.get_styles(args[:controller],args[:action])
@@ -129,21 +143,37 @@ namespace :layouts do
          end
       end
 
-      desc "Import layouts"
+      desc "Import templates"
       task :import, [:layout_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:layout_file] || "#{Roxiware::Engine.root}/config/layouts")
-	 doc_obj = parser.parse
-	 layout_nodes = doc_obj.find("/layouts/layout")
-	 layout_nodes.each do |layout_node|
-	    layout = Roxiware::Layout::Layout.new
-	    old_layout = Roxiware::Layout::Layout.where(:guid=>layout_node["guid"]).first
-	    old_layout.destroy if old_layout.present?
-	    layout.import(layout_node)
-	    layout.save!
+         Rake::Task["param_descriptions:import"].invoke()
+	 if args[:layout_file].present?
+             files = [args[:layout_file]]
+	 else
+	     files = Dir.glob("#{Roxiware::Engine.root}/lib/templates/*.xml")
 	 end
+	 files.each do |filename|
+	     parser = XML::Parser.file(filename)
+	     doc_obj = parser.parse
+	     layout_nodes = doc_obj.find("/layouts/layout")
+	     layout_nodes.each do |layout_node|
+		layout = Roxiware::Layout::Layout.new
+		old_layout = Roxiware::Layout::Layout.where(:guid=>layout_node["guid"]).first
+		old_layout.destroy if old_layout.present?
+		layout.import(layout_node)
+		layout.save!
+	     end
+	     layout_nodes = doc_obj.find("/layout")
+	     layout_nodes.each do |layout_node|
+		layout = Roxiware::Layout::Layout.new
+		old_layout = Roxiware::Layout::Layout.where(:guid=>layout_node["guid"]).first
+		old_layout.destroy if old_layout.present?
+		layout.import(layout_node)
+		layout.save!
+	     end
+         end
       end
 
-      desc "Export layouts"
+      desc "Export templates"
       task :export, [:layout]=>:environment do |t,args|
            xml = ::Builder::XmlMarkup.new(:indent=>2, :target=>$stdout)
            xml.instruct! :xml, :version => "1.0"
@@ -163,10 +193,9 @@ end
 
 
 namespace :param_descriptions do
-
       desc "Import a list of param descriptions"
       task :import, [:description_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:layout_file] || "#{Roxiware::Engine.root}/config/param_descriptions")
+	 parser = XML::Parser.file(args[:layout_file] || "#{Roxiware::Engine.root}/lib/defaults/param_descriptions.xml")
 	 doc_obj = parser.parse
 	 description_nodes = doc_obj.find("/param_descriptions/param_description")
 	 description_nodes.each do |description_node|
@@ -190,3 +219,27 @@ namespace :param_descriptions do
      end
 end
 
+
+namespace :roxiware do
+    desc "Initialize a roxiware instance"
+    task :init, [:instance_type]=>:environment do |t,args|
+       Rake::Task["db:migrate"].invoke
+       Rake::Task["db:seed"].invoke
+       Rake::Task["param_descriptions:import"].invoke
+       Rake::Task["widgets:import"].invoke
+       Rake::Task["templates:import"].invoke
+       Rake::Task["settings:import"].invoke
+       FileUtils.touch Rails.root.join("tmp","restart.txt")
+    end
+
+    desc "Update a roxiware instance"
+    task :update, [:instance_type]=>:environment do |t,args|
+       Rake::Task["db:migrate"].invoke
+       Rake::Task["db:seed"].invoke
+       Rake::Task["param_descriptions:import"].invoke
+       Rake::Task["widgets:import"].invoke
+       Rake::Task["templates:import"].invoke
+       Rake::Task["settings:update"].invoke
+       FileUtils.touch Rails.root.join("tmp","restart.txt")
+    end
+end

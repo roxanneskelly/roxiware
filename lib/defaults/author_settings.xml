@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
-  <param class="system" description="B8A73EF2-9C65-4022-ABD3-2D4063827108" name="current_template">03AAF953-D897-4D82-A2D4-F7DEC52773E4</param>
-  <param class="system" description="99FA5423-147C-4929-A432-268BDED6DE44" name="layout_scheme">FAD3C4B8-9C1C-40FC-86AF-946FDA6D91B6</param>
+  <param class="system" description="B8A73EF2-9C65-4022-ABD3-2D4063827108" name="current_template">00000000-0000-0000-0000-000000000000</param>
+  <param class="system" description="99FA5423-147C-4929-A432-268BDED6DE44" name="layout_scheme">00000000-0000-0000-0000-00000000</param>
   <param class="system" description="9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270" name="webmaster_email">admin@roxiware.com</param>
   <param class="system" description="7D815EDA-93DA-411B-9B09-91BA774D6CE2" name="site_copyright_first_year">2012</param>
   <param class="system" description="4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7" name="site_copyright">Roxiware</param>

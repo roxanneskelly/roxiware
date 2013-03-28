@@ -232,9 +232,9 @@ namespace :roxiware do
        Rake::Task["settings:import"].invoke(settings_file)
        if ENV['RAILS_ENV'] == "production"
            Rake::Task["assets:precompile"].invoke(settings_file)
+           Dir.mkdir Rails.root.join("tmp") if !(File.directory? Rails.root.join("tmp"))
+           FileUtils.touch Rails.root.join("tmp","restart.txt")
        end
-       Dir.mkdir Rails.root.join("tmp")
-       FileUtils.touch Rails.root.join("tmp","restart.txt")
     end
 
     desc "update a roxiware instance"
@@ -247,8 +247,8 @@ namespace :roxiware do
        Rake::Task["templates:import"].invoke(settings_file)
        if ENV['RAILS_ENV'] == "production"
            Rake::Task["assets:precompile"].invoke(settings_file)
+           FileUtils.touch Rails.root.join("tmp","restart.txt")
        end
-       FileUtils.touch Rails.root.join("tmp","restart.txt")
     end
 
     desc "restart a roxiware instance"

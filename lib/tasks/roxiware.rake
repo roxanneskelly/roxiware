@@ -223,23 +223,42 @@ end
 namespace :roxiware do
     desc "Initialize a roxiware instance"
     task :init, [:instance_type]=>:environment do |t,args|
+       settings_file = args[:instance_type] || nil
        Rake::Task["db:migrate"].invoke
        Rake::Task["db:seed"].invoke
        Rake::Task["param_descriptions:import"].invoke
        Rake::Task["widgets:import"].invoke
        Rake::Task["templates:import"].invoke
-       Rake::Task["settings:import"].invoke
+       Rake::Task["settings:import"].invoke(settings_file)
+       if ENV['RAILS_ENV'] == "production"
+           Rake::Task["assets:precompile"].invoke(settings_file)
+       end
+       Dir.mkdir Rails.root.join("tmp")
        FileUtils.touch Rails.root.join("tmp","restart.txt")
     end
 
-    desc "Update a roxiware instance"
+    desc "update a roxiware instance"
     task :update, [:instance_type]=>:environment do |t,args|
+       settings_file = args[:instance_type] || nil      
        Rake::Task["db:migrate"].invoke
        Rake::Task["db:seed"].invoke
        Rake::Task["param_descriptions:import"].invoke
        Rake::Task["widgets:import"].invoke
-       Rake::Task["templates:import"].invoke
-       Rake::Task["settings:update"].invoke
+       Rake::Task["templates:import"].invoke(settings_file)
+       if ENV['RAILS_ENV'] == "production"
+           Rake::Task["assets:precompile"].invoke(settings_file)
+       end
        FileUtils.touch Rails.root.join("tmp","restart.txt")
+    end
+
+    desc "restart a roxiware instance"
+    task :restart, [:instance_type]=>:environment do |t,args|
+       FileUtils.touch Rails.root.join("tmp","restart.txt")
+    end
+
+    desc "reset a roxiware instance back to it's install state"
+    task :reset, [:instance_type]=>:environment do |t,args|
+       File.unline(Rails.root.join("db","#{ENV['RAILS_ENV']}.sqlite3"))
+       Rake::Task["roxiware:update"]
     end
 end

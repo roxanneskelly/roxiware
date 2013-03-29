@@ -20,7 +20,15 @@
     <description>Type of display for Series on the book index page</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Accordion:accordion</meta>
+    <meta>Simple:simple,Accordion:accordion</meta>
+  </param_description>
+
+  <param_description guid="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0">
+    <name>Books Display Type</name>
+    <description>Type of display for the list of books on the main books page, and in the series pages</description>
+    <field_type>select</field_type>
+    <permissions>super</permissions>
+    <meta>Simple:simple,Accordion:accordion</meta>
   </param_description>
 
   <param_description guid="6C16D934-0643-48EC-806C-95BDAF52E078">
@@ -61,6 +69,13 @@
   <param_description guid="2BEBB288-5015-4D05-A3A1-224EE4D3D37F">
     <name>Book Edition URL</name>
     <description>A string representing the url to the purchase location.</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="89E14824-F9E5-46EA-9A73-584997D972B2">
+    <name>Book Edition Name</name>
+    <description>The name of a book edition.</description>
     <field_type>string</field_type>
     <permissions></permissions>
     <meta/>

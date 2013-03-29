@@ -184,12 +184,14 @@ class Roxiware::BooksController < ApplicationController
 	      doc = parser.parse
 	      param_nodes = doc.find("/book/params/param")
 	      param_nodes.each do |param_node|
+	         puts "PARAM: #{param_node["name"]}"
 		  param = book.get_param(param_node["name"])
 		  param.destroy if param.present? && (param.param_object_type == "Roxiware::Book")
 		  param = book.params.build
 		  if param.blank?
 			raise ActiveRecord::Rollback
 		  end
+		  puts "imporitng #{param_node.inspect}"
 		  param.import(param_node, false)
               end
 	  end

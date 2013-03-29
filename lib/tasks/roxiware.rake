@@ -2,6 +2,8 @@ require 'builder'
 require 'xml'
 require 'fileutils'
 
+ENV['RAILS_ENV'] ||= "development"
+
 namespace :settings do
       desc "list"
       task :list =>:environment do |t|
@@ -221,9 +223,17 @@ end
 
 
 namespace :roxiware do
+
+    desc "Backup a roxiware instance"
+    task :backup do |t|
+        
+    end
+
     desc "Initialize a roxiware instance"
     task :init, [:instance_type]=>:environment do |t,args|
        settings_file = args[:instance_type] || nil
+       Rake::Task["db:drop"].invoke
+       Rake::Task["db:create"].invoke
        Rake::Task["db:migrate"].invoke
        Rake::Task["db:seed"].invoke
        Rake::Task["param_descriptions:import"].invoke
@@ -258,7 +268,11 @@ namespace :roxiware do
 
     desc "reset a roxiware instance back to it's install state"
     task :reset, [:instance_type]=>:environment do |t,args|
-       File.unline(Rails.root.join("db","#{ENV['RAILS_ENV']}.sqlite3"))
-       Rake::Task["roxiware:update"]
+       #File.unlink(Rails.root.join("db","#{ENV['RAILS_ENV']}.sqlite3"))
+       #nFile.delete(Rails.root.join("db","development.sqlite3"))
+       #sleep(20);
+       Rake::Task["db:purge"].invoke
+       Rake::Task["db:migrate"].invoke
+       #Rake::Task["roxiware:init"].invoke(args[:instance_type])
     end
 end

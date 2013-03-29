@@ -2,7 +2,7 @@
     <a href="<%= book_path(book.seo_index)%>"><img src="<%= book_image_url %>" class="book_cover"/>
     <div class="book_title"><%= book.title %></div></a>
     <% if book_description_length > 0
-          book_description = Sanitize.clean(truncate(book.description, 
+          book_description = Sanitize.clean(truncate(book.description || "", 
                                          :length => book_description_length, :omission=>""), Sanitize::Config::RELAXED)
           book_description += "<br/>"+link_to("More...", book_path(book.seo_index)) + "<br/>"
        else

@@ -409,6 +409,13 @@
     <permissions></permissions>
     <meta/>
   </param_description>
+  <param_description guid="6AF49BA2-97E3-46FD-A538-9680DEF268D3">
+    <name>Menu Identifier</name>
+    <description>Menu Identifier</description>
+    <field_type>string</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
   <param_description guid="457B190F-89DB-42EC-9537-4EBB46498659">
     <name>Child Menus</name>
     <description>Child Menus</description>

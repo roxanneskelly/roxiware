@@ -784,6 +784,7 @@ div.recent_post_entry .post_snippet
     </editform>
     <preload>
       <![CDATA[if globals[:calendar_posts].blank? || globals[:calendar_nav_last_update].blank? || globals[:calendar_nav_last_update] < Roxiware::Blog.last_update
+         puts "LAST UPDATE IS #{Roxiware::Blog.last_update}"
          calendar_posts = {}
          calendar_posts_index = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
          published_post_ids = []
@@ -1816,7 +1817,7 @@ div.people_dir_edit_form
 		person = @people_map[person_param.h["person_id"].conv_value]
 		if(person.present?)
 		    content_tag(:li, :class=>"person_item") do
-		       link_to(people_url+"/"+person.seo_index) do 
+		       link_to(person_path(person.seo_index)) do 
 			 result = content_tag(:div, person.full_name, :class=>"person_name") 
 			 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
 			 result

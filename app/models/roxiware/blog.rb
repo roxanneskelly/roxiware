@@ -7,6 +7,9 @@ module Roxiware
   def self.last_update
     @last_update
   end
+  def self.notify_update
+      @last_update = DateTime.now
+  end
 
   class Post < ActiveRecord::Base
     include ActionView::Helpers::TextHelper
@@ -50,7 +53,7 @@ module Roxiware
     scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR post_status='publish'")) }
 
     after_save do
-      @@last_update = DateTime.now
+      Roxiware::Blog.notify_update
     end
 
     def tag_ids

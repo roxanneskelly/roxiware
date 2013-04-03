@@ -299,19 +299,16 @@ div#mainBody .post {
 }
 
 .post:hover {
-   .manage_post_controls {
-       .manage_post_button {
-            cursor:pointer;
-            background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", asset_color_scheme.to_s) %>');
-       }
-       .manage_post_button:hover {
-            background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", "black") %>');
-       }
-   }
+    .manage_button {
+        cursor:pointer;
+        background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
+    }
 }
+
+
+
 /* WIDGETS */
-.widget
-{
+.widget {
     width:100%;
     margin:0px;
 
@@ -324,6 +321,19 @@ div#mainBody .post {
             font-size:1.2em;
             font-weight:700;
         }
+    }
+}
+
+.page_content, .person_listing {
+    .manage_button {
+        position:absolute;
+        top:0px;
+        right:0px;
+        background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
+    }
+
+    .manage_button:hover {
+        background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", asset_color_scheme.to_s) %>');
     }
 }
 
@@ -520,25 +530,25 @@ div.book_listing {
 }]]>
   </style>
   <params>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
     <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
-    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#c0c0c0</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">grey</param>
           <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">lightgrey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#808080</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">grey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#808080</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#c0c0c0</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_small.jpeg</param>

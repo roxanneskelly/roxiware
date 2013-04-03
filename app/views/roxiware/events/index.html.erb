@@ -3,12 +3,11 @@
 </h2>
 <% @events.each do |event|  %>
   <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">
-    <h3 class="event_title last">
+    <h3 class="event_title">
       <%= 
 	 # generate the date range string
           show_date = event.start.strftime(@event_date_format)
 	  end_time = event.end_time
-	  puts "END TIME: " + end_time.inspect
           
           if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
 	    show_date += " - " + end_time.strftime(@event_date_format)
@@ -18,7 +17,7 @@
       <%= ", " + event.state unless event.state.blank? %>
     </h3>
       <% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
-        <div class="event_start_time last"><%= event.start.strftime("%l:%M %p") %> </div>
+        <div class="event_start_time"><%= event.start.strftime("%l:%M %p") %> </div>
       <% end %>
     <div class="event_location">
       <% if !event.location_url.blank? %>
@@ -27,7 +26,7 @@
         <%= event.location %>
       <% end %>
     </div>
-    <div class="event_description last"><%= raw event.description %></div>
+    <div class="event_description"><%= raw event.description %></div>
   </div>
 <% end %>
 <% if params[:controller]!="roxiware/events" %>

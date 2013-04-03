@@ -100,6 +100,7 @@ class Roxiware::PeopleController < ApplicationController
   def create
     respond_to do |format|
       if @person.update_attributes(params[:person], :as=>@role)
+        run_layout_setup
         format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully created.' }
         format.json { render :json => @person, :status => :created, :location => @person }
       else
@@ -114,6 +115,7 @@ class Roxiware::PeopleController < ApplicationController
   def update
     respond_to do |format|
         if @person.update_attributes(params[:person], :as=>@role)
+           run_layout_setup
 	   format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully updated.' }
            format.json { render :json => @person }
 	else
@@ -129,6 +131,7 @@ class Roxiware::PeopleController < ApplicationController
     @person = Roxiware::Person.find(params[:id])
     respond_to do |format|
         if !@person.user_id.nil?
+          run_layout_setup
           format.json { render :json=>{:error=>[nil, "This person is associated with a user.  Delete the user instead."]}}
 	else
            if @person.destroy

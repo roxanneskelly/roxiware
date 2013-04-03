@@ -1,37 +1,38 @@
-  <article class="post" id="post-<%= post.id %>" rel="<%= blog_post_path(post.id) %>">
-     <% if (can? :edit, post) && @enable_blog_edit %>
-         <div class="post_manage_controls">
-	    <div class="post_status">
-		<%= check_box_tag :post_status, "publish", (post.post_status == "publish"), :post=>post.id %>
-                <%= label_tag :post_status, "Publish" %>
-	    </div>
-	    <div class="comment_permissions">
-              <%= label_tag :comment_permissions, "Comments:" %>
-	      <% allowed_permissions = Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.collect {|permission| [permission != "default"?permission:"default(#{@blog_comment_permissions})", permission]} %> 
-	      <%= select_tag "comment_permissions-#{post.id}", options_for_select(allowed_permissions, post.comment_permissions), :post=>post.id %>
-	    </div>
-	  </div>
-	<% end %>
+<% hidden_post = "hidden_post" if post.post_status != "publish" %>
+  <article class="<%= hidden_post %> post" id="post-<%= post.id %>" rel="<%= blog_post_path(post.id) %>">
+     <hr class="post_separator"/>
+     <% if (can? :edit, post) %>
+         <div class="manage_post_menu manage_menu" id="manage_<%= post.id %>"><ul>
+             <li><div class="manage_button">&nbsp;</div><ul>
+		<li class="edit_post"><a>Edit</a></li>
+		<li class="post_status"  post_status="<%= post.post_status %>"><a><%= "Hide" if post.post_status == "publish" %><%= "Show" unless post.post_status == "publish"%></a></li>
+		<hr/>
+		<li class="comment_permissions"><span>Comments</span></li>
+		<% Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.each do |permission| %>
+		    <% current_perm = "selected_item" if post.comment_permissions == permission %>
+		    <li permission="<%= permission %>" class="comment_permission permission_<%= permission %>  <%= current_perm %>"><a><div class="checkbox"></div><%= permission.titleize %></a></li>
+		 <% end %>
+		<hr/>
+		<li class="delete_post"><a>Delete</a></li>
+	    </ul></li></ul></div>
+     <% end %>
 
-        <% if show_full_header && !post.category_ids.nil? %>
+     <% if  !post.category_ids.nil? %>
           <div class="post_categories">
 	   <%  post.category_ids.each do |category_id| %>
 	     <%= link_to Roxiware::Terms::Term.categories()[category_id].name, blog_path(:category=>Roxiware::Terms::Term.categories()[category_id].seo_index), :class=>"post_category"  %>
 	   <% end %>
           </div>
-        <% end %>
-        <h1 class="post_title"><%= link_to post.post_title, post.post_link %></h1>
-	<div class="post_header">
+     <% end %>
+     <%= link_to post.post_title, post.post_link, :class=>"post_title" %>
+     <div class="post_header">
          <% if show_full_header && post.person.present? %>
-          <img class="post_author_img" src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/>
+             <img class="post_author_img" src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/>
          <% end %>
-	  <div class="post_date" data="<%= post.post_date %>"><%= post.post_date.localtime.strftime("%D %I:%M %p") %></div>
+	 <div class="post_date" data="<%= post.post_date %>"><%= raw post.post_date.localtime.strftime(@post_date_format) %></div>
          <% if show_full_header %>
 	 <% if post.person.present? %>
-	    <div class="post_author">
-		by <a href="<%= people_url %>/<%= post.person.seo_index %>">
-		  <%= post.person.full_name %>
-		</a>
+	    <div class="post_author"><a href="<%= people_url %>/<%= post.person.seo_index %>"><%= post.person.full_name %></a>
 	    </div>
           <% end %>
           <div class="comments_link">

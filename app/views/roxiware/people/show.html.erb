@@ -1,5 +1,8 @@
 <% if @person.present? %>
   <section><article class="person_listing" rel="<%= person_path(@person.id) %>">
+    <% if can? :edit, @person %>
+       <div class="manage_button" person_id="<%= @person.id %>">&nbsp;</div>
+    <% end %>
     <div class="social_network_icons">
       <% website = nil
        @person.social_networks.each do |network| %>

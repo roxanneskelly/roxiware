@@ -8,6 +8,7 @@ module Roxiware
         end
 
 	class StyleRenderClass
+	   include Roxiware::Helpers
 	   def initialize(params)
               params.each do |key, value|
 		 singleton_class.send(:define_method, key) { value }

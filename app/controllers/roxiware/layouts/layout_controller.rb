@@ -148,8 +148,6 @@ module Roxiware
 	   @layout = @clone_from_layout.deep_dup
 	   puts "GUID IS " + params[:layout][:guid].inspect
 	   @layout.guid = params[:layout][:guid]
-	   puts "CREATING " + @layout.inspect
-
            _update_or_create
        end
 
@@ -241,6 +239,9 @@ module Roxiware
 	      end
            end
 
+           if(success)
+	      run_layout_setup
+	   end
 	   respond_to do |format|
 	       puts "SUCCESS IS " + success.inspect
 	       if success

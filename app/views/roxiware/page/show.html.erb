@@ -1,18 +1,24 @@
 <div class="span-1">&nbsp;</div>
 <section class="page_content">
   <% if (can? :edit, @page) %>
-    <ul id="page_index_application_menu" class="application_menu"><li><a rel="<%= edit_page_path(@page.page_type) %>" form="Edit <%= @page.page_type.titleize %>">Edit <%= @page.page_type.titleize %></a></li></ul>
- 
-    <ul id="page_context_menu" class="context_menu">
-       <li id="edit_page"><a menu_item="edit_page">Edit <%= @page.page_type.titleize %></a></li>
-    </ul>
+       <ul id="page_index_application_menu" class="application_menu"><li><a rel="<%= edit_page_path(@page.page_type) %>" form="Edit <%= @page.page_type.titleize %>">Edit <%= @page.page_type.titleize %></a></li></ul>
+
+       <ul id="page_context_menu" class="context_menu">
+	  <li id="edit_page"><a menu_item="edit_page">Edit <%= @page.page_type.titleize %></a></li>
+       </ul>
   <% end %>
   <%= raw @page.content %>
+  <% if can? :edit, @page %>
+     <div class="manage_button" >&nbsp;</div>
+  <% end %>
 </section>
 <% if (can? :edit, @page) %>
 <script>
 $(function() {
     $("#mainBody").context_menu("#page_context_menu");
+    $(".page_content .manage_button").click(function() {
+        $("#mainBody").trigger("context_menu", "edit_page");
+    });
 
     $("#mainBody").on("context_menu", function(event, menu_item) {
        switch (menu_item) {

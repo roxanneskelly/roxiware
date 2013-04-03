@@ -1,3 +1,4 @@
+require 'uri'
 module Roxiware
   module Helpers
       def date_field_tag(name, value = nil, options = {})
@@ -41,6 +42,16 @@ module Roxiware
 	  error_result += attribute.to_s + " - " + error_array.to_s
 	end
 	error_result
+      end
+
+      def cdn_asset(asset_path)
+          URI::join(AppConfig.cdn_url, asset_path).to_s
+      end
+
+
+      def cdn_icon(icon_name, theme, scheme)
+          puts "URI IS " + (AppConfig.cdn_url || "") + "/" + (theme || "")+ "/" + (scheme || "") + "/" + (icon_name || "")
+          URI::join(AppConfig.cdn_url, "themes/#{theme}/#{scheme}/icons/#{icon_name}.png").to_s
       end
   end
 end

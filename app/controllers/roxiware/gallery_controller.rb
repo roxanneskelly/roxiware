@@ -94,6 +94,7 @@ class Roxiware::GalleryController < ApplicationController
      @robots="noindex,nofollow"
      respond_to do |format|
        if !@gallery.update_attributes(params, :as=>@role)
+         run_layout_setup
          format.json { render :json=>report_error(@gallery)}
        else
          format.json { render :json=> @gallery.ajax_attrs(@role) }
@@ -105,6 +106,7 @@ class Roxiware::GalleryController < ApplicationController
     @robots="noindex,nofollow"
     respond_to do |format|
       if !@gallery.destroy
+         run_layout_setup
         format.json { render :json=>report_error(@gallery)}
       else
         format.json { render :json=>{}}

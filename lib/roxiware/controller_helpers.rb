@@ -40,6 +40,13 @@ module Roxiware
        return false
     end
 
+    def run_layout_setup
+       puts "running layout setup"
+       if (@current_layout.present? && @current_layout.setup.present?)
+          eval(@current_layout.setup, binding(), @current_layout.name, 1) 
+       end
+    end
+
     def load_layout
        puts "load layout #{@current_template} with #{@layout_scheme}"
        @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first

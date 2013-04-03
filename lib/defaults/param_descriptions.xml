@@ -129,6 +129,27 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+  <param_description guid="B4DF3CAF-5B94-4D7B-ABA8-4596AA4E5A78">
+    <name>Scheme String</name>
+    <description>String value for a scheme</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="BAA25975-B437-482B-83D8-6629D139CB82">
+    <name>Asset Color Scheme</name>
+    <description>Color scheme for a given theme</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="67BFE233-F4D1-400B-855F-393BF53B05A4">
+    <name>Asset Theme</name>
+    <description>Theme for assets</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
   <param_description guid="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">
     <name>Thumbnail URL</name>
     <description>Thumbnail URL</description>

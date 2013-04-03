@@ -4,9 +4,12 @@
 
 <script>
   $(document).bind("ready", function() {
-    console.log("people context menu");
-    console.log($("article.person_listing"));
-    console.log($("article.person_listing"));
+    $("article.person_listing .manage_button").click(function() {
+        console.log("click");
+        $(this).parents("article.person_listing").trigger("context_menu", "edit_person");
+    });
+
+
     $("article.person_listing").context_menu("#person_context_menu");
 
     $(".person_listing").on("context_menu", function(event, menu_item) {

@@ -3,9 +3,57 @@ $(function() {
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
 
-    $("article.post div.comment_permissions select").on("change", function() {
-        var post = $(this).parents(".post");
-        var upload_params = {blog_post:{comment_permissions:$(this).val()}};
+    /* Manage post menu is toggled by this button */
+    $("article.post .manage_post_button").click(function(e) {
+        console.log("click");
+        var manage_post_menu = $(this).parent().find(".manage_post_menu");
+        var is_shown = (manage_post_menu.css("display") != "none");
+        $(".manage_post_menu").css("display", "none");
+	$(document).off("click.postmenu");
+        if (!is_shown) {
+           manage_post_menu.css("display", "block");
+           e.stopPropagation();
+	   $(document).on("click.postmenu", function() {
+	       $(document).off("click.postmenu");
+	       $(".manage_post_menu").css("display", "none");
+	   });
+        }
+    });
+
+    $(".post .manage_menu").each(function(index, menu) {
+	ddsmoothmenu.init({
+	    mainmenuid: $(this).attr("id"),
+            rightalign: true,
+	    orientation: 'h',
+	    classname: 'manage_menu',
+	    contentsource: "markup"
+	});
+    });
+
+    $("article.post li.edit_post a").click(function() {
+       var post_link = $(this).parents(".post").attr("rel");
+        settingsForm(post_link+"/edit", "Edit Post");
+    });
+
+    $("article.post li.delete_post a").click(function() {
+       var post_link = $(this).parents(".post").attr("rel");
+       if(confirm("Remove Post\nAre you sure?")) {
+           $.ajax({url:post_link,
+                   type:"DELETE",
+                   dataType: "json",
+                   success: function(json_data, textStatus, jqXHR) {
+                      window.location = "<%= blog_path %>";
+                   }
+            });
+        }
+    });
+
+    $("article.post .comment_permission a").click(function(e) {
+        e.stopPropagation();
+        var self = $(this).parent();
+        if(self.is(".selected_item")) { return; }
+        var post = self.parents(".post");
+        var upload_params = {blog_post:{comment_permissions:self.attr("permission")}};
         if (csrf_param !== undefined && csrf_token !== undefined) {
             upload_params[csrf_param] = csrf_token;
         };
@@ -15,15 +63,21 @@ $(function() {
            dataType: "json",
 	   error: function (jqXHR, textStatus, errorThrown) {
 	       $.alert(errorThrown);
-               window.location.reload();
+           },
+           success: function() {
+             self.parent().find("li.comment_permission").removeClass("selected_item");
+             self.addClass("selected_item");
            }
-         
 	});
     });
 
-    $("article.post input#post_status").on("change", function() {
-       var post = $(this).parents(".post");
-       var upload_params = {blog_post:{post_status:$(this).attr("checked")?"publish":"draft"}};
+
+    $("article.post .post_status a").click(function(e) {
+       e.stopPropagation();
+       var self = $(this).parent();
+       var post = self.parents(".post");
+       var new_status = (self.attr("post_status") != "publish")?"publish":"draft";
+       var upload_params = {blog_post:{post_status:new_status}};
        if (csrf_param !== undefined && csrf_token !== undefined) {
            upload_params[csrf_param] = csrf_token;
        };
@@ -35,7 +89,16 @@ $(function() {
 	   error: function (jqXHR, textStatus, errorThrown) {
 	       $.alert(errorThrown);
 	    },
-            success: function (data, jqXHR, textStatus) {}
+            success: function (data, jqXHR, textStatus) {
+               self.attr("post_status", new_status);
+               self.find("a").text((new_status == "publish")?"Hide":"Show");
+               if(new_status != "publish") {
+                  post.addClass("hidden_post");
+               }
+               else {
+                  post.removeClass("hidden_post");
+               }
+            }
 	});
    });
 });

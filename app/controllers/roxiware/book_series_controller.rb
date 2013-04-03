@@ -213,6 +213,9 @@ class Roxiware::BookSeriesController < ApplicationController
            raise ActiveRecord::Rollback
        end
     end
+    if (success) 
+        run_layout_setup
+    end
     success
   end
 
@@ -221,6 +224,7 @@ class Roxiware::BookSeriesController < ApplicationController
     raise ActiveRecord::RecordNotFound if @book_series.nil?
     authorize! :update, @book_series
     @book_series.book_series_joins.where(:book_id=>params[:book_id]).first.destroy
+    run_layout_setup
     respond_to do |format|
       format.html { redirect_to books_url }
       format.json { head :no_content }
@@ -234,7 +238,7 @@ class Roxiware::BookSeriesController < ApplicationController
     raise ActiveRecord::RecordNotFound if @book_series.nil?
     authorize! :destroy, @book_series
     @book_series.destroy
-
+    run_layout_setup
     respond_to do |format|
       format.html { redirect_to books_url }
       format.json { head :no_content }

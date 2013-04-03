@@ -90,10 +90,20 @@ buildmenu:function($, setting){
 				clearTimeout($targetul.data('timers').hidetimer)
 				$targetul.data('timers').showtimer=setTimeout(function(){
 					header._offsets={left:$curobj.offset().left, top:$curobj.offset().top}
-					var menuleft=header.istopheader && setting.orientation!='v'? 0 : header._dimensions.w
-					menuleft=(header._offsets.left+menuleft+header._dimensions.subulw>$(window).width())? (header.istopheader && setting.orientation!='v'? -header._dimensions.subulw+header._dimensions.w : -header._dimensions.w) : menuleft //calculate this sub menu's offsets from its parent
+					if(!setting.rightalign) {
+					   var menuleft=header.istopheader && setting.orientation!='v'? 0 : header._dimensions.w;
+					   menuleft=(header._offsets.left+menuleft+header._dimensions.subulw>$(window).width())? (header.istopheader && setting.orientation!='v'? -header._dimensions.subulw+header._dimensions.w : -header._dimensions.w) : menuleft //calculate this sub menu's offsets from its parent
+					}
+					else {
+					   var menuright=header.istopheader && setting.orientation!='v'? 0 : $subul.outerWidth;
+					}
 					if ($targetul.queue().length<=1){ //if 1 or less queued animations
-						$targetul.css({left:menuleft+"px", width:header._dimensions.subulw+'px'}).animate({height:'show',opacity:'show'}, ddsmoothmenu.transition.overtime)
+						if(!setting.rightalign) {
+						    $targetul.css({left:menuleft+"px", width:header._dimensions.subulw+'px'}).animate({height:'show',opacity:'show'}, ddsmoothmenu.transition.overtime)
+						}
+						else {
+						    $targetul.css({right:menuright+"px", width:header._dimensions.subulw+'px'}).animate({height:'show',opacity:'show'}, ddsmoothmenu.transition.overtime)
+					        }
 						if (smoothmenu.shadow.enable && !smoothmenu.css3support){
 							var shadowleft=header.istopheader? $targetul.offset().left+ddsmoothmenu.shadow.offsetx : menuleft
 							var shadowtop=header.istopheader?$targetul.offset().top+smoothmenu.shadow.offsety : header._shadowoffset.y

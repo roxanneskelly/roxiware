@@ -28,7 +28,8 @@ module Roxiware
 	    end
          end
          Roxiware::Param::Param.refresh_application_params
-	 refresh_layout
+	 refresh_layout	
+	 run_layout_setup
          respond_to do |format|
             format.html { redirect_to return_to_location("/"), :notice => 'Settings were successfully updated.' }
             format.json { render :json => {} }

@@ -204,6 +204,9 @@ class Roxiware::BooksController < ApplicationController
 	   success = false
        end
     end
+    if(success)
+       run_layout_setup
+    end
     success
   end
 
@@ -236,7 +239,7 @@ class Roxiware::BooksController < ApplicationController
     raise ActiveRecord::RecordNotFound if @book.nil?
     authorize! :read, @book
     @book.destroy
-
+    run_layout_setup
     respond_to do |format|
       format.html { redirect_to books_url }
       format.json { head :no_content }

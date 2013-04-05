@@ -6,7 +6,6 @@ module Roxiware
            @application_name = name if name.present?
 	   @application_name
        end
-
     end
 
 
@@ -17,7 +16,6 @@ module Roxiware
     def application_name
        self.class.application_name
     end
-
 
     private 
     def after_sign_in_path_for(resource_or_scope)
@@ -52,10 +50,10 @@ module Roxiware
        @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
        puts "loaded " + @current_layout.inspect
        @current_layout = @@current_layout
-       @page_layout = @@current_layout.find_page_layout(params[:controller], params[:action])
+       @page_layout = @@current_layout.find_page_layout(params)
        puts "loaded  page" + @page_layout.inspect
        if(request.format == :html)
-         @layout_styles = @@current_layout.get_styles(@layout_scheme, params[:controller], params[:action])
+         @layout_styles = @@current_layout.get_styles(@layout_scheme, params)
        end
     end
 
@@ -74,7 +72,7 @@ module Roxiware
 
     def populate_layout_params
       return if @@current_layout.nil?
-      @@current_layout.resolve_layout_params(@layout_scheme, params[:controller], params[:action]).each do |key, value|
+      @@current_layout.resolve_layout_params(@layout_scheme, params).each do |key, value|
         self.instance_variable_set("@#{key}".to_sym, value)
       end
     end

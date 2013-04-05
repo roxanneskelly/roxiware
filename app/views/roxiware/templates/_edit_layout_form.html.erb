@@ -284,12 +284,10 @@ end %>
                dataType: "json",
                processData:true,
 	       data:jQuery.param($("form").serializeArray()),
-	       processData:true,
                error: function (jqxhr, errorText, errorThrown) {
                  $.error(errorText + " " + errorThrown)
                },
 	       success:function(data, textStatus, jqxhr) {
-                  console.log(data)
                   if(data["error"]) {
                       $(data["error"]).each(function(index, value) {
                          $.error(value[0]+":"+value[1])

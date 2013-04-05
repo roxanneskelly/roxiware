@@ -15,7 +15,7 @@ Let's get started.  First, lets set up an account.  You will use this account to
   <%= hidden_field_tag :setup_type, @setup_type %>
   <%= hidden_field_tag :setup_step, @setup_step %>
 <% end -%>
-<div class="setup_buttons"><%= button_tag "Create Account", :type=>"submit", :id=>"create_account", :disabled=>true %></div>
+<div class="setup_buttons"><%= button_tag "Create Account", :type=>"button", :id=>"create_account", :disabled=>true %></div>
 <script>
 $(function() {
      $("#email, #username, #password, #password_confirmation").bind("input blur propertychange", function() {
@@ -27,8 +27,32 @@ $(function() {
         });
         $("button#create_account").button(button_enable);
      });
-     $("button#create_account").click(function() {
-       $("form").submit();
+    $("button#create_account").click(function() {
+        $(".watermark").val("");
+
+        $.ajax({type:"PUT",
+            processData: true,
+	    url: "<%= setup_path %>.json",
+	    dataType: "json",
+	    data: jQuery.param($("form").serializeArray()),
+	    error: function(xhr, textStatus, errorThrown) {
+                  $.error(errorThrown);
+	    },
+	    complete: function() {
+	    },
+	    success: function(data) {
+                console.log(data);
+		if(data["error"]) {
+		    $(data["error"]).each(function(index, value) {
+	                $.error(value[0]+":"+value[1])
+                        $("form input#"+value[0]).css("background", "#ffcccc");
+	            })
+		}
+		else {
+		    window.location="<%= setup_path %>";
+		}
+	    }}); 
+
      });
 });
 </script>

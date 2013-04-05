@@ -15,10 +15,31 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
 <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "Skip >>", :id=>"skip_import", :value=>"skip", :type=>"button" %></div>
 <script>
   $(function() {
-
-     $("button#back_button,button#skip_import").click(function() {
+    $("button#back_button,button#skip_import").click(function() {
+        $(".watermark").val("");
         $("input#setup_action").val($(this).attr("id"));
-        $("form").submit();
+        $.ajax({type:"PUT",
+            processData: true,
+	    url: "<%= setup_path %>.json",
+	    dataType: "json",
+	    data: jQuery.param($("form").serializeArray()),
+	    error: function(xhr, textStatus, errorThrown) {
+                  $.error(errorThrown);
+	    },
+	    complete: function() {
+	    },
+	    success: function(data) {
+                console.log(data);
+		if(data["error"]) {
+		    $(data["error"]).each(function(index, value) {
+	                $.error(value[0]+": "+value[1])
+                        $("form input#"+value[0]).css("background", "#ffcccc");
+	            })
+		}
+		else {
+		    window.location="<%= setup_path %>";
+		}
+	    }});
      });
 
      $('input#import_search').bind("input propertychange", function() {
@@ -68,9 +89,31 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
 		      });
 
                       $(".search_result").click(function() {
-                          $("input[type=hidden]#goodreads_id").val($(this).attr("goodreads_id"));
-                          $("form").submit();
-                      });
+			    $(".watermark").val("");
+                            $("input[type=hidden]#goodreads_id").val($(this).attr("goodreads_id"));
+
+			    $.ajax({type:"PUT",
+				processData: true,
+				url: "<%= setup_path %>.json",
+				dataType: "json",
+				data: jQuery.param($("form").serializeArray()),
+				error: function(xhr, textStatus, errorThrown) {
+				      $.error(errorThrown);
+				},
+				complete: function() {
+				},
+				success: function(data) {
+				    console.log(data);
+				    if(data["error"]) {
+					$(data["error"]).each(function(index, value) {
+					    $.error(value[0]+": "+value[1]);
+					})
+				    }
+				    else {
+					window.location="<%= setup_path %>";
+				    }
+				}}); 
+			 });
                   }
                   else {
                       $("div#import_search_status").html("<div class='no_results'>No author found.  Try another ISBN, Name, or Link.</div>");
@@ -78,7 +121,7 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
               }
          );
     });
-     $("button#import_search").click();
+    $("button#import_search").click();
  });
 
 </script>

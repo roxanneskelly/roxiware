@@ -223,10 +223,54 @@ end
 
 
 namespace :roxiware do
-
     desc "Backup a roxiware instance"
     task :backup do |t|
-        
+        root_path = ENV['SITE_BACKUP_DIR']  || Rails.root.join("backups").to_s
+	backup_dirname = DateTime.now.strftime("%Y%m%d%H%M%S%L")
+	path = Pathname.new(root_path).join(DateTime.now.strftime("%Y%m%d%H%M%S%L"))
+        Dir.mkdir Pathname.new(root_path)if !(File.directory? Pathname.new(root_path))
+        Dir.mkdir path
+	
+	db_path = Rails.root.join("db", ENV['RAILS_ENV']+".sqlite3")
+	puts "Backing up to #{path}.tgz"
+        FileUtils.cp Rails.root.join("db", ENV['RAILS_ENV']+".sqlite3"), path.join("db.sqlite3")
+
+	Dir.mkdir path.join("uploads")
+	if ENV['RAILS_ENV'] == "development"
+	    files = Dir.glob(Rails.root.join("app", "assets", "images", "uploads", "*"))
+	else
+	    files = Dir.glob(Rails.root.join("public", "assets", "uploads", "*"))
+	end
+        FileUtils.cp_r files, path.join("uploads")
+	sh "tar -C #{path} -czf #{path}.tgz ."
+	FileUtils.rm_r(path)
+    end
+
+    desc "Restore a roxiware instance"
+    task :restore do |t|
+        backup_file = ENV['BACKUP_FILE']
+	if backup_file.blank?
+            root_path = ENV['SITE_BACKUP_DIR']  || Rails.root.join("backups").to_s
+            backup_file = Dir.glob(Pathname.new("#{root_path}").join("*.tgz")).sort_by{|p| p.to_s}.last
+	end
+	puts "Restoring from #{backup_file}"
+
+	if ENV['RAILS_ENV'] == "development"
+	    asset_dir = Rails.root.join("app", "assets", "images")
+	else
+	    asset_dir = Rails.root.join("public", "assets")
+	end
+
+	FileUtils.rm_r(asset_dir.join("uploads.old")) if File.directory? asset_dir.join("uploads.old")
+	FileUtils.mv asset_dir.join("uploads"), asset_dir.join("uploads.old") if File.directory? asset_dir.join("uploads")
+	FileUtils.mkdir asset_dir.join("uploads")
+	sh "tar -C #{asset_dir} -xzf #{backup_file} --include uploads/* "
+	puts "done"
+
+	sh "tar -C #{Rails.root.join("db")} -xzf #{backup_file} --include db.sqlite3"
+        FileUtils.mv Rails.root.join("db", "db.sqlite3"), Rails.root.join("db", "#{ENV['RAILS_ENV']}.sqlite3")
+	FileUtils.rm_r(asset_dir.join("uploads.old"))
+
     end
 
     desc "Initialize a roxiware instance"

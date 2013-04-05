@@ -76,9 +76,6 @@ module Roxiware
 
 	      new_layout.page_layouts = page_layouts.collect{|p| p.deep_dup}
 	      new_layout.params = params.collect{|p| p.deep_dup}
-	      new_layout.params.each do |param|
-	         puts param.inspect
-	      end
 	      new_layout.term_relationships = term_relationships.collect{|r| r.dup}
 
 	     # fixup scheme UUIDs
@@ -168,31 +165,28 @@ module Roxiware
 	    end
  	  end
 
-          def find_page_layout(current_controller, action)
-	       stack = page_layout_stack(current_controller, action)
+          def find_page_layout(params)
+	       stack = page_layout_stack(params)
 	       stack[-1] if stack.present?
 	  end
 
 	  def page_layout_by_url(layout_id, url_identifier)
-	      page_id = URI.decode(url_identifier).split("#")
-	      find_page_layout((page_id[0] || ""), (page_id[1] || ""))
+	      page_id = URI.decode(url_identifier).split("_")
+	      find_page_layout({:application=>(page_id[0] || ""), :action=>(page_id[1] || "")})
 	  end
 
-
-
-          def page_layout_stack(current_controller, action)
-	     controller = current_controller.clone
+          def page_layout_stack(params)
 	     if @page_layout_cache.blank?
 	         page_layout_list = self.page_layouts.collect {|page_layout| page_layout}
 		 @page_layout_cache=[]
-	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.present?})
-	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.blank? || page_layout.action.present?})
-	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.controller.blank? || page_layout.action.blank?})
+	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.present?})
+	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.blank? || page_layout.action.present?})
+	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.blank? || page_layout.action.blank?})
 	     end
 
 	     result = []
 	     @page_layout_cache.each do |page_layout|
-	        if(page_layout.is_root? || (page_layout.controller == controller) && (page_layout.action.blank? || (page_layout.action == action)))
+	        if(page_layout.is_root? || (page_layout.application == params[:application]) && (page_layout.action.blank? || (page_layout.action == params[:action])))
 		   page_layout.refresh_sections_if_needed(result[-1])
 		   result <<  page_layout
 		end
@@ -200,8 +194,8 @@ module Roxiware
 	     result
 	  end
 
-	  def get_styles(scheme, controller, action)
-             page_layout = find_page_layout(controller, action)
+	  def get_styles(scheme, params)
+             page_layout = find_page_layout(params)
 
 	     if(scheme != @current_scheme) 
 	         @current_scheme = scheme
@@ -234,7 +228,7 @@ module Roxiware
 		 result
 	  end
 
-	  def resolve_layout_params(scheme, controller, action)
+	  def resolve_layout_params(scheme, params)
 	     if @layout_params.nil?
 	        @layout_params = {}
 	        self.params.where(:param_class=>:local).each do |param|
@@ -243,7 +237,7 @@ module Roxiware
              end
 
 	     result = @layout_params.clone
-	     page_layout = self.find_page_layout(controller, action)
+	     page_layout = self.find_page_layout(params)
 	     @layout_params.merge(page_layout.resolve_layout_params)
 	  end
 	  before_validation do
@@ -266,44 +260,42 @@ module Roxiware
           belongs_to      :layout
 
 	  edit_attr_accessible :render_layout, :style, :as=>[:super, nil]
-	  edit_attr_accessible :controller, :action, :layout_id, :as=>[nil]
-	  ajax_attr_accessible :render_layout, :style, :controller, :action, :layout_id, :as=>[:super, nil]
+	  edit_attr_accessible :application, :action, :layout_id, :as=>[nil]
+	  ajax_attr_accessible :render_layout, :style, :application, :action, :layout_id, :as=>[:super, nil]
 
 	  def deep_dup
 	      new_page_layout = dup
 	      new_page_layout.layout_sections = layout_sections.collect{|s| s.deep_dup}
 	      new_page_layout.params = params.collect{|p| p.deep_dup}
-	      puts "DUPPED NEW PAGE LAYOUT TO " + new_page_layout.inspect
 	      new_page_layout
 	  end
 
 	  def get_url_identifier
-	      URI.encode("#{controller}##{action}", "/")
+	      URI.encode("#{application}_#{action}", "/")
 	  end
 	  
 	  def set_url_identifier(url_identifier)
-	      page_id = URI.decode(url_identifier).split("#")
-	      self.controller = page_id[0] || ""
+	      page_id = URI.decode(url_identifier).split("_")
+	      self.application = page_id[0] || ""
 	      self.action = page_id[1] || ""
 	  end
 
 	  def is_root?
-	     controller.blank? && action.blank?
+	     application.blank? && action.blank?
 	  end
 
           def get_text_name
 	      result = ""
-              result = self.controller.split("/").last
+              result = self.application
 	      result = "base" if result.blank?
 	      result = result
 	      result += " "+self.action if self.action.present?
 	      result += " page"
-	      puts "PAGE LAYOUT NAME " + result
               result.titleize
           end
 
 	  def import(page_layout_node)
-	     self.controller    = page_layout_node["controller"]
+	     self.application    = page_layout_node["application"] || page_layout_node["controller"]
 	     self.action        = page_layout_node["action"]
 	     self.render_layout = page_layout_node.find_first("render_layout").content
 	     self.style = page_layout_node.find_first("style").content
@@ -321,7 +313,7 @@ module Roxiware
 	  end
 
           def export(xml_page_layouts)
-	     xml_page_layouts.page(:controller=>self.controller, :action=>self.action) do |xml_page_layout|
+	     xml_page_layouts.page(:application=>self.application, :action=>self.action) do |xml_page_layout|
 	       xml_page_layout.render_layout self.render_layout
 	       xml_page_layout.style {|s| s.cdata!(self.style.strip)}
 	       xml_page_layout.params do |xml_params|
@@ -459,7 +451,6 @@ module Roxiware
 
 	  def get_widget_instances
 	     @ordered_instances ||= self.widget_instances.order(:section_order)
-	     puts "ordered widget instances for #{name}" + @ordered_instances.inspect
 	     @ordered_instances
 	  end
 

@@ -681,9 +681,7 @@
 
 	var self = this;
 	$("form").submit(function() {
-	    self.each(function() {
-	        if($(this).hasClass("watermark")) {$(this).val(""); }
-		});
+	    self.each(function() {if($(this).hasClass("watermark")) {$(this).val(""); }});
 	});
     }
 })(jQuery);
@@ -923,8 +921,6 @@ function genUUID() {
 }
 
 function getNextUniqueName(name, name_list) {
-    console.log(name);
-    console.log(name_list);
     var index = 1;
     while($.inArray(name + "("+index+")", name_list) > -1) {
         index++;

@@ -1,5 +1,5 @@
 <section class="events">
-<h2><%= link_to_unless(params[:controller]=="roxiware/events", "Events",events_path) %>
+<h2><%= link_to_unless(params[:application]=="events", "Events",events_path) %>
 </h2>
 <% @events.each do |event|  %>
   <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">

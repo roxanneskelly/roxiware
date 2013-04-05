@@ -8,15 +8,38 @@ You can always create, delete, and manage series later, if you want to skip this
 </div>
 
 <%= form_tag '/setup', :method=>"put" do %>
-   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "No, Skip Series", :id=>"skip_import", :value=>"skip", :type=>"button" %><%= button_tag "Yes, Set Up Series", :id=>"import", :value=>"import", :type=>"button" %></div>
+   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "No, Skip Series", :id=>"skip_series", :value=>"skip", :type=>"button" %><%= button_tag "Yes, Set Up Series", :id=>"import", :value=>"import", :type=>"button" %></div>
    <%= hidden_field_tag :setup_action, "import" %>
    <%= hidden_field_tag :setup_step, @setup_step %>
 <% end %>
 <script>
   $(function() {
-     $("button#import,button#back_button,button#skip_import").click(function() {
+    $("button#import,button#back_button,button#skip_series").click(function() {
+        $(".watermark").val("");
         $("input#setup_action").val($(this).attr("id"));
-        $("form").submit();
+        $.ajax({type:"PUT",
+            processData: true,
+	    url: "<%= setup_path %>.json",
+	    dataType: "json",
+	    data: jQuery.param($("form").serializeArray()),
+	    error: function(xhr, textStatus, errorThrown) {
+                  $.error(errorThrown);
+	    },
+	    complete: function() {
+	    },
+	    success: function(data) {
+                console.log(data);
+		if(data["error"]) {
+		    $(data["error"]).each(function(index, value) {
+	                $.error(value[0]+": "+value[1])
+                        $("form input#"+value[0]).css("background", "#ffcccc");
+	            })
+		}
+		else {
+		    window.location="<%= setup_path %>";
+		}
+	    }}); 
+
      });
   });
 </script>

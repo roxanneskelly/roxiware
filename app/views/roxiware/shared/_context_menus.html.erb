@@ -12,11 +12,11 @@
         switch (menu_item) {
 <% if @page_layout.action.blank? %>
           case "page_fork":
-              <% if(@page_layout.controller.blank?) %>
-                  var fork_data = {url_identifier: "<%= params[:controller]%>#",
+              <% if(@page_layout.application.blank?) %>
+                  var fork_data = {url_identifier: "<%= params[:application]%>_",
 		              clone: <%= @page_layout.id %>};
               <% else %>
-                  var fork_data = {url_identifier:"<%= params[:controller]%>#<%= params[:action] %>",
+                  var fork_data = {url_identifier:"<%= params[:application]%>_<%= params[:action] %>",
 	              clone: <%= @page_layout.id %>};
 	      <% end %>
 	      
@@ -30,7 +30,7 @@
                  });
              break;
 <% end %>
-<% if @page_layout.controller.present? %>
+<% if @page_layout.application.present? %>
           case "page_delete":
               if(!confirm("Collapse Page\nAre you sure?")) {
                    return;

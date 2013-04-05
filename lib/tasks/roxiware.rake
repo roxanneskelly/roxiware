@@ -276,6 +276,7 @@ namespace :roxiware do
     desc "Initialize a roxiware instance"
     task :init, [:instance_type]=>:environment do |t,args|
        settings_file = args[:instance_type] || nil
+       Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:drop"].invoke
        Rake::Task["db:create"].invoke
        Rake::Task["db:migrate"].invoke
@@ -294,6 +295,7 @@ namespace :roxiware do
     desc "update a roxiware instance"
     task :update, [:instance_type]=>:environment do |t,args|
        settings_file = args[:instance_type] || nil      
+       Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:migrate"].invoke
        Rake::Task["db:seed"].invoke
        Rake::Task["param_descriptions:import"].invoke

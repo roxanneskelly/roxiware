@@ -1166,23 +1166,22 @@ div#text_properties_dialog .contentWrap
        <% end %>
        <div class='display_items'>
        <% display_items.each do |display_item_param|
-	   display_item = display_item_param.conv_value
-	   top = display_item["top"].conv_value
-	   left = display_item["left"].conv_value
+	   top = display_item_param.h["top"].conv_value
+	   left = display_item_param.h["top"].conv_value
 	   style = "position:absolute;left:#{left}px;top:#{top}px;"
 	   item_class = ""
 	   if can? :edit, widget_instance
 	     item_class="display_item"
 	   end
-           if display_item["image"].present?
+           if display_item_param.h["image"].present?
 	     %>
-             <img src="<%= display_item['image'].conv_value %>" style="<%= style %>" class="display_item" description-guid="<%= display_item['image'].description_guid %>"/>
-          <%  elsif display_item["text"].present? 
-	     style += ("color:" + display_item['color'].conv_value + ";")
-	     style += ("font-size:" + display_item['size'].conv_value.to_s + "px;")
-	     style += ("font-family:"+ display_item['font'].conv_value + ";")
+             <img src="<%= display_item_param.h['image'] %>" style="<%= style %>" class="display_item" description-guid="<%= display_item_param.h['image'].description_guid %>"/>
+          <%  elsif display_item_param.h["text"].present? 
+	     style += ("color:" + display_item_param.h['color'].conv_value + ";")
+	     style += ("font-size:" + display_item_param.h['size'].conv_value.to_s + "px;")
+	     style += ("font-family:"+ display_item_param.h['font'].conv_value + ";")
 	      %>
-	     <div style="<%= style %>" class="display_item"><%= display_item['text'].conv_value %></div>
+	     <div style="<%= style %>" class="display_item"><%= display_item_param.h['text'].conv_value %></div>
           <%  end
         end
        %>
@@ -1397,6 +1396,7 @@ $(document).bind("ready", function() {
        line-height:1.5em;
        text-align:left;
        padding:4px 1em 4px 4px;
+       white-space:nowrap;
   }
 }
 

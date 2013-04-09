@@ -98,31 +98,42 @@ class Roxiware::PeopleController < ApplicationController
   # POST /people
   # POST /people.json
   def create
-    respond_to do |format|
-      if @person.update_attributes(params[:person], :as=>@role)
-        run_layout_setup
-        format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully created.' }
-        format.json { render :json => @person, :status => :created, :location => @person }
-      else
-        format.html { redirect_to "/biography/#{@person.seo_index}", :notice => "Couldn't create person." }
-        format.json { render :json => report_error(@person) }
-      end
-    end
+    _create_or_update(@person)
   end
 
   # PUT /people/:id
   # PUT /people/:id.json
-  def update
-    respond_to do |format|
-        if @person.update_attributes(params[:person], :as=>@role)
-           run_layout_setup
-	   format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully updated.' }
-           format.json { render :json => @person }
-	else
-	   format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Failure updating person.' }
-	   format.json { head :fail }
-	end
-    end
+  def update 
+     _create_or_update(@person)
+  end
+
+  def _create_or_update(person)
+      success = true
+      ActiveRecord::Base.transaction do
+	 begin
+	     if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
+	         social_networks = person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
+		 params[:person][:params][:social_networks].each do |name, value|
+		     social_networks.set_param(name, value, "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
+		 end
+	     end
+	     success = @person.update_attributes(params[:person], :as=>@role)
+	 rescue Exception => e
+	     print e.message
+	     puts e.backtrace.join("\n")
+	     success = false
+	 end
+      end
+      run_layout_setup if success
+      respond_to do |format|
+	 if success
+	     format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully updated.' }
+	     format.json { render :json => @person }
+	 else
+	    format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Failure updating person.' }
+	    format.json { head :fail }
+	 end
+     end
   end
 
   # DELETE /people/1

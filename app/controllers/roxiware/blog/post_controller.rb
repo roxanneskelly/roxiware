@@ -108,7 +108,7 @@ module Roxiware
 	        end 
                 render :json => clean_posts 
 	     end
-             format.rss { render :layout => false, :action=>"index" }
+             format.rss { render :layout => false, :action=>"index", :content_type=>"application/rss+xml" }
 	   end
 	 end
 
@@ -198,7 +198,8 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.new({:person_id=>current_user.person.id, 
 					     :post_date=>DateTime.now.utc, 
 					     :post_content=>"Content",
-					     :post_title=>"Title"}, :as=>"")
+					     :post_title=>"Title",
+					     :post_status=>"publish"}, :as=>"")
 
 	   # We need to pass the post category in separately as on new post creation, the
 	   # category joins are not yet created for the post.
@@ -218,7 +219,8 @@ module Roxiware
 					     :post_date=>DateTime.now.utc, 
 					     :post_content=>"Content",
 					     :post_title=>"Title", 
-					     :comment_permissions=>"default"}, :as=>"")
+					     :comment_permissions=>"default",
+					     :post_status=>"publish"}, :as=>"")
 
 	   if((@role == "super") || (@role == "admin")) 
 	       params[:blog_post][:post_content] = Sanitize.clean(params[:blog_post][:post_content], Roxiware::Sanitizer::EXTENDED_SANITIZER)

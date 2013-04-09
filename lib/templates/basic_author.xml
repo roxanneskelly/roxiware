@@ -11,7 +11,20 @@
 </ul>]]>
   </description>
   <setup>
-    <![CDATA[]]>
+    <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+person = Roxiware::Person.find(person_id)
+
+author_name =  @current_layout.get_by_path("_/header_bar/logo_bar/display_items/item-0/text")
+author_name.value = person.full_name
+author_name.save!
+
+Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
+Roxiware::Param::Param.set_application_param("system", "title", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", person.full_name+", Author")
+Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
+Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", person.full_name)
+Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", person.full_name+", Author")
+Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
+Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", person.full_name+", Author")]]>
   </setup>
   <categories>
   </categories>
@@ -451,103 +464,139 @@ div.book_listing {
 
 
 /* Individual widget settings */
+#header_bar_section {
+    position:relative;
+    height:100px;
+    margin:0 0 1em 0;
 
-.widget#login_bar {
-    float:right;
-    width:30%;
-    display:inline-block;
-   .widget_content {
-       text-align:right;
-   }
-}
+    .widget#logo_bar {
+        position:absolute;
+        left:0px;
+        top:0px;
+        width:20%;
+        height:80px;
+    }
 
-/* Main Menu layout */
-.widget#main_menu { 
-    width:65%;
-  .ddsmoothmenu_widget {
+    .widget#social_networks_header {
+         position:absolute;
+         right:0px;
+         bottom:0px;
+         width:60%;
+         .widget_content {
+             text-align:right;
+             .social_networks_icon {
+                 padding:0 5px 0 5px;
+             }
+         }
+    }
 
-    font: Verdana;
-    margin-left:auto;
-    margin-right:auto;
+    .widget#login_bar {
+        position:absolute;
+        right:0px;
+        top:0px;
+        width:35%;
+        .widget_content {
+           text-align:right;
+       }
+    }
 
-    display:inline-block;
-    height:1.5em;
-    ul {
-       list-style-type:none;
-       display:inline-block;
+    /* Main Menu layout */
+    .widget#main_menu { 
+        position:absolute;
+        left:0px;
+        bottom:0px;
+        width:65%;
+        .ddsmoothmenu_widget {
+            font: Verdana;
+            margin-left:auto;
+            margin-right:auto;
 
-       li { 
-           display:inline-block;
-           vertical-align:middle;
-           text-align:center;
-           padding:0px;
+            display:inline-block;
+            height:1.5em;
+            ul {
+                list-style-type:none;
+                display:inline-block;
+                li { 
+                   display:inline-block;
+                   vertical-align:middle;
+                   text-align:center;
+                   padding:0px;
 
-           a, a:link, a:visited {
+                   a, a:link, a:visited {
+                       color: <%= text_color %>;
+	               background: none;
+                       display:inline-block;
+                       padding:0 0.5em 0 0.5em;
+                       text-decoration:none;
+                       width:auto;
+                       font-size:1.2em;
+                       line-height:1.5em;
+                   }
 
-               color: <%= text_color %>;
-	       background: none;
-               display:inline-block;
-               padding:0 0.5em 0 0.5em;
-               text-decoration:none;
-               width:auto;
-               font-size:1.2em;
-               line-height:1.5em;
-           }
+	           a.menu_selected,
+	           ul li a.menu_selected {
+  	               color: <%= link_color %>;
+	           }
 
-	   a.menu_selected,
-	   ul li a.menu_selected {
-  	       color: <%= link_color %>;
-	   }
-
-           a:hover, a.selected, ul li a:hover   {
-	       color: <%= link_color %>
-           }
+                   a:hover, a.selected, ul li a:hover   {
+	               color: <%= link_color %>
+                   }
        
-           ul {
-               padding-right:0px;
-               position: absolute;
-               left:0;
-               display: none;
-               visibility: hidden;
-               width: auto;
-               li {
-                  width:100%;
-                  padding-bottom:0px;
-                  display: list-item;
-                  margin:0;
-                  height:auto;
-                  border:none;
-                  a {
-                     padding-top:0.5em;
-                     padding-bottom:0.5em;
-                     margin:0em;
+                   ul {
+                      padding-right:0px;
+                      position: absolute;
+                      left:0;
+                      display: none;
+                      visibility: hidden;
+                      width: auto;
+                      li {
+                          width:100%;
+                          padding-bottom:0px;
+                          display: list-item;
+                          margin:0;
+                          height:auto;
+                          border:none;
+                          a {
+                              padding-top:0.5em;
+                              padding-bottom:0.5em;
+                              margin:0em;
+                          }
+                      }
                   }
               }
-           }
-       }
-     }
+          }
+      }
   }
-}]]>
+}
+/* Social networking icons */
+<% %w(youtube goodreads google facebook twitter rss).each do |soc_net| %>
+a#<%= soc_net %>.social_networks_icon {
+     display:inline-block;
+     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+     width:32px;
+     height:32px;
+}    
+<% end %>]]>
   </style>
   <params>
     <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
     <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
     <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">lightgrey</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#808080</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">lightgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#c0c0c0</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
@@ -562,7 +611,7 @@ div.book_listing {
     </param>
   </params>
   <pages>
-    <page action="" controller="">
+    <page action="" application="">
       <render_layout>roxiware/layouts/onecolumn</render_layout>
       <style>
         <![CDATA[]]>
@@ -581,11 +630,11 @@ div.book_listing {
           <params>
           </params>
           <widget_instances>
-            <instance order="10" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
+            <instance order="18" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
               <params>
               </params>
             </instance>
-            <instance order="7" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance order="15" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
@@ -631,10 +680,40 @@ div.book_listing {
                 </param>
               </params>
             </instance>
-            <instance order="1" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+            <instance order="4" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
+              </params>
+            </instance>
+            <instance order="4" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+              <params>
+                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id">2</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
+                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
+                </param>
+              </params>
+            </instance>
+            <instance order="0" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
+                <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
+                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">7.7272491455078125px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-14.3636474609375px</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxie X Skelly</param>
+                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
+                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48.18181610107422</param>
+                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
+                  </param>
+                </param>
               </params>
             </instance>
           </widget_instances>
@@ -673,6 +752,35 @@ div.book_listing {
           <params>
           </params>
           <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="undefined">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
+                <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
+                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">39px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-1px</param>
+                    <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="local" name="image">logo.png</param>
+                  </param>
+                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-1">
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">76.72726440429688px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-7.4545440673828125px</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Tagline</param>
+                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Arial</param>
+                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">20</param>
+                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
+                  </param>
+                </param>
+              </params>
+            </instance>
           </widget_instances>
         </section>
       </sections>

@@ -223,14 +223,7 @@ class Roxiware::SetupController < ApplicationController
 		         result = report_error(current_user.person)
 		    else
 			 Roxiware::Param::Param.set_application_param("people", "default_biography", "B908FDB5-A0B5-48AC-8BAE-48741485CC06", current_user.person.id)
-			 Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", current_user.person.email)
 			 Roxiware::Param::Param.set_application_param("system", "site_copyright_first_year", "7D815EDA-93DA-411B-9B09-91BA774D6CE2", Time.now.strftime("%Y"))
-			 Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", current_user.person.full_name)
-			 Roxiware::Param::Param.set_application_param("system", "title", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", current_user.person.full_name+", Author")
-			 Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", current_user.person.full_name)
-			 Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", current_user.person.full_name+", Author")
-			 Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", current_user.person.email)
-			 Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", current_user.person.full_name+", Author")
 			 result = _set_setup_step("social_networks")
 		    end
 		end
@@ -467,7 +460,6 @@ class Roxiware::SetupController < ApplicationController
 	ActiveRecord::Base.transaction do
 	    begin
 	        if params[:setup_action] == "back_button"
-		    puts "CHOOSE TEMPLATE BACK"
 		    @books = Roxiware::Book.all
 		    @series = Roxiware::BookSeries.all
 		    if @series.present?

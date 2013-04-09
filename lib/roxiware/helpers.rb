@@ -50,8 +50,32 @@ module Roxiware
 
 
       def cdn_icon(icon_name, theme, scheme)
-          puts "URI IS " + (AppConfig.cdn_url || "") + "/" + (theme || "")+ "/" + (scheme || "") + "/" + (icon_name || "")
           URI::join(AppConfig.cdn_url, "themes/#{theme}/#{scheme}/icons/#{icon_name}.png").to_s
+      end
+
+      def social_network_url(network_type, network_id)
+	 case network_type
+	 when "website"
+	    network_id
+	 when "twitter"
+	    "http://www.twitter.com/"+network_id
+	 when "facebook"
+	    "http://www.facebook.com/"+network_id
+	 when "google"
+	    network_id
+         when "tumblr"
+            "http://#{network_id}.tumblr.com/"
+         when "foursquare"
+            "http://foursquare.com/#{network_id}"
+         when "foursquare"
+            "http://foursquare.com/#{network_id}"
+         when "goodreads"
+             network_id
+	 when "youtube"
+             "http://www.youtube.com/#{network_id}"
+	 else
+	    nil
+	 end
       end
   end
 end

@@ -13,10 +13,19 @@
 	<%= person_form.label :email, "Email" %>
 	<%= person_form.text_field :email, :size=>255 %>
 	<br/>
-	<% if @setup_step == "complete" %> 
-	    <%= person_form.label :website, "Website"%>
-	    <%= person_form.text_field :website %>
-	<% end %>
+	<% if @setup_step == "complete" && @setup_type != "author" %> 
+	   <%  website = nil
+	       if @person.get_param("social_networks").present? && @person.get_param("social_networks").h["website"].present?
+	           website = @person.get_param("social_networks").h["website"].to_s
+	       end %>
+	   
+	   <%= person_form.fields_for :params do |params| %>
+	      <%= params.fields_for :social_networks do |social_networks| %>
+		    <%= social_networks.label :website, "Website"%>
+		    <%= social_networks.text_field :website, :watermark=>"http://www.mywebsite.com/", :value=>website %>
+	      <% end %>
+	   <% end %>
+        <% end %>
     </div>
     <div id="right_section">
 	<span class="popup_help_text" style="float:right;">Click to change image</span><br/>
@@ -30,7 +39,7 @@
 </div>
 <script>
  $(function() {
-     $(".person_edit_form img.upload_target").bind("click", function() {
+     $("div#biography img.upload_target").bind("click", function() {
         imageDialog({
 	     initialImage: "<%= person.large_image_url %>",
              previewSize:"large",
@@ -43,10 +52,10 @@
              },
              sizeLimit: 10000000,
 	     onSuccess: function(upload_result){
-                 $(".person_edit_form input#person_image_url").val(upload_result["urls"]["medium"]);
-                 $(".person_edit_form input#person_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
-                 $(".person_edit_form input#person_large_image_url").val(upload_result["urls"]["large"]);
-                 $(".person_edit_form img#person_portrait").attr("src", upload_result["urls"]["medium"]);
+                 $("div#biography input#person_image_url").val(upload_result["urls"]["medium"]);
+                 $("div#biography input#person_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
+                 $("div#biography input#person_large_image_url").val(upload_result["urls"]["large"]);
+                 $("div#biography img#person_portrait").attr("src", upload_result["urls"]["medium"]);
                  $("input#person_image_url, input#person_thumbnail_url, input#person_large_image_url").trigger("change");
              }});
        });

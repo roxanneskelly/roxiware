@@ -46,7 +46,7 @@
                                             var source_widget = $(ui.draggable).attr("widget_id");
                                             if (source_widget == "new") {
                                               var guid = $(ui.draggable).attr("guid");
-					      var endpoint = $(this).parent().parent().attr("rel") + "/widget/";
+					      var endpoint = $(this).parents("[rel]").attr("rel") + "/widget/";
 					      $.ajax({url: endpoint, 
 						      type: "POST",
 						      dataType: "json",
@@ -60,7 +60,7 @@
 								 $.error(value[0]+":"+value[1])
 							      })
 							  }
-                                                          else if($(this).is("#save_and_close_button")) {
+                                                          else {
 							      window.location.reload();
 							  }
                                                     }});

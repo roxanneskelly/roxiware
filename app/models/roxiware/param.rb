@@ -8,13 +8,18 @@ module Roxiware
          module ParamClientBaseClassMethods
          end
 	    def get_params(param_class=:local)
-	       if @params.nil?
-		  @params = {}
-		  params.where(:param_class=>param_class).each do |param|
-		     @params[param.name.to_sym] = param.conv_value
-		  end
+	       Hash[get_param_objs.select{|name, param_obj| param_obj.param_class.to_sym == param_class}.collect{|param_pair| [param_pair[0].to_sym, param_pair[1].conv_value]}]
+	    end
+
+	    def get_by_path(path)
+	       return self if path.blank?
+	       path_components = path.split("/", 2)
+
+	       param = self.get_param(path_components.shift)
+	       if(param.blank?)
+		   raise Exception.new("param_by_path: Param not found #{path}")
 	       end
-	       @params
+	       param.get_by_path(path_components.shift)
 	    end
 
 	    def get_param(name)
@@ -28,7 +33,8 @@ module Roxiware
 	      if (@param_objs[name.to_sym].present?) 
 	         param_class ||= @param_objs[name.to_sym].param_class
 		 description_guid ||= @param_objs[name.to_sym].description_guid
-	         @param_objs[name.to_sym].destroy
+	         @param_objs[name.to_sym].value = value
+		 return @param_objs[name.to_sym]
               end
 	      param_class ||= :local
 	      param_value = nil

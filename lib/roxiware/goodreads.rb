@@ -90,7 +90,6 @@ module Roxiware
          result_series = response["GoodreadsResponse"]["series"]
 	       
 	 works = []
-	 puts "SERIES ID #{result_series['title'].strip} #{series_id}"
 	 result_series["series_works"]["series_work"].each do |work_data|
 	    order = work_data["user_position"]["__content__"]
 	    parser = ::XML::Parser.io(StringIO.new(work_data["__content__"]))

@@ -1,12 +1,20 @@
 <div id="social_networks_pane">
-   <%= person_form.label :twitter, "Twitter"%>
-   <%= person_form.text_field :twitter, :watermark=>"Twitter Username (ie. 'janedoe')" %>
-   <br/>
+   <% social_networks = {}
+      if @person.get_param("social_networks").present?
+         social_networks = Hash[@person.get_param("social_networks").h.collect{|network, network_id| [network.to_sym, network_id.to_s]}] 
+      end %>
+   <%= person_form.fields_for :params do |params| %>
+      <%= params.fields_for :social_networks do |social_networks_fields| %>
+          <%= social_networks_fields.label :twitter, "Twitter"%>
+          <%= social_networks_fields.text_field :twitter, :watermark=>"Twitter Username (ie. 'janedoe')", :value=>social_networks[:twitter] %>
+	  <br/>
 
-   <%= person_form.label :facebook, "Facebook"%>
-   <%= person_form.text_field :facebook, :watermark=>"Facebook Username (ie. 'johndoe')" %>
-   <br/>
+	  <%= social_networks_fields.label :facebook, "Facebook"%>
+	  <%= social_networks_fields.text_field :facebook, :watermark=>"Facebook Username (ie. 'johndoe')", :value=>social_networks[:facebook] %>
+	  <br/>
 
-   <%= person_form.label :google, "Google+"%>
-   <%= person_form.text_field :google, :watermark=>"Twitter User ID (ie. 'doejane')" %>
+	  <%= social_networks_fields.label :google, "Google+"%>
+	  <%= social_networks_fields.text_field :google, :watermark=>"012345678", :value=> social_networks[:google] %>
+      <% end %>
+  <% end %>
 </div>

@@ -64,6 +64,21 @@ module Roxiware
 	  edit_attr_accessible :description, :style, :setup, :name, :category_csv, :as=>[:super, nil]
 	  ajax_attr_accessible :guid, :category_csv, :as=>[:super, :admin, nil]
 
+	  def get_by_path(path)
+	     path_components = path.split("/", 2)
+	     return self if(path_components.blank?)
+
+	     page_components = path_components.shift.split("_")
+	     page_params = {}
+	     page_params[:application] = (page_components[0] || "")
+	     page_params[:action] = page_components[1] || ""
+	     page_layout = find_page_layout(page_params)
+	     if (page_layout.action != page_params[:action]) || (page_layout.application != page_params[:application])
+		 raise Exception.new("param_by_path: Page not found #{path}")
+	     end
+	     page_layout.get_by_path(path_components.shift)
+	  end
+
 	  def deep_dup
 	      new_layout = dup
 	      # update to SecureRandom.uuid when we switch to ruby 1.9
@@ -84,7 +99,6 @@ module Roxiware
 	        new_scheme = scheme.deep_dup
 		# update to SecureRandom.uuid when we switch to ruby 1.9
 	     	new_scheme.name = SecureRandom.hex.sub(/(.{8})(.{4})(.{4})(.{4})(.*)/, '\1-\2-\3-\4-\5')
-	        puts "ADDING NEW SCHEME #{new_scheme.name} " + new_scheme.inspect 
 	     	schemes[new_scheme.name] = new_scheme
              end
 	     new_layout.set_param("schemes", schemes) 
@@ -263,6 +277,16 @@ module Roxiware
 	  edit_attr_accessible :application, :action, :layout_id, :as=>[nil]
 	  ajax_attr_accessible :render_layout, :style, :application, :action, :layout_id, :as=>[:super, nil]
 
+	  def get_by_path(path)
+	     path_components = path.split("/", 2)
+	     return self if(path_components.blank?)
+	     section = self.section(path_components.shift)
+	     if(section.blank?)
+		 raise Exception.new("param_by_path: Section not found #{path}")
+	     end
+	     section.get_by_path(path_components.shift)
+	  end
+
 	  def deep_dup
 	      new_page_layout = dup
 	      new_page_layout.layout_sections = layout_sections.collect{|s| s.deep_dup}
@@ -375,7 +399,6 @@ module Roxiware
              layout_sections.each do |layout_section|
 		@sections[layout_section.name] = layout_section
 	     end
-	     
 	  end
 
 	  def sections
@@ -404,6 +427,17 @@ module Roxiware
 	  edit_attr_accessible :style, :as=>[:super, nil]
 	  edit_attr_accessible :name, :as=>[nil]
 	  ajax_attr_accessible :name, :style, :page_layout_id, :as=>[:super, nil]
+
+	  def get_by_path(path)
+	     path_components = path.split("/", 2)
+	     return self if(path_components.blank?)
+	     widget_instance = self.get_widget_instance(path_components.shift)
+	     if(widget_instance.blank?)
+		 raise Exception.new("param_by_path: Widget not found #{path}")
+	     end
+	     widget_instance.get_by_path(path_components.shift)
+	  end
+
 
 	  def deep_dup
 	      new_layout_section = dup
@@ -452,6 +486,10 @@ module Roxiware
 	  def get_widget_instances
 	     @ordered_instances ||= self.widget_instances.order(:section_order)
 	     @ordered_instances
+	  end
+
+          def get_widget_instance(widget_id)
+	     get_widget_instances.select{|instance| widget_id == (instance.get_param("widget_instance_id").to_s)}.first
 	  end
 
 	  def refresh
@@ -523,6 +561,8 @@ module Roxiware
 	  edit_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 	  ajax_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 
+
+
 	  def deep_dup
 	      new_widget_instance = dup
 	      new_widget_instance.params = params.collect{|p| p.deep_dup}
@@ -575,20 +615,6 @@ module Roxiware
 	  def get_styles(params)
 	     self.widget.eval_style(params.merge(style_params))
 	  end
-
-	  def get_params
-	     if @params.nil?
-	        @params = {}
-		widget.params.where(:param_class=>:local).each do |param|
-                   @params[param.name.to_sym] = param.conv_value
-                end
-		
-	        params.where(:param_class=>:local).each do |param|
-                   @params[param.name.to_sym] = param.conv_value
-                end
-             end
-	     @params
-          end
 
 	  def get_param_objs
 	     if @param_objs.nil?

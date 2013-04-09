@@ -151,7 +151,6 @@ class Roxiware::AccountController < ApplicationController
         if(update_params[:password].blank?) 
 	    format.html { redirect_to "/",  :alert=>"Password cannot be blank." }
 	elsif @user.valid_password?(update_params[:current_password]) 
-	    puts "updating attributes " + update_params.inspect
 	    if !@user.update_attributes(update_params, :as=>current_user.role)
 	       format.html { redirect_to "/", :alert=>flash_from_object_errors(@user) } 
 	    else

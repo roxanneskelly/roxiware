@@ -7,25 +7,14 @@
     <div id="details_pane">
 	<%= render :partial=>"roxiware/people/edit_biography", :locals=>{:person=>person, :person_form=>person_form} %>
     </div>
-    <div id="social_networks_pane">
-	<%= person_form.label :twitter, "Twitter"%>
-	<%= person_form.text_field :twitter %>
-        <br/>
-
-	<%= person_form.label :facebook, "Facebook"%>
-	<%= person_form.text_field :facebook %>
-        <br/>
-
-	<%= person_form.label :google, "Google+"%>
-	<%= person_form.text_field :google %>
-    </div>
+    <%= render :partial=>"roxiware/people/edit_social_networks", :locals=>{:person=>person, :person_form=>person_form} %>
   </div>
 </div>
 <script>
  $(function() {
      $("#biography_edit_form ul.tabs").tabs($("#biography_edit_form div.panes > div"));
+     $("input[watermark]").watermark();
      $("#biography_edit_form img.upload_target").bind("click", function() {
-        console.log("image dialog");
         imageDialog({
 	     initialImage: "<%= person.large_image_url %>",
              previewSize:"large",

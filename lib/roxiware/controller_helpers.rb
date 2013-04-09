@@ -38,20 +38,23 @@ module Roxiware
        return false
     end
 
-    def run_layout_setup
-       puts "running layout setup"
-       if (@current_layout.present? && @current_layout.setup.present?)
-          eval(@current_layout.setup, binding(), @current_layout.name, 1) 
+    def run_layout_setup(setup_script = nil)
+       return unless @current_layout.present?
+       run_setup_script = setup_script || @current_layout.setup
+       if (run_setup_script.present?)
+          begin
+              eval(run_setup_script, binding(), @current_layout.name, 1) 
+	  rescue Exception=>e
+	      puts "EXCEPTION " + e.message
+	      raise e
+	  end
        end
     end
 
     def load_layout
-       puts "load layout #{@current_template} with #{@layout_scheme}"
        @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
-       puts "loaded " + @current_layout.inspect
        @current_layout = @@current_layout
        @page_layout = @@current_layout.find_page_layout(params)
-       puts "loaded  page" + @page_layout.inspect
        if(request.format == :html)
          @layout_styles = @@current_layout.get_styles(@layout_scheme, params)
        end
@@ -79,12 +82,10 @@ module Roxiware
 
     def populate_application_params(controller)
       Roxiware::Param::Param.application_params("system").each do |param|
-        puts "setting system @#{param.name} to #{param.conv_value.inspect}"
         controller.instance_variable_set("@#{param.name}".to_sym, param.conv_value)
       end
       if controller.application_name.present?
 	Roxiware::Param::Param.application_params(controller.application_name).each do |param|
-          puts "setting @#{param.name} to #{param.conv_value.inspect}"
 	  controller.instance_variable_set("@#{param.name}".to_sym, param.conv_value)
 	end
       end

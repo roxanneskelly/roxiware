@@ -2,15 +2,15 @@
   <section><article class="person_listing" rel="<%= person_path(@person.id) %>">
     <div class="social_network_icons">
       <% website = nil
-       @person.social_networks.each do |network| %>
-       <% if network.network_type != "website" %>
-          <%= link_to network.network_url, {:target=>"blank", :class=>"social_network_link"} do %>
-             <%= image_tag("icons/social_networking/"+network.network_type+".png", :class=>"social_network_icon") %>
-          <% end %>
-       <% else 
-         website = network.network_url   
-       end %>
-      <% end %>
+       if @person.get_param("social_networks").present?
+	   @person.get_param("social_networks").h.each do |network, network_id| %>
+	   <% if network != "website" && network_id.to_s.present? %>
+	      <%= link_to "", social_network_url(network, network_id.to_s), {:target=>"blank", :class=>"social_networks_icon", :id=>network} %>
+	   <% else 
+	     website = network_id.to_s  
+	   end %>
+	  <% end %>
+       <% end %>
     </div>
     <img src="<%= @person.large_image_url %>" class="person_portrait"/>
     <div>

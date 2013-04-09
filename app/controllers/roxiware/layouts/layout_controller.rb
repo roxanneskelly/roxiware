@@ -220,28 +220,31 @@ module Roxiware
 			      }).render()
 			      puts "STYLE WAS OKAY"
 	         
+		     begin
+	                 run_layout_setup(@layout.setup)
+	             rescue Exception => e
+			success = false
+		        puts e.backtrace.join("\n")
+		        raise e
+	             end
 		 rescue Sass::SyntaxError => e
 		    puts "#{e.message}  on line #{e.sass_line}"
 		    puts e.sass_template
 		    success = false
 		    @layout.errors.add(:style, "#{e.message}  on line #{e.sass_line}")
-		    raise e
-		 rescue Exception => e
-		    success = false
-		    @layout.errors.add(:style, "#{e.message}")
-		    raise e
+		    raise ActiveRecord::Rollback
 		 end
+	      rescue ActiveRecord::Rollback
+	         raise ActiveRecord::Rollback
 	      rescue Exception => e
 	         puts e.message
 		 puts e.backtrace.join("\n")
 	         success = false
-		 raise e
+	         @layout.errors.add(:setup, "#{e.message}")
+		 raise ActiveRecord::Rollback
 	      end
            end
 
-           if(success)
-	      run_layout_setup
-	   end
 	   respond_to do |format|
 	       puts "SUCCESS IS " + success.inspect
 	       if success

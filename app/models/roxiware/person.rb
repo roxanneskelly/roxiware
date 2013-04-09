@@ -1,6 +1,7 @@
 require 'uri'
 class Roxiware::Person < ActiveRecord::Base
    include Roxiware::BaseModel
+   include Roxiware::Param::ParamClientBase
    include ActionView::Helpers::AssetTagHelper
    self.table_name=  "people"
 
@@ -8,7 +9,7 @@ class Roxiware::Person < ActiveRecord::Base
    self.default_image = "unknown_person"
 
    belongs_to :user, :polymorphic=>true
-   has_many :social_networks, :autosave=>true, :dependent=>:destroy
+   has_many :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
    has_many :books
    belongs_to :books
    has_one :goodreads_id_join, :as=>:grent, :autosave=>true, :dependent=>:destroy
@@ -48,38 +49,6 @@ class Roxiware::Person < ActiveRecord::Base
 
    before_destroy :destroy_images
 
-   def self.add_social_networks (*args)
-      options = {}
-      if args.last.class == Hash
-        options = args.pop
-      end
-      options[:as] ||=  []
-      if options[:as].class != Array
-        options[:as] = [options[:as]]
-      end
-      args.each do |arg|
-        self.send(:define_method, "#{arg}=") do |value|
-          social_net_entry = self.social_networks.find_by_network_type("#{arg}")
-	  if (value.nil? || value.blank?)
-	     logger.debug("deleting social network")
-	     self.social_networks.delete(social_net_entry) unless social_net_entry.nil?
-	  else
-             logger.debug("updating attributes")
-	     if social_net_entry    
-               social_net_entry.update_attributes({:network_link=>value})
-             else
-	       self.social_networks.create({:network_type=>"#{arg}", :network_link=>value})
-	     end
-	  end
-	end
-        self.send(:define_method, "#{arg}") do
-	  social_net = self.social_networks.find_by_network_type("#{arg}")
-	  social_net.network_link if social_net
-	end
-	self.send(:edit_attr_accessible, arg, :as=>options[:as]) 
-      end
-   end
-
    def goodreads_id
       self.goodreads_id_join.goodreads_id if self.goodreads_id_join.present?
    end
@@ -91,7 +60,6 @@ class Roxiware::Person < ActiveRecord::Base
       self.goodreads_id_join.goodreads_id = gr_id
    end
 
-   add_social_networks :twitter, :website, :facebook, :google, :as=>[:super, :admin, :self, nil]
 
    def full_name
       return_full_name = self.first_name || ""

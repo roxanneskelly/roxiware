@@ -2,7 +2,6 @@ module Roxiware
   module Util
     def store_location
       if  ["show", "index"].include?(params[:action])
-         puts "SETTING PATH TO " + request.fullpath
          session[:return_to] = request.fullpath
       end
     end

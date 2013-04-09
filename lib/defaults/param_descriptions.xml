@@ -361,8 +361,8 @@
     <meta/>
   </param_description>
   <param_description guid="B908FDB5-A0B5-48AC-8BAE-48741485CC06">
-    <name>Default Biography</name>
-    <description>ID of the default person shown when no seo-index is specified in the URL.</description>
+    <name>Biography</name>
+    <description>ID of the a person.</description>
     <field_type>integer</field_type>
     <permissions>super</permissions>
     <meta/>
@@ -724,11 +724,25 @@
     <description>Type of page to show on root page.</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Blog:blog,Content:content</meta>
+    <meta>Blog Post:blog_post,Blog Posts:blog_posts,Content:content</meta>
   </param_description>
   <param_description guid="CDC341F5-9EFB-41DB-8B84-B1101A58704D">
     <name>Date Display Format String</name>
     <description>Format string for date display</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta></meta>
+  </param_description>
+  <param_description guid="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
+    <name>Social Networks</name>
+    <description>List of social networks</description>
+    <field_type>hash</field_type>
+    <permissions>super</permissions>
+    <meta></meta>
+  </param_description>
+  <param_description guid="FB528C00-8510-4876-BD82-EF694FEAC06D">
+    <name>Social Network</name>
+    <description>Social Network ID</description>
     <field_type>string</field_type>
     <permissions>super</permissions>
     <meta></meta>

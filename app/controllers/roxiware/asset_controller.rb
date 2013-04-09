@@ -21,11 +21,9 @@ class Roxiware::AssetController < ApplicationController
 	      write_image = image
           end
 	  upload_path = Rails.root.join(AppConfig.raw_upload_path, thumbprint+extension)
-	  puts "SAVING TO " + upload_path
           write_image.write(upload_path)
 	  result = Roxiware::ImageHelpers.process_uploaded_image(upload_path, :image=>write_image, :image_sizes=>requested_sizes)
           render :json => result
-	  puts "RESULT IS #{result.inspect}"
         else
           render :status => 404
         end

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+    <name>Social Networks Widget</name>
+    <description>
+      <![CDATA[
+Displays social networking links, such as RSS feeds, twitter, facebook, tumblr, etc.
+These icons can either be derived from a biography, in case of single user websites,
+or they can be entered directly into the widget.
+]]>
+    </description>
+    <editform>
+      <![CDATA[
+<style>
+#social_networks_edit {
+   padding:2em;
+}
+#social_networks_edit label {
+    width:10em;
+}
+
+#social_networks_edit input {
+    width:10em;
+}
+
+#social_networks_edit select {
+    width:10em;
+}
+
+</style>
+    <div class="small_form" id="social_networks_edit">
+	<%= form_tag(layout_page_section_widget_path(layout.guid, url_encode(page_layout.get_url_identifier()), layout_section.name, widget_instance.id), :method=>"put") do |form_tag|%>
+		<%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
+
+		<%= fields_for :params do |params| %>
+		   <%= label :default_biography, "Default Biography" %><%= params.collection_select :biography_id, Roxiware::Person.all, :id, :full_name, {:selected=>widget_instance.get_param("biography_id").conv_value}%><br/>
+
+		   <% puts widget_instance.get_param("social_networks").h.inspect %>
+		<% end %>
+	<% end %>
+	<%= fields_for :social_networks do |social_networks_fields| %>
+	    <%= param_fields(social_networks_fields, widget_instance.get_param("social_networks").h.values, :class=>"social_network_param") %>
+	<% end %>
+	<%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
+</div>
+<script>
+$(function() {
+  $("#social_networks_edit button#save_button").click(function() {
+         var xml_result = "<?xml version='1.0' encoding='UTF-8'?><widget_params><param class='local' description='4EB6BB84-276A-4074-8FEA-E49FABC22D83' name='social_networks'>";
+         
+         $("input.social_network_param").each(function(index, value) {
+            xml_result = xml_result + "<param class='local' description='FB528C00-8510-4876-BD82-EF694FEAC06D' name='"+$(value).attr("param_name")+"'>"+$(value).val()+"</param>";
+         });
+         xml_result = xml_result + "</param></widget_params>";
+
+         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.xml?" + $("#social_networks_edit form").serialize();
+         $.ajax({type:"PUT",
+	     processData: false,
+             dataType:"xml",
+	     url: endpoint,
+             contentType: "application/xml",
+	     data:xml_result,
+	     error: function(xhr, textStatus, errorThrown) {
+		  $.alert(textStatus);
+	     },
+	     success: function() {
+                 window.location.reload();
+            }});
+      });
+});
+</script>]]>
+    </editform>
+    <preload>
+      <![CDATA[
+        biography = Roxiware::Person.where(:id=>locals[:biography_id]).first
+        locals[:networks] = {}
+        locals[:social_networks].each do |network, param|
+            locals[:networks][network.to_sym] = param.conv_value
+        end
+        if biography.present? && biography.get_param("social_networks").present?
+            biography.get_param("social_networks").h.each do |network, network_id|
+	        locals[:networks][network.to_sym] = network_id.to_s if locals[:networks][network.to_sym].blank?
+            end
+        end
+      true
+      ]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+<div class="social_networks">
+  <% puts "SOC NETS2 " + networks.inspect %>
+  <% networks.each do |network, network_id| %><% if network_id.present? %> <%= link_to "", social_network_url(network.to_s, network_id), {:target=>"_blank", :class=>"social_networks_icon", :id=>network} %><% end %><% end %><a href="<%= url_for(:controller=>'roxiware/blog/post', :action=>'index_by_date', :only_path=>false, :format=>:rss) %>"  class="social_networks_icon" id="rss" target="_blank" alt="RSS"></a>
+</div>
+]]>
+    </render_view>
+    <style>
+      <![CDATA[
+]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" name="biography_id"></param>
+      <param class="local" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" name="social_networks">
+         <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="facebook"></param>
+         <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="twitter"></param>
+         <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="tumblr"></param>
+         <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="foursquare"></param>
+         <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="google"></param>
+         <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="goodreads"></param>
+         <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="youtube"></param>
+      </param>
+    </params>
+  </widget>
+</widgets>

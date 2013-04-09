@@ -4,7 +4,7 @@
       <%= link_to("Next Post >>", @next_post_link, :class=>"next_post") if @next_post_link %>
     </div>
    <%= render :partial=>"roxiware/blog/post/post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header=>true} %>
-   <% if can? :read_comments, @post %>
+   <% if @comments.present? && can?(:read_comments, @post) %>
        <% can_reply = can? :comment, @post 
 	  can_manage = can? :edit, @post %>
        <% if can_reply %>
@@ -75,4 +75,4 @@ $(document).ready(function() {
     });
 });
 </script>
-<%= render :partial=>"post_manage_control" %>
+<%= render :partial=>"roxiware/blog/post/post_manage_control" %>

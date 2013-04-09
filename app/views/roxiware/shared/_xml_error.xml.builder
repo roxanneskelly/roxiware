@@ -1,5 +1,4 @@
 xml.instruct! :xml, :version => "1.0" 
-puts "ERROR DATA " + error_data.inspect
 xml.result do
   if(error_data[:error].present?) 
      xml.errors do

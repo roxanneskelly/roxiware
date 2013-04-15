@@ -44,14 +44,12 @@ end %>
 $(function() {
   $("input[watermark]").watermark();
      $("#user_email, #user_username").bind("input blur propertychange", function() {
-        console.log("change");
         var button_enable = "enable";
         $("#user_username, #user_email").each(function(index, value) {
           if ($(this).is(".watermark") || ($(this).val().length == 0)) {
              button_enable = "disable";
           }
         });
-          console.log("button " + button_enable);
         $("button#save_account").button(button_enable);
      });
 

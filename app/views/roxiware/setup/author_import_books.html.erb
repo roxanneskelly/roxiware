@@ -48,7 +48,6 @@ $(function() {
                 start = last_selected;
                 end = $(this);
              }
-             console.log("range " + start.index() + " to " + end.index());
              if (start.index() < end.index()) {
                  start.nextUntil(end).andSelf().addClass("book_selected");
               }

@@ -36,13 +36,10 @@ $(function() {
       current_selected_person.removeClass("list_box_item_selected");
       $(this).addClass("list_box_item_selected");
 
-      console.log($(this).attr("user_id"));
       if($(this).attr("user_id")) {
-         console.log("adding");
          $("#people_settings_edit div#delete_person").addClass("edit_bar_button_disabled");
       }
       else {
-         console.log("removing");
          $("#people_settings_edit div#delete_person").removeClass("edit_bar_button_disabled");
       }
    });

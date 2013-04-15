@@ -11,7 +11,6 @@
     %>
     <div class="book_description"><%= raw book_description %></div>
 
-    <br style="clear:both"/>
     <% bookstores = book.get_param("bookstores")
        bookstore_list = []
        if bookstores.present? && bookstores.a.present?
@@ -27,7 +26,7 @@
 	       <% bookstore_list.each do |bookstore| %>
 		   <li class="book_store" id="<%= bookstore.h['store_id'].to_s %>">
 		       <% edition = bookstore.h['children'].a[0] %>
-		       <a href="<%= edition.h['link'].to_s %>" target="_blank" class="store_name"><%= Roxiware::Book::STORES[bookstore.h['store_id'].conv_value] %></a>
+		       <a href="<%= edition.h['link'].to_s %>" target="_blank" class="store_link_<%= bookstore.h['store_id'].conv_value %> store_link"><div class="store_name"><%= Roxiware::Book::STORES[bookstore.h['store_id'].conv_value] %></div></a>
 		       <% if bookstore.h['children'].a.length > 1 %>
 		           <ul class="book_store_editions">
 			       <% bookstore.h['children'].a.each do |edition| %>

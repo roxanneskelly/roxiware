@@ -44,7 +44,6 @@ $(function() {
 
 
    $("#event_edit_form select#event_duration").change(function() {
-       console.log("change trigger");
        if($(this).val()) {
            $("#event_edit_form select#event_duration_units").removeAttr("disabled");
        }
@@ -54,7 +53,6 @@ $(function() {
    });
 
    $("#event_edit_form select#event_duration_units").change(function() {
-       console.log("units trigger");
        if($(this).val() != "days") {
            $("#event_edit_form select#event_start_time").removeAttr("disabled");
        }
@@ -80,14 +78,11 @@ $(function() {
             }
             $("select#event_duration").val(1);
        }
-       console.log("units trigger done");
     });
 
    $("#event_edit_form select#event_duration_units").change();
-   console.log("trigger done");
    $("#event_edit_form select#event_duration_units").val("<%= @event.duration_units %>");
    $("#event_edit_form select#event_duration").val("<%= @event.duration %>");
-   console.log("set value done");
    $("#event_edit_form select#event_duration").change();
 
     $("#event_edit_form button#save_button").click(function() {

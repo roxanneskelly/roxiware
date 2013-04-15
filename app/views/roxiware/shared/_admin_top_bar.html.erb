@@ -67,7 +67,7 @@ $(function() {
             contentsource: "markup"
         });
 
-        $("div#help_bar_items").append($(".help_bar_entry"));
+        $("div#help_bar_items").append($(".help_bar_entry").css("display", "inline-block"));
         $("div#help_bar").scrollable({circular:true, vertical:false}).autoscroll({interval:10000});
 
 

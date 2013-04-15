@@ -53,7 +53,6 @@ You can change this later, of course</br>
 	    complete: function() {
 	    },
 	    success: function(data) {
-                console.log(data);
 		if(data["error"]) {
 		    $(data["error"]).each(function(index, value) {
 	                $.error(value[0]+": "+value[1])

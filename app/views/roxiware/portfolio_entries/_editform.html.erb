@@ -22,12 +22,10 @@
 </div>
 <script>
 $(document).bind("ready", function() {
-    console.log("binding ready");
     $("div[rel=#portfolio_edit_overlay]").overlay( {
          onClose: function() { 
          },
          onBeforeLoad: function() {
-            console.log("before load");
             var portfolio_entry_id= this.getTrigger().attr("id").split("-")[3];
             var endpoint = "/portfolio_entries";
             var method = "POST";

@@ -140,16 +140,15 @@ module Roxiware
            comments = Roxiware::Blog::Comment.visible(current_user).where(:post_id=>@post.id).order("comment_date DESC")
 
            # create comment hierarchy
-	   @comments = {0=>{:comment=>nil, :children=>[]}}
-	   comments.each do |comment|
-	     @comments[comment.id] = {:comment=>comment, :children=>[]}
+	   @comments = {}
+           comments.each do |comment|
+	       @comments[comment.parent_id] ||= {:children=>[]}
+	       @comments[comment.id] ||= {:children=>[]}
+	       @comments[comment.parent_id][:children] << comment.id
+	       @comments[comment.id][:comment] = comment
 	   end
-
-	   @comments.each do |key, value|
-	     if (value[:comment]  && @comments.has_key?(value[:comment].parent_id))
-	        @comments[value[:comment].parent_id][:children] << key
-             end
-	   end
+	   
+	   puts "COMMENTS: " + @comments.inspect
 
 	   @title = @title + " : Blog : " + @post.post_title
 	   @meta_keywords = @meta_keywords + ", " + @post.post_title

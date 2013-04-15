@@ -112,10 +112,6 @@ $(function() {
 		  if (current_scheme.length == 0) {
                      current_scheme=$("div#template_popup div#schemes a").first();
 		  }
-		  console.log("schemes");
-		  console.log($("div#template_popup div#schemes a"));
-		  console.log("current scheme ");
-		  console.log(current_scheme);
 		  $("div#template_popup_form").attr("template_scheme", current_scheme.attr("id"));
 		  api.onClick(function(index) {
 		     $("div#template_popup_form").attr("template_scheme", api.getCurrentTab().attr("id"));

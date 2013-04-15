@@ -49,27 +49,27 @@
 	popup: null
     }
     $.extend({
-	    notice: function(alert_string) {
+	    notice: function(alert_string, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Notice", $.roxiware.alert.conf);
+		    $.roxiware.alert.popup = new AlertPopup("Notice", $.extend(true, {}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupNoticeClass);
 	    },
-	    alert: function(alert_string) {
+            alert: function(alert_string, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Alert", $.roxiware.alert.conf);
+		    $.roxiware.alert.popup = new AlertPopup("Alert", $.extend(true, {}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupAlertClass);
 	    },
-	    error: function(alert_string) {
+            error: function(alert_string, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Error", $.roxiware.alert.conf);
+		    $.roxiware.alert.popup = new AlertPopup("Error", $.extend(true, {}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupErrorClass);
 	    },
-	    alertHtml: function(alert_html) {
+	   alertHtml: function(alert_html, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup($.roxiware.alert.conf);
+		    $.roxiware.alert.popup = new AlertPopup("", $.extend(true, {}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.appendHtml(alert_string);
 	    }
@@ -77,8 +77,7 @@
      );
 
     // Display an overlay popup for alert/error/notice content.
-    function AlertPopup(alert_type, confStr) {
-	var conf = confStr;
+    function AlertPopup(alert_type, conf) {
 	this.alertDialog = $(conf.alertTemplate);
 	$("body").append(this.alertDialog);
 	this.alertDialog.find("div.settings_title").text(alert_type);
@@ -97,6 +96,9 @@
 	    onClose: function (event) {
 	        $.roxiware.alert.popup = null;
 		delete this;
+		if(conf.onClose) {
+		    conf.onClose();
+                }
 	    }
         });
 	this.append = function(alert_string, alert_class) {

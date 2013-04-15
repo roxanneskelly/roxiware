@@ -56,6 +56,13 @@ module Roxiware
       Roxiware::Blog.notify_update
     end
 
+    def resolve_comment_permissions
+        if comment_permissions != "default"
+	    comment_permissions
+        else
+	    Roxiware::Param::Param.application_param_val("blog", "blog_comment_permissions")
+        end
+    end
     def tag_ids
       self.tags.collect{|term| term.id}
     end

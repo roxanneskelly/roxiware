@@ -144,7 +144,6 @@
                                var endpoint = "<%= new_book_path %>.json?goodreads_id="+goodreads_id;
                                $.getJSON(endpoint,
                                   function(data) {
-                                     console.log(data);
                                      $("#book_description_form input#book_isbn").val(data.isbn);
                                      $("#book_description_form input#book_isbn13").val(data.isbn13);
                                      $("#book_description_form input#book_title").val(data.title);
@@ -229,7 +228,6 @@
       $("#book_edit_form button#save_button").click(function() {
          var xml_result = '<?xml version="1.0" encoding="UTF-8"?><book><params>' +
              $(jstree).jstree_param().export_xml("bookstores") + '</params></book>';
-         console.log(xml_result);
          <% if @book.id.present? %>
 	    var endpoint = "<%= book_path(@book.id) %>.xml?" + $("#book_edit_form form").serialize();
 	    var method = "PUT";

@@ -82,6 +82,28 @@ div#mainBody
     a:hover {
       color: <%= link_hover_color %>;
     }
+    
+  .watermark {
+       color:#ccc !important;
+    }
+    input {
+        margin:0px;
+        padding:1px;
+    }
+    label {
+        padding:2px
+    }
+
+    button {
+        border:none;
+        background:<%= text_color %>;
+        color:<%= background %>;
+        border-radius:0px;
+        padding:0.2em 3em 0.2em 3em;
+    }
+    button:hover {
+        background:<%= link_color %>;
+    }
 }
 
 
@@ -97,17 +119,23 @@ div#mainBody
     {
        margin:0px;
        width:100%;
-       display:table;
+       display:block;
+      
     }
 
     #content_section {
-       display:table-row;
+       display:block;
+       width:100%;
+    }
+
+    #center_bar {
+        width:100%;
     }
 
     #left_bar_section, #right_bar_section, #center_bar
     {
        position:relative;
-       display:table-cell;
+       display:inline-block;
        vertical-align:top;
        margin:0px;
     }
@@ -115,7 +143,6 @@ div#mainBody
     #center_content
     {
        position:relative;
-       padding:10px;
        width:100%;
     }
 }
@@ -244,8 +271,21 @@ div.widget_background, div.content_background
 /* Post*/
 div#mainBody .post {
     position:relative;
-    margin: 0 2em 0 2em;
+    margin: 0;
+    width:100%;
+    overflow:hidden;
     
+    div.share_bar {
+        position:absolute;
+        top:0.5em;
+        right:1em;
+        > div {
+            display:inline-block;
+            vertical-align:middle;
+            width:90px;
+            height:30px;
+        }
+    }
 
     hr.post_separator {
          margin:0 10% 0 10%;
@@ -256,12 +296,9 @@ div#mainBody .post {
         display:none;
     }
 
-    a.post_title, a:hover.post_title, a:link.post_title, a:active.post_title {
-        color:<%= text_color %>;
-    }
     .post_title {
         position:absolute;
-        top:0.5em;
+        top:1.0em;
         font-size:3em;
         font-family:Times New Roman,Georgia,Serif;
     }
@@ -276,7 +313,7 @@ div#mainBody .post {
 
     .post_header {
         position:absolute;
-        top:0.2em;
+        top:0.5em;
         width:90%;
         left:5%;
         color: <%= link_color %>;
@@ -284,7 +321,6 @@ div#mainBody .post {
         .post_author_img {
             display:none;
         }
-
         
         .post_date {
             display:inline-block;
@@ -306,9 +342,71 @@ div#mainBody .post {
     }
     .content {
         margin-top:6em;
-        margin-left:2em;
+        margin-left:0em;
+        overflow:hidden;
+        width:100%;
     }
 
+}
+
+.comments {
+    margin-top:2em;
+    .comment {
+
+        border-top:solid 1px <%= text_color %>;
+        position:relative;
+        clear:both;
+        margin-bottom:3em;
+        .comment {
+            margin-left:3em;
+         }
+
+        .comment_status_moderate {
+            float:right;
+            color: <%= text_alert_color %>;
+            margin-right:4em;
+        }
+        .comment_status_publish {
+              display:none;
+        }
+
+        .comment_header {
+            vertical-align:top;
+            color: <%= link_color %>;
+           
+
+            .comment_author_image {
+               display:none;
+            }
+
+            .comment_author_name {
+                display:inline-block;
+                margin-right:0.5em;
+                float:left;
+            }
+            .comment_author_date:before {
+                content:"on ";
+            }
+            .comment_author_date {
+                display:inline-block;
+                margin-right:1em;
+            }
+        }
+        .comment_footer {
+            clear:both;
+            text-align:center;
+            .comment_reply {
+                cursor:pointer;
+                
+            }
+        }
+    }
+    .comment:hover {
+        .manage_button {
+            cursor:pointer;
+            background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
+        }
+    }
 }
 
 .post:hover {
@@ -318,21 +416,142 @@ div#mainBody .post {
     }
 }
 
+/* Full post display with comments */
+.post_listing {
+    .post_footer {
+        hr.post_separator {
+            margin:0 10% 0 10%;
+            width:80%;
+        }
+        .comment_count {
+            font-size:1.3em;
+            display:inline-block;
+        }
+        .pending_comment_count {
+            display:inline-block;
+            color: <%= text_alert_color %>;
+            font-size:1.3em;
+            margin-left:2em;
+        }
 
+        .comment_form {
+            position:relative;
+             width:100%;
+            margin:2em 0 3em 0;
 
-/* WIDGETS */
-.widget {
-    width:100%;
-    margin:0px;
+            label {
+                width:5em;
+            }
+            div.comment_form_header {
+                position:relative;
+                width:100%;
+                height:10em;
+                input.comment_author, div.comment_author {
+                    position:absolute;
+                    top:0px;
+                    left:80px;
+                    right:20%;
+                }
+                div.comment_author {
+                   font-size:1.5em;
+                }
+                label.comment_author {
+                    position:absolute;
+                    left:2em;
+                    top:0px;
+                }
+                .comment_author_image {
+                    display:none;
+                } 
+                textarea.comment_form_content {
+                    resize:none;
+                    position:absolute;
+                    right:0px;
+                    left:80px;
+                    top:2em;
+                    height:6em;   
+                }
+             }
+             button.post_comment_button {
+                    float:right;
+             }
+            .comment_form_footer {
+                position:relative;
+                width:100%;
+                .comment_auth_info {
+                    position:relative;
+                    height:80px;
+                }
+                label {
+                   width:5em !important;
+                }
+                label.comment_form_author_url {
+                    position:absolute;
+                    left:0px;
+                    top:0px;
+                } 
+                input.comment_form_author_url {
+                    position:absolute;
+                    top:0px;
+                    left:80px;
+                    right:330px;
+                }
+                label.comment_form_author_email {
+                    position:absolute;
+                    top:2em;
+                    left:0px;
+                }
+                input.comment_form_author_email {
+                    position:absolute;
+                    top:2em;
+                    left:80px;
+                    right:330px;
+                }
+                 .recaptcha_response_field {
+                      position:absolute;
+                      top:4em;
+                      left:80px;
+                      right:330px;
+                  }
 
-    .widget_content {
-        margin:0px;
-        padding:0px;
-        position:relative;
-
-        .widget_content h1 {
-            font-size:1.2em;
-            font-weight:700;
+                .recaptcha_image {
+                    width:300px;
+                    height:57px;
+                    position:absolute;
+                    top:0px;
+                    right:20px;
+                    border:solid 1px black;
+                }
+                .recaptcha_only_if_incorrect_sol {
+                     position:absolute;
+                     top:60px;
+                     right:1em;
+                 }
+                  .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+                      position:absolute;
+                      right:0px;            
+                      width:16px;
+                      height:16px;
+                      cursor:pointer;
+                  }
+                  .captcha_reload {
+                        top:0px;
+                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                   }
+                   .captcha_audio {
+                        top:16px;
+                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                    }
+                    .captcha_image {
+                        top:16px;
+                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                    }
+                    .captcha_help {
+                        top:32px;
+                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                    }
+                
+            }
         }
     }
 }
@@ -352,122 +571,117 @@ div#mainBody .post {
 
 
 .series_listing {
-   border:solid 1px white;
-   clear:both;
+
+    clear:both;
+    position:relative;
+    border-top:solid 1px <%= text_color %>;
+    padding:1em;
+
    margin:1em 0 2em 0;
    width:100%;
    a.series_link {
       div.series_title {
+           font-size:1.5em;
        }
    }
 
    div.series_books {
-       vertical-align:top;
-       clear:both;
-       overflow:hidden;
-       margin-left:0px;
-       margin-right:0px;
-       border:solid 1px white;
-
-       div.series_book_tab:hover {
-	  background:#444;
+       margin:1em 0em 0em 3em;
+       .series_book_titles {
+           .series_book_title {
+               display:block;
+           }
        }
-       div.series_book_tab {
-          cursor:pointer;
-	  background:#333;
-	  border:solid 1px white;
-	  float:left;
-	  width:1.5em;
-	  position:relative;
-	  display:inline-block;
-          vertical-align:middle;
-          text-align:middle;
-	  div.series_book_title {
-              position:relative;
-              left:-9em;
-              top:9em;
-              text-align:left;
-	      height:1em;
-              font-size:0.8em;
-              line-height:1.5em;
-	      width:20em;
-	      color:#fff;
-	      display:inline-block;
-	      -webkit-transform: rotate(-90deg);
-	      -moz-transform: rotate(-90deg);
-	      -ms-transform: rotate(-90deg);
-	      -o-transform: rotate(-90deg);
-	      filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
-	      transform: rotate(-90deg);
-	  }
-      }
-
-       div.book_pane {
-           display:none;
-           float:left;
-	   div.book_listing {
-               position:relative;
-	       overflow:hidden;
-	       background:#000;
-	       color:#fff;
-	       display:inline-block;
-	       img {
-	           float:left;
-                   padding:20px;
-	       }
-          }
-      }
-  }
-}
-
-
-.book_listings {
-      div.book_listing {
-          position:relative;
-          border:solid 1px white;
-          background:#000;
-	  color:#fff;
-          margin:1em;
-      }
-      .bookstore_list {
-          padding-top:1em;
-      }
+   }
 }
 
 
 div.book_listing {
     clear:both;
-    img {
-       float:left;
-       padding:20px;
+    position:relative;
+    border-top:solid 1px <%= text_color %>;
+    padding:1em;
+    a {
+        .book_title {
+             font-size:1.3em;
+             margin:0 0 1em 0;
+        }
+        img {
+            float:left;
+            margin:1em 2em 2em 0;
+        }
      }
 }
 
+
 .bookstore_list {
-      ul.book_purchase_bar {
+     float:right;
+         ul {
           list-style-type:none;
-          display:hidden;
-              li {
-	          display:inline-block;
-		  ul {
-		      display:block;
-		      a {
-	                  display:block;
-		      }
-	       }
-	   }
+         li.book_store {
+              display:inline-block;
+              a.store_link {
+                  width:32px;
+                  height:32px;
+                  display:inline-block;
+                  div.store_name {
+                      display:none;
+                  }
+              }
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                } 
+            <% end %>   
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>:hover{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
+                } 
+            <% end %>   
        }
-       ul.book_purchase_bar:hover {
-	   display:block;
-       }
+    }
 }
 
+.person_listing {
+    .social_network_icons {
+        display:none;
+    }
+
+    .person_portrait {
+        float:right;
+        margin:1em 0 2em 2em;
+        padding:0.5em;
+        border:solid 1px black;
+
+    }
+    .person_name {
+        font-size:2em;
+    }
+}
+
+
+/* WIDGETS */
+.widget {
+    width:100%;
+    margin:0px;
+
+    .widget_content {
+        margin:0px;
+        padding:0px;
+        position:relative;
+
+        .widget_content h1 {
+            font-size:1.2em;
+            font-weight:700;
+        }
+    }
+}
 
 /* Individual widget settings */
 #header_bar_section {
     position:relative;
     height:100px;
-    margin:0 0 1em 0;
+    margin:0 0 3em 0;
 
     .widget#logo_bar {
         position:absolute;
@@ -480,7 +694,7 @@ div.book_listing {
     .widget#social_networks_header {
          position:absolute;
          right:0px;
-         bottom:0px;
+         top:2em;
          width:60%;
          .widget_content {
              text-align:right;
@@ -494,7 +708,9 @@ div.book_listing {
         position:absolute;
         right:0px;
         top:0px;
-        width:35%;
+        height:2em;
+        padding:0.2em;
+        width:100%;
         .widget_content {
            text-align:right;
        }
@@ -576,7 +792,51 @@ a#<%= soc_net %>.social_networks_icon {
      width:32px;
      height:32px;
 }    
-<% end %>]]>
+a#<%= soc_net %>.social_networks_icon:hover {
+     display:inline-block;
+     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
+     width:32px;
+     height:32px;
+}    
+<% end %>
+<% %w(google facebook twitter).each do |soc_net| %>
+a.<%= soc_net %>_button {
+     display:inline-block;
+     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+     width:16px;
+     height:16px;
+}    
+a.<%= soc_net %>_button:hover {
+     display:inline-block;
+     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
+     width:16px;
+     height:16px;
+}    
+<% end %>
+
+/* Prev/Next post */
+.widget#prev_next_post {
+    text-align:center;
+    margin:2em 0em 1em 0em;
+    .widget_content {
+        width:20em;
+        .prev_post {
+            float:left;
+        }
+        .prev_post:before {
+           content: "<< ";
+        }
+
+        .next_post {
+             float:right;
+        }
+        .next_post:after {
+            content:" >>";
+        }
+    }
+
+
+}]]>
   </style>
   <params>
     <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
@@ -592,17 +852,17 @@ a#<%= soc_net %>.social_networks_icon {
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#808080</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">lightgrey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#c0c0c0</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_small.jpeg</param>
         <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="4">black</param>
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">/assets/uploads/f5312a303e88013024cc002332d4c684_large.jpg</param>
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">/assets/uploads/06ee3ad077090130750c43c0603bc576_large.jpg</param>
@@ -611,7 +871,7 @@ a#<%= soc_net %>.social_networks_icon {
     </param>
   </params>
   <pages>
-    <page action="" application="">
+    <page application="" action="">
       <render_layout>roxiware/layouts/onecolumn</render_layout>
       <style>
         <![CDATA[]]>
@@ -630,11 +890,7 @@ a#<%= soc_net %>.social_networks_icon {
           <params>
           </params>
           <widget_instances>
-            <instance order="18" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
-              <params>
-              </params>
-            </instance>
-            <instance order="15" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance order="3" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
@@ -642,40 +898,34 @@ a#<%= soc_net %>.social_networks_icon {
                 <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
                 <param description="45A433ED-7183-4A28-890B-08F585A0E41A" class="local" name="menu_root">
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_0">
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Home</param>
                     <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Home</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
                   </param>
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_1">
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Blog</param>
                     <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/blog</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Blog</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
                   </param>
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_2">
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
                     <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/books</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
                   </param>
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_3">
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Calendar</param>
                     <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/events</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Calendar</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
                   </param>
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_4">
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Biography</param>
                     <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/biography</param>
-                  </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_5">
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Biography</param>
                     <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Contact</param>
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/page/contact</param>
                   </param>
                 </param>
               </params>
@@ -686,7 +936,7 @@ a#<%= soc_net %>.social_networks_icon {
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance order="4" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
                 <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id">2</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
@@ -734,6 +984,15 @@ a#<%= soc_net %>.social_networks_icon {
           <params>
           </params>
           <widget_instances>
+            <instance order="0" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
+              <params>
+              </params>
+            </instance>
+            <instance order="1" widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">prev_next_post</param>
+              </params>
+            </instance>
           </widget_instances>
         </section>
         <section name="bottom_bar">
@@ -752,35 +1011,6 @@ a#<%= soc_net %>.social_networks_icon {
           <params>
           </params>
           <widget_instances>
-          </widget_instances>
-        </section>
-        <section name="undefined">
-          <style>
-            <![CDATA[]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-            <instance order="1" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
-                <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
-                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
-                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">39px</param>
-                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-1px</param>
-                    <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="local" name="image">logo.png</param>
-                  </param>
-                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-1">
-                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">76.72726440429688px</param>
-                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-7.4545440673828125px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Tagline</param>
-                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Arial</param>
-                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">20</param>
-                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
-                  </param>
-                </param>
-              </params>
-            </instance>
           </widget_instances>
         </section>
       </sections>

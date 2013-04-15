@@ -34,7 +34,6 @@ $(function() {
 	    complete: function() {
 	    },
 	    success: function(data) {
-                console.log(data);
 		if(data["error"]) {
 		    $(data["error"]).each(function(index, value) {
 	                $.error(value[0]+": "+value[1])
@@ -129,7 +128,6 @@ $(function() {
       var xml_data = '<?xml version="1.0" encoding="UTF-8"?><books>';
       $(".book").each(function(index, book_node) {
           book = $(book_node).data().book
-          console.log(book);
           var goodreads_id = "";
           if(book["goodreads_id"]) {
              goodreads_id="goodreads_id='"+book.goodreads_id+"'";
@@ -142,7 +140,6 @@ $(function() {
                  '<thumbnail_url>'+book.thumbnail_url+'</thumbnail_url>' +
                  '<description><![CDATA[ '+ book.description+']]></description>' +
               '</book>';
-          console.log("DID DATA");
       });
       xml_data = xml_data + '</books>';
 
@@ -160,10 +157,6 @@ $(function() {
 	  complete: function() {
 	  },
 	  success: function(data, status, jqxhr) {
-              $(data).find("error").each(function(index, err) {
-                 console.log(index);
-                 console.log($(err).text());
-              });
               var errors = $(data).find("error");
               if(errors.length > 0) {
 	          errors.each(function(index, err) {
@@ -198,7 +191,6 @@ $(function() {
         $("#book_list").append(book);
       }
       book.click(function() {
-           console.log("clicked book");
 	   var current_selected_book = $(".list_box_item_selected");
 	   current_selected_book.removeClass("list_box_item_selected");
 	   if((current_selected_book.length != 0) && (!$(this).is(".list_box_item_selected"))){

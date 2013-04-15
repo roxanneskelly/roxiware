@@ -110,7 +110,6 @@ $(function() {
       xml_data = xml_data + '</series>';
 
       $("input#setup_action").val("save");
-      console.log(xml_data);
       var endpoint = "<%= setup_path %>.xml?" + $("form").serialize();
 
       $.ajax({
@@ -126,10 +125,6 @@ $(function() {
 	  complete: function() {
 	  },
 	  success: function(data, status, jqxhr) {
-              $(data).find("error").each(function(index, err) {
-                 console.log(index);
-                 console.log($(err).text());
-              });
               var errors = $(data).find("error");
               if(errors.length > 0) {
 	          errors.each(function(index, err) {

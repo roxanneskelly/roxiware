@@ -15,7 +15,6 @@
     $("div.series").context_menu("#series_context_menu");
 
     $("div.series").on("context_menu", function(event, menu_item) {
-       console.log("context menu " + menu_item);
        switch (menu_item) {
 	  case "edit_series":
 	    settingsForm("<%= edit_book_series_path(@series.id)%>");

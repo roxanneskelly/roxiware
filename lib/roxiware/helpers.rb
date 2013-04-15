@@ -1,4 +1,5 @@
 require 'uri'
+include ActionView::Helpers::UrlHelper
 module Roxiware
   module Helpers
       def date_field_tag(name, value = nil, options = {})
@@ -51,6 +52,17 @@ module Roxiware
 
       def cdn_icon(icon_name, theme, scheme)
           URI::join(AppConfig.cdn_url, "themes/#{theme}/#{scheme}/icons/#{icon_name}.png").to_s
+      end
+
+      def default_image_path(resource_type, image_size)
+         case resource_type
+         when :person
+             ActionController::Base.helpers.image_path("unknown_person_#{image_size}.png")
+         when :book
+             ActionController::Base.helpers.image_path("unknown_book_#{image_size}.png")
+         else
+             ActionController::Base.helpers.image_path("unknown_image_#{image_size}.png")
+         end
       end
 
       def social_network_url(network_type, network_id)

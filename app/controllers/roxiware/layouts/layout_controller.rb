@@ -107,7 +107,6 @@ module Roxiware
 		 
 		 @schemes = {}
 		 @layout.get_param("schemes").h.each do |scheme_id, scheme|
-		     puts "SETTING SCHEME ID #{scheme_id}"
 		     large_image_urls = scheme.h["large_images"].a.each.collect{|image| image.conv_value}
 		     @schemes[scheme_id] = {
 					:name=>scheme.h["name"].to_s,
@@ -146,7 +145,6 @@ module Roxiware
 	   authorize! :read, @clone_from_layout
 	   authorize! :create, Roxiware::Layout::Layout
 	   @layout = @clone_from_layout.deep_dup
-	   puts "GUID IS " + params[:layout][:guid].inspect
 	   @layout.guid = params[:layout][:guid]
            _update_or_create
        end
@@ -169,7 +167,6 @@ module Roxiware
 		     layout_params[name] = @layout.set_param(name, value, layout_param_descriptions[name], layout_param_classes[name])
 		 end
 	         layout_template_param_data.each do |name, value|
-		     puts "SETTING LAYOUT TEMPLATE #{layout_param_descriptions[name]} #{name}:#{value.inspect}"
 		     layout_params[name] = @layout.set_param(name, value, layout_param_descriptions[name], "template")
 		 end
 	         if schemes.present?
@@ -186,7 +183,6 @@ module Roxiware
 			        current_scheme_params[name] = layout_scheme_params.set_param(name, value, layout_param_descriptions[name], "style")
 			    end
 		        end
-			puts "CURRENT SCHEME PARAMS " + current_scheme_params.inspect
 			first_scheme ||= current_scheme_params
 		        layout_scheme.set_param("name", scheme_data[:name], "620EE4B4-2615-4B03-ADCB-FCC7198455AC", "scheme")
 		        layout_scheme.set_param("thumbnail_image", scheme_data[:thumbnail_image], "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
@@ -207,18 +203,14 @@ module Roxiware
 		     layout_params.each do |name, value|
 		         style_params[name] = value if value.param_class=="style"
 		     end
-		     puts "STYLE PARAMS " + layout_params.inspect
 
 		     first_scheme ||= {}
-		     puts "FIRST SCHEME PARAMS " + first_scheme.inspect
 		     syntax_check_params = first_scheme.merge(style_params)
-		     puts "SYNTAXT PARAMS " + syntax_check_params.inspect
 		     Sass::Engine.new(@layout.eval_style(syntax_check_params).strip, {
 				  :style=>:expanded,
 				  :syntax=>:scss,
 				  :cache=>false
 			      }).render()
-			      puts "STYLE WAS OKAY"
 	         
 		     begin
 	                 run_layout_setup(@layout.setup)
@@ -246,7 +238,6 @@ module Roxiware
            end
 
 	   respond_to do |format|
-	       puts "SUCCESS IS " + success.inspect
 	       if success
 		  refresh_layout
 		  format.xml  { render :xml => {:success=>true} }

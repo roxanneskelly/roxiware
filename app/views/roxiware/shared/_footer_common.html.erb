@@ -12,9 +12,7 @@
      $(".widget, .new_widget").draggable({
         cursor: "move",
         helper: function() { 
-           console.log(this);
            var drag_box = $("<div class='widget_drag_box' id='"+$(this).attr("id")+"' section='"+$(this).attr("section")+"' order='"+$(this).attr("order")+"'></div>");
-           console.log(drag_box);
            drag_box.width($(this).width());
            drag_box.height($(this).height());
            return drag_box;
@@ -32,14 +30,11 @@
             $(this).css("top", 0).css("left", 0);
             $(".widget_drop_target").removeClass("widget_drop_target_active");
      }});
-     $(".widget_drop_target div").droppable({accept:".widget, .new_widget",
+     $(".widget_drop_target > div").droppable({accept:".widget, .new_widget",
                                          hoverClass:"widget_drop_target_hover",
                                          tolerance: "pointer",
                                          greedy:true,
                                          drop: function(event, ui) {
-                                            console.log("dropped");
-                                            console.log($(ui.draggable));
-                                            console.log($(this));
                                             var drop_target = this;
                                             var target_section = $(this).attr("section");
                                             var target_order = $(this).attr("order");
@@ -70,7 +65,6 @@
 					      if((source_section == target_section) && (target_order == $(ui.draggable).attr("order"))) {
 						 return;
 					      }
-                                              console.log($(ui.draggable));
 					      var endpoint = $(ui.draggable).attr("rel") + "/move";
 					      $.ajax({url: endpoint, 
 						      type: "PUT",
@@ -80,6 +74,7 @@
                                                          $.error(errorText + " " + errorThrown)
                                                       },
 						      success: function(json_data, textStatus, jqXHR) {
+   
 							  if(json_data["error"]) {
 							      $(json_data["error"]).each(function(index, value) {
 								 $.error(value[0]+":"+value[1])
@@ -114,6 +109,15 @@
    $(".button_link").click(function() {
       window.open($(this).attr("rel"), $(this).attr("target"));
    });
+
+  !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+
+  // g-plus share button setup
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
 
   </script>
   <!--[if IE]> 

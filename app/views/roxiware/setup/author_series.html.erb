@@ -28,7 +28,6 @@ You can always create, delete, and manage series later, if you want to skip this
 	    complete: function() {
 	    },
 	    success: function(data) {
-                console.log(data);
 		if(data["error"]) {
 		    $(data["error"]).each(function(index, value) {
 	                $.error(value[0]+": "+value[1])

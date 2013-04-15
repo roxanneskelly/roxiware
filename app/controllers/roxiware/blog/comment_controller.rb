@@ -66,20 +66,20 @@ module Roxiware
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
 	   @post = Roxiware::Blog::Post.find(params[:post_id])
 	   comment_status = "moderate"
-	   comment_permissions = (@post.comment_permissions == "default")?@comment_permissions:@post.comment_permissions
-	   comment_status= "publish" if ((comment_permissions=="publish") || (can? :edit, @post))
-	   @comment = @post.comments.create({:person_id=>person_id,
-	                                           :parent_id=>0,
-	                                           :post_id=>params[:post_id],
-						   :comment_status=>comment_status,
-                                                   :comment_date=>DateTime.now.utc}, :as=>"")
+	   comment_status= "publish" if ((@post.resolve_comment_permissions=="publish") || (can? :edit, @post))
+
+
+	   @comment = @post.comments.build({:person_id=>nil,
+	                                    :parent_id=>0,
+					    :comment_status=>comment_status,
+                                            :comment_date=>DateTime.now.utc}, :as=>"")
 	   if user_signed_in?
 	     params[:comment_author]=current_user.person.full_name
 	     params[:comment_author_email]=current_user.email
 	     params[:comment_author_url]=people_url(current_user.person.seo_index)
 	   end
 	   respond_to do |format|
-	       if @comment.update_attributes(params, :as=>@role)
+	       if (user_signed_in? || verify_recaptcha(:model=>@comment, :attribute=>:recaptcha_response_field)) && @comment.update_attributes(params, :as=>@role)
 	          if(@comment.comment_status == "publish")
 		     Roxiware::Blog::Post.increment_counter(:comment_count, @post.id)
 		  else
@@ -89,6 +89,7 @@ module Roxiware
 		  format.html { redirect_to @post.post_link, :notice => 'Blog comment was successfully created.' }
 		  format.json { render :json => @comment.ajax_attrs(@role) }
 	       else
+	          puts @comment.errors.inspect
 	          error_str = "Failure in creating blog comment:"
 	          @comment.errors.each do |error|
 		    error_str << error[0].to_s + ":" + error[1] + ","
@@ -106,17 +107,18 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.find(params[:post_id])
 	   params[:comment_date] = DateTime.now
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
-	   logger.debug("UPDATING_ATTRIBUTES:"+params.to_json)
 	   old_comment_status = @comment.comment_status
 	   respond_to do |format|
 	       if @comment.update_attributes(params, :as=>@role)
-                  if(old_comment_status == "publish") && (@comment.comment_status != "publish")
-	             Roxiware::Blog::Post.decrement_counter(:comment_count, @post.id)
-	             Roxiware::Blog::Post.increment_counter(:pending_comment_count, @post.id)
-		  elsif (old_comment_status != "publish") && (@comment.comment_status == "publish")
-	             Roxiware::Blog::Post.decrement_counter(:pending_comment_count, @post.id)
-	             Roxiware::Blog::Post.increment_counter(:comment_count, @post.id)
-                  end
+	          if(old_comment_status != @comment.comment_status)
+		      if(@comment.comment_status != "publish")
+			 Roxiware::Blog::Post.decrement_counter(:comment_count, @post.id)
+			 Roxiware::Blog::Post.increment_counter(:pending_comment_count, @post.id)
+		      else
+			 Roxiware::Blog::Post.decrement_counter(:pending_comment_count, @post.id)
+			 Roxiware::Blog::Post.increment_counter(:comment_count, @post.id)
+		      end
+		  end
 
 		  format.json { render :json => @comment.ajax_attrs(@role) }
 	       else
@@ -135,7 +137,7 @@ module Roxiware
 	       format.html { redirect_to @comment, :alert => 'Failure deleting blog post.' }
 	     else
                @post = Roxiware::Blog::Post.find(params[:post_id])
-               if(@comment_status == "publish")
+               if(comment_status == "publish")
 	           Roxiware::Blog::Post.decrement_counter(:comment_count, @post.id)
 	       else
 		   Roxiware::Blog::Post.decrement_counter(:pending_comment_count, @post.id)

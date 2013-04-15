@@ -14,7 +14,6 @@
     $("div.series_listing").context_menu("#series_context_menu");
 
     $(".series_listing").on("context_menu", function(event, menu_item) {
-       console.log("context menu " + menu_item);
        var series_link=$(this).attr("rel");
        switch (menu_item) {
 	  case "edit_series":

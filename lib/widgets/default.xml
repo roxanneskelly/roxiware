@@ -1,59 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widgets>
-  <widget version="1.0" guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
-    <name>Flash Widget</name>
-    <description>
-      <![CDATA[Shows flash]]>
-    </description>
-    <editform>
-      <![CDATA[]]>
-    </editform>
-    <preload>
-      <![CDATA[locals[:flash_content] = nil
-        locals[:flash_content] = flash if flash[:notice].present? || flash[:alert].present? || flash[:error].present?
-        locals[:flash_content].present?]]>
-    </preload>
-    <render_view>
-      <![CDATA[<div id="flash_section">
-  <% if flash_content.present? %>
-   <% if flash_content[:notice].present? %>
-     <div class="notice-flash"><%= flash_content[:notice] %></div>
-   <% end %>
-   <% if flash_content[:alert].present? %>
-     <div class="alert-flash"><%= flash_content[:alert] %></div>
-   <% end %>
-   <% if flash_content[:error].present? %>
-      <div class="error-flash"><%= flash_content[:error] %></div>
-   <% end %>
-  <% end %>
-</div>]]>
-    </render_view>
-    <style>
-      <![CDATA[.notice-flash
-{
-  padding:20px;
-  left-margin:40px;
-}
-
-.alert-flash
-{
-  padding:20px;
-  color:yellow;
-  left-margin:40px;
-}
-
-.error-flash
-{
-  padding:20px;
-  color:red;
-  left-margin:40px;
-}]]>
-    </style>
-    <params>
-      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-    </params>
-  </widget>
   <widget version="1.0" guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
     <name>Menu Widget</name>
     <description>

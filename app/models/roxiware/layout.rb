@@ -421,7 +421,7 @@ module Roxiware
           self.table_name= "layout_sections"
 
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
-	  has_many        :widget_instances, :autosave=>true, :dependent=>:destroy
+	  has_many        :widget_instances, :autosave=>true
 	  belongs_to      :page_layout
 
 	  edit_attr_accessible :style, :as=>[:super, nil]
@@ -488,6 +488,39 @@ module Roxiware
 	     @ordered_instances
 	  end
 
+	  def widget_instance_delete(instance_to_delete)
+	      widget_instances.delete(instance_to_delete)
+	      order = 0
+	      widget_instances.order(:section_order).each do |instance|
+	          instance.section_order = order
+		  instance.save!
+		  order = order+1
+	      end
+	      save!
+	      @ordered_instances = nil
+	      instance_to_delete
+	  end
+
+	  def widget_instance_insert(index, insert_instance)
+	      instance_array = get_widget_instances.collect{|instance| instance}
+	      instance_array.insert(index, insert_instance)
+	      widget_instances << insert_instance
+	      @ordered_instances = nil
+	      order = 0
+	      instance_array.each do |instance|
+	          instance.section_order = order
+		  instance.save!
+		  order = order+1
+	      end
+	      save!
+	      insert_instance
+	  end
+
+	  def widget_instance_by_id(instance_id)
+	      instances = get_widget_instances.collect{|instance|}
+	      get_widget_instances.select{|instance| instance.id = instance_id}.first
+	  end
+	  
           def get_widget_instance(widget_id)
 	     get_widget_instances.select{|instance| widget_id == (instance.get_param("widget_instance_id").to_s)}.first
 	  end

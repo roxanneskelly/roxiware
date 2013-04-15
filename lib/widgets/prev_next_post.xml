@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="20B56D82-B1D2-4487-8ACE-B61427CC2065">
+    <name>Prev/Next Post</name>
+    <description>
+      <![CDATA[
+Display's previous and/or next post links 
+]]>
+    </description>
+    <editform/>
+    <preload>
+      <![CDATA[
+        @prev_post_link.present? || @next_post_link.present?
+      ]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+      <%= link_to("Previous Post", @prev_post_link, :class=>"prev_post") if @prev_post_link %>
+      <%= link_to("Next Post", @next_post_link, :class=>"next_post") if @next_post_link %>
+]]>
+    </render_view>
+    <style>
+      <![CDATA[
+]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+    </params>
+  </widget>
+</widgets>

@@ -5,7 +5,6 @@ $(function() {
 
     /* Manage post menu is toggled by this button */
     $("article.post .manage_post_button").click(function(e) {
-        console.log("click");
         var manage_post_menu = $(this).parent().find(".manage_post_menu");
         var is_shown = (manage_post_menu.css("display") != "none");
         $(".manage_post_menu").css("display", "none");

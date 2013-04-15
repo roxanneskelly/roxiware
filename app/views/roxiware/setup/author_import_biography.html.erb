@@ -29,7 +29,6 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
 	    complete: function() {
 	    },
 	    success: function(data) {
-                console.log(data);
 		if(data["error"]) {
 		    $(data["error"]).each(function(index, value) {
 	                $.error(value[0]+": "+value[1])
@@ -103,7 +102,6 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
 				complete: function() {
 				},
 				success: function(data) {
-				    console.log(data);
 				    if(data["error"]) {
 					$(data["error"]).each(function(index, value) {
 					    $.error(value[0]+": "+value[1]);

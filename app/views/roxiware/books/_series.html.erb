@@ -7,7 +7,7 @@
 	   <div class="series_book_tab"><div class="series_book_title"><%= book.title %></div></div><div class="series_book_info"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>series_book_description_length}  %></div>
 	<% end %>
       <% elsif @series_display_type == "simple" %>
-        <div class= "series_book_titles"><%= series.books.order(:series_order).collect{|book| book.title }.join (", ") %></div>
+        <div class= "series_book_titles"><%= series.books.order(:series_order).collect{|book| link_to(book.title, book_path(book.seo_index), :class=>"series_book_title") }.join ("").html_safe %></div>
       <% end %>
     </div>
 </article>
@@ -23,7 +23,6 @@ $(function() {
       pane_width = pane_width-1;
    });
    series.find(".series_book_info").each(function(index, pane) {
-       console.log($(pane).height());
        if(pane_height < $(pane).height()) {
            pane_height = $(pane).height();
        }

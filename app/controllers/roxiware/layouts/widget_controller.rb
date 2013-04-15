@@ -57,72 +57,51 @@ module Roxiware
 	   end
        end
 
+
        def move
-           @widget_instance = @layout_section.get_widget_instances.where(:id=>params[:id]).first
+           success = true
+	   @widget_instance = @layout_section.widget_instance_by_id(params[:id])
 	   raise ActiveRecord::RecordNotFound if @widget_instance.nil?
 	   authorize! :move, @widget_instance
-
 	   moved_instances = {}
 	   target_section = @page_layout.section(params[:target_section])
+	   raise ActiveRecord::RecordNotFound if target_section.nil?
+
 	   target_order = params[:target_order].to_i
+	   raise ActiveRecord::RecordNotFound if target_order.nil?
 
-	   source_section_ids = []
-	   dest_section_ids = []
-	   @layout_section.get_widget_instances.each do |instance|
-	      source_section_ids << instance.id if(instance != @widget_instance)
-              if (instance.section_order > @widget_instance.section_order)
-	        moved_instances[instance.id] = {:section=>@layout_section.name, :position=>instance.section_order, :increment=>false}
-              end
-	   end
-	   
-	   if(target_order > 0)
-              target_section.get_widget_instances.each do |instance|
-	        dest_section_ids << instance.id if(instance != @widget_instance)
-                if instance.section_order >= target_order
-		  if moved_instances[instance.id].blank?
-	             moved_instances[instance.id] = {:section=>target_section.name, :position=>instance.section_order, :increment=>true}
-		  else
-		     moved_instances.delete(instance.id)
-		  end
-                end
+           ActiveRecord::Base.transaction do
+	       begin
+		   if(target_section == @layout_section)
+		      if (@widget_instance.section_order < target_order)
+		          target_order = target_order - 1
+		      end
+		   end
+                   @layout_section.widget_instance_delete(@widget_instance)
+	           target_section.widget_instance_insert(target_order, @widget_instance)
+	      rescue Exception => e
+	         puts e.message
+		 puts e.backtrace.join("\n")
+		 @widget_instance.errors.add(:base, e.message)
+	         success = false
+		 raise ActiveRecord::Rollback
 	      end
 	   end
+	   if success
+	     @page_layout.refresh_styles
+	     @layout_section.refresh
+	     target_section.refresh
+           end
 
-	   moved_instances.each do |instance_id, target|
-	      if target[:increment]
-	         Roxiware::Layout::WidgetInstance.increment_counter(:section_order, instance_id)
-		 target[:position] += 1
-	      else
-	         Roxiware::Layout::WidgetInstance.decrement_counter(:section_order, instance_id)
-		 target[:position] -= 1
-	      end
-	      target.delete(:increment)
-	   end
-
-	   dest_section_ids << @widget_instance.id
-	   if target_order > 0
-             @widget_instance.section_order = target_order
-	   else
-	      if target_section.get_widget_instances.last.blank?
-	         last_order = 1
-	      else
-	         last_order = target_section.get_widget_instances.last.section_order + 1
-	      end
-	      @widget_instance.section_order = last_order
-	   end
-	   @widget_instance.layout_section_id = target_section.id
-	   @widget_instance.save!
-	   
-
-	   @layout_section.save!
-	   target_section.save!
-	   @page_layout.refresh_styles
-	   @layout_section.refresh
-	   target_section.refresh
-
-           moved_instances[@widget_instance.id] = {:section=>@widget_instance.layout_section.name, :position=>@widget_instance.section_order}
 	   respond_to do |format|
-	       format.json { render :json=>moved_instances}
+	       if success
+		  @widget_instance.clear_globals
+                  @layout_section.refresh
+	          @page_layout.refresh_styles
+		  format.json { render :json => moved_instances }
+	       else
+		  format.json { render :json=>report_error(@widget_instance)}
+	       end
 	   end
        end
 

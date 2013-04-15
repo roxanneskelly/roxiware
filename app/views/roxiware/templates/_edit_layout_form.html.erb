@@ -222,12 +222,10 @@ end %>
 
        });
        $("div#clone_scheme").click(function() {
-            console.log("click");
             var current_selected_scheme = $("#scheme_list_box .list_box_item_selected");
             var old_guid = current_selected_scheme.attr("id");
             var cloned_scheme = current_selected_scheme.clone();
             var scheme_guid = genUUID();
-            console.log(scheme_guid);
             cloned_scheme.attr("id", scheme_guid);
             var names = [];
             $("#scheme_list_box .list_box_item_selected .layout_scheme_title").each(function(index, name) {
@@ -236,7 +234,6 @@ end %>
 
             var scheme_name = getNextUniqueName(cloned_scheme.find(".layout_scheme_title").text(), names);
             cloned_scheme.find(".layout_scheme_title").text(scheme_name);
-            console.log(cloned_scheme);
             $("#scheme_list").append(cloned_scheme);
             current_selected_scheme.removeClass("list_box_item_selected");
             var scheme_form = $("#scheme_forms > div#" + current_selected_scheme.attr("id")).clone();

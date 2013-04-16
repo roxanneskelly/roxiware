@@ -34,7 +34,7 @@ class Ability
 
     when "user"
       can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page, Roxiware::Event, Roxiware::GalleryItem, Roxiware::Gallery, Roxiware::Service]
-      can :read, Roxiware::Person, :show_in_directory=>true
+      can :read, Roxiware::Person
       can :manage, Roxiware::Person, :id=>user.person_id
       can :create, Roxiware::GalleryItem
       can :manage, Roxiware::GalleryItem, :person_id=>user.person.id
@@ -64,7 +64,7 @@ class Ability
                   Roxiware::Book,
                   Roxiware::BookSeries,
                   Roxiware::Service]
-      can :read, Roxiware::Person, :show_in_directory=>true
+      can :read, Roxiware::Person
       can :read, Roxiware::Blog::Post, :post_status=>"publish"
       can :read_comments, Roxiware::Blog::Post, :post_status=>"publish", :resolve_comment_permissions=>["open", "moderate", "closed"]
 

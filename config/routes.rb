@@ -38,11 +38,11 @@ Roxiware::Engine.routes.draw do
 
   post   "asset/:upload_type" => "asset#upload"
 
-  resources :people, :path=>"/person"
   get "/people/" => "people#index"
   get "/people/:seo_index" => "people#show_seo"
   get "/biography/" => "people#index"
   get "/biography/:seo_index" => "people#show_seo"
+  resources :people, :path=>"/person"
 
   resources :events
 

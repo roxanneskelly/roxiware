@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="" guid="1E8738E5-E991-492C-AF1E-0CC864F84930">
+    <name>People Directory</name>
+    <description>
+      <![CDATA[Displays a directory of people in the people list.]]>
+    </description>
+    <editform>
+      <![CDATA[<style>
+
+
+div.people_dir_edit_form
+{
+  position:relative;
+  width:100%;
+  height:100%;
+}
+
+
+#people_dir_edit_form .panes > div
+{
+  position:absolute;
+  top:1em;
+  bottom:3em;
+  left:2em;
+  right:2em;
+}
+
+#people_list
+{
+    position:absolute;
+    left:0;
+    top:0;
+    bottom:0;
+    width:45%;
+    vertical-align:top; 
+}
+
+.people_list_person {
+   cursor:pointer;
+  color: #955144;
+  background: none;
+  font-weignt: 700;
+  text-decoration: none;
+  font-size:0.8em;
+}
+
+#people_list_content div:nth-child(even) {
+    background: #eeeeff;
+}
+
+#people_directory_tree {
+    position:absolute;
+    right:0;
+    top:0;
+    bottom:0;
+    width:45%;
+    vertical-align:top; 
+}
+
+
+#settings_pane label
+{
+   text-align:left;
+   width:12em;
+}
+
+</style>
+<% people_dir_root = @widget_instance.get_param("people_dir_root").conv_value %>
+<div class="widget_instance_edit medium_form" id="people_dir_edit_form">
+   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
+     <div class="tab_form">
+	 <ul class="tabs">
+	   <li><a href="#">Layout</a></li>
+	   <li><a href="#">Settings</a></li>
+	 </ul>
+	 <div class="panes">
+	   <div id="layout_pane">
+		<div id="people_list" class="list_box">
+		  <div id="people_list_content" class="list_box_content">
+		    <% Roxiware::Person.order(:seo_index).each do |person| %>
+		       <div class="jstree-draggable jstree-drop people_list_person" rel="709904C0-83A6-4FA6-924B-B69881FEAEB8" id="<%= person.id %>"><%= person.full_name %></div>
+		    <% end %>
+		  </div>
+		</div>
+		<div id="people_directory_tree" class="tree_box">
+		   <div id="people_directory_tree_content"  class="tree_box_content"></div>
+		   <div id="people_dir_edit_bar" class="edit_bar"><div id="new_people_dir_item" class="edit_bar_button">+</div><div id="delete_people_dir_item" class="edit_bar_button">-</div>
+		   </div>
+		</div>
+	    </div>
+	   <div id="settings_pane">
+	     <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
+	   </div>
+	 </div>
+     </div>
+     <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
+   <% end %>
+</div>
+<script>
+   $(function() {
+      var people_dir_map = <%= raw people_dir_root.collect{|people_dir_node| people_dir_node.to_jstree_data}.to_json %>;
+      var people_name_map = <%= raw Hash[Roxiware::Person.all().collect{|person| [person.id, person.full_name]}].to_json %>;
+
+      var this_jstree = $("#people_dir_edit_form #people_directory_tree_content");
+
+      $("#people_dir_edit_form  button#save_button").click(function() {
+         var xml_result = '<?xml version="1.0" encoding="UTF-8"?><widget_params>' +
+           $(this_jstree).jstree_param().export_xml("people_dir_root", "82CE9542-06EB-4D3D-A877-1DCCFCCC812B") +
+           "</widget_params>";
+         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.xml?" + $("#people_dir_edit_form form").serialize();
+         $.ajax({type:"PUT",
+                 processData: false, 
+                 contentType: "application/xml",
+                 url: endpoint,
+                 data:xml_result,
+                 success: function() {
+                    window.location.reload();
+                 }}); 
+      });
+
+      $("#people_dir_edit_form .tab_form ul.tabs").tabs($("div.panes > div"));
+
+      $(this_jstree).jstree_param(people_dir_map,
+         { 
+             description_guid: "79EF7236-A48B-46E8-AD60-2F76EEB2A9AB", 
+             valid_children: ["82CE9542-06EB-4D3D-A877-1DCCFCCC812B", "709904C0-83A6-4FA6-924B-B69881FEAEB8"],
+             objects: {
+                "82CE9542-06EB-4D3D-A877-1DCCFCCC812B": {  /* people class item */
+                   valid_children: ["709904C0-83A6-4FA6-924B-B69881FEAEB8"],
+                   children_guid:"F783A27B-3409-4E75-99DE-941E2E610F9A",
+                   title: "name",
+                   onNew: function(new_node) {
+		       new_node.find("> a").bind("dblclick", function(data) {
+			$(this_jstree).jstree("rename", new_node);
+		      });
+                   },
+                   icon: "/assets/icons/people.png",
+                   init_params: {
+                           name: {
+                             value:"New User Class",
+                             guid:"58F02ABC-4863-4F77-B304-0F375C793FDB"
+                           },
+                   }
+                },
+               "709904C0-83A6-4FA6-924B-B69881FEAEB8": { /* person class item */
+                   valid_children: "none",
+                   icon: "/assets/icons/person.png",
+                   title: function(params) { 
+                       return people_name_map[params.person_id.value];
+                   },
+                   drop: function(data) {
+                      $(this_jstree).jstree_param().new_node($(data.o).attr("rel"), $(data.r), data.p, {
+                         person_id: {
+                          value: $(data.o).attr("id"),
+                          guid: "C94F5738-AEDF-46B1-99F1-8A526393DD54"
+                         }
+                      });
+                   },
+                   init_params: {
+                       person_id: {
+                          value: 1,
+                          guid: "C94F5738-AEDF-46B1-99F1-8A526393DD54"
+                       }
+                   }
+               }
+             }
+         });
+
+     $(this_jstree).bind("loaded.jstree", function(event, data) {
+        $(this_jstree).find("> ul > li > a").bind("dblclick", function(data) {
+          $(this_jstree).jstree("rename", $(this));
+        });
+     });
+   $(this_jstree).bind("rename_node.jstree", function(event, data) {
+       data.args[0].data().params.name.value = data.args[1];
+   });
+
+     $(this_jstree).bind("select_node.jstree", function(event, data) {
+        var selected_item = $(this_jstree).jstree("get_selected");
+      });
+
+      $("#people_dir_edit_form #delete_people_dir_item").click(function() {
+         var currently_selected = $(this_jstree).jstree("get_selected");
+         if (currently_selected) {
+            $(this_jstree).jstree("delete_node", currently_selected);
+         }
+      });
+      $("#people_dir_edit_form #new_people_dir_item").click(function() {
+         var new_node = $(this_jstree).jstree_param().new_node("82CE9542-06EB-4D3D-A877-1DCCFCCC812B");
+      });
+      $("#people_dir_edit_form").find("button").button();
+   });
+</script>]]>
+    </editform>
+    <preload>
+      <![CDATA[true]]>
+    </preload>
+    <render_view>
+      <![CDATA[<% if !@people.present? 
+            @people = Roxiware::Person.all();
+         end
+         if !@people_map.present?
+            @people_map = Hash[@people.collect{|person| [person.id, person]}]
+         end
+
+	 def show_person(person_param)
+            if person_param.h.present? && person_param.h['person_id'].present?
+		person = @people_map[person_param.h["person_id"].conv_value]
+		if(person.present?)
+		    content_tag(:li, :class=>"person_item") do
+		       link_to(people_path + "/"+person.seo_index) do 
+			 result = content_tag(:div, person.full_name, :class=>"person_name") 
+			 result = result + content_tag(:div, person.role, :class=>"person_role") if person.role.present?
+			 result
+		       end
+		     end
+		 end
+             end
+	 end
+
+         def show_person_group(person_group)
+             if person_group.h.present? && person_group.h["name"].present? 
+		 content_tag(:li, :class=>"person_group") do
+		    result = content_tag(:div, person_group.hash_params["name"].conv_value)
+		    children = person_group.hash_params["children"]
+		    if children.present?
+			result << content_tag(:ul) do 
+			  raw(children.array_params.collect{ |person| raw(show_person(person)) }.join)
+			end
+		   end
+		   result
+		 end
+              end
+          end
+%>
+      <nav class="people_directory"><ul>
+         <% people_dir_root.each do |person_entry|
+	    if(person_entry.description_guid == "82CE9542-06EB-4D3D-A877-1DCCFCCC812B") %>
+	      <%=  show_person_group(person_entry) %>
+	 <%   elsif(person_entry.description_guid == "709904C0-83A6-4FA6-924B-B69881FEAEB8") %>
+	       <%= show_person(person_entry) %>
+	 <%   end
+	 end
+	    %>
+      </ul></nav>]]>
+    </render_view>
+    <style>
+      <![CDATA[]]>
+    </style>
+    <params>
+      <param class="local" description="79EF7236-A48B-46E8-AD60-2F76EEB2A9AB" name="people_dir_root">
+        <param class="local" description="82CE9542-06EB-4D3D-A877-1DCCFCCC812B" name="child_1">
+          <param class="local" description="58F02ABC-4863-4F77-B304-0F375C793FDB" name="name">Users</param>
+          <param class="local" description="F783A27B-3409-4E75-99DE-941E2E610F9A" name="children">
+            <param class="local" description="709904C0-83A6-4FA6-924B-B69881FEAEB8" name="person">
+              <param class="local" description="C94F5738-AEDF-46B1-99F1-8A526393DD54" name="person_id">1</param>
+            </param>
+          </param>
+        </param>
+      </param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+    </params>
+  </widget>
+</widgets>

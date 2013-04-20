@@ -235,6 +235,10 @@ namespace :roxiware do
 	puts "Backing up to #{path}.tgz"
         FileUtils.cp Rails.root.join("db", ENV['RAILS_ENV']+".sqlite3"), path.join("db.sqlite3")
 
+	instance_config = Rails.root.join("config","instance_config.yml")
+	if File.file?(instance_config)
+	    FileUtils.cp instance_config, path.join("instance_config.yml")
+	end
 	Dir.mkdir path.join("uploads")
 	if ENV['RAILS_ENV'] == "development"
 	    files = Dir.glob(Rails.root.join("app", "assets", "images", "uploads", "*"))
@@ -269,13 +273,17 @@ namespace :roxiware do
 
 	sh "tar -C #{Rails.root.join("db")} -xzf #{backup_file} --include db.sqlite3"
         FileUtils.mv Rails.root.join("db", "db.sqlite3"), Rails.root.join("db", "#{ENV['RAILS_ENV']}.sqlite3")
+
+
+	sh "tar -C #{Rails.root.join("config")} -xzf #{backup_file} --include instance_config.yml"
 	FileUtils.rm_r(asset_dir.join("uploads.old"))
 
     end
 
     desc "Initialize a roxiware instance"
     task :init, [:instance_type]=>:environment do |t,args|
-       settings_file = args[:instance_type] || nil
+       instance_type = args[:instance_type] || :author
+       settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
        Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:drop"].invoke
        Rake::Task["db:create"].invoke
@@ -285,8 +293,12 @@ namespace :roxiware do
        Rake::Task["widgets:import"].invoke
        Rake::Task["templates:import"].invoke
        Rake::Task["settings:import"].invoke(settings_file)
+       File.open(Rails.root.join("config", "instance_config.yml"), "w") do |f|
+           f.write("roxiware_params:\n")
+           f.write("    application: #{instance_type}\n")
+       end
        if ENV['RAILS_ENV'] == "production"
-           Rake::Task["assets:precompile"].invoke(settings_file)
+           Rake::Task["assets:precompile"].invoke
            Dir.mkdir Rails.root.join("tmp") if !(File.directory? Rails.root.join("tmp"))
            FileUtils.touch Rails.root.join("tmp","restart.txt")
        end
@@ -294,15 +306,21 @@ namespace :roxiware do
 
     desc "update a roxiware instance"
     task :update, [:instance_type]=>:environment do |t,args|
-       settings_file = args[:instance_type] || nil      
+       instance_type = args[:instance_type] || :author
+       settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
        Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:migrate"].invoke
        Rake::Task["db:seed"].invoke
        Rake::Task["param_descriptions:import"].invoke
        Rake::Task["widgets:import"].invoke
-       Rake::Task["templates:import"].invoke(settings_file)
+       Rake::Task["templates:import"].invoke
+       Rake::Task["settings:update"].invoke(settings_file)
+       File.open(Rails.root.join("config", "instance_config.yml"), "w") do |f|
+           f.write("roxiware_params:\n")
+           f.write("    application: #{instance_type}\n")
+       end
        if ENV['RAILS_ENV'] == "production"
-           Rake::Task["assets:precompile"].invoke(settings_file)
+           Rake::Task["assets:precompile"].invoke
            FileUtils.touch Rails.root.join("tmp","restart.txt")
        end
     end
@@ -315,7 +333,7 @@ namespace :roxiware do
     desc "reset a roxiware instance back to it's install state"
     task :reset, [:instance_type]=>:environment do |t,args|
        #File.unlink(Rails.root.join("db","#{ENV['RAILS_ENV']}.sqlite3"))
-       #nFile.delete(Rails.root.join("db","development.sqlite3"))
+       #File.delete(Rails.root.join("db","development.sqlite3"))
        #sleep(20);
        Rake::Task["db:purge"].invoke
        Rake::Task["db:migrate"].invoke

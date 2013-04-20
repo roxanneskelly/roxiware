@@ -9,7 +9,7 @@ module Roxiware::RoutingHelpers
 
 	APP_TYPES = {
 	    :author=>[:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog],
-	    :custom=>[:setup, :page, :account, :people, :events, :search, :uploads, :settings, :sitemap, :blog]
+	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog]
 	}
 
         APPLICATION_DEPENDENCIES = {
@@ -32,12 +32,17 @@ end
 module ActionDispatch::Routing
     class Mapper
         def roxiware_for(*args)
-	    options = args.extract_options!
-	    options[:only] = [options[:only]] if options[:only].class == Symbol
-	    options[:skip] = [options[:skip]] if options[:skip].class == Symbol
-	    options[:with] = [options[:with]] if options[:with].class == Symbol
+	    options = Hash[args.extract_options!.collect{|name, value| [name.to_sym, value]}]
+	    options[:only] = [options[:only]] unless options[:only].nil? || (options[:only].class == Array)
+	    options[:skip] = [options[:skip]] unless options[:skip].nil? || (options[:skip].class == Array)
+	    options[:with] = [options[:with]] unless options[:with].nil? || (options[:with].class == Array)
+
+	    options[:only] = options[:only].collect{|app| app.to_sym} if options[:only].present?
+	    options[:skip] = options[:skip].collect{|app| app.to_sym} if options[:skip].present?
+	    options[:with] = options[:with].collect{|app| app.to_sym} if options[:with].present?
+
 	    applications = Roxiware::RoutingHelpers.applications
-	    applications = applications & Roxiware::RoutingHelpers::APP_TYPES[options[:application]] if options[:application]
+	    applications = applications & Roxiware::RoutingHelpers::APP_TYPES[options[:application].to_sym] if options[:application].present?
 	    applications = applications & options[:only] if options[:only].present?
 	    applications = applications & options[:skip] if options[:skip].present?
 	    applications = applications + options[:with].select{|app| !applications.include?(app)} if options[:with].present?

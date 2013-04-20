@@ -1,0 +1,5 @@
+<% if !@post.blank? %>
+  <section class="post">
+   <%= render :partial=>"roxiware/blog/post/post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header=>true} %>
+  </section>
+<% end %>

@@ -14,7 +14,6 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
-
   <param_description guid="0ADB2780-3D21-409F-A7B4-670395F99CD5">
     <name>Series Display Type</name>
     <description>Type of display for Series on the book index page</description>
@@ -746,5 +745,19 @@
     <field_type>string</field_type>
     <permissions>super</permissions>
     <meta></meta>
+  </param_description>
+  <param_description guid="BEDD0F51-5E0A-489F-9495-195CDC090877">
+    <name>Book Count</name>
+    <description>Count of books to be displayed</description>
+    <field_type>integer</field_type>
+    <permissions>super</permissions>
+    <meta></meta>
+  </param_description>
+  <param_description guid="BF45A131-4491-42FF-942F-C42CC28E6987">
+    <name>Image Size</name>
+    <description>Image size.</description>
+    <field_type>select</field_type>
+    <permissions>super</permissions>
+    <meta>Thumbnail:thumbnail,Normal:image,Large:large_image</meta>
   </param_description>
 </param_descriptions>

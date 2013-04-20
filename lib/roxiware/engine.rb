@@ -15,6 +15,7 @@ require 'roxiware/goodreads'
 require 'roxiware/seo_string'
 require 'roxiware/image_helpers'
 require 'roxiware/sanitizer'
+require 'roxiware/routing'
 require 'recaptcha/rails'
 module Roxiware
   class Engine < ::Rails::Engine

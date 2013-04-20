@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="" guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+    <name>Google AdSense</name>
+    <description>
+      <![CDATA[Displays a Google AdSense advertisment.]]>
+    </description>
+    <editform>
+      <![CDATA[
+<style>
+#google_adsense_instance_edit {
+    padding:2em;
+}
+#google_adsense_instance_edit label {
+    width:10em;
+}
+#google_adsense_instance_edit input {
+    width:15em;
+}
+</style>
+<div class="small_form" id="google_adsense_instance_edit">
+   <%= form_tag(layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id), :method=>"put") do%>
+      <%= fields_for :params do |params_fields| %>
+          <% ad_style_list = @widget_instance.get_param("ad_units").h %>
+          <% ad_styles = Hash[ad_style_list.collect{|slot, ad_unit| [ad_unit.h["name"].to_s, slot]}] %>
+	  <%= params_fields.label :google_ad_slot, "Ad Style" %><%= params_fields.select(:google_ad_slot, options_for_select(ad_styles, @widget_instance.get_param("google_ad_slot").to_s)) %><br/>
+      <% end %>
+      <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
+     <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
+   <% end %>
+</div>
+<script>
+$(function() {
+  $("#google_adsense_instance_edit button#save_button").click(function() {
+         var endpoint = "<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier), @layout_section.name, @widget_instance.id) %>.json";
+         $.ajax({type:"PUT",
+	     processData: false,
+             dataType:"json",
+	     url: endpoint,
+	     data:jQuery.param($("form").serializeArray()),
+	     error: function(xhr, textStatus, errorThrown) {
+		  $.alert(textStatus);
+	     },
+	     success: function() {
+                 window.location.reload();
+            }});
+      });
+});
+</script>
+]]>
+    </editform>
+    <preload>
+      <![CDATA[true]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+<div style="display:relative;width:<%=ad_units[google_ad_slot].h['width'] %>;height:<%=ad_units[google_ad_slot].h['height'] %>"><script type="text/javascript"><!--
+google_ad_client = "<%= @google_ad_client %>";
+google_ad_slot = "<%= google_ad_slot %>";
+google_ad_width = <%= ad_units[google_ad_slot].h["width"] %>;
+google_ad_height = <%= ad_units[google_ad_slot].h["height"] %>;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<div style="width:100%;height:100%;position:absolute;top:0px;left:0px;"/>
+</div>
+</div>
+]]>
+    </render_view>
+    <style>
+      <![CDATA[]]>
+    </style>
+    <params>
+      <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">9975719875</param>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="D1B5A89D-9BF0-45A9-9A3B-23B420F2B987" name="ad_units">
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="4845686275">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">320x50 Mobile Banner</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">320</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">50</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="3368953070">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">125x125 Button</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">125</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">125</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="1892219873">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">180x150 Small Rectangle</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">180</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">150</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="3508553872">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">120x240 Vertical Banner</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">120</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">240</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="5266318670">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">200x200 Small Square</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">200</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">200</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="2312852271">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">250x250 Square</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">250</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">250</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="8359385876">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">300x250 Medium Rectangle</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">300</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">250</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="2452453078">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">160x600 Wide Skyscraper Image</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">160</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">600</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="9975719875">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">728x90 Leaderboard Image</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">728</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">90</param>
+	 </param>
+      </param>
+    </params>
+  </widget>
+</widgets>

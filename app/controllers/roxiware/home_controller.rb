@@ -24,18 +24,23 @@ module Roxiware
 		    respond_to do |format|
 			posts = Roxiware::Blog::Post.visible(nil).order("post_date DESC").limit(2)
 			@post = posts.first
-			@next_post_link = posts.last.post_link if posts.length > 1
+			if @post.present?
 
- 			comments = Roxiware::Blog::Comment.visible(current_user).where(:post_id=>@post.id).order("comment_date DESC")
-			@comments = {}
-			comments.each do |comment|
-			    @comments[comment.parent_id] ||= {:children=>[]}
-			    @comments[comment.id] ||= {:children=>[]}
-			    @comments[comment.parent_id][:children] << comment.id
-			    @comments[comment.id][:comment] = comment
+			    @next_post_link = posts.last.post_link if posts.length > 1
+
+			    comments = Roxiware::Blog::Comment.visible(current_user).where(:post_id=>@post.id).order("comment_date DESC") if @post.present?
+			    @comments = {}
+			    comments.each do |comment|
+				@comments[comment.parent_id] ||= {:children=>[]}
+				@comments[comment.id] ||= {:children=>[]}
+				@comments[comment.parent_id][:children] << comment.id
+				@comments[comment.id][:comment] = comment
+			    end
+
+			    format.html { render :template=>"roxiware/blog/post/show"}
+			else
+			    format.html { render :template=>"roxiware/home/blankblog"}
 			end
-
-			format.html { render :template=>"roxiware/blog/post/show"}
 		    end
 	    end
 	end

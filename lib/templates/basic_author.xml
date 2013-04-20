@@ -126,31 +126,46 @@ div#mainBody
     #content_section {
        display:block;
        width:100%;
-    }
-
-    #center_bar {
-        width:100%;
-    }
-
-    #left_bar_section, #right_bar_section, #center_bar
-    {
        position:relative;
-       display:inline-block;
-       vertical-align:top;
-       margin:0px;
-    }
 
-    #center_content
-    {
-       position:relative;
-       width:100%;
+
+        #center_bar {
+            width:80%;
+            position:relative;
+            display:inline-block;
+            vertical-align:top;
+
+            #top_bar_section {
+            }
+
+            #bottom_bar_section {
+            }
+
+            .content_background_container {
+                #center_content {
+                    position:relative;
+                    width:100%;
+                }
+            }
+        }
+
+        #right_bar_section {
+            position:absolute;
+            width:10%;
+            border-left:solid 1px black;
+            top:0px;
+            bottom:0px;
+            right:0px;
+            padding:1em;
+        }
+
     }
 }
 
 
 /* Sizing for various devices */
 div#mainBody {
-     width:600px;
+     width:700px;
      font-size:12px;
 }
 
@@ -273,11 +288,11 @@ div#mainBody .post {
     position:relative;
     margin: 0;
     width:100%;
-    overflow:hidden;
+    padding-bottom:2em;
     
     div.share_bar {
         position:absolute;
-        top:0.5em;
+        bottom:0.5em;
         right:1em;
         > div {
             display:inline-block;
@@ -784,6 +799,19 @@ div.book_listing {
       }
   }
 }
+
+#right_bar_section {
+    .widget#book_bar {
+        .book_list {
+            .book_list_book {
+                .book_list_book_title {
+                    display:none;
+                }
+            }
+        }
+    }
+}
+
 /* Social networking icons */
 <% %w(youtube goodreads google facebook twitter rss).each do |soc_net| %>
 a#<%= soc_net %>.social_networks_icon {
@@ -872,7 +900,7 @@ a.<%= soc_net %>_button:hover {
   </params>
   <pages>
     <page application="" action="">
-      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_left</render_layout>
       <style>
         <![CDATA[]]>
       </style>
@@ -890,7 +918,7 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="3" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance order="2" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
@@ -958,12 +986,17 @@ a.<%= soc_net %>_button:hover {
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">7.7272491455078125px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-14.3636474609375px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxie X Skelly</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48.18181610107422</param>
                     <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
                   </param>
                 </param>
+              </params>
+            </instance>
+            <instance order="5" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
               </params>
             </instance>
           </widget_instances>
@@ -1013,6 +1046,41 @@ a.<%= soc_net %>_button:hover {
           <widget_instances>
           </widget_instances>
         </section>
+        <section name="right_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="3" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+              <params>
+                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="cover_size">image</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="books" action="">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+
+        #center_bar {
+            width:100%;
+            position:relative;
+            display:inline-block;
+            vertical-align:top;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
       </sections>
     </page>
   </pages>

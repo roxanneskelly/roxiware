@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+    <name>Book List</name>
+    <description>
+      <![CDATA[
+Displays images of books in the authors book list
+]]>
+    </description>
+    <editform>
+      <![CDATA[
+]]>
+    </editform>
+    <preload>
+      <![CDATA[
+        locals[:books] = Roxiware::Book.find(:all).sample(locals[:book_count])
+      locals[:books].present?
+      ]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+<div class="book_list">
+  <% books.each do |book| %>
+      <%= link_to(book_path(book), :class=>"book_list_book") do %>
+         <img class="book_list_book_cover" src="<%= book[(cover_size+'_url').to_sym] %>"/>
+         <div class="book_list_book_title"><%= book.title %></div>
+      <% end %>
+  <% end %>
+</div>
+]]>
+    </render_view>
+    <style>
+      <![CDATA[
+]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="BEDD0F51-5E0A-489F-9495-195CDC090877" name="book_count">5</param>
+      <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="cover_size">image</param>
+    </params>
+  </widget>
+</widgets>

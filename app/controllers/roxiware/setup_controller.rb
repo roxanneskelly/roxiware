@@ -239,6 +239,10 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
+    def _show_author_social_networks
+        @person = current_user.person
+    end
+
     def _author_social_networks
 	result = nil
 	ActiveRecord::Base.transaction do

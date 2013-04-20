@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <param class="setup" name="setup_type" description="5C5D2A03-F90E-4F81-AF44-8C182EB338FB">custom</param>
+  <param class="setup" name="setup_step" description="317C7D1C-7316-4B00-9E1F-931E2867B436">complete</param>
+  <param class="system" description="B8A73EF2-9C65-4022-ABD3-2D4063827108" name="current_template">00000000-0000-0000-0000-000000000000</param>
+  <param class="system" description="99FA5423-147C-4929-A432-268BDED6DE44" name="layout_scheme">00000000-0000-0000-0000-00000000</param>
+  <param class="system" description="9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270" name="webmaster_email">admin@roxiware.com</param>
+  <param class="system" description="7D815EDA-93DA-411B-9B09-91BA774D6CE2" name="site_copyright_first_year">2012</param>
+  <param class="system" description="4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7" name="site_copyright">Roxiware</param>
+  <param class="system" description="8C0998DC-050B-4C38-BB6F-D96A5ACD1AA9" name="goodreads_user">5648190</param>
+  <param class="system" description="0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415" name="title">Blog</param>
+  <param class="system" description="F0E1D8A9-33B9-4605-B10F-831D2BB3D423" name="meta_description">Blog</param>
+  <param class="system" description="1843B11F-EBA1-4B9A-A01F-F98A3E458FA8" name="meta_keywords">Meta Keywords</param>
+  <param class="system" description="1D3ACF31-02BB-4BFC-AB2E-F570FF69896E" name="google_site_verification_key">3rIuwOZ_n2yWEO5owurLW5GRr2Rp-twFAEDuUr6zofc</param>
+  <param class="system" description="F751356B-CB02-4891-9B56-BC9B163D3D00" name="amazon_associate_id">V20070822/US/roxaskel-20/8005/4f9ac9f8-d137-42e9-947b-e4185d6ad7f8</param>
+  <param class="system" description="289108C9-5CFA-4599-BC54-B4E3593E4FC5" name="google_ad_client">pub-3239363589402567</param>
+  <param class="blog" description="DAAC4690-FF6A-480B-B157-D71CB4A085DA" name="enable_blog">true</param>
+  <param class="blog" description="89139210-E699-4D47-A656-B2F860D2015B" name="blog_editor_email">admin2@roxiware.com</param>
+  <param class="blog" description="5A60C89E-4A1E-4D0C-B90F-E0D284883C89" name="blog_posts_per_page">45</param>
+  <param class="blog" description="16E96137-DC2D-47D8-A019-B8542FBCB71C" name="max_blog_posts_per_page">21</param>
+  <param class="blog" description="4033493A-B00C-4196-B4CA-8564B2C6F342" name="blog_posts_per_feed">6</param>
+  <param class="blog" description="A7A1B71A-B69C-49D3-AC8B-63C27284F8E0" name="max_blog_posts_per_feed">19</param>
+  <param class="blog" description="F4AF8F08-955D-4800-992A-3E2912CA8740" name="blog_excerpt_length">100</param>
+  <param class="blog" description="3D102055-8C9B-4838-90F7-2B3C7DB23A1D" name="blog_title">Blog Title2</param>
+  <param class="blog" description="3869E57B-AADA-4418-8262-A55CE044A6F6" name="blog_description">Blog Description</param>
+  <param class="blog" description="0060792B-8BE9-4F79-939E-8E6988C74048" name="blog_language">en-us</param>
+  <param class="blog" description="9E8CD066-4F40-4B7E-BB23-060ADDCC5876" name="blog_comment_permissions">open</param>
+  <param class="blog" description="391E7C2E-A284-491A-8AB8-5FB9E002033D" name="blog_moderate_comments">true</param>
+  <param class="blog" description="B8AEFAA4-6EE2-4550-88E7-5FD7A4BD3D99" name="default_category">News</param>
+  <param class="books" description="F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63" name="enable_books">true</param>
+  <param class="gallery" description="98E7A520-2A28-4521-9AA7-33E3EDB104DA" name="enable_gallery">false</param>
+  <param class="gallery" description="A5F16435-8A5F-48BD-A86B-4DF73D99F9FC" name="galleries_per_row">4</param>
+  <param class="gallery" description="6085A4B7-7E65-4172-91C4-D39581372C33" name="gallery_rows_per_page">4</param>
+  <param class="gallery" description="A8B714E2-94EB-4604-9F56-86969962D3EF" name="gallery_items_per_row">4</param>
+  <param class="people" description="D1DBD840-3D0A-4F3A-A45E-719B4DF67F66" name="enable_people">true</param>
+  <param class="people" description="5A75D095-82D6-41A1-933A-E3F11A231729" name="portrait_size">image</param>
+  <param class="people" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" name="default_biography">1</param>
+  <param class="events" description="48C77594-AA7C-4424-90F8-BCA2EFFF7546" name="enable_events">false</param>
+</settings>

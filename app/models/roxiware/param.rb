@@ -166,8 +166,7 @@ module Roxiware
 			:param_object_type=>nil, 
 			:description_guid=>description_guid, 
 			:param_object_id=>nil}, :as=>"")
-
-
+	   
 	      # set the value
 	      case param_description.field_type
 	        when "hash"

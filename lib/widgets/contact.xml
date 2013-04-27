@@ -106,7 +106,8 @@ div.settings_wysiwyg {
         console.log("ajax xml");
         $.ajaxSetParamsXML("<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier()), @layout_section.name, @widget_instance.id) %>.xml",
                            xml_result,
-                           {success:onSuccess});
+                           {additionalData: $("form").serializeArray(),
+                            success:onSuccess});
     }
 
     $("#contact_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
@@ -127,7 +128,6 @@ locals[:form_page] = Roxiware::Page.where(:page_type=>"widget", :page_identifier
       <![CDATA[
          <%= form_tag(contact_path, :method=>:post) do %>
              <%= raw mailer_form.to_s %>
-	     <% puts "MAILER " + widget_instance.get_param("mailers").id.inspect %>
              <%= hidden_field_tag :mailer_params, widget_instance.get_param("mailers").id %>
              <%= button_tag "Submit", :type=>"submit", :name=>"submit" %>
          <% end %>
@@ -143,7 +143,7 @@ locals[:form_page] = Roxiware::Page.where(:page_type=>"widget", :page_identifier
 <p>Thank you for your interest.  If you'd like more information, please drop us a note
 and we'll get back to you.</p>
 <p>
-<label for="email">Email:</label><input type="text" value="" watermark="my@email.address"/><br>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"/><br>
 </p>
     ]]></param>
       <param class="local" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" name="mailers">
@@ -158,9 +158,8 @@ Thank you for your interest.  We'll get right back to you.
           <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Contact Request</param>
           <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
       <![CDATA[
-<p>A Contact Request Has Been Received from: <%= email %>
+<p>A Contact Request Has Been Received from: <%= params[:email] %>
 </p>
-<p><%= content %></p>
     ]]></param>
         </param>
       </param>

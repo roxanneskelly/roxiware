@@ -4,13 +4,7 @@ module Roxiware
 
        # settings edit page
        def show
-          setting_params = Roxiware::Param::Param.includes(:param_description).where(:param_class=>params[:id])
-	  @settings = {}
-	  setting_params.each do |setting_param|
-	     setting_param_name = setting_param.name
-	     @settings[setting_param_name] = setting_param if can? :edit, setting_param
-	  end
-	  
+          @settings = Hash[Roxiware::Param::Param.application_params(params[:id]).select{|param| can? :edit, param}.collect{|param| [param.name, param]}]
           respond_to do |format|
 	     format.html {render :partial => "roxiware/settings/editform_#{params[:id]}"}
 	     format.json {render :json =>settings}
@@ -21,13 +15,11 @@ module Roxiware
          setting_params = Roxiware::Param::Param.application_params(params[:id])
          setting_params.each do |setting_param|
 	    next if(cannot? :edit, setting_param)
+	    
             if params[params[:id]][setting_param.name].present?
-	       puts "setting value to #{params[params[:id]][setting_param.name]}"
-               setting_param.value = params[params[:id]][setting_param.name]
-               setting_param.save!
+	       Roxiware::Param::Param.set_application_param(params[:id], setting_param.name, setting_param.description_guid, params[params[:id]][setting_param.name])
 	    end
          end
-         Roxiware::Param::Param.refresh_application_params
 	 refresh_layout	
 	 run_layout_setup
          respond_to do |format|

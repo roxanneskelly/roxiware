@@ -1,6 +1,8 @@
-class Ability
+module Roxiware
+ class Ability
   include CanCan::Ability
   def initialize(user, params)
+    puts "INITIALIZING ROXIWARE ABILITIES"
     user ||= Roxiware::User.new # guest user (not logged in)
     role = user.role
     if params.has_key?(:preview)
@@ -54,6 +56,7 @@ class Ability
       end
       can :read, Roxiware::Book
       can :read, Roxiware::BookSeries
+      can :read, Roxiware::Page, :page_type=>["content", "form"]
     else
       can :read, [Roxiware::NewsItem, 
                   Roxiware::PortfolioEntry, 
@@ -78,4 +81,5 @@ class Ability
       end
     end
   end
+ end
 end

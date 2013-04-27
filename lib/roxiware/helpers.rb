@@ -24,6 +24,8 @@ module Roxiware
                  result += field_group.number_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
 	       when "bool"
                  result += field_group.check_box(param.name.to_sym, options.merge({:checked=>param.conv_value, :param_name=>param.name}), "true", "false")
+	       when "text"
+                 result += text_area_tag(param.name.to_sym, param.to_s, options.merge({:param_name=>param.name}))
                else
                  result += field_group.text_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
              end

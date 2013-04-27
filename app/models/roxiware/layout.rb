@@ -71,9 +71,9 @@ module Roxiware
 	     page_components = path_components.shift.split("_")
 	     page_params = {}
 	     page_params[:application] = (page_components[0] || "")
-	     page_params[:action] = page_components[1] || ""
+	     page_params[:application_path] = page_components[1] || ""
 	     page_layout = find_page_layout(page_params)
-	     if (page_layout.action != page_params[:action]) || (page_layout.application != page_params[:application])
+	     if (page_layout.action != page_params[:application_path]) || (page_layout.application != page_params[:application])
 		 raise Exception.new("param_by_path: Page not found #{path}")
 	     end
 	     page_layout.get_by_path(path_components.shift)
@@ -186,7 +186,7 @@ module Roxiware
 
 	  def page_layout_by_url(layout_id, url_identifier)
 	      page_id = URI.decode(url_identifier).split("_")
-	      find_page_layout({:application=>(page_id[0] || ""), :action=>(page_id[1] || "")})
+	      find_page_layout({:application=>(page_id[0] || ""), :application_path=>(page_id[1] || "")})
 	  end
 
           def page_layout_stack(params)
@@ -200,7 +200,7 @@ module Roxiware
 
 	     result = []
 	     @page_layout_cache.each do |page_layout|
-	        if(page_layout.is_root? || (page_layout.application == params[:application]) && (page_layout.action.blank? || (page_layout.action == params[:action])))
+	        if(page_layout.is_root? || (page_layout.application == params[:application]) && (page_layout.action.blank? || (page_layout.action == params[:application_path])))
 		   page_layout.refresh_sections_if_needed(result[-1])
 		   result <<  page_layout
 		end
@@ -594,8 +594,6 @@ module Roxiware
 	  edit_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 	  ajax_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 
-
-
 	  def deep_dup
 	      new_widget_instance = dup
 	      new_widget_instance.params = params.collect{|p| p.deep_dup}
@@ -652,12 +650,12 @@ module Roxiware
 	  def get_param_objs
 	     if @param_objs.nil?
 	        @param_objs = {}
-		widget.params.each do |param|
-                   @param_objs[param.name.to_sym] =  param
-                end
-		
 	        params.each do |param|
                    @param_objs[param.name.to_sym] =  param
+                end
+		widget.params.each do |param|
+		   # fall back to 
+                   @param_objs[param.name.to_sym] ||=  param
                 end
              end
 	     @param_objs

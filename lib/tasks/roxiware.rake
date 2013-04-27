@@ -16,7 +16,9 @@ namespace :settings do
 
       task :update, [:settings_file]=>:environment do |t, args|
          Rake::Task["param_descriptions:import"].invoke()
-	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/lib/defaults/author_settings.xml")
+	 settings_file = args[:settings_file] || "#{Roxiware::Engine.root}/lib/defaults/author_settings.xml"
+	 puts "Loading settings from #{settings_file}"
+	 parser = XML::Parser.file(settings_file)
 	 doc_obj = parser.parse
 	 param_nodes = doc_obj.find("/settings/param")
 	 param_nodes.each do |param_node|
@@ -32,7 +34,9 @@ namespace :settings do
       desc "Import settings"
       task :import, [:settings_file]=>:environment do |t, args|
          Rake::Task["param_descriptions:import"].invoke()
-	 parser = XML::Parser.file(args[:settings_file] || "#{Roxiware::Engine.root}/lib/defaults/author_settings.xml")
+	 settings_file = args[:settings_file] || "#{Roxiware::Engine.root}/lib/defaults/author_settings.xml"
+	 puts "Loading settings from #{settings_file}"
+	 parser = XML::Parser.file(settings_file)
 	 doc_obj = parser.parse
 	 param_nodes = doc_obj.find("/settings/param")
 	 param_nodes.each do |param_node|
@@ -152,8 +156,10 @@ namespace :templates do
              files = [args[:layout_file]]
 	 else
 	     files = Dir.glob("#{Roxiware::Engine.root}/lib/templates/*.xml")
+	     files = files + Dir.glob(Rails.root.join("lib","templates","*.xml"))
 	 end
 	 files.each do |filename|
+	     puts "Loading layout from #{filename}"
 	     parser = XML::Parser.file(filename)
 	     doc_obj = parser.parse
 	     layout_nodes = doc_obj.find("/layouts/layout")
@@ -283,7 +289,10 @@ namespace :roxiware do
     desc "Initialize a roxiware instance"
     task :init, [:instance_type]=>:environment do |t,args|
        instance_type = args[:instance_type] || :author
-       settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
+       settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml")
+       if !File.file?(settings_file)
+           settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
+       end
        Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:drop"].invoke
        Rake::Task["db:create"].invoke
@@ -307,7 +316,11 @@ namespace :roxiware do
     desc "update a roxiware instance"
     task :update, [:instance_type]=>:environment do |t,args|
        instance_type = args[:instance_type] || :author
-       settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
+       settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml")
+       puts "Checking #{settings_file}"
+       if !File.file?(settings_file)
+           settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
+       end
        Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:migrate"].invoke
        Rake::Task["db:seed"].invoke

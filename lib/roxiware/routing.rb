@@ -5,11 +5,11 @@ module Roxiware::RoutingHelpers
 	def self.applications=(new_apps)
 	   @@apps = new_apps
 	end
-        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog]
+        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :contact]
 
 	APP_TYPES = {
-	    :author=>[:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog],
-	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog]
+	    :author=>[:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :contact],
+	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact]
 	}
 
         APPLICATION_DEPENDENCIES = {
@@ -25,7 +25,8 @@ module Roxiware::RoutingHelpers
 	    :uploads=>[],
 	    :settings=>[],
 	    :sitemap=>[],
-	    :blog=>[:uploads]
+	    :blog=>[:uploads],
+	    :contact=>[]
 	}
 end
 
@@ -152,6 +153,10 @@ module ActionDispatch::Routing
 	      delete ":year/:month/:day/:title" => "post#destroy_by_title"
 	    end
 	    get ":year/:month/:title" => "blog/post#redirect_by_title", :constraints => {:year => /\d{4}/}
+	end
+
+        def roxiware_contact
+	    post "/contact" => "contact#create"
 	end
     end
 end

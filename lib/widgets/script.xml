@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="FAD1AC80-5580-468C-B4BC-F72A8F6E5F75">
+    <name>Javascript Widget</name>
+    <description>
+      <![CDATA[Javascript]]>
+    </description>
+    <editform>
+      <![CDATA[
+<style>
+#script_widget_instance_edit {
+   padding-top:10px;
+}
+#script_widget_instance_edit .panes > div {
+   padding:2em;
+}  
+#script_widget_instance_edit label {
+   width:30%;
+}
+
+#script_widget_instance_edit input {
+   width:40%;
+}
+
+#script_widget_instance_edit div#content_pane {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:2em;
+
+}
+#script_widget_instance_edit textarea {
+    position:absolute;
+    left:2em;
+    right:2em;
+    top:2em;
+    bottom:4em;
+}
+
+</style>
+<%  page_content = Roxiware::Page.where(:page_type=>"script", :page_identifier=>widget_instance_id).first || Roxiware::Page.new({:page_type=>"script", :page_identifier=>widget_instance_id, :content=>"$(function() {\n});"}, :as=>"") %>
+<%= form_tag(layout_page_section_widget_path(layout.guid, url_encode(page_layout.get_url_identifier()), layout_section.name, widget_instance.id), :method=>"put") do%>
+   <div class="medium_form" id="script_widget_instance_edit">
+      <%= fields_for page_content do |page_field_block| %>
+	 <%= page_field_block.text_area :content %>
+       <% end %>
+      <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
+   </div>
+<% end %>
+<script>
+  $(function() {
+    $("#script_widget_instance_edit  button#save_button").click(function() {
+         $.ajax({type:"PUT",
+	     processData: false,
+             dataType:"json",
+	     url: "<%= page_path(page_content.page_identifier) %>.json",
+	     data:jQuery.param($("form").serializeArray()),
+	     error: function(xhr, textStatus, errorThrown) {
+		  $.alert(textStatus);
+	     },
+	     success: function() {
+                window.location.reload();
+             }
+	 });
+   });
+});
+</script>]]>
+    </editform>
+    <preload>
+      <![CDATA[
+        locals[:page] = Roxiware::Page.where(:page_type=>"script", :page_identifier=>locals[:widget_instance_id]).first || Roxiware::Page.new({:page_type=>"script", :page_identifier=>locals[:widget_instance_id], :content=>"$(function() {\n});"}, :as=>"")
+        true]]>
+    </preload>
+    <render_view>
+      <![CDATA[<script><%= raw page.content %></script>]]>
+    </render_view>
+    <style>
+      <![CDATA[
+      ]]>
+    </style>
+    <params>
+      <param class="local" description="E69D3C97-40EE-4A3D-91CC-0C1CA0844EAB" name="script_id"></param>
+    </params>
+  </widget>
+</widgets>

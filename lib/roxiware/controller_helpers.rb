@@ -17,6 +17,11 @@ module Roxiware
        self.class.application_name
     end
 
+    
+    def application_path(params)
+        params[:action]
+    end
+
     private 
     def after_sign_in_path_for(resource_or_scope)
       "/"
@@ -52,9 +57,12 @@ module Roxiware
     end
 
     def load_layout
+       puts "CURRENT TEMPLATE #{@current_template}"
+       puts "CURRENT SCHEME #{@layout_scheme}"
        @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
        @current_layout = @@current_layout
        @page_layout = @@current_layout.find_page_layout(params)
+       @page_identifier = @page_layout.get_url_identifier
        if(request.format == :html)
          @layout_styles = @@current_layout.get_styles(@layout_scheme, params)
        end

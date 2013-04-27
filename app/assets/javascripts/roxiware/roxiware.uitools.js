@@ -38,6 +38,84 @@
         }
     };
 
+    $.roxiware.ajaxSetParamsXML = {
+	conf: {
+	       method:"PUT",
+	}
+    }
+    $.roxiware.ajaxSetParamsJSON = {
+	conf: {
+	       method:"PUT",
+	}
+    }
+
+    $.extend({
+	    ajaxSetParamsXML: function(url, data, conf_params) {
+		var conf = $.extend({}, $.roxiware.ajaxSetParamsXML.conf, conf_params);
+		var endpoint = url;
+		if (conf.additionalData) {
+		    endpoint = endpoint + "?" + jQuery.param(conf.additionalData);
+		}
+		
+		$.ajax({
+			type:conf.method,
+			url: endpoint,
+			processData: false,
+			dataType: "xml",
+		        contentType: "application/xml",
+			data: data,
+			error: function(xhr, textStatus, errorThrown) {
+			    $.error(errorThrown);
+			},
+			complete: function() {
+			},
+			success: function(data) {
+			    if(data["error"]) {
+				$(data["error"]).each(function(index, value) {
+					$.error(value[0]+": "+value[1]);
+					if(conf.form) {
+					    form.find("input#"+value[0]).css("background", "#ffcccc");
+					}
+				    });
+			    }
+			    else {
+				if(conf.success) {
+				    conf.success();
+				}
+			    }
+			}
+		    });
+	    },
+	    ajaxSetParamsJSON: function(url, data, conf_params) {
+		var conf = $.extend({}, $.roxiware.ajaxSetParamsJSON.conf, conf_params);
+		$.ajax({
+			type:conf.method,
+			url: url,
+			processData: true,
+			data: data,
+			error: function(xhr, textStatus, errorThrown) {
+			    $.error(errorThrown);
+			},
+			complete: function() {
+			},
+			success: function(data) {
+			    if(data["error"]) {
+				$(data["error"]).each(function(index, value) {
+					$.error(value[0]+": "+value[1]);
+					if(conf.form) {
+					    form.find("input#"+value[0]).css("background", "#ffcccc");
+					}
+				    });
+			    }
+			    else {
+				if(conf.success) {
+				    conf.success();
+				}
+			    }
+			}
+		    });
+	    }
+    });
     $.roxiware.alert = {
 	conf: {
             alertTemplate: "<div class='settings settings_dialog settings_alert'><a class='close'>x</a><div class='settings_title'>&nbsp;</div><div class='alert_content'></div></div>",

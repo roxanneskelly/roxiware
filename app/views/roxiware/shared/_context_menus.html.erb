@@ -16,7 +16,7 @@
                   var fork_data = {url_identifier: "<%= params[:application]%>_",
 		              clone: <%= @page_layout.id %>};
               <% else %>
-                  var fork_data = {url_identifier:"<%= params[:application]%>_<%= params[:action] %>",
+                  var fork_data = {url_identifier:"<%= params[:application]%>_<%= params[:application_path] %>",
 	              clone: <%= @page_layout.id %>};
 	      <% end %>
 	      

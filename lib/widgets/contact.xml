@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+    <name>Contact Widget</name>
+    <description>
+      <![CDATA[Includes a contact form and an email response]]>
+    </description>
+    <editform>
+      <![CDATA[
+<style>
+#contact_widget_instance_edit {
+   padding-top:10px;
+}
+
+#contact_widget_instance_edit .panes > div {
+   padding:2em;
+}  
+
+#contact_widget_instance_edit label {
+   width:30%;
+}
+
+#contact_widget_instance_edit input {
+   width:40%;
+}
+
+#contact_widget_instance_edit div#form_pane {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:2em;
+
+}
+
+#contact_widget_instance_edit div#notification_pane, #contact_widget_instance_edit div#response_pane {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:4em;
+
+}
+
+div.settings_wysiwyg {
+    width:100%;
+    height:100%;
+}
+
+</style>
+
+<div class="medium_form" id="contact_widget_instance_edit">
+    <%= form_tag(layout_page_section_widget_path(layout.guid, url_encode(page_layout.get_url_identifier()), layout_section.name, widget_instance.id), :method=>:put) do %>
+	<div class="tab_form">
+	    <ul class="tabs">
+		<li><a>Form</a></li>
+		<li><a>Email Response</a></li>
+		<li><a>Notification</a></li>
+		<li><a>Settings</a></li>
+	    </ul>
+	    <div class="panes">
+		<div id="form_pane">
+		   <%= fields_for :params do |params_fields| %>
+		      <div class="settings_wysiwyg"><%= params_fields.text_area(:mailer_form, {:value=>@widget_instance.get_param("mailer_form").to_s }) %></div>
+		   <% end %>
+		</div>
+		<% mailers = @widget_instance.get_param("mailers") %>
+		<div id="response_pane">
+		   <%= fields_for "mailers[response]" do |params_fields| %>
+		      <% response = mailers.h["response"].h if mailers.present? && mailers.h["response"].present? %>
+		      <%= param_field(params_fields, response["subject"]) %>
+		      <div class="settings_wysiwyg"><%= params_fields.text_area(:content, {:value=>response["content"].to_s}) %></div>
+		   <% end %>
+		</div>
+		<div id="notification_pane">
+		   <%= fields_for "mailers[notification]" do |params_fields| %>
+		      <% notification = mailers.h["notification"].h if mailers.present? && mailers.h["notification"].present? %>
+		      <%= param_field(params_fields, notification["subject"]) %>
+		      <div class="settings_wysiwyg"><%= params_fields.text_area(:content, {:value=>notification["content"].to_s}) %></div>
+		   <% end %>
+		</div>
+		<div id="settings_pane">
+		   <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
+		</div>
+	    </div>
+	</div>
+	<%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
+    <% end %>
+</div>
+<script>
+  $(function() {
+    var sendParams = function(onSuccess) {
+	var xml_result = "<?xml version='1.0' encoding='UTF-8'?><widget_params>" +
+                         "<param class='local' description='FA29F0CE-99D9-4980-ABAA-E87877C11ADF' name='mailers'>" + 
+                             "<param class='local' description='EE53AA34-7EC8-409A-AF77-446F712B7777' name='response'>" +
+                                 "<param class='local' description='F25B251A-E227-450E-AC2C-0F4A37E79051' name='subject'>" + $("form input#mailers_response_subject").val() + "</param>" +
+                                 "<param class='local' description='37D2F04F-7569-4F8E-B488-8D8503FA2DD3' name='content'>" + $("form textarea#mailers_response_content").wysiwyg("getContent") + "</param>" +
+                             "</param>" +
+                             "<param class='local' description='EE53AA34-7EC8-409A-AF77-446F712B7777' name='notification'>" +
+                                 "<param class='local' description='F25B251A-E227-450E-AC2C-0F4A37E79051' name='subject'>" + $("form input#mailers_notification_subject").val() + "</param>" +
+                                 "<param class='local' description='37D2F04F-7569-4F8E-B488-8D8503FA2DD3' name='content'>" + $("form textarea#mailers_notification_content").wysiwyg("getContent") + "</param>" +
+                             "</param>" +
+                         "</param>" +
+                        "</widget_params>";
+
+        console.log("ajax xml");
+        $.ajaxSetParamsXML("<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier()), @layout_section.name, @widget_instance.id) %>.xml",
+                           xml_result,
+                           {success:onSuccess});
+    }
+
+    $("#contact_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
+    $("#contact_widget_instance_edit  button#save_button").click(function() {
+         sendParams(function() {
+                   window.location.reload();
+         });
+    });
+});
+</script>
+      ]]>
+    </editform>
+    <preload><![CDATA[
+locals[:form_page] = Roxiware::Page.where(:page_type=>"widget", :page_identifier=>locals[:widget_instance_id]).first || Roxiware::Page.new({:page_type=>"widget", :page_identifier=>locals[:widget_instance_id], :content=>"New Contact"}, :as=>"")
+        true]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+         <%= form_tag(contact_path, :method=>:post) do %>
+             <%= raw mailer_form.to_s %>
+	     <% puts "MAILER " + widget_instance.get_param("mailers").id.inspect %>
+             <%= hidden_field_tag :mailer_params, widget_instance.get_param("mailers").id %>
+             <%= button_tag "Submit", :type=>"submit", :name=>"submit" %>
+         <% end %>
+    ]]>
+    </render_view>
+    <style>
+      <![CDATA[]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="mailer_form"><![CDATA[
+<p>Thank you for your interest.  If you'd like more information, please drop us a note
+and we'll get back to you.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" watermark="my@email.address"/><br>
+</p>
+    ]]></param>
+      <param class="local" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" name="mailers">
+        <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="response">
+          <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Thank you for your interest.</param>
+          <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+      <![CDATA[
+Thank you for your interest.  We'll get right back to you.
+    ]]></param>
+        </param>
+        <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="notification">
+          <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Contact Request</param>
+          <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+      <![CDATA[
+<p>A Contact Request Has Been Received from: <%= email %>
+</p>
+<p><%= content %></p>
+    ]]></param>
+        </param>
+      </param>
+    </params>
+  </widget>
+</widgets>

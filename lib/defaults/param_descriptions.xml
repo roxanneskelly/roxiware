@@ -760,4 +760,32 @@
     <permissions>super</permissions>
     <meta>Thumbnail:thumbnail,Normal:image,Large:large_image</meta>
   </param_description>
+  <param_description guid="FA29F0CE-99D9-4980-ABAA-E87877C11ADF">
+    <name>Mailer List</name>
+    <description>List of mailers</description>
+    <field_type>hash</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="EE53AA34-7EC8-409A-AF77-446F712B7777">
+    <name>Mailer</name>
+    <description>Mailer</description>
+    <field_type>hash</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+    <name>Rich Text Content</name>
+    <description>Rich Text Content</description>
+    <field_type>text</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="F25B251A-E227-450E-AC2C-0F4A37E79051">
+    <name>Subject</name>
+    <description>Subject for an Email message</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
 </param_descriptions>

@@ -28,33 +28,57 @@ module Roxiware
 	    end
 
 	    def set_param(name, value, description_guid=nil, param_class=nil)
+
+	      # refresh the params cache if needed
 	      get_param_objs
-	      return nil if (@param_objs[name.to_sym].present? && (@param_objs[name.to_sym].param_object_type == "Roxiware::Layout::WidgetInstance"))
+
 	      if (@param_objs[name.to_sym].present?) 
+	         # if the param is already in the cache, update the class and 
+                 # description if they're not specified
 	         param_class ||= @param_objs[name.to_sym].param_class
 		 description_guid ||= @param_objs[name.to_sym].description_guid
-	         @param_objs[name.to_sym].value = value
-		 return @param_objs[name.to_sym]
+		 
+		 # delete the param from the cache
+                 self.params.delete(@param_objs[name.to_sym]) if (self == @param_objs[name.to_sym].param_object)
+		 @param_objs.delete(name.to_sym)
               end
-	      param_class ||= :local
-	      param_value = nil
-              param_description = Roxiware::Param::ParamDescription.where(:guid=>description_guid).first
 
-	      children = []
-	      case param_description.field_type
-	        when "hash"
-		  children = value.values
-		when "array"
-		  children = value
-		else
-	          param_value = value
-	      end
+
+	      raise Exception.new("Missing param description") if description_guid.blank?
+	      raise Exception.new("Missing param class") if param_class.blank?
+
+	      if(value.class == Roxiware::Param::Param)
+	         # if the value is a param just add it
+		 self.params << value
+		 self.save!
+		 @param_objs[name.to_sym] = value
+		 return value
+              end
+
+
+	      # look up the param description
+              param_description = Roxiware::Param::ParamDescription.where(:guid=>description_guid).first
+	      raise Exception.new("Couldn't find param description #{description_guid}") if param_description.blank?
+	      
+	      # create an object
 	      @param_objs[name.to_sym] = self.params.build(
 		    {:param_class=> param_class,
 		     :name=> name,
-		     :description_guid=>description_guid,
-		     :value=>param_value}, :as=>"")
-	      @param_objs[name.to_sym].params = children if children.present?
+		     :description_guid=>description_guid}, :as=>"")              
+
+	      # set the value
+	      case param_description.field_type
+	        when "hash"
+		  @param_objs[name.to_sym].params = value.values
+		when "array"
+		  @param_objs[name.to_sym].params = value.values
+		when "text"
+		  @param_objs[name.to_sym].textvalue = value
+		else
+		  @param_objs[name.to_sym].value = value
+	      end
+	      @param_objs [name.to_sym].save!
+
 	      @param_objs[name.to_sym]
 	    end
 
@@ -81,11 +105,13 @@ module Roxiware
 	  attr_accessible :param_class        # type of the param (style, local, global)
 	  attr_accessible :name               # name of the param
 	  attr_accessible :value              # value of the param
+	  attr_accessible :textvalue              # large value of the param
 	  attr_accessible :widget_instance_id # parent widget instance
 	  belongs_to :param_description, :autosave=>true, :foreign_key=>:description_guid, :primary_key=>:guid
 
           edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[nil]
 	  edit_attr_accessible :value, :as=>[:super, :admin, nil]
+	  edit_attr_accessible :textvalue, :as=>[:super, :admin, nil]
 	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[:super, :admin]
 
 
@@ -105,25 +131,59 @@ module Roxiware
 	     @application_params[application].values
 	  end
 
-	  def self.application_param_val(application, param)
+	  def self.application_param_val(application, name)
 	     self.application_params(application)
-	     result = @application_params[application][param].conv_value if  @application_params[application][param].present?
+	     result = @application_params[application][name].conv_value if  @application_params[application][name].present?
 	     result
 	  end
 
-	  def self.set_application_param(application, param, description_guid, value)
+
+	  # set an application param
+	  def self.set_application_param(application, name, description_guid, value)
+	     # refresh application param cache
 	     self.application_params(application)
-	     @application_params[application][param] = Param.create(
+
+	     if @application_params[application][name].present?
+	         @application_params[application][name].destroy
+		 @application_params[application].delete(name)
+	     end
+
+             raise Exception.new("Missing param description") if description_guid.blank?
+
+             param_description = Roxiware::Param::ParamDescription.where(:guid=>description_guid).first
+	     raise Exception.new("Couldn't find param description #{description_guid}") if param_description.blank?
+
+	      if(value.class == Roxiware::Param::Param)
+	         # if the value is a param just add it
+                 @application_params[application][name] = value
+		 return value
+              end
+
+
+	     @application_params[application][name] = Param.create(
 	               {:param_class=>application, 
-	                :name=>param, 
+	                :name=>name,
 			:param_object_type=>nil, 
 			:description_guid=>description_guid, 
-			:param_object_id=>nil,
-			:value=>value}, :as=>"")  if @application_params[application][param].nil?
+			:param_object_id=>nil}, :as=>"")
 
-	     @application_params[application][param].value = value
-	     @application_params[application][param].save!
-	  end
+
+	      # set the value
+	      case param_description.field_type
+	        when "hash"
+		  @application_params[application][name].params = value.values
+		when "array"
+		  @application_params[application][name].params = value.values
+		when "text"
+		  @application_params[application][name].textvalue = value
+		else
+		  @application_params[application][name].value = value
+	      end
+
+	      @application_params[application][name].save!
+              @application_params[application][name]
+	    end
+
 
 	  def self.refresh_application_params
 	     @application_params = {}
@@ -136,6 +196,7 @@ module Roxiware
 
 	  def hash_params
 	     @hash_params ||= Hash[params.collect{|param| [param.name, param]}]
+             @hash_params
 	  end
 
 	  def a
@@ -173,7 +234,14 @@ module Roxiware
           end
 
 	  def to_s
-	    conv_value.to_s
+	     case description.field_type
+	       when "string"
+	         value.to_s
+	       when "text"
+                 textvalue
+	       else
+	         nil
+             end
 	  end
 
 	  def conv_value
@@ -185,15 +253,17 @@ module Roxiware
 	       when "integer"
 	         value.to_i
 	       when "string"
-	         value.to_s
+	         value
+	       when "text"
+                 textvalue
 	       when "float"
 	         value.to_f
 	       when "bool"
 	         return (value == "true")
 	       when "asset"
-	         return value
+	         value
 	       else
-	         return value
+	         value
 	     end
 	  end
 	  
@@ -234,6 +304,8 @@ module Roxiware
 		     new_param.import(xml_arrayparam, include_description)
 		     params << new_param
 		  end
+		when "text"
+	          self.textvalue = param_value.content
 		else
 	          self.value = param_value.content
 	     end
@@ -246,6 +318,8 @@ module Roxiware
 		        param.export(xml_param, include_description)
 		    end
                  end
+             elsif self.param_description.field_type == "text"
+	         xml_params.param(:class=>self.param_class, :name=>self.name, :description=>self.description_guid) { |s| s.cdata! self.textvalue || "" }
              else
 	         xml_params.param(self.value, :class=>self.param_class, :name=>self.name, :description=>self.description_guid)
 	     end

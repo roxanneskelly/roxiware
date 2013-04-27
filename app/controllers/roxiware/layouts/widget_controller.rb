@@ -137,30 +137,16 @@ module Roxiware
            ActiveRecord::Base.transaction do
 	      begin
 	         if params[:params].present?
-		   @widget_instance.get_param_objs.values.each do |instance_param|
-		      if params[:params][instance_param.name.to_sym].present?
-			 # if it's a widget param, we won't have an instance param for it
-			 # so create a new param object and add it
-			 if (instance_param.param_object_type == "Roxiware::Layout::Widget") && 
-			    (instance_param.value != params[:params][instance_param.name.to_sym])
-			     instance_param = @widget_instance.params.build(
-				  {:param_class=>instance_param.param_class, 
-				      :name=>instance_param.name, 
-				      :description_guid=>instance_param.description_guid}, :as=>"")
-			  if instance_param.blank?
-			     raise ActiveRecord::Rollback
-			  end
-			end
-			if instance_param.present?
-			     instance_param.value = params[:params][instance_param.name.to_sym]
-			     instance_param.save!
-			 end
-		      end
-                   end
+
+		   params[:params].each do |name, value|
+		       # as no description guid and class are included, set_param
+		       # will require an existing param with the given name is
+		       # present.
+		       @widget_instance.set_param(name, value)
+		   end
 		 end
 		 if params[:format] == "xml"
 		     # request is xml, so import it.
-		     print "IMPORTING XML\n"
 		     parser = XML::Parser.io(request.body)
 		     if parser.blank?
 			raise ActiveRecord::Rollback
@@ -168,22 +154,19 @@ module Roxiware
 		     doc = parser.parse
 		     param_nodes = doc.find("/widget_params/param")
 		     param_nodes.each do |param_node|
-		         print "importing #{param_node['name']}\n"
-			 param = @widget_instance.get_param(param_node["name"])
-                         param.destroy if param.present? && (param.param_object_type == "Roxiware::Layout::WidgetInstance")
-			 param = @widget_instance.params.build
-			 if param.blank?
-			    raise ActiveRecord::Rollback
-			 end
-			 print "doing import\n"
+			 param = Roxiware::Param::Param.new
 			 param.import(param_node, false)
+			 puts "SETTING #{param.name} to #{param.inspect}"
+			 @widget_instance.set_param(param.name, param)
 		     end
 		 end
 		 if !@widget_instance.update_attributes(params, :as=>@role)
 		    raise ActiveRecord::Rollback
 		 end 
 	      rescue Exception => e
-	         print e.message
+	         @widget_instance.errors.add(:base, e.message)
+	         puts e.message
+	         puts e.backtrace.join("\n")
 	         success = false
 	      end
            end

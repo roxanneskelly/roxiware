@@ -114,7 +114,6 @@ class Roxiware::SetupController < ApplicationController
 		    sign_in(:user, @user)
 	       else
 		   result = report_error(@user)
-	           puts "UPDATE ATTRIBUTES FAILURE #{result.inspect}"
 	       end
 	   rescue Exception => e
 	       result ||= {}
@@ -251,17 +250,20 @@ class Roxiware::SetupController < ApplicationController
 		if params[:setup_action] == "back_button"
                     result = _set_setup_step("edit_biography")
 		elsif params[:setup_action] == "save"
-		    if(!current_user.person.update_attributes(params[:person], :as=>@role))
-		        result = report_error(current_user.person)
-		    else
-		        if current_user.person.goodreads_id
-		            seo_books = {}
-			    _get_goodreads_author_books.each do |book|
-			        seo_books[book.title.to_seo] = book if (seo_books[book.title.to_seo].blank? || book.description.present?)
-			     end
-			     @books = seo_books.values
-			end
-		        result = _set_setup_step("manage_books")
+		    ActiveRecord::Base.transaction do
+		       begin
+			   if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
+			       social_networks = current_user.person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
+			       params[:person][:params][:social_networks].each do |name, value|
+				   social_networks.set_param(name, value, "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
+			       end
+			   end
+			   result = _set_setup_step("manage_books")
+		       rescue Exception => e
+			   print e.message
+			   puts e.backtrace.join("\n")
+			   raise e
+		       end
 		    end
                 end
 	    rescue Exception => e
@@ -281,10 +283,19 @@ class Roxiware::SetupController < ApplicationController
         if @books.blank? && current_user.person.goodreads_id
 	    seo_books = {}
 	    _get_goodreads_author_books.each do |book|
-	        seo_books[book.title.to_seo] = book if (seo_books[book.title.to_seo].blank? || book.description.present?)
+	        seo_title = book.title.to_seo
+		init_title = book.title
+		title_add = 1
+		while(seo_books[seo_title].present?)
+		   book.title = "#{init_title} (#{title_add})"
+		   seo_title = book.title.to_seo
+		   title_add += 1
+		end
+	        seo_books[book.title.to_seo] = book
 	    end
 	    @books = seo_books.values
         end
+
     end
 
 
@@ -300,6 +311,7 @@ class Roxiware::SetupController < ApplicationController
 		  end
 		  result = _set_setup_step("social_networks")
 		elsif params[:setup_action] == "save"
+
 		    Roxiware::Book.all.each do |book|
 		       book.destroy
 		    end
@@ -311,6 +323,7 @@ class Roxiware::SetupController < ApplicationController
 		    end
 		    books.each do |book|
 		       new_book = Roxiware::Book.new(book, :as=>@role)
+		       puts "ADDING BOOK #{new_book.goodreads_id.inspect } " + new_book.inspect 
 		       new_book.init_sales_links
 		       new_book.save!
 		       @books << new_book
@@ -335,6 +348,9 @@ class Roxiware::SetupController < ApplicationController
 
     def _author_series
 	result = nil
+	Roxiware::Book.all.each do |book|
+	    puts "#{book.goodreads_id} : #{book.title}"
+        end
 	ActiveRecord::Base.transaction do
 	    begin
 		if params[:setup_action] == "back_button"
@@ -363,14 +379,19 @@ class Roxiware::SetupController < ApplicationController
        # filter series by books
        @books_by_goodreads_id = Hash[@books.select{|book| book.goodreads_id.present?}.collect{|book| [book.goodreads_id, book]}]
 
+       @books.each{|book| puts "BOOK #{book.goodreads_id.inspect} : #{book.id}"}
+
        @series = []
        if current_user.person.goodreads_id
 	    goodreads_series = _get_goodreads_author_series
 	    goodreads_series.each do |series|
 	       series[:book_ids] = []
-	       series[:books].each do |book|
+	       series_books = series[:books]
+	       series[:books] = []
+	       series_books.each do |book|
 		  book[:book_id] = @books_by_goodreads_id[book[:id].to_i].id if @books_by_goodreads_id[book[:id].to_i].present?
 		  series[:book_ids] << book[:book_id] if book[:book_id]
+		  series[:books] << book if book[:book_id]
 	       end
 
 	       if series[:book_ids].present?

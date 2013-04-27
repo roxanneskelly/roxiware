@@ -46,7 +46,7 @@ $(function() {
     function updateSeries(series) {
       var books = [];
       $.each($("div#series_books_list div.series_book"), function(index, book) {
-         books.push($(book).attr("id"));
+         books.push($(book).attr("book_id"));
       });
 
       $(series).data().series = {
@@ -94,7 +94,7 @@ $(function() {
           }
           var series_books = "<books>";
           for(var book_id in series.book_ids) {
-             series_books = series_books + "<book id='"+series.book_ids[book_id]+"' />";
+             series_books = series_books + "<book id='"+series.book_ids[parseInt(book_id)]+"' />";
           }
           series_books = series_books + "</books>";
           xml_data = xml_data + 

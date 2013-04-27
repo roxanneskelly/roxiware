@@ -282,17 +282,23 @@ module Roxiware
       def get_author_books(goodreads_id, options={})
         result = []
         goodreads_options = options
-        goodreads_options.merge!({:key=>@goodreads_key, :v=>2})
-	goodreads_options[:format] = "xml"
-	response = self.class.get("/author/list/#{goodreads_id}.xml", :query=>goodreads_options)
-        raise ::Roxiware::Goodreads::GoodreadsServerException.new("Our book dataservice is currently offine.  Please try again later.") if response.blank? || response["GoodreadsResponse"].blank? || response["GoodreadsResponse"]["author"].blank? || response["GoodreadsResponse"]["author"]["books"].blank?
-        books = response["GoodreadsResponse"]["author"]["books"]["book"]
-	if (books.class == Hash)
-	   books = [books]
-	end
-	books.each do |book|
-           result << _process_book(book)
-	end
+
+	page=1
+	begin
+	    goodreads_options.merge!({:key=>@goodreads_key, :v=>2})
+	    goodreads_options[:format] = "xml"
+	    goodreads_options[:page] = page
+	    response = self.class.get("/author/list/#{goodreads_id}.xml", :query=>goodreads_options)
+	    raise ::Roxiware::Goodreads::GoodreadsServerException.new("Our book dataservice is currently offine.  Please try again later.") if response.blank? || response["GoodreadsResponse"].blank? || response["GoodreadsResponse"]["author"].blank? || response["GoodreadsResponse"]["author"]["books"].blank?
+	    books = response["GoodreadsResponse"]["author"]["books"]["book"]
+	    if (books.class == Hash)
+	       books = [books]
+	    end
+	    books.each do |book|
+	       result << _process_book(book)
+	    end
+	    page = page + 1
+	end while response["GoodreadsResponse"]["author"]["books"]["end"] != response["GoodreadsResponse"]["author"]["books"]["total"]
 	result
       end
     end

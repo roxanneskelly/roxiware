@@ -44,8 +44,8 @@ module Roxiware
               end
 
 
-	      raise Exception.new("Missing param description") if description_guid.blank?
-	      raise Exception.new("Missing param class") if param_class.blank?
+	      raise Exception.new("Missing param description for #{name}") if description_guid.blank?
+	      raise Exception.new("Missing param class for #{name}") if param_class.blank?
 
 	      if(value.class == Roxiware::Param::Param)
 	         # if the value is a param just add it
@@ -148,10 +148,10 @@ module Roxiware
 		 @application_params[application].delete(name)
 	     end
 
-             raise Exception.new("Missing param description") if description_guid.blank?
+             raise Exception.new("Missing param description for #{name}") if description_guid.blank?
 
              param_description = Roxiware::Param::ParamDescription.where(:guid=>description_guid).first
-	     raise Exception.new("Couldn't find param description #{description_guid}") if param_description.blank?
+	     raise Exception.new("Couldn't find param description #{description_guid} for #{name}") if param_description.blank?
 
 	      if(value.class == Roxiware::Param::Param)
 	         # if the value is a param just add it
@@ -234,12 +234,14 @@ module Roxiware
 
 	  def to_s
 	     case description.field_type
-	       when "string"
-	         value.to_s
+	       when "array"
+	         nil
+	       when "hash"
+                 nil
 	       when "text"
                  textvalue
 	       else
-	         nil
+	         value
              end
 	  end
 

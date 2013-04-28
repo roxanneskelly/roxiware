@@ -71,7 +71,7 @@ module Roxiware
 	        when "hash"
 		  @param_objs[name.to_sym].params = value.values
 		when "array"
-		  @param_objs[name.to_sym].params = value.values
+		  @param_objs[name.to_sym].params = value
 		when "text"
 		  @param_objs[name.to_sym].textvalue = value
 		else

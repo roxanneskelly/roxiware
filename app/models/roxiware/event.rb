@@ -6,9 +6,9 @@ class Roxiware::Event < ActiveRecord::Base
    validates_format_of :start_date, :with=>/\d{1,2}\/\d{1,2}\/\d{4}/
    validates_format_of :start_time, :with=>/\d{1,2}\:\d{2} (AM|PM)/
    
-   edit_attr_accessible  :start_date, :start_time, :duration, :duration_units, :city, :state, :address, :location, :location_url, :description, :as=>[:super, :admin, :user, nil]
+   edit_attr_accessible  :title, :start_date, :start_time, :duration, :duration_units, :city, :state, :address, :location, :location_url, :description, :as=>[:super, :admin, :user, nil]
 
-   ajax_attr_accessible  :start_date, :start_time, :duration, :duration_units, :city, :state, :address, :location, :location_url, :description
+   ajax_attr_accessible  :title, :start_date, :start_time, :duration, :duration_units, :city, :state, :address, :location, :location_url, :description
 
 
    attr_accessor :start_time

@@ -11,6 +11,9 @@
     <br/>
     <%= book_fields.label :isbn13, "ISBN13" %>
     <%= book_fields.text_field :isbn13 %>
+    <br/>
+    <%= book_fields.label :publish_date, "Publication Date"%>
+    <%= book_fields.text_field :publish_date %>
    </div>
    <div id="right_section">
     <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
@@ -23,6 +26,11 @@
 </div>
 <script>
 $(function() {     
+
+   $("input#book_publish_date").dateinput({
+                               format: 'm/d/yyyy',
+                               trigger: true
+                         });
    
    $("img#book_upload_image_url").attr("src", $("#book_image_url").val());
    $("img#book_upload_image_url").bind("click", function() {

@@ -144,6 +144,7 @@
                                var endpoint = "<%= new_book_path %>.json?goodreads_id="+goodreads_id;
                                $.getJSON(endpoint,
                                   function(data) {
+                                     $("#book_description_form input#book_publish_date").val(data.publish_date);
                                      $("#book_description_form input#book_isbn").val(data.isbn);
                                      $("#book_description_form input#book_isbn13").val(data.isbn13);
                                      $("#book_description_form input#book_title").val(data.title);

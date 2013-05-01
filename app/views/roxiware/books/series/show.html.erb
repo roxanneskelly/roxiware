@@ -5,10 +5,7 @@
   </div>
   <section class="books_listing">
     <% @series.books.each do |book| %>
-      <article class="book_listing" book_id="<%= book.id %>" rel="<%= book_path(book.id) %>">
-	<img src="<%= book.thumbnail_url %>" class="small_book_cover"/>
-	<a href="<%= book_path(book.seo_index) %>"><div class="book_title"><%= book.title %></div></a>
-      </article>
+        <%= render :partial=>"roxiware/books/book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
     <% end %>
   </section>
 </div>

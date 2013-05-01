@@ -51,12 +51,12 @@ $(function() {
                                          :title=>book.title || "",
                                          :isbn=>book.isbn || "", 
                                          :isbn13=>book.isbn13 || "",
+                                         :publish_date=>book.publish_date.strftime("%-m/%-d/%Y") ||  "1/1/0",
                                          :goodreads_id=>book.goodreads_id || "",
                                          :large_image_url=>book.large_image_url || "",
                                          :image_url=>book.image_url || "",
                                          :thumbnail_url=>book.thumbnail_url || ""}}.to_json %>,
            function(index, book) {
-               console.log("AFTER GET " + book.goodreads_id + " " + book.title)
                var book_html = $("<div class='book list_box_item'><img src='"+book.thumbnail_url+"'/><div class='book_details'><div class='book_title'>"+book.title+"</div></div></div>");
                book_html.data().book = book;
                $("div#book_list").append(book_html);
@@ -66,6 +66,7 @@ $(function() {
 	 title:$("#book_edit_form input#book_title").val(),
 	 isbn:$("#book_edit_form input#book_isbn").val(),
 	 isbn13:$("#book_edit_form input#book_isbn13").val(),
+	 publish_date:$("#book_edit_form input#book_publish_date").val(),
 	 large_image_url:$("#book_edit_form input#book_large_image_url").val(),
 	 thumbnail_url:$("#book_edit_form input#book_thumbnail_url").val(),
 	 image_url:$("#book_edit_form input#book_image_url").val(),
@@ -82,6 +83,11 @@ $(function() {
       $("#book_edit_form input#book_title").val($(book).data().book.title);
       $("#book_edit_form input#book_isbn").val($(book).data().book.isbn);
       $("#book_edit_form input#book_isbn13").val($(book).data().book.isbn13);
+      $("#book_edit_form input#book_publish_date").val($(book).data().book.publish_date);
+      var api = $("#book_edit_form input#book_publish_date").data("dateinput");
+      console.log("SETTING DATE TO " + $(book).data().book.publish_date);
+      api.setValue(new Date($(book).data().book.publish_date));
+
       $("#book_edit_form input#book_goodreads_id").val($(book).data().book.goodreads_id);
       $("#book_edit_form input#book_image_url").val($(book).data().book.image_url);
       $("#book_edit_form input#book_thumbnail_url").val($(book).data().book.thumbnail_url);
@@ -136,7 +142,7 @@ $(function() {
              goodreads_id="goodreads_id='"+book.goodreads_id+"'";
           }
           xml_data = xml_data + 
-             '<book ' + goodreads_id + ' isbn="'+book.isbn+'" isbn13="' + book.isbn13+'">' +
+             '<book ' + goodreads_id + ' isbn="'+book.isbn+'" isbn13="' + book.isbn13+'" publish_date="' + book.publish_date + '">' +
                  '<title '+goodreads_id+'>'+xmlEscape(book.title)+'</title>' +
                  '<image_url>'+book.image_url+'</image_url>' +
                  '<large_image_url>'+book.large_image_url+'</large_image_url>' +
@@ -182,6 +188,7 @@ $(function() {
 	 title:"New Book",
 	 isbn:"",
 	 isbn13:"",
+	 publish_date:"1/1/0000",
 	 large_image_url:"",
 	 thumbnail_url:"",
 	 image_url:"",

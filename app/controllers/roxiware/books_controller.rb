@@ -16,10 +16,20 @@ class Roxiware::BooksController < ApplicationController
 
     @title = @title + " : Books"
 
+    series_ids = []
     authorize! :read, Roxiware::Book
-    @series = Roxiware::BookSeries.all
-    @books = Roxiware::Book.joins("left join book_series_joins bsj on books.id = bsj.book_id").where("bsj.id is null")
-
+    #series = Hash[Roxiware::BookSeries.all.collect{|series| [series.id, series]}]
+    books = Roxiware::Book.includes(:book_series_joins).order("publish_date DESC")
+    @books = books.select{|book| book.book_series_joins.blank?}
+    books.each do |book|
+       puts "BOOK #{book.publish_date.strftime("%-m/%-d/%Y")}  #{book.title}"
+       book.book_series_joins.each do |series_join|
+          series_ids << series_join.book_series_id unless series_ids.include?(series_join.book_series_id)
+	  puts "SERIES IDS " + series_ids.inspect
+       end
+    end
+    series_map = Hash[Roxiware::BookSeries.where(:id=>series_ids).collect{|series| [series.id, series]}]
+    @series = series_ids.collect{|series| series_map[series]}
     respond_to do |format|
       format.html # index.html.erb
       format.json { render :json => @books }

@@ -17,6 +17,7 @@
   <div id="url_box">
     <%= event.label :location_url, "URL" %>
     <%= event.text_field :location_url, :watermark=>"MAP URL, Facebook URL, etc.", :title=>"URL associated with this event" %>
+    <%= event.label :title, "Title" %><%= event.text_field :title, :watermark=>"Title", :title=>"Title associated with this event" %>
   </div>
     <div id="description"><div class="settings_wysiwyg"><%= event.text_area :description, :class=>"event_description settings_wysiwyg" %></div></div>
     <br/>
@@ -39,7 +40,7 @@ $(function() {
    $("input.jquerytools_date").dateinput({
                                format: 'mm/dd/yyyy',
                                trigger: true,
-                               min: -1
+                               min: -30
                          });
 
 

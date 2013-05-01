@@ -1,41 +1,66 @@
 <section class="events">
-<h2><%= link_to_unless(params[:application]=="events", "Events",events_path) %>
-</h2>
-<% @events.each do |event|  %>
-  <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">
-    <h3 class="event_title">
-      <%= 
-	 # generate the date range string
-          show_date = event.start.strftime(@event_date_format)
-	  end_time = event.end_time
-          
-          if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
-	    show_date += " - " + end_time.strftime(@event_date_format)
-          end
-          show_date %>
-      <%= event.city unless event.city.blank? %> 
-      <%= ", " + event.state unless event.state.blank? %>
-    </h3>
-      <% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
-        <div class="event_start_time"><%= event.start.strftime("%l:%M %p") %> </div>
-      <% end %>
-    <div class="event_location">
-      <% if !event.location_url.blank? %>
-        <%= link_to event.location, event.location_url, :target=>"_blank"%>
-      <% else %>
-        <%= event.location %>
-      <% end %>
-    </div>
-    <div class="event_description"><%= raw event.description %></div>
-  </div>
-<% end %>
-<% if params[:controller]!="roxiware/events" %>
-  <%= link_to("More >", events_path) %>
-<% end %>
+  <div class="events_title"></div>
+  <% @events.each do |event|  %>
+    <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">
+     <% if (can? :edit, event) %>
+         <div class="manage_event_menu manage_menu" id="manage_<%= event.id %>"><ul>
+             <li><div class="manage_button">&nbsp;</div><ul>
+		<li class="edit_event"><a>Edit</a></li>
+		<li class="delete_event"><a>Delete</a></li>
+	    </ul></li></ul></div>
+     <% end %>
 
+      <div class="event_title"><%= event.title %></div>
+      <div class="event_date_range">
+	<%= 
+	   # generate the date range string
+	    show_date = event.start.strftime(@event_date_format)
+	    end_time = event.end_time
+
+	    if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
+	      show_date += " - " + end_time.strftime(@event_date_format)
+	    end
+	    show_date %>
+	<%= event.city unless event.city.blank? %> 
+	<%= ", " + event.state unless event.state.blank? %>
+      </div>
+	<% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
+	  <div class="event_start_time"><%= event.start.strftime("%l:%M %p") %> </div>
+	<% end %>
+      <div class="event_location">
+	<% if !event.location_url.blank? %>
+	  <%= link_to event.location, event.location_url, :target=>"_blank"%>
+	<% else %>
+	  <%= event.location %>
+	<% end %>
+      </div>
+      <div class="event_description"><%= raw event.description %></div>
+    </div>
+  <% end %>
 </section>
 
 <% if (can? :create, Roxiware::Event)  %>
      <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_event_path %>" form="New Event">New Event</a></li></ul>
      <%= render :partial=>"roxiware/events/context_menus" %>
+<script>
+$(function() {
+    $(".event .manage_menu").each(function(index, menu) {
+	ddsmoothmenu.init({
+	    mainmenuid: $(this).attr("id"),
+            rightalign: true,
+	    orientation: 'h',
+	    classname: 'manage_menu',
+	    contentsource: "markup"
+	});
+    });
+
+    $(".event li.edit_event a").click(function() {
+       $(this).parents(".event").trigger("context_menu", "edit_event");
+    });
+    $(".event li.delete_event a").click(function() {
+       $(this).parents(".event").trigger("context_menu", "delete_event");
+    });
+
+});
+</script>
 <% end %>

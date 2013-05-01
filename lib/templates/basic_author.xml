@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout version="1.0" guid="9D077BF9-0C25-4E49-9AC6-F2FBA0459355">
-  <name>basic2</name>
+  <name>Simple Lines</name>
   <description>
     <![CDATA[<p>Basic Author template, containing</p><p></p><ul>
 <li>Blog</li>
@@ -15,6 +15,10 @@
 person = Roxiware::Person.find(person_id)
 
 author_name =  @current_layout.get_by_path("_/header_bar/logo_bar/display_items/item-0/text")
+author_name.value = person.full_name
+author_name.save!
+
+author_name =  @current_layout.get_by_path("_/header_bar/logo_bar/display_items/item-1/text")
 author_name.value = person.full_name
 author_name.save!
 
@@ -110,7 +114,6 @@ div#mainBody
 /* General layout */
 div#mainBody
 {
-
     header {
        width:100%;
     }
@@ -128,9 +131,18 @@ div#mainBody
        width:100%;
        position:relative;
 
+        #left_bar_section {
+            position:absolute;
+            left:-45px;
+            padding-right:10px;
+            top:0px;
+            bottom:0px;
+            width:50px;
+        }
 
         #center_bar {
-            width:80%;
+            margin:0px 220px 0px 0px;
+
             position:relative;
             display:inline-block;
             vertical-align:top;
@@ -151,28 +163,30 @@ div#mainBody
 
         #right_bar_section {
             position:absolute;
-            width:10%;
-            border-left:solid 1px black;
+            width:185px;
             top:0px;
             bottom:0px;
             right:0px;
-            padding:1em;
+            padding:5px;
         }
 
     }
 }
 
-
 /* Sizing for various devices */
 div#mainBody {
-     width:700px;
      font-size:12px;
+     width:750px;
 }
 
 /* for all mobile devices, set width to 100% */
 @media all and (max-device-width: 1024px) {
       div#mainBody {
-          width:100%;
+          border:solid 1px black;
+          position:absolute;
+          right:0px;
+          left:0px;
+          width:auto;
       }
 }
 
@@ -181,6 +195,7 @@ div#mainBody {
       div#mainBody {
           min-height:300px;
            font-size:8px;
+           left:20px;
       }
 }
 
@@ -193,6 +208,7 @@ div#mainBody {
 @media all and (min-device-height: 640px) and (orientation:portrait) {
       div#mainBody {
           min-height:600px;
+          left:40px;
       }
 }
 
@@ -228,13 +244,16 @@ div#mainBody {
 @media all and (min-device-width: 480px) and (orientation:landscape) {
       div#mainBody {
           min-height:450px;
+          left:20px;
       }
 }
+
 
 @media all and (min-device-width: 640px) and (orientation:landscape) {
       div#mainBody {
           min-height:600px;
           font-size:9px;
+          left:40px;
       }
 }
 
@@ -247,7 +266,6 @@ div#mainBody {
 @media all and (min-device-width: 800px) and (orientation:landscape) {
       div#mainBody {
           min-height:750px;
-          font-size:10px;
       }
 }
 
@@ -264,6 +282,7 @@ div#mainBody {
           font-size:12px;
       }
 }
+
 
 
 /* Content and widget background boxes */
@@ -288,7 +307,7 @@ div#mainBody .post {
     position:relative;
     margin: 0;
     width:100%;
-    padding-bottom:2em;
+    padding:0 0em 2em 0em;
     
     div.share_bar {
         position:absolute;
@@ -675,6 +694,50 @@ div.book_listing {
 }
 
 
+/* Events */
+section.events {
+   margin-top:2em;
+   div.events_title {
+      font-size:2.0em;
+   }
+   div.events_title:before{
+      content: "Calendar";
+   }
+   div.event {
+        position:relative;
+        border-top:solid 1px <%= text_color %>;
+       margin:0em 0em 2em 1em;
+       padding:1em 0em 0em 0em;
+       .event_title {
+           font-weight:900;
+           font-size:1.5em;
+           margin-bottom:0.5em;
+       }
+       .event_date_range {
+           font-size:1.3em;
+           font-weight:800;
+           margin-left:1em;
+       }
+       .event_start_time {
+           margin-left:1em;
+           font-weight:800;
+       }
+       .event_location {
+           margin-left:2em;
+           font-weight:800;
+       }
+       .event_description {
+           margin-left:2em;
+       }
+   }
+   .event:hover {
+       .manage_button {
+           cursor:pointer;
+            background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
+        }
+    }
+}
+
 /* WIDGETS */
 .widget {
     width:100%;
@@ -693,31 +756,33 @@ div.book_listing {
 }
 
 /* Individual widget settings */
-#header_bar_section {
-    position:relative;
-    height:100px;
-    margin:0 0 3em 0;
 
-    .widget#logo_bar {
-        position:absolute;
-        left:0px;
-        top:0px;
-        width:20%;
-        height:80px;
-    }
-
+#left_bar_section {
     .widget#social_networks_header {
-         position:absolute;
-         right:0px;
-         top:2em;
-         width:60%;
+         margin-top:0px;
+
          .widget_content {
              text-align:right;
              .social_networks_icon {
-                 padding:0 5px 0 5px;
+                 padding-bottom:5px;
+                 display:block;
              }
          }
     }
+}
+#header_bar_section {
+    position:relative;
+    margin:0 0 3em 0;
+
+    .widget#logo_bar {
+        position:relative;
+        width:20%;
+        height:150px;
+        .display_item:nth-child(0) {
+              display:none;
+         }
+    }
+
 
     .widget#login_bar {
         position:absolute;
@@ -731,12 +796,33 @@ div.book_listing {
        }
     }
 
+    .widget#book_bar {
+         position:absolute;
+         right:0px;
+         top:2em;
+        .book_list {
+            vertical-align:top;
+            float:right;
+            .book_list_book {
+                vertical-align:top;
+                line-height:auto;
+                .book_list_book_title {
+                    line-height:auto;
+                    display:none;
+                }
+                .book_list_book_cover {
+                     width:100px;
+                     height:150px;
+                     border: solid 1px black;
+                 }
+            }
+        }
+    }
+
+
     /* Main Menu layout */
     .widget#main_menu { 
-        position:absolute;
-        left:0px;
-        bottom:0px;
-        width:65%;
+        position:relative;
         .ddsmoothmenu_widget {
             font: Verdana;
             margin-left:auto;
@@ -800,33 +886,96 @@ div.book_listing {
   }
 }
 
-#right_bar_section {
+#header_bar_section {
     .widget#book_bar {
+         position:absolute;
+         right:0px;
+         top:2em;
         .book_list {
+            float:right;
             .book_list_book {
                 .book_list_book_title {
                     display:none;
                 }
+                .book_list_book_cover {
+                     width:100px;
+                     height:150px;
+                 }
             }
         }
     }
 }
 
+#right_bar_section {
+    .widget#events_widget {
+        .events_widget_title:before {
+            content: "Calendar"
+        }
+        .events_widget_title {
+            font-size:1.3em;
+        }
+
+        .events_widget_all_events {
+            border-top:solid 1px <%= text_color %>;
+            margin-top:0em;
+            padding-top:1em;
+         }
+         .events_widget_all_events:before {
+             content: "More >"
+         }
+
+        .event_widget_event {
+            border-top:solid 1px <%= text_color %>;
+            margin-top:0em;
+            padding-top:1em;
+            padding-bottom:2em;
+            .event_widget_title {
+               font-size:1.0em;
+               font-weight:900;
+            }
+            .event_widget_date, .event_widget_city, .event_widget_location {
+                font-size:0.8em;
+                margin-left:1em;
+            }
+        }
+    }
+}
 /* Social networking icons */
 <% %w(youtube goodreads google facebook twitter rss).each do |soc_net| %>
 a#<%= soc_net %>.social_networks_icon {
      display:inline-block;
-     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", asset_color_scheme.to_s) %>') no-repeat center;
-     width:32px;
-     height:32px;
+     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+     width:16px;
+     height:16px;
 }    
 a#<%= soc_net %>.social_networks_icon:hover {
      display:inline-block;
-     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
-     width:32px;
-     height:32px;
+     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
+     width:16px;
+     height:16px;
 }    
 <% end %>
+
+@media all and (min-device-width: 640px)  {
+      div#mainBody {
+          <% %w(youtube goodreads google facebook twitter rss).each do |soc_net| %>
+          a#<%= soc_net %>.social_networks_icon {
+              display:inline-block;
+              background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+              width:32px;
+              height:32px;
+          }    
+
+       a#<%= soc_net %>.social_networks_icon:hover {
+           display:inline-block;
+           background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
+           width:32px;
+           height:32px;
+       }    
+       <% end %>
+    }
+}
+
 <% %w(google facebook twitter).each do |soc_net| %>
 a.<%= soc_net %>_button {
      display:inline-block;
@@ -862,31 +1011,61 @@ a.<%= soc_net %>_button:hover {
             content:" >>";
         }
     }
-
-
+}
+@media all and (max-device-width: 640px)  {
+    div#mainBody {
+        width:100%;
+        #right_bar_section {
+            display:none;
+        }
+        #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px;
+        }
+        #left_bar_section {
+            right:-20px;
+            
+            width:20px;
+            background:red;
+        }
+        #header_bar_section {
+            #book_bar {
+                display:none;
+            }
+            #logo_bar {
+                height:40px;
+                .display_item:nth-child(1) {
+                    display:none;
+                }
+                .display_item:nth-child(0) {
+                    display:block;;
+                 }
+            }
+        }
+    }
 }]]>
   </style>
   <params>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
     <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
     <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_small.jpeg</param>
@@ -900,7 +1079,7 @@ a.<%= soc_net %>_button:hover {
   </params>
   <pages>
     <page application="" action="">
-      <render_layout>roxiware/layouts/twocolumn_left</render_layout>
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[]]>
       </style>
@@ -918,7 +1097,36 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="2" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="0">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
+                <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
+                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">2px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">13px</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Patricia C Briggs</param>
+                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
+                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
+                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
+                  </param>
+                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-1">
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">5px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-11px</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Patricia C Briggs</param>
+                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
+                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">20</param>
+                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="6">
+              <params>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
+              </params>
+            </instance>
+            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
@@ -958,45 +1166,14 @@ a.<%= soc_net %>_button:hover {
                 </param>
               </params>
             </instance>
-            <instance order="4" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="5">
               <params>
-                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
-              </params>
-            </instance>
-            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
-              <params>
-                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id">2</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
-                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
-                </param>
-              </params>
-            </instance>
-            <instance order="0" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
-                <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
-                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
-                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">7.7272491455078125px</param>
-                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-14.3636474609375px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
-                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
-                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48.18181610107422</param>
-                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
-                  </param>
-                </param>
-              </params>
-            </instance>
-            <instance order="5" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
-              <params>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="cover_size">image</param>
+                <param description="F247867F-5D91-4D9F-A73B-B0022130FD88" class="local" name="selection_order">newest</param>
+                <param description="26F42447-4148-4F5F-AAE3-FE3744618E3F" class="local" name="refresh_period">86400</param>
+                <param description="BEDD0F51-5E0A-489F-9495-195CDC090877" class="local" name="book_count">3</param>
               </params>
             </instance>
           </widget_instances>
@@ -1017,11 +1194,11 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
+            <instance widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" order="0">
               <params>
               </params>
             </instance>
-            <instance order="1" widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065">
+            <instance widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065" order="1">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">prev_next_post</param>
               </params>
@@ -1053,34 +1230,54 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="3" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
               <params>
-                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="cover_size">image</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
+              </params>
+            </instance>
+            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="2">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
               </params>
             </instance>
           </widget_instances>
         </section>
-      </sections>
-    </page>
-    <page application="books" action="">
-      <render_layout>roxiware/layouts/onecolumn</render_layout>
-      <style>
-        <![CDATA[div#mainBody {
-    #content_section {
-
-        #center_bar {
-            width:100%;
-            position:relative;
-            display:inline-block;
-            vertical-align:top;
-        }
-    }
-}]]>
-      </style>
-      <params>
-      </params>
-      <sections>
+        <section name="left_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="1">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id">2</param>
+                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
       </sections>
     </page>
   </pages>

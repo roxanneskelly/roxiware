@@ -6,7 +6,7 @@
 </section>
 <section class="book_listings">
   <% @books.each do |book| %>
-    <%= render :partial=>"book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
+    <%= render :partial=>"roxiware/books/book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
   <% end %>
 </section>
 <% if can? :edit, Roxiware::Book %>

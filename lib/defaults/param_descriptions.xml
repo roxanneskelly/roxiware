@@ -788,4 +788,11 @@
     <permissions>admin</permissions>
     <meta/>
   </param_description>
+  <param_description guid="F247867F-5D91-4D9F-A73B-B0022130FD88">
+    <name>Selection Order</name>
+    <description>Selection Order for books shown in the book bar</description>
+    <field_type>select</field_type>
+    <permissions>admin</permissions>
+    <meta>Random:random,Newest:newest</meta>
+  </param_description>
 </param_descriptions>

@@ -13,15 +13,26 @@ Displays images of books in the authors book list
     </editform>
     <preload>
       <![CDATA[
-        locals[:books] = Roxiware::Book.find(:all).sample(locals[:book_count])
-      locals[:books].present?
+        if globals[:books].blank? || globals[:refresh_time].blank? || ((globals[:refresh_time] + locals[:refresh_period].to_f) < Time.now())
+            globals[:refresh_time] = Time.now() 
+            case  locals[:selection_order]
+                when "random"
+                    globals[:books] = Roxiware::Book.find(:all).sample(locals[:book_count])
+                when "newest"
+                    globals[:books] = Roxiware::Book.where(:publish_date=>(DateTime.new()..DateTime.now())).order("publish_date DESC").limit(locals[:book_count])
+                else
+                globals[:books] = nil
+            end
+        end
+        locals[:books] = globals[:books]
+        locals[:books].present?
       ]]>
     </preload>
     <render_view>
       <![CDATA[
 <div class="book_list">
   <% books.each do |book| %>
-      <%= link_to(book_path(book), :class=>"book_list_book") do %>
+      <%= link_to(book_path(book.seo_index), :class=>"book_list_book") do %>
          <img class="book_list_book_cover" src="<%= book[(cover_size+'_url').to_sym] %>"/>
          <div class="book_list_book_title"><%= book.title %></div>
       <% end %>
@@ -34,7 +45,9 @@ Displays images of books in the authors book list
 ]]>
     </style>
     <params>
+      <param class="local" description="26F42447-4148-4F5F-AAE3-FE3744618E3F" name="refresh_period">86400</param>
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param description="F247867F-5D91-4D9F-A73B-B0022130FD88" class="local" name="selection_order">newest</param>
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
       <param class="local" description="BEDD0F51-5E0A-489F-9495-195CDC090877" name="book_count">5</param>
       <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="cover_size">image</param>

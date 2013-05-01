@@ -279,7 +279,7 @@ class Roxiware::SetupController < ApplicationController
     end
 
     def _show_author_manage_books
-        @books = Roxiware::Book.all
+        @books = Roxiware::Book.order("publish_date DESC")
         if @books.blank? && current_user.person.goodreads_id
 	    seo_books = {}
 	    _get_goodreads_author_books.each do |book|
@@ -292,10 +292,10 @@ class Roxiware::SetupController < ApplicationController
 		   title_add += 1
 		end
 	        seo_books[book.title.to_seo] = book
+		book.save!
 	    end
-	    @books = seo_books.values
+	    @books = seo_books.values.sort{|x, y| y.publish_date <=> x.publish_date}
         end
-
     end
 
 

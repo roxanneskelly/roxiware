@@ -11,8 +11,8 @@ class Roxiware::Book < ActiveRecord::Base
   validates_uniqueness_of :seo_index, :allow_nil=>true, :allow_blank=>true, :message=>"The book has already been added."
 
 
-  edit_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :as=>[:super, :admin, :user, nil]
-  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :as=>[:super, :admin, :user, :guest, nil]
+  edit_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :publish_date, :as=>[:super, :admin, :user, nil]
+  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :publish_date, :as=>[:super, :admin, :user, :guest, nil]
 
 
   EDITIONS = {
@@ -81,6 +81,8 @@ class Roxiware::Book < ActiveRecord::Base
       self.thumbnail_url=goodreads_result[:thumbnail_url]
       self.description=goodreads_result[:description]
       self.goodreads_id = goodreads_result[:goodreads_id]
+      puts "PUB DATE #{goodreads_result[:publication_year]}, #{goodreads_result[:publication_month]}, #{goodreads_result[:publication_month]}" 
+      self.publish_date = DateTime.new(goodreads_result[:publication_year], goodreads_result[:publication_month], goodreads_result[:publication_day])
    end
 
   def init_sales_links

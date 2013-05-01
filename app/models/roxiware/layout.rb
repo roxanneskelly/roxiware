@@ -502,6 +502,7 @@ module Roxiware
 	  end
 
 	  def widget_instance_insert(index, insert_instance)
+	      puts "INSERT #{index} #{insert_instance.inspect}"
 	      instance_array = get_widget_instances.collect{|instance| instance}
 	      instance_array.insert(index, insert_instance)
 	      widget_instances << insert_instance

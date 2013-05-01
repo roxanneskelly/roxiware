@@ -9,8 +9,8 @@ class Roxiware::EventsController < ApplicationController
   end
 
   def index
-    logger.debug(params.to_json)
-    @events = Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight).order("start ASC")
+    time_check = Time.now.utc.midnight - 1.month
+    @events = Roxiware::Event.order("start ASC").select{|event| event.end_time > time_check}
     @title = @title + " : Events"
     @meta_description = @meta_description +" : Events"
     authorize! :read, Roxiware::Event

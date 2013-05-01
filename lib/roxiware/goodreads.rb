@@ -1,14 +1,13 @@
 require 'xml'
+include Roxiware::Helpers
 module Roxiware
   module Goodreads
-
     class GoodreadsServerException < RuntimeError
       attr :message
       def initialize(message = nil)
 	@message = message
       end
     end
-
 
     class Book
       include HTTParty
@@ -32,8 +31,6 @@ module Roxiware
 
 	_process_book(result_book)
       end
-
-
 
       # search for books
       def search_books(options={})
@@ -111,7 +108,7 @@ module Roxiware
 	 result = {:title=>result_series['title'].strip, 
 		   :goodreads_id=>series_id,
 		   :books=>works,
-		   :description=>result_series['description']}
+		   :description=>result_series['description'] || ""}
 	 result
       end
 
@@ -192,24 +189,52 @@ module Roxiware
 	    if(authors.class == Hash)
 	        authors=[authors]
 	    end
-	    large_image = result_book['image_url']
-	    match = large_image.match(/(.*)m(\/\d+\.jpg)/)
 
-	    if match
-	       large_image = match[1]+"l"+match[2]
+	    if result_book['isbn'].present?
+	        large_image = "http://covers.openlibrary.org/b/isbn/#{result_book['isbn']}-L.jpg?default=false"
+	        image = "http://covers.openlibrary.org/b/isbn/#{result_book['isbn']}-M.jpg?default=false"
+	        thumbnail_image = "http://covers.openlibrary.org/b/isbn/#{result_book['isbn']}-S.jpg?default=false"
+                response = Net::HTTP.get_response(URI.parse(large_image))
+		puts "CHECKING #{large_image} response #{response.inspect}"
+                if !(response == Net::HTTPFound || response == Net::HTTPOK)
+		    large_image = nil
+		    image = nil
+		    thumbnail_image = nil
+		end
+            end
+
+	    if (large_image.blank?)
+	        large_image = result_book['image_url']
+	        match = large_image.match(/(.*)m(\/\d+\.jpg)/)
+	        if match
+	           large_image = match[1]+"l"+match[2]
+	        end
+	        large_image = default_image_path(:book, "large_image") unless (large_image =~ /.*nocover.*/).nil?
 	    end
-               title = result_book['title'].strip
-	       match = /^\s*([^\(]*).*/.match(title)
-	       title = match[1] if match.present?
+	    if image.blank?
+	       image = result_book['image_url']
+	       image = default_image_path(:book, "image") unless (image =~ /.*nocover.*/).nil?
+	    end
+	    if thumbnail_image.blank?
+	       thumbnail_image = result_book['small_image_url']
+	       thumbnail_image = default_image_path(:book, "thumbnail_image") unless (thumbnail_image =~ /.*nocover.*/).nil?
+	    end
 
+            title = result_book['title'].strip
+	    match = /^\s*([^\(]*).*/.match(title)
+	    title = match[1] if match.present?
+	
 	    result = {    :title=>title,
 			  :large_image_url=>large_image,
-			  :image_url=>result_book['image_url'],
-			  :thumbnail_url=>result_book['small_image_url'],
+			  :image_url=>image,
+			  :thumbnail_url=>thumbnail_image,
 			  :goodreads_id=>result_book['id'],
+			  :publication_year=>(result_book['publication_year'] || 0).to_i,
+			  :publication_day=>(result_book['publication_day'] || 1).to_i,
+			  :publication_month=>(result_book['publication_month'] || 1).to_i,
 			  :isbn=>result_book['isbn'],
 			  :isbn13=>result_book['isbn13'],
-			  :description=>result_book['description'],
+			  :description=>result_book['description'] || "",
 			  :authors=>authors.collect{|author| {:goodreads_id=>author['id'], :author_name=>author['name']}}}
 
 	    if result_book["series_works"].present?
@@ -267,12 +292,16 @@ module Roxiware
 	   goodreads_books.each do |book|
 	      books << _process_book(book)
 	   end
+
+	   author["small_image_url"] = default_image_path(:person, "thumbnail") unless (author["small_image_url"] =~ /.*nophoto.*/).nil?
+	   author["image_url"] = default_image_path(:person, "thumbnail") unless (author["image_url"] =~ /.*nophoto.*/).nil?
+	   author["large_image_url"] = default_image_path(:person, "image") unless (author["image_url"] =~ /.*nophoto.*/).nil?
 	   result << {:goodreads_id=>author["id"],
                       :name=>author["name"],
 		      :thumbnail_url=>author["small_image_url"],
 		      :image_url=>author["small_image_url"],
 		      :large_image_url=>author["image_url"],
-		      :about=>author["about"],
+		      :about=>author["about"] || "",
 		      :books=>books}
 	end
 	result

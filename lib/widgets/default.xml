@@ -337,63 +337,6 @@ li.calendar_nav_hidden ul
       <param class="local" description="2E3FAB50-4A5A-4FEE-B6D7-9603A1CA178F" name="gr_fb_batch">20</param>
     </params>
   </widget>
-  <widget version="1.0" guid="53A77ACC-5261-49F3-A959-9FB434F43768">
-    <name>Events</name>
-    <description>
-      <![CDATA[Show events]]>
-    </description>
-    <editform>
-      <![CDATA[]]>
-    </editform>
-    <preload>
-      <![CDATA[locals[:events] = Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight).order("start ASC").limit(locals[:events_count])
-       locals[:events].present?]]>
-    </preload>
-    <render_view>
-      <![CDATA[
-<% if events.present? %>
-<nav class="events_widget">
-  <%= link_to("Events",events_path, :class=>"events_widget_title") %>
-  <% events.each do |event|  %>
-    <div id="event-<%= event.id %>" class="event_widget_event">
-      <div class="event_widget_date">
-	<%= show_time = event.start.strftime("%b %e")
-	    if (event.duration_units == "days" && event.duration.present? && event.duration > 1)
-	      end_time = event.start + (event.duration.days - 1)
-	      show_time = event.start.strftime("%b %e, %Y") unless end_time.year == event.start.year
-	      show_time += " - "
-	      show_time += end_time.strftime("%b %e, %Y") if event.start.month != end_time.month
-	      show_time += end_time.strftime("%e, %Y") if event.start.month == end_time.month
-	    end
-	    show_time %>
-      </div>
-      <% if !(event.city.blank? && event.state.blank?) %>
-	<div class="event_widget_city">
-	  <%= event.city unless event.city.blank? %> 
-	  <%= ", " + event.state unless event.state.blank? %>
-	</div>
-      <% end %>
-      <div class="event_widget_location">
-        <% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
-	  <span class="event_widget_start"><%= event.start.strftime("%l:%M %p") %> <%= ", " unless event.location.blank? %></span>
-        <% end %>
-        <%= event.location %>
-      </div>
-    </div>
-  <% end %>
-  <%= link_to("More >", events_path) %>
-</nav>
-<% end %>      ]]>
-    </render_view>
-    <style>
-      <![CDATA[]]>
-    </style>
-    <params>
-      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-      <param class="local" description="6CD4546A-E350-46AC-BAF5-A788047DCD08" name="events_count">3</param>
-    </params>
-  </widget>
   <widget version="1.0" guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
     <name>Login/Search Strip</name>
     <description>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+    <name>Login/Search Strip</name>
+    <description>
+      <![CDATA[Displays a small strip that has a login link and an  optional search box]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[true]]>
+    </preload>
+    <render_view>
+      <![CDATA[<div id="login-strip-<%= widget_instance_id %>" style="display:inline-block;padding-left:10px;padding-right:10px;">
+   <% if user_signed_in? %>
+      <% if show_greeting %><div id="session-greeting">Welcome <%= current_user.username %>&nbsp;<% end %>
+         <% if show_links%><%= link_to_unless_current( "(Log Out)", destroy_session_path('user')) do %>Log&nbsp;Out<% end %><% end %>
+     </div>
+   <% elsif (params[:controller] != "devise/sessions") && (params[:controller] != "devise/passwords") %>
+      <% if show_links %><div id="session-greeting"><%= link_to(new_session_path('user')) do  %><span>Log&nbsp;In</span><% end %></div><% end %>
+   <% end %>
+   <% if show_search_box %>
+      <%= form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do %>
+	 <%= search_field_tag(:query) %>
+      <% end %>
+      <script>
+	  $(function() {
+	     var search_watermark = 'Search';
+	     $('#login-strip-<%= widget_instance_id %> #query').blur(function(){
+	     if ($(this).val().length == 0)
+		$(this).val(search_watermark).addClass('search_watermark');
+	     }).focus(function(){
+	       if ($(this).val() == search_watermark)
+		$(this).val('').removeClass('search_watermark');
+	     }).val(search_watermark).addClass('search_watermark');
+	  });
+      </script>
+   <% end %>
+</div>]]>
+    </render_view>
+    <style>
+      <![CDATA[.search_watermark
+{
+   color:grey;
+}
+#session-greeting
+{
+   display:inline-block;
+}
+
+#query
+{
+   display:inline-block;
+}]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">true</param>
+      <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_links">true</param>
+      <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_greeting">true</param>
+    </params>
+  </widget>
+</widgets>

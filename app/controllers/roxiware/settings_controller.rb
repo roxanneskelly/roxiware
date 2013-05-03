@@ -4,9 +4,12 @@ module Roxiware
 
        # settings edit page
        def show
+          @application = params[:id]
           @settings = Hash[Roxiware::Param::Param.application_params(params[:id]).select{|param| can? :edit, param}.collect{|param| [param.name, param]}]
+	  edit_file_root = params[:id]
+	  edit_file_root = "default" unless File.file?("#{Roxiware::Engine.root}/app/views/roxiware/settings/_editform_#{edit_file_root}.html.erb")
           respond_to do |format|
-	     format.html {render :partial => "roxiware/settings/editform_#{params[:id]}"}
+	     format.html {render :partial => "roxiware/settings/editform_#{edit_file_root}"}
 	     format.json {render :json =>settings}
 	  end
        end

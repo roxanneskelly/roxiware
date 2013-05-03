@@ -28,6 +28,10 @@
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("gallery", "enable_gallery") %>
 		      <li id="gallery_settings"><a rel="<%= setting_path('gallery') %>" form="Gallery Settings">Gallery</a></li>
 		  <% end %>
+		  <% custom_settings = Roxiware::Param::Param.where(:param_class=>"custom").select{|param| can? :edit, param} %>
+		  <% if custom_settings.length > 0 %>
+		      <li id="gallery_settings"><a rel="<%= setting_path('custom') %>" form="Custom Settings">Custom</a></li>
+		  <% end %>
 	      </ul>
 	   </li><% if can? :edit, @current_layout %><li id="layout_menu">Design<ul>
 		  <li id="edit_layout"><a rel="<%=edit_layout_path(@current_layout.guid)%>" form="Edit Template">Edit Template</a></li>

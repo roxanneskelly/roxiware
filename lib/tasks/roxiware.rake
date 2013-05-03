@@ -81,7 +81,6 @@ namespace :widgets do
 	 else
 	     files = Dir.glob("#{Roxiware::Engine.root}/lib/widgets/*.xml")
 	 end
-	 puts "FILES #{files.inspect}"
 	 files.each do |filename|
 	     puts "IMPORTING WIDGET FILE #{filename}"
 	     parser = XML::Parser.file(filename)
@@ -203,15 +202,24 @@ end
 namespace :param_descriptions do
       desc "Import a list of param descriptions"
       task :import, [:description_file]=>:environment do |t, args|
-	 parser = XML::Parser.file(args[:layout_file] || "#{Roxiware::Engine.root}/lib/defaults/param_descriptions.xml")
-	 doc_obj = parser.parse
-	 description_nodes = doc_obj.find("/param_descriptions/param_description")
-	 description_nodes.each do |description_node|
-	    description = Roxiware::Param::ParamDescription.new
-	    old_description = Roxiware::Param::ParamDescription.where(:guid=>description_node["guid"]).first
-	    old_description.destroy if old_description.present?
-	    description.import(description_node)
-	    description.save!
+	 if args[:description_file].present?
+             files = [args[:description_file]]
+	 else
+	     files = Dir.glob("#{Roxiware::Engine.root}/lib/defaults/param_descriptions.xml")
+	     files = files + Dir.glob(Rails.root.join("lib","defaults","param_descriptions.xml"))
+	 end
+
+	 files.each do |filename|
+	     parser = XML::Parser.file(filename)
+	     doc_obj = parser.parse
+	     description_nodes = doc_obj.find("/param_descriptions/param_description")
+	     description_nodes.each do |description_node|
+		description = Roxiware::Param::ParamDescription.new
+		old_description = Roxiware::Param::ParamDescription.where(:guid=>description_node["guid"]).first
+		old_description.destroy if old_description.present?
+		description.import(description_node)
+		description.save!
+	     end
 	 end
       end
 

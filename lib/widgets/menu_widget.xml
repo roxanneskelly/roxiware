@@ -88,7 +88,7 @@ div.menu_edit
 	       <div id="menu_item_edit_bar" class="edit_bar"><div id="new_menu_item" class="edit_bar_button">+</div><div id="delete_menu_item" class="edit_bar_button">-</div></div>
 	    </div>
 	    <div id="menu_edit_right_pane">
-	      <%= label_tag :permission, "Permissions" %><%= select_tag :permission, options_for_select({"Guest"=>"guest", "User"=>"user", "Admin"=>"admin", "Super"=>"super"}) %><br/><br/>
+	      <%= label_tag :permission, "Permissions" %><%= select_tag :permission, options_for_select({"Guest"=>"guest", "Guest Only"=>"guest_only", "User"=>"user", "Admin"=>"admin", "Super"=>"super"}) %><br/><br/>
               <%= label_tag :name, "Name" %><%= text_field_tag :name %><br/>
               <%= label_tag :identifier, "ID" %><%= text_field_tag :identifier %><br/>
 	      <%= label_tag :url, "URL" %><%= text_field_tag :url %><br/>
@@ -216,13 +216,14 @@ div.menu_edit
     <render_view>
       <![CDATA[<% 
          def render_menu(menu_node) 
-	  permissions = {"guest"=>0, "user"=>1, "admin"=>2, "super"=>3}
+	  permissions = {"guest"=>0, "guest_only"=>0, "user"=>1, "admin"=>2, "super"=>3}
           role = "guest"
           role = current_user.role unless current_user.nil?
           menu_node_values = menu_node.conv_value
           permission = menu_node_values['permission'].to_s
           permission = "guest" unless permissions.has_key?(permission)
-          return if(permissions[permission] > permissions[role]) 
+          return if(permissions[permission] > permissions[role])
+          return if(permission=="guest_only" && (role != "guest")) 
           menu_id = menu_node_values['identifier'].to_s
           menu_id = "child_#{menu_node.id}" if menu_id.blank? 
          %>

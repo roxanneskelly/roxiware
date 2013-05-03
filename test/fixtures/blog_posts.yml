@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  person: 
+  post_date: 2012-06-06 16:32:21
+  post_content: MyText
+  post_title: MyString
+  post_exerpt: MyString
+  post_link: MyString
+  guid: MyString
+
+two:
+  person: 
+  post_date: 2012-06-06 16:32:21
+  post_content: MyText
+  post_title: MyString
+  post_exerpt: MyString
+  post_link: MyString
+  guid: MyString

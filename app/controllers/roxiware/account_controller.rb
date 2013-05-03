@@ -173,8 +173,8 @@ class Roxiware::AccountController < ApplicationController
       if @user == current_user 
         format.json { render :json=>{:error=>[nil, "You cannot delete yourself"]}}
       end
-      @user.person.user_id=nil
-      @user.person.save
+      @user.person.user_id=nil if @user.person.present?
+      @user.person.save if @user.person.present?
       if !@user.destroy
         format.json { render :json=>report_error(@user)}
       else

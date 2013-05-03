@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  isbn: 1
+  isbn13: 1
+  title: MyString
+  description: MyText
+  image: MyString
+  small_image: MyString
+
+two:
+  isbn: 1
+  isbn13: 1
+  title: MyString
+  description: MyText
+  image: MyString
+  small_image: MyString

@@ -1,0 +1,13 @@
+<div class="medium_form" id="<%= @application %>_settings_edit">
+   <%= form_tag(setting_path(@application), :method=>"put") do %>
+       <%= fields_for @application.to_sym do |application_fields| %>
+           <%= param_fields(application_fields, @settings.values) %>
+      <% end %>
+      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
+   <% end %>
+</div>
+
+<script>
+$(function() {
+});
+</script>

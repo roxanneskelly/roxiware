@@ -13,7 +13,6 @@ class Roxiware::SetupController < ApplicationController
       @setup_type = nil if @setup_step == "welcome"
    end
 
-
    # GET /setup
    def show
       template = [@setup_type, @setup_step].compact.join("_")
@@ -494,10 +493,10 @@ class Roxiware::SetupController < ApplicationController
 		    end
 		elsif params[:setup_action] == "save_template"
 		    # we've chosen the template, so set it, do the setup, and go to completion page
-		    refresh_layout
 		    Roxiware::Param::Param.refresh_application_params
 		    Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:template_guid])
 		    Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:template_scheme])
+		    refresh_layout
 		    run_layout_setup
 		    result = _set_setup_step("complete")
 		end

@@ -209,15 +209,15 @@ module Roxiware
 	        if match
 	           large_image = match[1]+"l"+match[2]
 	        end
-	        large_image = default_image_path(:book, "large_image") unless (large_image =~ /.*nocover.*/).nil?
+	        large_image = default_image_path(:book, "large") unless (large_image =~ /.*nocover.*/).nil?
 	    end
 	    if image.blank?
 	       image = result_book['image_url']
-	       image = default_image_path(:book, "image") unless (image =~ /.*nocover.*/).nil?
+	       image = default_image_path(:book, "small") unless (image =~ /.*nocover.*/).nil?
 	    end
 	    if thumbnail_image.blank?
 	       thumbnail_image = result_book['small_image_url']
-	       thumbnail_image = default_image_path(:book, "thumbnail_image") unless (thumbnail_image =~ /.*nocover.*/).nil?
+	       thumbnail_image = default_image_path(:book, "thumbnail") unless (thumbnail_image =~ /.*nocover.*/).nil?
 	    end
 
             title = result_book['title'].strip
@@ -295,7 +295,7 @@ module Roxiware
 
 	   author["small_image_url"] = default_image_path(:person, "thumbnail") unless (author["small_image_url"] =~ /.*nophoto.*/).nil?
 	   author["image_url"] = default_image_path(:person, "thumbnail") unless (author["image_url"] =~ /.*nophoto.*/).nil?
-	   author["large_image_url"] = default_image_path(:person, "image") unless (author["image_url"] =~ /.*nophoto.*/).nil?
+	   author["large_image_url"] = default_image_path(:person, "large") unless (author["image_url"] =~ /.*nophoto.*/).nil?
 	   result << {:goodreads_id=>author["id"],
                       :name=>author["name"],
 		      :thumbnail_url=>author["small_image_url"],

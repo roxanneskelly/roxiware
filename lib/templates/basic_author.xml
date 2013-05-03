@@ -800,6 +800,8 @@ section.events {
          position:absolute;
          right:0px;
          top:2em;
+         display:inline-block;
+         width:auto;
         .book_list {
             vertical-align:top;
             float:right;
@@ -1046,26 +1048,26 @@ a.<%= soc_net %>_button:hover {
 }]]>
   </style>
   <params>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
-    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_large.jpeg</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
           <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">/assets/uploads/fe9ad03040cf01302506002332d4c684_small.jpeg</param>
@@ -1097,14 +1099,14 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="0">
+            <instance order="0" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
                 <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">2px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">13px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Patricia C Briggs</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Faith Hunter</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
                     <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
@@ -1112,7 +1114,7 @@ a.<%= soc_net %>_button:hover {
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-1">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">5px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-11px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Patricia C Briggs</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Faith Hunter</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">20</param>
                     <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(0, 0, 0)</param>
@@ -1120,13 +1122,13 @@ a.<%= soc_net %>_button:hover {
                 </param>
               </params>
             </instance>
-            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="6">
+            <instance order="6" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">
+            <instance order="2" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
@@ -1166,7 +1168,7 @@ a.<%= soc_net %>_button:hover {
                 </param>
               </params>
             </instance>
-            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="5">
+            <instance order="5" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1194,11 +1196,11 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" order="0">
+            <instance order="0" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
               <params>
               </params>
             </instance>
-            <instance widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065" order="1">
+            <instance order="1" widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">prev_next_post</param>
               </params>
@@ -1230,21 +1232,21 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
+            <instance order="0" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
               </params>
             </instance>
-            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="2">
+            <instance order="2" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1260,7 +1262,7 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="1">
+            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>

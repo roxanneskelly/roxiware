@@ -181,8 +181,9 @@ module Roxiware
 
 
 
-      def _process_book(result_book)
+      def _process_book(result_book, options={})
             authors = result_book['author']
+	    options[:no_images] ||= false
 	    if(authors.nil?)
 	       authors = result_book['authors']['author']
 	    end
@@ -190,7 +191,7 @@ module Roxiware
 	        authors=[authors]
 	    end
 
-	    if result_book['isbn'].present?
+	    if !options[:no_images] && result_book['isbn'].present?
 	        large_image = "http://covers.openlibrary.org/b/isbn/#{result_book['isbn']}-L.jpg?default=false"
 	        image = "http://covers.openlibrary.org/b/isbn/#{result_book['isbn']}-M.jpg?default=false"
 	        thumbnail_image = "http://covers.openlibrary.org/b/isbn/#{result_book['isbn']}-S.jpg?default=false"
@@ -290,7 +291,7 @@ module Roxiware
 	      goodreads_books = [goodreads_books]
 	   end
 	   goodreads_books.each do |book|
-	      books << _process_book(book)
+	      books << _process_book(book, :no_images=>true)
 	   end
 
 	   author["small_image_url"] = default_image_path(:person, "thumbnail") unless (author["small_image_url"] =~ /.*nophoto.*/).nil?

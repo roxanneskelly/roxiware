@@ -58,9 +58,9 @@ div#text_properties_dialog .contentWrap
 	     %>
              <img src="<%= display_item_param.h['image'].to_s %>" style="<%= style %>" class="display_item" description-guid="<%= display_item_param.h['image'].description_guid %>"/>
           <%  elsif display_item_param.h["text"].present? 
-	     style += ("color:" + display_item_param.h['color'].conv_value + ";")
-	     style += ("font-size:" + display_item_param.h['size'].conv_value.to_s + "px;")
-	     style += ("font-family:"+ display_item_param.h['font'].conv_value + ";")
+	     style += ("color:" + display_item_param.h['color'].conv_value + ";") if display_item_param.h['color'].conv_value.present?
+	     style += ("font-size:" + display_item_param.h['size'].conv_value.to_s + "px;") if display_item_param.h['size'].conv_value.present?
+	     style += ("font-family:"+ display_item_param.h['font'].conv_value + ";") if display_item_param.h['size'].conv_value.present?
 	      %>
 	     <div style="<%= style %>" class="display_item"><%= display_item_param.h['text'].conv_value %></div>
           <%  end

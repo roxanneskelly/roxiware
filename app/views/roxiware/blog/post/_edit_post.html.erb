@@ -9,7 +9,7 @@
   <div class="content_pos"><div class="settings_wysiwyg"><%= post_fields.text_area :post_content, :class=>"post_item_content" %></div></div>
   <%= post_fields.label :tag_csv, "Tags"%>
   <%= post_fields.text_field :tag_csv %>
-
+  <%= post_fields.hidden_field :blog_class %>
 <script>
 $(function() {
     var categories = [<%= raw Roxiware::Terms::Term.categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]

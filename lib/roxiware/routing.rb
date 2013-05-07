@@ -9,7 +9,7 @@ module Roxiware::RoutingHelpers
 
 	APP_TYPES = {
 	    :author=>[:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :contact],
-	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact]
+	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact, :news]
 	}
 
         APPLICATION_DEPENDENCIES = {
@@ -26,6 +26,7 @@ module Roxiware::RoutingHelpers
 	    :settings=>[],
 	    :sitemap=>[],
 	    :blog=>[:uploads],
+	    :news=>[:blog, :uploads],
 	    :contact=>[]
 	}
 end
@@ -42,6 +43,8 @@ module ActionDispatch::Routing
 	    options[:skip] = options[:skip].collect{|app| app.to_sym} if options[:skip].present?
 	    options[:with] = options[:with].collect{|app| app.to_sym} if options[:with].present?
 
+	    options[:blog_classes] ||= [:blog]
+
 	    applications = Roxiware::RoutingHelpers.applications
 	    applications = applications & Roxiware::RoutingHelpers::APP_TYPES[options[:application].to_sym] if options[:application].present?
 	    applications = applications & options[:only] if options[:only].present?
@@ -53,7 +56,6 @@ module ActionDispatch::Routing
 	    Roxiware::RoutingHelpers.applications = applications
 
 	    mount Roxiware::Engine => "/", :as=>"roxiware"	    
-
 	end
 
         def roxiware_setup
@@ -153,6 +155,14 @@ module ActionDispatch::Routing
 	      delete ":year/:month/:day/:title" => "post#destroy_by_title"
 	    end
 	    get ":year/:month/:title" => "blog/post#redirect_by_title", :constraints => {:year => /\d{4}/}
+	end
+
+
+        def roxiware_news
+	    scope "/news" do
+	      get "(:year(/:month(/:day)))" => "blog/post#index_by_date", :blog_class=>"news"
+	      get ":year/:month/:day/:title"=> "blog/post#show_by_title", :blog_class=>"news"
+	    end
 	end
 
         def roxiware_contact

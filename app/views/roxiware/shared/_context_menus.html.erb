@@ -3,10 +3,10 @@
   $(document).bind("ready", function() {
      $("#mainBody").context_menu($("#page_context_menu"));
      <% if !@page_layout.is_root? %>
-         $("#mainBody").context_menu().addInstanceMenus("<li id='page_delete'><a menu_item='page_delete' class='page_delete'>Collapse Page</a></li>");
+         $("#mainBody").context_menu("add_instance_menus", "<li id='page_delete'><a menu_item='page_delete' class='page_delete'>Collapse Page</a></li>");
      <% end %>
      <% if @page_layout.action.blank? %>
-         $("#mainBody").context_menu().addInstanceMenus("<li id='page_fork'><a menu_item='page_fork' class='page_fork'>Fork Page</a></li>");
+         $("#mainBody").context_menu("add_instance_menus", "<li id='page_fork'><a menu_item='page_fork' class='page_fork'>Fork Page</a></li>");
      <% end %>
      $("#mainBody").on("context_menu", function(event, menu_item) {
         switch (menu_item) {

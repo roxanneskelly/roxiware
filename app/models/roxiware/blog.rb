@@ -44,10 +44,10 @@ module Roxiware
     validates_presence_of :post_status, :inclusion=> {:in => ALLOWED_STATUS}, :message=>"Invalid post status."
     validates_presence_of :comment_permissions, :inclusion=> {:in => ALLOWED_COMMENT_PERMISSIONS}, :message=>"Invalid comment permissions."
 
-    edit_attr_accessible :post_content, :post_date, :post_exerpt, :post_title, :post_status, :comment_permissions, :category_name, :tag_csv, :as=>[:super, :admin, :user, nil]
+    edit_attr_accessible :post_content, :blog_class, :post_date, :post_exerpt, :post_title, :post_status, :comment_permissions, :category_name, :tag_csv, :as=>[:super, :admin, :user, nil]
     edit_attr_accessible :person_id, :as=>[:super, :admin, nil]
     edit_attr_accessible :post_exerpt, :as=>[nil]
-    ajax_attr_accessible :guid, :post_date, :post_exerpt, :post_link, :post_title, :post_content, :person_id, :post_status, :comment_permissions, :tag_csv, :category_name
+    ajax_attr_accessible :guid, :blog_class, :post_date, :post_exerpt, :post_link, :post_title, :post_content, :person_id, :post_status, :comment_permissions, :tag_csv, :category_name
     
     scope :published, where(:post_status=>"publish")
     scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR post_status='publish'")) }
@@ -63,6 +63,7 @@ module Roxiware
 	    Roxiware::Param::Param.application_param_val("blog", "blog_comment_permissions")
         end
     end
+
     def tag_ids
       self.tags.collect{|term| term.id}
     end
@@ -110,7 +111,7 @@ module Roxiware
 
     before_validation() do
        seo_index = self.post_title.downcase.gsub(/[^a-z0-9]+/i, '-')
-       self.guid = self.post_link = "/blog/" + self.post_date.strftime("%Y/%-m/%-d/") + seo_index
+       self.guid = self.post_link = "/"+self.blog_class+"/" + self.post_date.strftime("%Y/%-m/%-d/") + seo_index
        self.post_exerpt = Sanitize.clean(truncate(Sanitize.clean(self.post_content, Roxiware::Sanitizer::BASIC_SANITIZER), :length => Roxiware.blog_exerpt_length, :omission=>""),Roxiware::Sanitizer::BASIC_SANITIZER)
     end
   end

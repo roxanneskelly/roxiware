@@ -13,7 +13,7 @@
 <% end %>
 
 <% if can? :create, Roxiware::Blog::Post %>
-    <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_blog_post_path %>" form="New Post">New Post</a></li></ul>
+    <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_blog_post_path + '?blog_class=' + @blog_class %>" form="New <%= @blog_class.titleize %> Post">New Post</a></li></ul>
 
     <ul id="posts_context_menu" class="context_menu">
        <li id="new_post"><a menu_item="new_post">New Post</a></li>
@@ -28,13 +28,13 @@ $(document).ready(function() {
     $("#mainBody").on("context_menu", function(event, menu_item) {
        switch (menu_item) {
 	  case "new_post":
-	    settingsForm("<%= new_blog_post_path %>", "New Blog Post");
+	    settingsForm("<%= new_blog_post_path + '?blog_class=' + @blog_class %>", "New <%= @blog_class.titleize %> Post");
 	    break;
        }});
     $("button.application_button").click( function(event, menu_item) {
        switch ($(this).attr("id")) {
 	  case "new_post":
-	    settingsForm("<%= new_blog_post_path %>", "New Blog Post");
+	    settingsForm("<%= new_blog_post_path + '?blog_class=' + @blog_class %>", "New <%= @blog_class.titleize %> Post");
 	    break;
        }});
 <% end %>

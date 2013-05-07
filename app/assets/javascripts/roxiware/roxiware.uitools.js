@@ -310,6 +310,95 @@
 	    }
 	});
 
+    
+    $.roxiware.selectable_table = {
+        conf: {
+	    multi:false,
+	    selectClass:"table_select",
+	    onSelect:function(selected_items) {
+	    }
+        }
+    }
+    function SelectableTable(target, conf) {
+	var self=this;
+
+	$.extend(self, {
+		anchor:null,
+		select:function(row) {
+		    $(row).addClass(conf.selectClass); 
+		    conf.onSelect(self.getSelected());
+		},
+                deselect: function(row) {
+		    $(row).removeClass(conf.selectClass); 
+		    conf.onSelect(self.getSelected());
+		},
+                toggle: function(row) {
+		    $(row).toggleClass(conf.selectClass); 
+		    conf.onSelect(self.getSelected());
+		},
+	        clearAll: function() {
+		    $(target).find("tr").removeClass(conf.selectClass); 
+		    conf.onSelect(self.getSelected());
+                },
+	        selectAll: function() {
+		    $(target).find("tr").addClass(conf.selectClass); 
+		    conf.onSelect(self.getSelected());
+                },
+		setAnchor: function(row) {
+		    self.anchor = row;
+		},
+		clearAnchor: function() {
+		    self.anchor = null;
+		},
+		getAnchor: function() {
+		    return self.anchor;
+		},
+	        getSelected: function() {
+		    return $(target).find("."+conf.selectClass);
+		}
+	    }
+	    );
+
+	$(target).find("tr").click(function(event) {
+	    if(event.shiftKey && conf.multi && self.anchor) {
+		// select all between current and anchor
+		self.deselect(self.getSelected().not($(this)));
+		var first = self.anchor;
+		var last = $(this);
+	        if (first.index() > last.index()) {
+		    first = $(this);
+		    last = self.anchor;
+		}
+		self.select(first.nextUntil(last).andSelf().add(last));
+	    }
+	    else if (event.metaKey && conf.multi) {
+		self.setAnchor($(this));
+		self.toggle($(this));
+	    }
+	    else if (!event.ctrlKey){
+		self.getSelected().not($(this)).removeClass(conf.selectClass);
+		self.toggle($(this));
+		if (conf.multi) {
+		    self.setAnchor($(this));
+		}
+	    }
+	});
+    }
+
+    $.fn.selectable_table = function(tab_conf) {
+	var cm_api = null;
+	this.each(function() {
+		cm_api = $(this).data("selectable_table");
+		if(!cm_api) {
+		    var conf = $.extend(true, {}, $.roxiware.selectable_table.conf, tab_conf);
+		    cm_api = new SelectableTable($(this), conf);
+		    $(this).data("selectable_table", cm_api);
+		}
+	    });
+      return  cm_api;
+    };
+
+
     $.roxiware.context_menu = {
 	conf: {
 	    onConfig: function(menu_obj) { }
@@ -321,9 +410,12 @@
 	   $.extend(self,
 		    {
 			context_menu: "",
-                        instance_menu: "",
+			instance_menu: $("<ul></ul>"),
 			addInstanceMenus: function(menu_items) {
-			    self.instance_menu = self.instance_menu + menu_items;
+			    self.instance_menu.append($(menu_items));
+			},
+			removeInstanceMenus: function(menu_items) {
+			    self.instance_menu.find(menu_items).remove();
 			},
 			buildMenu: function(trigger) {
 			    // get the parent menu
@@ -337,7 +429,7 @@
 			    else {
 				menu = $(self.context_menu).clone();
 			    }
-			    menu.prepend(self.instance_menu);
+			    menu.prepend(self.instance_menu.html());
 			    return menu;
 			},
 			setMenu: function(menu) {
@@ -372,18 +464,24 @@
 	     return false;
 	   });
     }
-    $.fn.context_menu = function(menu, conf) {
-	      conf = $.extend(true, {}, $.roxiware.context_menu.conf, conf);
+    $.fn.context_menu = function(menu_or_api, conf_or_data) {
 	      var cm_api = null;
 	      this.each(function() {
 		      cm_api = $(this).data("context_menu");
 		      if(!cm_api) {
-		         cm_api = new ContextMenu($(this), menu, conf);
+	                 var conf = $.extend(true, {}, $.roxiware.context_menu.conf, conf_or_data);
+		         cm_api = new ContextMenu($(this), menu_or_api, conf);
 		         $(this).data("context_menu", cm_api);
 		      }
 		      else {
-			  if(menu) {
-			      cm_api.setMenu(menu);
+			  if(menu_or_api == "add_instance_menus") {
+			      cm_api.addInstanceMenus(conf_or_data);
+		          }
+			  else if(menu_or_api == "remove_instance_menus") {
+			       cm_api.removeInstanceMenus(conf_or_data);
+		          }
+			  else if (menu_or_api != null) {
+			      cm_api.setMenu(menu_or_api);
 			  }
 		      }
 			  

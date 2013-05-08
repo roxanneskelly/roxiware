@@ -13,7 +13,7 @@ class Roxiware::ContactController < ApplicationController
 	 end
 	 if mailer_params.h['notification'].present? && mailer_params.h['notification'].h['content'].present? && mailer_params.h['notification'].h['subject'].present?
 	      params[:email] = Roxiware::Param::Param.application_param_val("system", "webmaster_email")
-              Roxiware::ContactMailer.contact_mailer(mailer_params.h['notification'].h['content'].to_s, mailer_params.h['notification'].h['subject'].to_s, params).deliver
+              Roxiware::ContactMailer.contact_mailer(mailer_params.h['notification'].h['content'].to_s, mailer_params.h['notification'].h['subject'].to_s+" : "+params[:email], params).deliver
 	 end
 	 flash[:notice] = "Your request has been sent."
      rescue Exception => e

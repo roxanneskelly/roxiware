@@ -22,10 +22,10 @@ $(function() {
      $.notice("<%= flash_content[:notice] %>");
    <% end %>
    <% if flash_content[:alert].present? %>
-     $.notice("<%= flash_content[:alert] %>");
+     $.alert("<%= flash_content[:alert] %>");
    <% end %>
    <% if flash_content[:error].present? %>
-     $.notice("<%= flash_content[:error] %>");
+     $.error("<%= flash_content[:error] %>");
    <% end %>
 });
 </script>

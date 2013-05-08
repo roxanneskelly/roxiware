@@ -21,7 +21,7 @@ Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight
   <%= link_to("", events_path, :class=>"events_widget_title") %>
   <% events.each do |event|  %>
     <div id="event-<%= event.id %>" class="event_widget_event">
-      <%= link_to(event.title, events_path, :anchor => "event-#{ event.id }", :class=>:event_widget_title) %>
+      <%= link_to(event.title || "", events_path, :anchor => "event-#{ event.id }", :class=>:event_widget_title) %>
       <div class="event_widget_date">
 	<%= show_time = event.start.strftime("%b %e")
 	    if (event.duration_units == "days" && event.duration.present? && event.duration > 1)

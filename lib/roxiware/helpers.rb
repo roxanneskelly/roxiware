@@ -1,5 +1,4 @@
 require 'uri'
-include ActionView::Helpers::UrlHelper
 module Roxiware
   module Helpers
       def date_field_tag(name, value = nil, options = {})

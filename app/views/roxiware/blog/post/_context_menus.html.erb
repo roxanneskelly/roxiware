@@ -18,7 +18,7 @@ $(document).bind("ready", function() {
                       type:"DELETE",
                       dataType: "json", 
                       success: function(json_data, textStatus, jqXHR) {
-                         window.location = "<%= blog_path %>";
+                         window.location.reload();
                       }
                });
               }

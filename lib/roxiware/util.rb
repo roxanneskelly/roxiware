@@ -2,6 +2,14 @@ module Roxiware
   module Util
     def store_location
       if  ["show", "index"].include?(params[:action])
+         puts "STORING LOCATION #{request.fullpath}"
+	 begin
+	 if request.fullpath == "/"
+	     raise Exception.new("bleah")
+	 end
+	 rescue Exception => e
+	    puts e.backtrace.join("\n")
+	 end
          session[:return_to] = request.fullpath
       end
     end

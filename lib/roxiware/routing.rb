@@ -5,11 +5,11 @@ module Roxiware::RoutingHelpers
 	def self.applications=(new_apps)
 	   @@apps = new_apps
 	end
-        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :contact]
+        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :news, :contact]
 
 	APP_TYPES = {
-	    :author=>[:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :contact],
-	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact, :news]
+	    :author=>[:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :blog_base, :contact],
+	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact, :news, :blog_base]
 	}
 
         APPLICATION_DEPENDENCIES = {
@@ -25,8 +25,9 @@ module Roxiware::RoutingHelpers
 	    :uploads=>[],
 	    :settings=>[],
 	    :sitemap=>[],
-	    :blog=>[:uploads],
-	    :news=>[:blog, :uploads],
+	    :blog_base=>[:uploads],
+	    :blog=>[:blog_base, :uploads],
+	    :news=>[:blog_base, :uploads],
 	    :contact=>[]
 	}
 end
@@ -43,12 +44,10 @@ module ActionDispatch::Routing
 	    options[:skip] = options[:skip].collect{|app| app.to_sym} if options[:skip].present?
 	    options[:with] = options[:with].collect{|app| app.to_sym} if options[:with].present?
 
-	    options[:blog_classes] ||= [:blog]
-
 	    applications = Roxiware::RoutingHelpers.applications
 	    applications = applications & Roxiware::RoutingHelpers::APP_TYPES[options[:application].to_sym] if options[:application].present?
 	    applications = applications & options[:only] if options[:only].present?
-	    applications = applications & options[:skip] if options[:skip].present?
+	    applications = applications - options[:skip] if options[:skip].present?
 	    applications = applications + options[:with].select{|app| !applications.include?(app)} if options[:with].present?
 	    Roxiware::RoutingHelpers::APPLICATION_DEPENDENCIES.each do |application, dependencies|
 	        applications = applications + dependencies.select{|app| !applications.include?(app)} if applications.include?(application)
@@ -143,20 +142,24 @@ module ActionDispatch::Routing
 	    end
 	end
 
-        def roxiware_blog
+        def roxiware_blog_base
 	    namespace :blog do
 	      resources :post do
 		 resources :comment
 	      end
+	    end
+	end
+
+        def roxiware_blog
+	    namespace :blog do
 	      get "(:year(/:month(/:day)))" => "post#index_by_date"
 	      get ":year/:month/:day/:title"=> "post#show_by_title"
 	      get ":year/:month/:day/:title/edit" => "post#edit_by_title"
 	      put ":year/:month/:day/:title" => "post#update_by_title"
 	      delete ":year/:month/:day/:title" => "post#destroy_by_title"
-	    end
+            end
 	    get ":year/:month/:title" => "blog/post#redirect_by_title", :constraints => {:year => /\d{4}/}
-	end
-
+        end
 
         def roxiware_news
 	    scope "/news" do

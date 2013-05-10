@@ -75,6 +75,7 @@ module Roxiware
               conditions[:terms] = {:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::TAG_NAME), :seo_index=>params[:tag]}
 	   end
 
+           puts "BLOG CURRENT USER " + current_user.inspect
 	   if conditions.has_key?(:terms)
 	     @posts = Roxiware::Blog::Post.joins(:terms).visible(current_user).includes(:term_relationships, :terms).where(conditions).order("post_date DESC")
 	   else 

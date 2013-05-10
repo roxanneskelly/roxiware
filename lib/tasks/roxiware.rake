@@ -360,4 +360,85 @@ namespace :roxiware do
        Rake::Task["db:migrate"].invoke
        #Rake::Task["roxiware:init"].invoke(args[:instance_type])
     end
+
+    desc "Init Webserver Config"
+    task :config_web, [:host, :domain_name,:aliases]=>:environment do |t,args|
+        domain_name=args[:domain_name]
+	aliases=args[:aliases]
+        conf_file_data = <<-EOF
+server {
+    listen #{args[:host]}:80;
+    server_name #{args[:domain_name]} #{args[:aliases]};
+
+    access_log /home/roxiwarevps/sites/#{domain_name}/log/access.log combined;
+    error_log /home/roxiwarevps/sites/#{domain_name}/log/error.log error;
+
+    root /home/roxiwarevps/sites/#{domain_name}/public;
+
+    index index.html index.htm index.php index.php5;
+
+    # No mirrors - using strict redirects
+    if ($http_host != setup901.roxiware.com) {
+        rewrite ^(.*)$ http://#{domain_name}$1 permanent;
+    }
+
+    autoindex on;
+
+    passenger_enabled on;
+    passenger_base_uri /;
+
+    # Disallow access to config / VCS data
+    location ~* /\.(ht|svn|git) {
+        deny all;
+    }
+    # Statistics
+    location /stats/ {
+        alias /home/roxiwarevps/sites/#{domain_name}/stats;
+        auth_basic "Statistics Area";
+        auth_basic_user_file /home/roxiwarevps/sites/#{domain_name}/stats/.htpasswd;
+    }
+
+    location /doc/analog/ {
+        alias /usr/share/analog/;
+    }
+
+    # PHPMyAdmin
+    rewrite ^/dh_phpmyadmin/([^/]*)/(.*)$ /dh_phpmyadmin/$2;
+
+    location /dh_phpmyadmin/ {
+        alias /dh/web/phpmyadmin/;
+    }
+
+    location ~ /dh_phpmyadmin/(.+)\.php {
+        alias /dh/web/phpmyadmin/;
+        fastcgi_param SERVER_PORT 80;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include /dh/nginx/etc/fastcgi_params;
+        set $relpath "index.php";
+        if ($uri ~ ^/dh_phpmyadmin/(.+)$) {
+            set $relpath $1;
+        }
+        fastcgi_param SCRIPT_FILENAME /dh/web/phpmyadmin/$relpath;
+        fastcgi_pass unix:/home/roxiwarevps/.php.sock;
+    }
+
+    # PHP
+    location ~* \.(php|php5|php4)($|/) {
+        fastcgi_param SERVER_PORT 80;
+        fastcgi_split_path_info ^(.+\.(?:php|php5|php4))(/.*)$;
+        if (!-e $document_root$fastcgi_script_name) {
+            return 404;
+        }
+        include /dh/nginx/etc/fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/home/roxiwarevps/.php.sock;
+        #pragma php_launch roxiwarevps
+    }
+
+}
+EOF
+        File.open(Rails.root.join("config","nginx.conf"), "w") do |f|
+            f.write(conf_file_data)
+        end
+    end
 end

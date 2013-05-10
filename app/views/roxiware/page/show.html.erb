@@ -1,4 +1,5 @@
 <section class="page_content">
+<% puts "PAGE IS #{@page.inspect}" %>
   <% if (can? :edit, @page) %>
        <ul id="page_index_application_menu" class="application_menu"><li><a rel="<%= edit_page_path(@page.page_identifier) %>" form="Edit <%= @page.page_type.titleize %>">Edit <%= @page.page_type.titleize %></a></li></ul>
 

@@ -50,7 +50,7 @@ module Roxiware
     ajax_attr_accessible :guid, :blog_class, :post_date, :post_exerpt, :post_link, :post_title, :post_content, :person_id, :post_status, :comment_permissions, :tag_csv, :category_name
     
     scope :published, where(:post_status=>"publish")
-    scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR post_status='publish'")) }
+    scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id || 0} OR post_status='publish'")) }
 
     after_save do
       Roxiware::Blog.notify_update

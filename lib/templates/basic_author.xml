@@ -1125,14 +1125,6 @@ a.<%= soc_net %>_button:hover {
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
                     <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
                   </param>
-                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-1">
-                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">5px</param>
-                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-11px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Faith Hunter</param>
-                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
-                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">20</param>
-                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
-                  </param>
                 </param>
               </params>
             </instance>

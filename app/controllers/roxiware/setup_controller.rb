@@ -522,6 +522,9 @@ class Roxiware::SetupController < ApplicationController
 		    Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:template_guid])
 		    Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:template_scheme])
 		    refresh_layout
+		    @current_template = params[:template_guid]
+		    @layout_scheme = params[:template_scheme]
+		    load_layout
 		    run_layout_setup
 		    result = _set_setup_step("complete")
 		end

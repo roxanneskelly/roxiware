@@ -24,7 +24,10 @@ events and other things in order to edit them, or create new ones.</li>
 <script>
 $(function() {
    $("button#done").click(function() {
-       window.location.href = "/";
+<% site_url = Roxiware::Param::Param.application_param_val('system', 'hostname') 
+   site_url = "http://#{site_url}" if site_url.present?
+   site_url = "/" if site_url.blank? %>
+       window.location.href = "<%= site_url %>";
    });
 });
 </script>

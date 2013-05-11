@@ -5,10 +5,10 @@ module Roxiware::RoutingHelpers
 	def self.applications=(new_apps)
 	   @@apps = new_apps
 	end
-        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :news, :contact]
+        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :news, :contact]
 
 	APP_TYPES = {
-	    :author=>[:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog, :blog_base, :contact],
+	    :author=>[:setup, :page, :account, :design, :people, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :contact],
 	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact, :news, :blog_base]
 	}
 
@@ -45,13 +45,17 @@ module ActionDispatch::Routing
 	    options[:with] = options[:with].collect{|app| app.to_sym} if options[:with].present?
 
 	    applications = Roxiware::RoutingHelpers.applications
-	    applications = applications & Roxiware::RoutingHelpers::APP_TYPES[options[:application].to_sym] if options[:application].present?
+	    applications = applications.select{|app| Roxiware::RoutingHelpers::APP_TYPES[options[:application].to_sym].include?(app)} if options[:application].present?
+	    puts "APPLICATIONS1 #{applications.inspect}"
 	    applications = applications & options[:only] if options[:only].present?
 	    applications = applications - options[:skip] if options[:skip].present?
 	    applications = applications + options[:with].select{|app| !applications.include?(app)} if options[:with].present?
+
 	    Roxiware::RoutingHelpers::APPLICATION_DEPENDENCIES.each do |application, dependencies|
 	        applications = applications + dependencies.select{|app| !applications.include?(app)} if applications.include?(application)
 	    end
+
+	    puts "APPLICATIONS #{applications.inspect}"
 	    Roxiware::RoutingHelpers.applications = applications
 
 	    mount Roxiware::Engine => "/", :as=>"roxiware"	    

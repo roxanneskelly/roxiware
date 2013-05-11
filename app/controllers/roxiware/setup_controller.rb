@@ -527,6 +527,10 @@ class Roxiware::SetupController < ApplicationController
 		    load_layout
 		    run_layout_setup
 		    result = _set_setup_step("complete")
+
+		    # generate initial blog post
+		    _gen_initial_blog_post
+
 		end
 	    rescue Exception => e
 		result = {:error=>[["exception", e.message]]}
@@ -582,5 +586,29 @@ class Roxiware::SetupController < ApplicationController
     def _get_goodreads_author_series
        goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)
        goodreads.search_series({:goodreads_author_id=>current_user.person.goodreads_id})
+    end
+
+    def _gen_initial_blog_post
+        latest_book = Roxiware::Book.where(:publish_date=>(DateTime.new()..DateTime.now())).order("publish_date DESC").limit(1).first
+	if latest_book.present?
+            book_post = <<EOF
+<p>Welcome to my website!</p>
+<p>Be sure to check out my <a href="/books">books</a>, and if you'd like to find out more about me, take a look at my <a href="/biography">biography</a>.</p>
+<p>And definitely enjoy my latest</p></br>
+<a href="#{book_path(latest_book.seo_index)}" style="font-size:2em">#{ latest_book.title}</a><p style="clear:both"><a href="#{book_path(latest_book.seo_index)}"><img src="#{latest_book.image_url}" style="float:left;margin:5px;"/></a>#{latest_book.description}<br></p>
+<p><br/>
+<br/>
+- #{current_user.person.full_name}
+</p>
+EOF
+
+           @post = Roxiware::Blog::Post.create({:person_id=>current_user.person.id,
+                                             :post_date=>DateTime.now.utc,
+                                             :blog_class=>(params[:blog_class] || "blog"),
+                                             :post_content=>book_post,
+                                             :post_title=>"Welcome!",
+                                             :comment_permissions=>"default",
+                                             :post_status=>"publish"}, :as=>"")
+	end
     end
 end

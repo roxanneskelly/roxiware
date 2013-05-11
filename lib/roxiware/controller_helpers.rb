@@ -225,7 +225,7 @@ module Roxiware
 	   if (params[:controller] == "devise/sessions") 
 	      self.class.layout "roxiware/layouts/setup_layout"
 	   elsif params[:controller] != "roxiware/setup"
-              redirect_to setup_path
+              redirect_to "#{setup_path}?key=#{params[:key]}"
            end
 	   return false
  	end

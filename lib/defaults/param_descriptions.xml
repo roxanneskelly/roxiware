@@ -86,6 +86,13 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+ <param_description guid="9311CEF8-86CE-44C0-B3DD-126B718A26C2">
+    <name>Hostname</name>
+    <description>Hostname</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
   <param_description guid="317C7D1C-7316-4B00-9E1F-931E2867B436">
     <name>Setup Step</name>
     <description>The step in setup for the website</description>

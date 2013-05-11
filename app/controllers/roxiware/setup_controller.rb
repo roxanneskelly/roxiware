@@ -1,6 +1,5 @@
 
 class Roxiware::SetupController < ApplicationController
-
    application_name = 'setup'
    
    layout "roxiware/layouts/setup_layout"
@@ -11,10 +10,40 @@ class Roxiware::SetupController < ApplicationController
       @setup_step ||= "welcome"
       authenticate_user! if @setup_step != "welcome"
       @setup_type = nil if @setup_step == "welcome"
+
+      @verifier ||= ActiveSupport::MessageVerifier.new(AppConfig.host_setup_verify_key)
+      @verified_params = @verifier.verify(params[:key]) if params[:key].present?
+      @verified_params = nil if @verified_params.present? && (@verified_params.shift < Time.now)
+      
    end
 
    # GET /setup
    def show
+      if @verified_params.present? && @setup_step == "welcome"
+          puts @verified_params.inspect
+          app_type, hostname, username, email, first_name, middle_name, last_name = @verified_params
+
+	  case app_type
+	     when "basic_author"
+	        @setup_type = "author"
+	     when "premium_author"
+	        @setup_type = "author"
+	     when "basic_blog"
+	        @setup_type = "blog"
+	     when "premium_blog"
+	        @setup_type = "blog"
+	     else
+	        @setup_type = "idunno"
+	  end
+	  puts "SETUP TYPE IS #{@setup_type}"
+	  @user = Roxiware::User.create({:username=>username, :email=>email, :password=>"Password", :password_confirmation=>"Password", :role=>"admin"}, :as=>"")
+          sign_in(:user, @user)
+          Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", @setup_type)
+          Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", hostname)
+          @user.build_person({:first_name=>first_name, :last_name=>last_name, :middle_name=>middle_name, :role=>"", :bio=>"", :email=>email}, :as=>"")
+          _set_setup_step("import_biography")
+      end
+
       template = [@setup_type, @setup_step].compact.join("_")
       setup_function = "_show_"+[@setup_type, @setup_step].compact.join("_")
       send("_show_"+[@setup_type, @setup_step].compact.join("_")) if respond_to?(setup_function, true)
@@ -86,6 +115,7 @@ class Roxiware::SetupController < ApplicationController
     def _set_setup_step(setup_step)
        begin
 	   Roxiware::Param::Param.set_application_param("setup", "setup_step", "317C7D1C-7316-4B00-9E1F-931E2867B436", setup_step)
+	   @setup_step = setup_step
        rescue Exception => e
 	   result = {:error=>[["exception", e.message]]}
 	   puts "FAILURE setting setup step: #{e.message}"
@@ -100,11 +130,6 @@ class Roxiware::SetupController < ApplicationController
        result = nil
        ActiveRecord::Base.transaction do
            begin
-	       if(params[:setup_step] == "welcome")
-		   @user = Roxiware::User.where(:username=>params[:username]).first
-	       else
-		   @user = Roxiware::User.new
-	       end
 	       @user = Roxiware::User.new
 	       if @user.update_attributes(params, :as=>"")
 		    @user.role = "admin"

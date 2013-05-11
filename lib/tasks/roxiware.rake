@@ -377,11 +377,6 @@ server {
 
     index index.html index.htm index.php index.php5;
 
-    # No mirrors - using strict redirects
-    if ($http_host != setup901.roxiware.com) {
-        rewrite ^(.*)$ http://#{domain_name}$1 permanent;
-    }
-
     autoindex on;
 
     passenger_enabled on;

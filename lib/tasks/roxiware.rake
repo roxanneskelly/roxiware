@@ -239,10 +239,10 @@ end
 namespace :roxiware do
     desc "Backup a roxiware instance"
     task :backup do |t|
-        root_path = ENV['SITE_BACKUP_DIR']  || Rails.root.join("backups").to_s
+        root_path = Rails.root.join("backups").to_s
 	backup_dirname = DateTime.now.strftime("%Y%m%d%H%M%S%L")
 	path = Pathname.new(root_path).join(DateTime.now.strftime("%Y%m%d%H%M%S%L"))
-        Dir.mkdir Pathname.new(root_path)if !(File.directory? Pathname.new(root_path))
+        Dir.mkdir Pathname.new(root_path) if !(File.directory? Pathname.new(root_path))
         Dir.mkdir path
 	
 	db_path = Rails.root.join("db", ENV['RAILS_ENV']+".sqlite3")
@@ -262,15 +262,15 @@ namespace :roxiware do
         FileUtils.cp_r files, path.join("uploads")
 	sh "tar -C #{path} -czf #{path}.tgz ."
 	FileUtils.rm_r(path)
+        if AppConfig.root_backup_location.present?
+	    sh "rsync -az -e ssh #{root_path}/*.tgz '#{AppConfig.root_backup_location}/#{Rails.root.split().last}'"
+        end
     end
 
     desc "Restore a roxiware instance"
-    task :restore do |t|
-        backup_file = ENV['BACKUP_FILE']
-	if backup_file.blank?
-            root_path = ENV['SITE_BACKUP_DIR']  || Rails.root.join("backups").to_s
-            backup_file = Dir.glob(Pathname.new("#{root_path}").join("*.tgz")).sort_by{|p| p.to_s}.last
-	end
+    task :restore, [:backup_file]=>:environment do |t,args|
+        backup_file = args[:backup_file] || Dir.glob(Rails.root.join("backups", "*.tgz")).sort_by{|p| p.to_s}.last
+
 	puts "Restoring from #{backup_file}"
 
 	if ENV['RAILS_ENV'] == "development"
@@ -282,7 +282,7 @@ namespace :roxiware do
 	FileUtils.rm_r(asset_dir.join("uploads.old")) if File.directory? asset_dir.join("uploads.old")
 	FileUtils.mv asset_dir.join("uploads"), asset_dir.join("uploads.old") if File.directory? asset_dir.join("uploads")
 	FileUtils.mkdir asset_dir.join("uploads")
-	sh "tar -C #{asset_dir} -xzf #{backup_file} --include uploads/* "
+	sh "tar -C #{asset_dir} -xzf #{backup_file} --include='uploads/*'"
 	puts "done"
 
 	sh "tar -C #{Rails.root.join("db")} -xzf #{backup_file} --include db.sqlite3"

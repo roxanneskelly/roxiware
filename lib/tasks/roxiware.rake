@@ -240,8 +240,8 @@ namespace :roxiware do
     desc "Backup a roxiware instance"
     task :backup do |t|
         root_path = Rails.root.join("backups").to_s
-	backup_dirname = DateTime.now.strftime("%Y%m%d%H%M%S%L")
-	path = Pathname.new(root_path).join(DateTime.now.strftime("%Y%m%d%H%M%S%L"))
+	backup_base_name = DateTime.now.strftime("%Y%m%d%H%M%S%L")
+	path = Pathname.new(root_path).join(backup_base_name)
         Dir.mkdir Pathname.new(root_path) if !(File.directory? Pathname.new(root_path))
         Dir.mkdir path
 	
@@ -263,7 +263,12 @@ namespace :roxiware do
 	sh "tar -C #{path} -czf #{path}.tgz ."
 	FileUtils.rm_r(path)
         if AppConfig.root_backup_location.present?
-	    sh "rsync -az -e ssh #{root_path}/*.tgz '#{AppConfig.root_backup_location}/#{Rails.root.split().last}'"
+	    backup_server, backup_path = AppConfig.root_backup_location.split(":")
+	    puts "BACKUP SERVER: #{backup_server}"
+	    puts "BACKUP PATH #{backup_path}"
+	    backup_path += "/#{Rails.root.split().last}"
+	    sh "ssh #{backup_server} '[ -d #{backup_path} ] || mkdir -p #{backup_path}'"
+	    sh "scp #{path}.tgz '#{backup_server}:#{backup_path}'"
         end
     end
 

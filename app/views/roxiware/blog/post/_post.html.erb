@@ -20,7 +20,7 @@
      <% if  !post.category_ids.nil? %>
           <div class="post_categories">
 	   <%  post.category_ids.each do |category_id| %>
-	     <%= link_to Roxiware::Terms::Term.categories()[category_id].name, blog_path(:category=>Roxiware::Terms::Term.categories()[category_id].seo_index), :class=>"post_category"  %>
+	     <%= link_to Roxiware::Terms::Term.categories()[category_id].name, send("#{@blog_class}_path", :category=>Roxiware::Terms::Term.categories()[category_id].seo_index), :class=>"post_category"  %>
 	   <% end %>
           </div>
      <% end %>
@@ -55,7 +55,7 @@
           <% if !post.tag_ids.blank? %>
 	    <div class="post_tags">
 	     Tags: <% post.tags.each do |tag| %>
-	       <%= link_to tag.name, blog_path(:tag=>tag.seo_index), :class=>"post_tag"  %>
+	       <%= link_to tag.name, send("#{@blog_class}_path", :tag=>tag.seo_index), :class=>"post_tag"  %>
 	     <% end %>
 	   </div>
           <% end %>

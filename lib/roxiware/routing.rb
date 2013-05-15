@@ -166,7 +166,7 @@ module ActionDispatch::Routing
         end
 
         def roxiware_news
-	    scope "/news" do
+	    scope "/news", :as=>"news" do
 	      get "(:year(/:month(/:day)))" => "blog/post#index_by_date", :blog_class=>"news"
 	      get ":year/:month/:day/:title"=> "blog/post#show_by_title", :blog_class=>"news"
 	    end

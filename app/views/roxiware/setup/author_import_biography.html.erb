@@ -2,9 +2,9 @@
 <div class="wizard_instructions">
 Let's see if we can find your biography information online.<br/><br/>
 Paste or type your name, a link to your authors page on goodreads, or the link, ISBN, or ISBN13 of one of your books, and we'll search for your biography.</div>
-<div id="import_search_field"><%= search_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN") %><%= button_tag "Search", :id=>"import_search", :type=>"button"%></div>
+<div id="import_search_field"><%= text_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN", :class=>"search_field") %><%= button_tag "Search", :id=>"import_search", :type=>"button", :class=>"search_button"%></div>
 <div id="import_search_status"></div>
-<div id="import_search_results"></div>
+<div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
 
 <%= form_tag '/setup', :method=>"put" do %>
 <%= hidden_field_tag :goodreads_id, nil %>
@@ -61,33 +61,21 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
          $("#import_search_status").html("Searching...");
          $.getJSON(endpoint,
               function(data) {
-                  $("div#import_search_results").html("");
+                  $("div#import_search_results div.list_box_content").html("");
                   $("#import_search_status").html("Click on your bio.  If it's not there, try another search.");
                        
                   if(data.length > 0) {
 		      $.each(data, function(index, author) {
-                          var books = "<div class='author_books'>";
-		          $.each(author["books"], function(index, book) {
-                              var insert = (index?", ":"");
-                              if(index <= 5) {
-                                  books = books + insert + book["title"];
-                               }
-                          });
-			  if (author["books"].length > 5) {
-                              books = books + "...";
-                          }
-	                  books = books+"</div>";
-                          var author_html = $("<div class='search_result' goodreads_id='"+author["goodreads_id"]+"'>"+
+                          var author_html = $("<div class='author_search_result list_box_item' goodreads_id='"+author["goodreads_id"]+"'>"+
                                               "<img src='"+author["thumbnail_url"]+"'/><div class='author_info'>"+
-                                              "<div class='author_name'>"+author["name"]+"</div>"+
-                                              "<div class='author_about'>"+author["about"]+"</div>"+
-                                              books +
+                                              "<h2 class='author_name'>"+author["name"]+"</h2>"+
+                                              "<div class='author_about'>"+author["bio"]+"</div>"+
                                               "</div>");
 			  author_html.data().author_data = author;
-			  $("div#import_search_results").append(author_html);
+			  $("div#import_search_results div.list_box_content").append(author_html);
 		      });
 
-                      $(".search_result").click(function() {
+                      $(".list_box_item").click(function() {
 			    $(".watermark").val("");
                             $("input[type=hidden]#goodreads_id").val($(this).attr("goodreads_id"));
 
@@ -108,6 +96,7 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
 					})
 				    }
 				    else {
+                                        $.wait();
 					window.location="<%= setup_path %>";
 				    }
 				}}); 

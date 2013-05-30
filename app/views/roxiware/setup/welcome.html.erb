@@ -6,12 +6,11 @@ the service.<br/>
 Let's get started.  First, lets set up an account.  You will use this account to manage your site.
 </div>
 <br/>
-<br/>
 <%= form_tag '/setup', :method=>"put", :authenticity_token=>false do -%>
-  <%= label_tag "Email" %><%= email_field_tag :email, params[:email] , { :autocomplete=>"off", :watermark=>"my@email.com"}  %><br/><br/>
-  <%= label_tag "Username" %><%= text_field_tag :username, "", { :autocomplete=>"off", :watermark=>"myusername"}  %><br/><br/>
-  <%= label_tag "Password" %><%= password_field_tag :password,  "", { :autocomplete=>"off", :watermark=>"********" }  %><br/>
-  <%= label_tag "Password Confirmation" %><%= password_field_tag :password_confirmation, "", { :autocomplete=>"off", :watermark=>"********"} %><br/><br/>
+  <div id="email_entry"><%= label_tag "Email" %><%= email_field_tag :email, params[:email] , { :autocomplete=>"off", :watermark=>"my@email.com"}  %></div>
+  <div id="username_entry"><%= label_tag "Username" %><%= text_field_tag :username, "", { :autocomplete=>"off", :watermark=>"myusername"}  %></div>
+  <div id="password_entry"><%= label_tag "Password" %><%= password_field_tag :password,  "", { :autocomplete=>"off", :watermark=>"********" }  %></div>
+  <div id="password_confirmation_entry"><%= label_tag "Password Confirmation" %><%= password_field_tag :password_confirmation, "", { :autocomplete=>"off", :watermark=>"********"} %></div>
   <%= hidden_field_tag :setup_type, @setup_type %>
   <%= hidden_field_tag :setup_step, @setup_step %>
 <% end -%>

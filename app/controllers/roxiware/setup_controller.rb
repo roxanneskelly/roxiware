@@ -105,6 +105,10 @@ class Roxiware::SetupController < ApplicationController
 	     search_params[:name] = params[:search] 
 	     search_params[:title] = params[:search]
 	     result = goodreads.search_author(search_params)
+	     result.each do |author| 
+	        author[:bio] = Sanitize.clean(author[:about][0..300], Roxiware::Sanitizer::BASIC_SANITIZER)+"..."
+	        puts "AUTHOR " + author[:bio]
+	     end
 	   end
        end
        respond_to do |format|
@@ -283,6 +287,8 @@ class Roxiware::SetupController < ApplicationController
 			       end
 			   end
 			   result = _set_setup_step("manage_books")
+			   # preload the list of books
+			   _show_author_manage_books
 		       rescue Exception => e
 			   print e.message
 			   puts e.backtrace.join("\n")
@@ -306,7 +312,10 @@ class Roxiware::SetupController < ApplicationController
         @books = Roxiware::Book.order("publish_date DESC")
         if @books.blank? && current_user.person.goodreads_id
 	    seo_books = {}
+	    grid_books = []
 	    _get_goodreads_author_books.each do |book|
+	        next if grid_books.include?(book.goodreads_id)
+		grid_books << book.goodreads_id
 	        seo_title = book.title.to_seo
 		init_title = book.title
 		title_add = 1

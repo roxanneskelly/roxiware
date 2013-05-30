@@ -1,26 +1,32 @@
 <div id="event_edit_form" class="medium_form">
 <%= form_for @event do |event|%>
   <div id="left_section">
-    <%= event.label :start_time, "Start" %>
-    <%= event.text_field :start_date, :class=>"jquerytools_date" %>
-    <%= event.select :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}, @event.start_time) %>
-    <br/>
-    <%= event.label :duration, "Duration" %>
-    <%= event.select :duration, options_for_select((1..24).collect(), @event.duration), :include_blank=>true %>
-    <%= event.select :duration_units, options_for_select([["Minutes","minutes"], ["Hours","hours"],  ["Days","days"]], @event.duration_units), :include_blank=>false %>
-  </div><div id="right_section">
-    <%= event.text_field :location, :watermark=>"Location", :title=>"Location" %>
-    <br/>
-    <%= event.text_field :city, :watermark=>"City", :title=>"City" %>
-    <%= event.text_field :state, :watermark=>"State", :title=>"State" %>
+    <div id="start_entry"><%= event.label :start_time, "Start" %>
+        <%= event.text_field :start_date, :class=>"jquerytools_date" %>
+        <%= event.select :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}, @event.start_time) %>
+    </div>
+    <div id="duration_entry"><%= event.label :duration, "Duration" %>
+        <%= event.select :duration, options_for_select((1..24).collect(), @event.duration), :include_blank=>true %>
+        <%= event.select :duration_units, options_for_select([["Minutes","minutes"], ["Hours","hours"],  ["Days","days"]], @event.duration_units), :include_blank=>false %>
+    </div>
   </div>
-  <div id="url_box">
+   <div id="right_section">
+    <div id="location_entry"><%= event.label :location, "Location" %><%= event.text_field :location, :watermark=>"Location", :title=>"Location" %>
+         <br/>
+        <%= event.text_field :city, :watermark=>"City", :title=>"City" %><%= event.text_field :state, :watermark=>"State", :title=>"State" %>
+    </div>
+  </div>
+  <div id="url_entry">
     <%= event.label :location_url, "URL" %>
     <%= event.text_field :location_url, :watermark=>"MAP URL, Facebook URL, etc.", :title=>"URL associated with this event" %>
+  </div>
+  <div id="title_entry">
     <%= event.label :title, "Title" %><%= event.text_field :title, :watermark=>"Title", :title=>"Title associated with this event" %>
   </div>
-    <div id="description"><div class="settings_wysiwyg"><%= event.text_area :description, :class=>"event_description settings_wysiwyg" %></div></div>
-    <br/>
+  <div id="description_entry">
+      <%= event.label :description, "Description" %>
+      <div id="description"><div class="settings_wysiwyg"><%= event.text_area :description, :class=>"event_description settings_wysiwyg" %></div></div>
+  </div>
     <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
 <% end %>
 </div>

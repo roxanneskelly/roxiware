@@ -22,6 +22,7 @@
   <div class="settings setup_content_wrap">
     <header>
     </header>
+    <div class="settings_title_reflect"><%= @setup_step.gsub('_',' ').titleize %></div>
     <div class="settings_title"><%= @setup_step.gsub('_',' ').titleize %></div>
     <% if flash[:notice].present? || flash[:alert].present? || flash[:error].present? %>
       <div class="flash_section">

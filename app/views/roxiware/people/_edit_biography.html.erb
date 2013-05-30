@@ -1,18 +1,14 @@
 <div id="biography">
     <div id="left_section">
-        <%= person_form.label :name, "Name"%>
+        <div id="name_entry"><%= person_form.label :name, "Name"%>
 	<%= person_form.text_field :first_name, :size=>25, :watermark=>"First"  %>
 	<%= person_form.text_field :middle_name, :size=>25, :watermark=>"Middle" %>
-	<%= person_form.text_field :last_name, :size=>25, :watermark=>"Last" %>
-	<br/>
+	<%= person_form.text_field :last_name, :size=>25, :watermark=>"Last" %></div>
 	<% if @setup_type != "author" %>
-	    <%= person_form.label :role, "Role"%>
-	    <%= person_form.text_field :role, :size=>50 %>
+	    <div id="role_entry"><%= person_form.label :role, "Role"%><%= person_form.text_field :role, :size=>50 %></div>
 	<% end %>
-	<br/>
-	<%= person_form.label :email, "Email" %>
-	<%= person_form.text_field :email, :size=>255 %>
-	<br/>
+	<div id="email_entry"><%= person_form.label :email, "Email" %>
+	<%= person_form.email_field :email, :size=>255 %></div>
 	<% if @setup_step == "complete" && @setup_type != "author" %> 
 	   <%  website = nil
 	       if @person.get_param("social_networks").present? && @person.get_param("social_networks").h["website"].present?
@@ -21,8 +17,8 @@
 	   
 	   <%= person_form.fields_for :params do |params| %>
 	      <%= params.fields_for :social_networks do |social_networks| %>
-		    <%= social_networks.label :website, "Website"%>
-		    <%= social_networks.text_field :website, :watermark=>"http://www.mywebsite.com/", :value=>website %>
+		    <div id="website_entry"><%= social_networks.label :website, "Website"%>
+		    <%= social_networks.text_field :website, :watermark=>"http://www.mywebsite.com/", :value=>website %></div>
 	      <% end %>
 	   <% end %>
         <% end %>
@@ -33,8 +29,8 @@
         <%= person_form.hidden_field :image_url %>
 	<%= person_form.hidden_field :large_image_url %>
 	<%= person_form.hidden_field :thumbnail_url %>
-	<input type="hidden" name="image_thumbprint"/>
     </div>
+   <%= person_form.label :bio, "Biography" %>
    <div id="bottom_section"><div class="settings_wysiwyg"><%= person_form.text_area :bio, :class=>"settings_wysiwyg" %></div></div>
 </div>
 <script>

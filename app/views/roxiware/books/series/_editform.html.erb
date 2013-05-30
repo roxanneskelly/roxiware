@@ -1,29 +1,31 @@
 <div id="series_edit_form" class="large_form">
-  <div class="tab_form">
-      <ul class="tabs">
-	<% if @series.id.blank? %>
-	<li><a href="#">Import</a></li>
+  <% if @series.id.blank? %>
+      <div class="tab_form">
+	  <ul class="tabs">
+	    <li><a href="#">Import</a></li>
+	    <li><a href="#">Edit</a></li>
+	  </ul>
+	  <div class="panes">
+	      <div id="import_pane">
+		  <div class="wizard_step">Import your series.</div>
+		  <div class="wizard_instructions">Paste or type the title, ISBN, or ISBN13 of a book in the series, a Goodreads or Amazon link to the book, the series title, the author name, or a Goodreads link to the series.</div>
+		  <%= search_field_tag(:import_search, "", {:watermark=>"Member ISBN, Member Book Title, Goodreads Book or Series Link, Amazon Link"}) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
+		  <div id="import_search_status"></div>
+		  <div id="import_search_results"></div>
+	      </div>
+	      <div id="edit_pane">
+		 <%= form_for @series do |series_fields| %>
+		      <%= render :partial=>"roxiware/books/series/series_edit", :locals=>{:series_fields=>series_fields} %>
+		 <% end %>
+	      </div>
+	  </div>
+       </div>
+   <% else %>
+       <%= form_for @series do |series_fields| %>
+           <%= render :partial=>"roxiware/books/series/series_edit", :locals=>{:series_fields=>series_fields} %>
 	<% end %>
-	<li><a href="#">Edit</a></li>
-      </ul>
-      <div class="panes">
-	<% if @series.id.blank? %>
-	  <div id="import_pane">
-	      <div class="wizard_step">Import your series.</div>
-	      <div class="wizard_instructions">Paste or type the title, ISBN, or ISBN13 of a book in the series, a Goodreads or Amazon link to the book, the series title, the author name, or a Goodreads link to the series.</div>
-	      <%= search_field_tag(:import_search, "", {:watermark=>"Member ISBN, Member Book Title, Goodreads Book or Series Link, Amazon Link"}) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
-	      <div id="import_search_status"></div>
-	      <div id="import_search_results"></div>
-	  </div>
-         <% end %>
-	  <div id="edit_pane">
-	      <%= form_for @series do |series_fields| %>
-		  <%= render :partial=>"roxiware/books/series/series_edit", :locals=>{:series_fields=>series_fields} %>
-	      <% end %>
-	      <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
-	  </div>
-      </div>
-   </div>
+   <% end %>
+   <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
 </div>
 
 <script>

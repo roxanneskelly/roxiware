@@ -6,16 +6,18 @@
 	       <li><a href="<%= destroy_session_path('user') %>">Log Out</a></li>
 	       <li><a rel="<%= edit_account_path(current_user.id) %>" form="Edit Account">Edit</a></li>
 	       <li><a rel="<%= account_update_password_path %>" form="Change Password">Change Password</a></li>
-	       <% if can? :create, Roxiware::User %>
-	       <hr/>
-	      <li id="account_settings"><a rel="<%= setting_path('accounts') %>" form="Manage Accounts">Manage Accounts</a></li>
+	       <% if (((@setup_type != "author") || (current_user.role == "super")) && can?(:create, Roxiware::User)) %>
+	           <hr/>
+	           <li id="account_settings"><a rel="<%= setting_path('accounts') %>" form="Manage Accounts">Manage Accounts</a></li>
 	       <% end %>
-	   </ul></li><li id="settings_menu">Settings<ul>
+	   </ul></li>
+	    <% if ((@setup_type != "author") || (current_user.role == "super")) && (can? :create, Roxiware::Person) %>
+	        <li id="people_settings"><a rel="<%= setting_path('people') %>" form="Manage People">People</a></li>
+	    <% end %>
+
+            <li id="settings_menu">Settings<ul>
 		  <li id="layout_picker"><a rel="<%= layout_index_path %>" form="Choose Template">Template</a></li>
 		  <li id="system_settings"><a rel="<%= setting_path('system') %>" form="General Settings">General</a></li>
-		  <% if (current_user.role == "admin") || Roxiware::Param::Param.application_param_val("people", "enable_people") %>
-		      <li id="people_settings"><a rel="<%= setting_path('people') %>" form="People Settings">People</a></li>
-		  <% end %>
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("blog", "enable_blog") %>
 		      <li id="blog_settings"><a rel="<%= setting_path('blog') %>" form="Blog Settings">Blog</a></li>
 		  <% end %>
@@ -68,7 +70,8 @@ $(function() {
             mainmenuid: "settings_menu",
             orientation: 'h',
             classname: 'ddsmoothmenu_settings',
-            contentsource: "markup"
+            contentsource: "markup",
+            zIndex:10000
         });
 
         $("div#help_bar_items").append($(".help_bar_entry").css("display", "inline-block"));

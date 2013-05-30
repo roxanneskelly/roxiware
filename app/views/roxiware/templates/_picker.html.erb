@@ -1,5 +1,5 @@
 <div id="layout_picker">
-   <li id="category_list"><ul>
+   <li id="category_list" class="tree_box_content"><ul>
      <li class="category_entry" id=0><a>All</a><ul>
      <% @categories.each do |category| %>
 	<li class='category_entry' id="<%= category.id %>">
@@ -10,7 +10,7 @@
    <div id="template_pane"><div id="template_list"></div></div>
 </div>
 
-<div id="template_popup" class="medium_form"><a id="template_popup_close">x</a>
+<div id="template_popup" class="medium_form"><a class="close">x</a>
   <div id="template_popup_form">
    <div id="left_pane"></div>
    <div id="right_pane">
@@ -38,7 +38,7 @@ $(function() {
    $("button").button();
 
     $("#category_list").jstree({
-        "themes" : {"no_load" : true, url:"/assets/themes/default/style.css", theme:"default", "icons":false, "dots":false},
+        "themes" : {"no_load" : true, url:"/assets/themes/roxiware/style.css", theme:"roxiware", "icons":false, "dots":false},
         "html_data" : {
         },
         "ui" : {
@@ -72,7 +72,7 @@ $(function() {
         
        });
        $(".template_item").overlay({
-               close:$("#template_popup_close"),
+               close:$(".close"),
                target:$("#template_popup"),
 	       top: "10%",
                oneInstance: false,

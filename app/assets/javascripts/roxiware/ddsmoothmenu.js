@@ -60,7 +60,7 @@ buildmenu:function($, setting){
 		}
 	)
 	$headers.each(function(i){ //loop through each LI header
-		var $curobj=$(this).css({zIndex: 100-i}) //reference current LI header
+		var $curobj=$(this).css({zIndex: setting.zIndex-i}) //reference current LI header
 		var $subul=$(this).find('ul:eq(0)').css({display:'block'})
 		$subul.data('timers', {})
 		this._dimensions={w:this.offsetWidth, h:this.offsetHeight, subulw:$subul.outerWidth(), subulh:$subul.outerHeight()}
@@ -143,6 +143,11 @@ buildmenu:function($, setting){
 },
 
 init:function(setting){
+	setting = $.extend({}, 
+                           {
+			       zIndex:100
+                           },
+			   setting);
 	if (typeof setting.customtheme=="object" && setting.customtheme.length==2){ //override default menu colors (default/hover) with custom set?
 		var mainmenuid='#'+setting.mainmenuid
 		var mainselector=(setting.orientation=="v")? mainmenuid : mainmenuid+', '+mainmenuid

@@ -21,7 +21,7 @@
 
 <% if can? :edit, @post %>
 <ul id="blog_show_application_menu" class="application_menu"><li>Post<ul>
-<li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit">Edit</a></li>
+<li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit Post">Edit</a></li>
 <li><a id="delete_post_app_menu">Delete</a></li>
 </ul></li></ul>
 <%= render :partial=>"roxiware/blog/post/context_menus" %>

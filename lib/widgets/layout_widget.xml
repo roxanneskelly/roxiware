@@ -58,9 +58,10 @@ div#text_properties_dialog .contentWrap
 	     %>
              <img src="<%= display_item_param.h['image'].to_s %>" style="<%= style %>" class="display_item" description-guid="<%= display_item_param.h['image'].description_guid %>"/>
           <%  elsif display_item_param.h["text"].present? 
-	     style += ("color:" + display_item_param.h['color'].conv_value + ";") if display_item_param.h['color'].conv_value.present?
-	     style += ("font-size:" + display_item_param.h['size'].conv_value.to_s + "px;") if display_item_param.h['size'].conv_value.present?
-	     style += ("font-family:"+ display_item_param.h['font'].conv_value + ";") if display_item_param.h['size'].conv_value.present?
+	     style += ("color:" + display_item_param.h['color'].conv_value + ";") if display_item_param.h['color'].present?
+	     style += ("font-size:" + display_item_param.h['size'].conv_value.to_s + "px;") if display_item_param.h['size'].present?
+	     style += ("font-weight:" + display_item_param.h['weight'].conv_value.to_s + ";") if display_item_param.h['weight'].present?
+	     style += ("font-family:"+ display_item_param.h['font'].conv_value + ";") if display_item_param.h['size'].present?
 	      %>
 	     <div style="<%= style %>" class="display_item"><%= display_item_param.h['text'].conv_value %></div>
           <%  end
@@ -85,9 +86,12 @@ div#text_properties_dialog .contentWrap
 		  "Times New Roman" => "Times New Roman",
 		  "Georgia" => "Georgia",
 		  "Lucida" => "Lucida Console",
+		  "Open Sans" => "Open Sans",
 		  "Tahoma" => "Tahoma"}) %><br/>
 	      <%= label_tag :font_size, "Font Size" %><%= select_tag :font_size, options_for_select(
 		  ["8px", "9px", "10px", "11px", "12px", "14px", "16px", "18px", "20px", "22px", "24px", "26px", "28px", "36px", "48px", "72px"]) %><br/>
+	      <%= label_tag :font_weight, "Font Weight" %><%= select_tag :font_weight, options_for_select(
+		  ["100", "200", "300", "400", "500", "600", "700", "800", "900"]) %><br/>
 	      <%= label_tag :color, "Color" %><%= text_field_tag :color, nil, :type=>"color" %><br/>
 	      <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
        </div>
@@ -138,6 +142,7 @@ $(document).bind("ready", function() {
 		var edit_box = $("<input type='text' class='display_item' />");
 		edit_box.css("font-family", $(this).css("font-family")).css("font-size", $(this).css("font-size"));
 	        edit_box.css("color", $(this).css("color"));
+	        edit_box.css("font-weight", $(this).css("font-weight"));
 	        edit_box.css("top", $(this).css("top")).css("left",$(this).css("left"));
                 $(this).draggable("destroy");
 		$(this).replaceWith(edit_box);
@@ -150,7 +155,7 @@ $(document).bind("ready", function() {
 	        });
 	        edit_box.blur(function(event) {
 	            var div_box = $("<div class='display_item' style='position:absolute'/>");
-		    div_box.css("font-family", $(this).css("font-family")).css("font-size", $(this).css("font-size"));
+		    div_box.css("font-family", $(this).css("font-family")).css("font-size", $(this).css("font-size")).css("font-weight", $(this).css("font-weight"));
 		    div_box.css("color", $(this).css("color"));
 		    div_box.css("top", $(this).css("top")).css("left",$(this).css("left"));
 	            div_box.text($(this).val());
@@ -180,13 +185,16 @@ $(document).bind("ready", function() {
 	             var item = $(this);
 	             var font= item.css("font-family").split(",")[0].replace( /^[\'\"]|[\'\"]$/g, '' );
 	             properties_dialog.find("select#font").val(font);
+	             properties_dialog.find("select#font_weight").val(item.css("font-weight"));
 	             properties_dialog.find("select#font_size").val(item.css("font-size"));
 	             properties_dialog.find("input#color").val(colorToHex(item.css("color")));
                      properties_dialog.find("button#save_button").click(function() {
                         item.css("font-family", properties_dialog.find("select#font").val());
+                        item.css("font-weight", properties_dialog.find("select#font_weight").val());
                         item.css("font-size", properties_dialog.find("select#font_size").val());
                         item.css("color", properties_dialog.find("input#color").val());
                         properties_dialog.parents("#edit_overlay").overlay().close();
+	                dirtyItemTree($(".widget#<%=widget_instance_id%>"));
                      });
                      settingsForm(properties_dialog, "Text Properties");
                      
@@ -236,6 +244,7 @@ $(document).bind("ready", function() {
 			  var font_size = $(child).css('font-size').split("px")[0];
 			  xml_result = xml_result + "<param class='local' name='text'><param_description guid='97643629-6F5C-4121-9141-BAC6731F1B04'/><value>"+$(child).text() + "</value></param>";
 			  xml_result = xml_result + "<param class='local' name='font'><param_description guid='FEF4B0C8-C449-4A50-84FF-3E7EC96287C0'/><value>"+$(child).css('font-family') + "</value></param>";
+			  xml_result = xml_result + "<param class='local' name='weight'><param_description guid='74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78'/><value>"+$(child).css('font-weight') + "</value></param>";
 			  xml_result = xml_result + "<param class='local' name='size'><param_description guid='63275631-EEB0-43E3-A2D9-407B6423CDC9'/><value>"+font_size + "</value></param>";
 			  xml_result = xml_result + "<param class='local' name='color'><param_description guid='DA84EE57-3D89-489E-8B81-08DA7A560550'/><value>"+$(child).css('color') + "</value></param>";
 		       }

@@ -1,14 +1,14 @@
-  <%= post_fields.label :category_name, "Category" %>
-  <%= post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category) %>
-  <%= post_fields.label :person_id, "Author" %>
-  <%= post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]}) %> 
-  <br/>
-  <%= post_fields.label :post_title, "Title"%>
-  <%= post_fields.text_field :post_title, :altname=>:post_link %>
-  <br/>
+  <div id="category_entry"><%= post_fields.label :category_name, "Category" %>
+  <%= post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category) %></div>
+  <% if ((@setup_type != "author") || (current_user.role == "super")) %>
+      <div id="author_entry"><%= post_fields.label :person_id, "Author" %>
+      <%= post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]}) %> </div>
+   <% end %>
+  <div id="post_title_entry"><%= post_fields.label :post_title, "Title"%>
+  <%= post_fields.text_field :post_title, :altname=>:post_link %></div>
   <div class="content_pos"><div class="settings_wysiwyg"><%= post_fields.text_area :post_content, :class=>"post_item_content" %></div></div>
-  <%= post_fields.label :tag_csv, "Tags"%>
-  <%= post_fields.text_field :tag_csv %>
+  <div id="tag_csv_entry"><%= post_fields.label :tag_csv, "Tags"%>
+  <%= post_fields.text_field :tag_csv %></div>
   <%= post_fields.hidden_field :blog_class %>
 <script>
 $(function() {

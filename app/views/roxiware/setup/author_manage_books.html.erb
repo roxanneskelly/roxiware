@@ -1,8 +1,9 @@
+<div id="form_section">
+<div class="relative_wrapper">
 <div class="wizard_instructions">
-Make corrections to your book descriptions if needed.<br/>You can always change their descriptons
+Make corrections to your book descriptions if needed.  You can always change their descriptons
 later.
 </div>
-<div id="form_section">
     <div id="edit_books" class="list_box">
        <div id="book_list" class="list_box_content"></div>
        <div class="edit_bar"><div id="new_book" class="edit_bar_button" title="Add a book">+</div><div id="delete_book" class="edit_bar_button" title="Remove a book">-</div></div>
@@ -18,6 +19,7 @@ later.
     </div>
 </div>
 <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"button", :type=>"back"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"button" %></div>
+</div>
 
 <script>
 $(function() {

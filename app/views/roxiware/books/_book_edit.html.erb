@@ -1,28 +1,19 @@
 <div id="book_description_form">
-   <div id="left_section"><%= book_fields.label :title, "Title"%>
-    <%= book_fields.text_field :title %>
-    <%= book_fields.hidden_field :goodreads_id %>
-    <%= book_fields.hidden_field :image_url %>
-    <%= book_fields.hidden_field :thumbnail_url %>
-    <%= book_fields.hidden_field :large_image_url %>
-    <br/>
-    <%= book_fields.label :isbn, "ISBN"%>
-    <%= book_fields.text_field :isbn %>
-    <br/>
-    <%= book_fields.label :isbn13, "ISBN13" %>
-    <%= book_fields.text_field :isbn13 %>
-    <br/>
-    <%= book_fields.label :publish_date, "Publication Date"%>
-    <%= book_fields.text_field :publish_date %>
+   <%= book_fields.hidden_field :goodreads_id %><%= book_fields.hidden_field :image_url %>
+    <%= book_fields.hidden_field :thumbnail_url %><%= book_fields.hidden_field :large_image_url %>
+   <div id="left_section">
+    <div id="title_entry"><%= book_fields.label :title, "Title"%><%= book_fields.text_field :title %></div>
+    <div id="isbn_entry"><%= book_fields.label :isbn, "ISBN"%><%= book_fields.text_field :isbn %></div>
+    <div id="isbn13_entry"><%= book_fields.label :isbn13, "ISBN13" %><%= book_fields.text_field :isbn13 %></div>
+    <div id="publish_entry"><%= book_fields.label :publish_date, "Publication Date"%><%= book_fields.text_field :publish_date %></div>
    </div>
    <div id="right_section">
-    <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
+    <span class="popup_help_text" style="float:center;">Click to change image</span><br/>
     <img id="book_upload_image_url" src="" class="upload_target" />
     <input type="hidden" name="image_thumbprint"/>
    </div>
-  <br style="clear:both"/>
-  <div id="bottom_section"><div class="settings_wysiwyg"><%= book_fields.text_area :description, :class=>"settings_wysiwyg" %></div></div>
-  <br/>
+   <%= book_fields.label :description, "Description" %>
+   <div id="bottom_section"><div class="settings_wysiwyg"><%= book_fields.text_area :description, :class=>"settings_wysiwyg" %></div></div>
 </div>
 <script>
 $(function() {     

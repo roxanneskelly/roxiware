@@ -867,9 +867,10 @@
 function settingsForm(source, title)
 {
    title = typeof title  != 'undefined' ? title : "&nbsp;";
-   var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close'>x</a><div class='settings_title'>"+
-                   title +
-                   "</div><div class='contentWrap'> </div></div>");
+   var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close'>x</a>" +
+		   "<div class='settings_title_reflect'>"+title+"</div>"+
+                   "<div class='settings_title'>"+title+"</div>" + 
+                   "<div class='contentWrap'> </div></div>");
 
    var instantiateOverlay = function() {
       overlay.overlay({

@@ -5,9 +5,9 @@
 <% end %>
 <% if can? :edit, @book %>
     <%= render :partial=>"roxiware/books/context_menus" %>
-    <ul id="book_show_application_menu" class="application_menu"><li>Book<ul>
-    <li><a rel="<%= edit_book_path(@book.id)%>" form="Edit Book">Edit</a></li>
-    <li><a id="delete_book_app_menu" >Delete</a></li>
+    <ul id="book_show_application_menu" class="application_menu"><li><span aria-hidden="true" class="icon-book"></span>&nbsp;Book<ul>
+    <li><a rel="<%= edit_book_path(@book.id)%>" form="Edit Book"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
+    <li><a id="delete_book_app_menu" ><span aria-hidden="true" class="icon-none"></span>&nbsp;Delete</a></li>
    </ul></li></ul>
     <div class="help_bar_entry">Left-click to manage the book.</div>
 <% end %>

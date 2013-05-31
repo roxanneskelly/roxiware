@@ -13,10 +13,10 @@
 <% end %>
 
 <% if can? :create, Roxiware::Blog::Post %>
-    <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_blog_post_path + '?blog_class=' + @blog_class %>" form="New <%= @blog_class.titleize %> Post">New Post</a></li></ul>
+    <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_blog_post_path + '?blog_class=' + @blog_class %>" form="New <%= @blog_class.titleize %> Post"><span aria-hidden="true" class="icon-file"></span>&nbsp;New Post</a></li></ul>
 
     <ul id="posts_context_menu" class="context_menu">
-       <li id="new_post"><a menu_item="new_post">New Post</a></li>
+       <li id="new_post"><a menu_item="new_post"><span aria-hidden="true" class="icon-file"></span>&nbsp;New Post</a></li>
     </ul>
 <% end %>
 

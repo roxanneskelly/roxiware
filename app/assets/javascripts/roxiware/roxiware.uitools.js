@@ -118,7 +118,7 @@
     });
     $.roxiware.alert = {
 	conf: {
-            alertTemplate: "<div class='settings settings_dialog settings_alert'><a class='close'>x</a><div class='settings_title'>&nbsp;</div><div class='alert_content'></div></div>",
+            alertTemplate: "<div class='settings settings_dialog settings_alert'><a class='close icon-cancel-circle'></a><div class='settings_title'>&nbsp;</div><div class='alert_content'></div></div>",
 	    alertPopupNoticeClass: "alert_notice",
 	    alertPopupAlertClass: "alert_alert",
 	    alertPopupErrorClass: "alert_error"
@@ -129,19 +129,19 @@
     $.extend({
 	    notice: function(alert_string, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Notice", $.extend(true, {}, $.roxiware.alert.conf, conf));
+		    $.roxiware.alert.popup = new AlertPopup("Notice", $.extend(true, {iconClass:"icon-info"}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupNoticeClass);
 	    },
             alert: function(alert_string, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Alert", $.extend(true, {}, $.roxiware.alert.conf, conf));
+		    $.roxiware.alert.popup = new AlertPopup("Alert", $.extend(true, {iconClass:"icon-notification"}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupAlertClass);
 	    },
             error: function(alert_string, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Error", $.extend(true, {}, $.roxiware.alert.conf, conf));
+		    $.roxiware.alert.popup = new AlertPopup("Error", $.extend(true, {iconClass:"icon-warning"}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupErrorClass);
 	    },
@@ -158,7 +158,7 @@
     function AlertPopup(alert_type, conf) {
 	this.alertDialog = $(conf.alertTemplate);
 	$("body").append(this.alertDialog);
-	this.alertDialog.find("div.settings_title").text(alert_type);
+	this.alertDialog.find("div.settings_title").html("<span class='alert-icon " + conf.iconClass + "'></span>&nbsp;" + alert_type);
 	this.alertDialog.overlay({
 	    top: "center",
             oneInstance: false,
@@ -238,7 +238,7 @@
     $.roxiware.progressbar = {
 	instance: null,
 	conf: {
-            mainContent: "<div id='progress_bar_dialog' class='overlay'><a class='close'>x</a><div class='settings_title'>Upload Progress</div></div>",
+            mainContent: "<div id='progress_bar_dialog' class='overlay'><a class='close icon-cancel-circle'></a><div class='settings_title'>Upload Progress</div></div>",
             instanceContent: "<div class='progress_bar_instance'><div class='progress_bar'><div class='progress_status'>uploading</div><div class='instance_progress'></div></div><span class='progress_bar_title'></span></div>",
 	    mask: {
 		closeOnClick:false,
@@ -867,7 +867,7 @@
 function settingsForm(source, title)
 {
    title = typeof title  != 'undefined' ? title : "&nbsp;";
-   var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close'>x</a>" +
+   var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close icon-cancel-circle'></a>" +
 		   "<div class='settings_title_reflect'>"+title+"</div>"+
                    "<div class='settings_title'>"+title+"</div>" + 
                    "<div class='contentWrap'> </div></div>");
@@ -974,7 +974,7 @@ function imageDialog(conf)
        image_style = image_style+"height:"+options.height+"px;";
    }
    var initialimage = (options.initialImage?"src='"+options.initialImage+"'":"");
-   var overlay_dialog = '<div id="image_selection_dialog" class="settings settings_dialog" style="z-index:3000"><a class="close">x</a>' +
+   var overlay_dialog = '<div id="image_selection_dialog" class="settings settings_dialog" style="z-index:3000"><a class="close icon-cancel-circle"></a>' +
        '<div class="settings_title">'+options.title+'</div>'+
            '<div id="image_preview"><img '+initialimage+' style="'+image_style+'"/></div>' +
            '<div id="upload_section">' +

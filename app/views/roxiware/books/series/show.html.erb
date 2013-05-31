@@ -10,14 +10,14 @@
   </section>
 </div>
 <% if can? :edit, @series %>
-    <ul id="series_show_application_menu" class="application_menu"><li>Series<ul>
-       <li><a rel="<%= edit_book_series_path(@series.id)%>" form="Edit Series">Edit</a></li>
+    <ul id="series_show_application_menu" class="application_menu"><li><span aria-hidden="true" class="icon-books"></span>&nbsp;Series<ul>
+       <li><a rel="<%= edit_book_series_path(@series.id)%>" form="Edit Series"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
        <li><a id="delete_series_app_menu" form="Delete Series">Delete</a></li>
     </ul></li></ul>
    <%= render :partial=>"roxiware/books/series/context_menus" %>
    <ul id="series_context_menu" class="context_menu">
-      <li id="edit_series"><a menu_item="edit_series">Edit Series</a></li>
-      <li id="delete_series"><a menu_item="delete_series">Edit Series</a></li>
+      <li id="edit_series"><a menu_item="edit_series"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit Series</a></li>
+      <li id="delete_series"><a menu_item="delete_series">Delete Series</a></li>
    </ul>
    <script>
      $(document).bind("ready", function() {

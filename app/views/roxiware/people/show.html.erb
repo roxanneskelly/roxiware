@@ -28,7 +28,7 @@
   </article></section>
    <% if (can? :edit, @person)  %>
      <% if @setup_type=="author" %>
-       <ul id="biography_application_menu" class="application_menu"><li><a rel="<%= edit_person_path(@person.id) %>" form="Edit Biography">Edit Biography</a></li></ul>
+       <ul id="biography_application_menu" class="application_menu"><li><a rel="<%= edit_person_path(@person.id) %>" form="Edit Biography"><span aria-hidden="true" class="icon-profile"></span>&nbsp;Edit Biography</a></li></ul>
      <% else %>
      <ul id="biography_application_menu" class="application_menu"><li>Biography<ul>
          <li><a rel="<%= edit_person_path(@person.id) %>" form="Edit Biography">Edit Biography</a></li>

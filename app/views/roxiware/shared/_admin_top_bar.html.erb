@@ -2,7 +2,7 @@
    <div id="settings_bar" class="settings">
        <div id="settings_controls">
        <div id="help_bar"><div id="help_bar_items"></div></div>
-       <div id="settings_menu" class="ddsmoothmenu"><ul><li id="account">Account<ul>
+       <div id="settings_menu" class="ddsmoothmenu"><ul><li id="account"><span aria-hidden="true" class="icon-user"></span>&nbsp;Account<ul>
 	       <li><a href="<%= destroy_session_path('user') %>">Log Out</a></li>
 	       <li><a rel="<%= edit_account_path(current_user.id) %>" form="Edit Account">Edit</a></li>
 	       <li><a rel="<%= account_update_password_path %>" form="Change Password">Change Password</a></li>
@@ -10,32 +10,28 @@
 	           <hr/>
 	           <li id="account_settings"><a rel="<%= setting_path('accounts') %>" form="Manage Accounts">Manage Accounts</a></li>
 	       <% end %>
-	   </ul></li>
-	    <% if ((@setup_type != "author") || (current_user.role == "super")) && (can? :create, Roxiware::Person) %>
-	        <li id="people_settings"><a rel="<%= setting_path('people') %>" form="Manage People">People</a></li>
-	    <% end %>
-
-            <li id="settings_menu">Settings<ul>
+	   </ul></li><% if ((@setup_type != "author") || (current_user.role == "super")) && (can? :create, Roxiware::Person) %>
+	        <li id="people_settings"><a rel="<%= setting_path('people') %>" form="Manage People"><span aria-hidden="true" class="icon-users"></span>&nbsp;People</a></li>
+	    <% end %><li id="settings_menu"><span aria-hidden="true" class="icon-cog-2"></span><ul>
 		  <li id="layout_picker"><a rel="<%= layout_index_path %>" form="Choose Template">Template</a></li>
 		  <li id="system_settings"><a rel="<%= setting_path('system') %>" form="General Settings">General</a></li>
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("blog", "enable_blog") %>
-		      <li id="blog_settings"><a rel="<%= setting_path('blog') %>" form="Blog Settings">Blog</a></li>
+		      <li id="blog_settings"><a rel="<%= setting_path('blog') %>" form="Blog Settings"><span aria-hidden="true" class="icon-feed"></span>&nbsp;Blog</a></li>
 		  <% end %>
 		  <% if (current_user.role == "super") %>
-		      <li id="book_settings"><a rel="<%= setting_path('books') %>" form="Book Settings">Books</a></li>
+		      <li id="book_settings"><a rel="<%= setting_path('books') %>" form="Book Settings"><span aria-hidden="true" class="icon-books"></span>&nbsp;Books</a></li>
 		  <% end %>
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("events", "enable_events") %>
-		      <li id="calendar_settings"><a rel="<%= setting_path('events') %>" form="Calendar Settings">Calendar</a></li>
+		      <li id="calendar_settings"><a rel="<%= setting_path('events') %>" form="Calendar Settings"><span aria-hidden="true" class="icon-calendar"></span>&nbsp;Calendar</a></li>
 		  <% end %>
 		  <% if (current_user.role == "super") || Roxiware::Param::Param.application_param_val("gallery", "enable_gallery") %>
-		      <li id="gallery_settings"><a rel="<%= setting_path('gallery') %>" form="Gallery Settings">Gallery</a></li>
+		      <li id="gallery_settings"><a rel="<%= setting_path('gallery') %>" form="Gallery Settings"><span aria-hidden="true" class="icon-images"></span>&nbsp;Gallery</a></li>
 		  <% end %>
 		  <% custom_settings = Roxiware::Param::Param.where(:param_class=>"custom").select{|param| can? :edit, param} %>
 		  <% if custom_settings.length > 0 %>
 		      <li id="gallery_settings"><a rel="<%= setting_path('custom') %>" form="Custom Settings">Custom</a></li>
 		  <% end %>
-	      </ul>
-	   </li><% if can? :edit, @current_layout %><li id="layout_menu">Design<ul>
+	      </ul></li><% if can? :edit, @current_layout %><li id="layout_menu">Design<ul>
 		  <li id="edit_layout"><a rel="<%=edit_layout_path(@current_layout.guid)%>" form="Edit Template">Edit Template</a></li>
 		  <li id="new_layout"><a rel="<%=new_layout_path%>" form="New Template">New Template</a></li>
 		  <li id="clone_layout"><a rel="<%=new_layout_path%>?clone=<%=@current_layout.guid%>" form="Clone Template">Clone Template</a></li>
@@ -71,7 +67,7 @@ $(function() {
             orientation: 'h',
             classname: 'ddsmoothmenu_settings',
             contentsource: "markup",
-            zIndex:10000
+            zIndex:1000
         });
 
         $("div#help_bar_items").append($(".help_bar_entry").css("display", "inline-block"));

@@ -5,7 +5,7 @@
      <% if (can? :edit, event) %>
          <div class="manage_event_menu manage_menu" id="manage_<%= event.id %>"><ul>
              <li><div class="manage_button">&nbsp;</div><ul>
-		<li class="edit_event"><a>Edit</a></li>
+		<li class="edit_event"><a><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
 		<li class="delete_event"><a>Delete</a></li>
 	    </ul></li></ul></div>
      <% end %>
@@ -40,7 +40,7 @@
 </section>
 
 <% if (can? :create, Roxiware::Event)  %>
-     <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_event_path %>" form="New Event">New Event</a></li></ul>
+     <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_event_path %>" form="New Event"><span aria-hidden="true" class="icon-calendar"></span>&nbsp;New Event</a></li></ul>
      <%= render :partial=>"roxiware/events/context_menus" %>
 <script>
 $(function() {

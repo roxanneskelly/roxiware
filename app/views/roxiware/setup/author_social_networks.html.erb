@@ -19,7 +19,10 @@ services you're a member of.
     <%= hidden_field_tag :setup_action, "none" %>
 <% end %>
 </div>
-<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"button" %></div>
+<div class="setup_buttons">
+    <%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
+    <%= button_tag :id=>"save", :value=>"save", :type=>"button" do %>Next&nbsp;<span class="icon-arrow-right-2"></span><% end %>
+</div>
 
 <script>
   $(function() {
@@ -27,6 +30,9 @@ services you're a member of.
     $("button#back_button,button#save").click(function() {
         $(".watermark").val("");
         $("input#setup_action").val($(this).attr("id"));
+        if($(this).is("button#save")) {
+            $.notice("Retrieving Books");
+        }
         $.ajax({type:"PUT",
             processData: true,
 	    url: "<%= setup_path %>.json",

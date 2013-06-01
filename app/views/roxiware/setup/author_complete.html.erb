@@ -16,7 +16,10 @@ events and other things in order to edit them, or create new ones.</li>
 </div>
 
 <%= form_tag(setup_path, :method=>"put", :style=>"display:inline") do %>
-  <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"back"%><%= button_tag "Take Me To My Website", :id=>"done", :value=>"done", :type=>"button" %></div>
+  <div class="setup_buttons">
+     <%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
+     <%= button_tag :id=>"done", :value=>"done", :type=>"button" do %>Take Me To My Website&nbsp;<span class="icon-arrow-right-2"></span><% end %>
+  </div>
 
   <%= hidden_field_tag :setup_step, @setup_step %>
   <%= hidden_field_tag :setup_action, "import" %>

@@ -9,9 +9,9 @@
      <div id="import_pane">
 	<div class="wizard_step">Import your book.</div>
 	<div class="wizard_instructions">Paste or type your book's title, ISBN, or ISBN13 into the search box, or paste in the Goodreads or Amazon link, and we'll find your book.</div>
-	<%= search_field_tag(:import_search, "", {:watermark=>"ISBN, Title, Goodreads Link, Amazon Link"}) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
+        <div id="import_search_field"><%= text_field_tag(:import_search, "", {:watermark=>"ISBN, Book Title, Goodreads Link, Amazon Link", :class=>"search_field"}) %><%= button_tag :id=>"import_search", :type=>"button", :class=>"search_button", :disabled=>"disabled" do %><span class="icon-search"></span>&nbsp;Search<% end %></div>
 	<div id="import_search_status"></div>
-	<div id="import_search_results"></div>
+	<div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
      </div>
      <div id="book_description_pane">
         <%= form_for @book do |book| %>
@@ -40,7 +40,6 @@
 </div>
 <script>
   <% bookstores = []
-     print "STORES: " + @book.get_param("bookstores").inspect + "\n"
      bookstores = @book.get_param("bookstores").a if @book.get_param("bookstores")
    %>
   $(function() {
@@ -123,7 +122,7 @@
          $("#import_search_status").html("Searching...");
          $.getJSON(endpoint,
                    function(data) {
-                       $("div#import_search_results").html("");
+                       $("div#import_search_results div.list_box_content").html("");
                        $("#import_search_status").html("Pick your book");
   
                        if(data.length > 0) {
@@ -132,12 +131,12 @@
                               $.each(book['authors'], function(index, author) {
                                   authors.append("<div class='search_result_author'>"+author['author_name']+"</div>");
                               });
-			      var book_html = $("<div class='search_result'><div class='book_info'><img src='"+book["thumbnail_url"]+"'/>"+
+			      var book_html = $("<div class='search_result list_box_item'><div class='book_info'><img src='"+book["thumbnail_url"]+"'/>"+
                                                   "<div class='search_result_title'>"+book["title"]+"</div>"+
                                                  authors.html()+
 	                                         "<br style='clear:both'/></div>");
 			      book_html.data().book_data = book;
-			      $("div#import_search_results").append(book_html)
+			      $("div#import_search_results div.list_box_content").append(book_html)
 			   });
                            $("#import_search_results .search_result").click(function() {
                                var goodreads_id = $(this).data().book_data.goodreads_id;

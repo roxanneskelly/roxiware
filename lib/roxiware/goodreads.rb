@@ -1,4 +1,5 @@
 require 'xml'
+require 'enumerator'
 include Roxiware::Helpers
 module Roxiware
   module Goodreads
@@ -324,9 +325,10 @@ module Roxiware
 	    if (books.class == Hash)
 	       books = [books]
 	    end
-	    books.each do |book|
-	       result << _process_book(book)
+	    books.each_slice(5) do |book_slice| 
+	        result = result + book_slice.map{|book| Thread.start{_process_book(book)}}.map{|t| t.join.value}
 	    end
+
 	    page = page + 1
 	end while response["GoodreadsResponse"]["author"]["books"]["end"] != response["GoodreadsResponse"]["author"]["books"]["total"]
 	result

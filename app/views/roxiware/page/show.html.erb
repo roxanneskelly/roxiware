@@ -1,10 +1,9 @@
 <section class="page_content">
-<% puts "PAGE IS #{@page.inspect}" %>
   <% if (can? :edit, @page) %>
-       <ul id="page_index_application_menu" class="application_menu"><li><a rel="<%= edit_page_path(@page.page_identifier) %>" form="Edit <%= @page.page_type.titleize %>">Edit <%= @page.page_type.titleize %></a></li></ul>
+       <ul id="page_index_application_menu" class="application_menu"><li><a rel="<%= edit_page_path(@page.page_identifier) %>" form="Edit <%= @page.page_type.titleize %>"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit <%= @page.page_type.titleize %></a></li></ul>
 
        <ul id="page_context_menu" class="context_menu">
-	  <li id="edit_page"><a menu_item="edit_page">Edit <%= @page.page_type.titleize %></a></li>
+	  <li id="edit_page"><a menu_item="edit_page"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit <%= @page.page_type.titleize %></a></li>
        </ul>
   <% end %>
   <%= raw @page.content %>

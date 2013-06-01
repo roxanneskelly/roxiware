@@ -11,9 +11,9 @@
     </div>
   </div>
    <div id="right_section">
-    <div id="location_entry"><%= event.label :location, "Location" %><%= event.text_field :location, :watermark=>"Location", :title=>"Location" %>
-         <br/>
-        <%= event.text_field :city, :watermark=>"City", :title=>"City" %><%= event.text_field :state, :watermark=>"State", :title=>"State" %>
+    <div id="location_entry"><%= event.label :location, "Location" %><%= event.text_field :location, :watermark=>"Location", :title=>"Location" %></div>
+
+    <div id="address_entry"><label>&nbsp;</label><%= event.text_field :city, :watermark=>"City", :title=>"City" %><%= event.text_field :state, :watermark=>"State", :title=>"State" %>
     </div>
   </div>
   <div id="url_entry">

@@ -21,12 +21,10 @@
   <div class="help_bar_entry">Import details for a book via the <b>Import</b> tab of the edit dialog.</div>
   <div class="help_bar_entry">Left-click and select <b>New Book</b> to add another book.</div>
 
-    <ul id="series_show_application_menu" class="application_menu"><li><span aria-hidden="true" class="icon-books"></span>&nbsp;Series<ul>
-       <li><a rel="<%= new_book_series_path %>" form="New Series">New</a></li>
-    </ul></li></ul>
-    <ul id="series_show_application_menu" class="application_menu"><li><span aria-hidden="true" class="icon-book"></span>&nbsp;Books<ul>
-       <li><a rel="<%= new_book_path %>" form="New Book">New</a></li>
-    </ul></li></ul>
+  <ul id="books_application_menu" class="application_menu">
+    <li><a rel="<%= new_book_series_path %>" form="New Series"><span aria-hidden="true" class="icon-books"></span>&nbsp;New Series</a></li>
+    <li><a rel="<%= new_book_path %>" form="New Book"><span aria-hidden="true" class="icon-book"></span>&nbsp;New Book</a></li>
+  </ul>
 
   <script>
     $(document).bind("ready", function() {
@@ -34,10 +32,10 @@
 	$("#mainBody").on("context_menu", function(event, menu_item) {
 	   switch (menu_item) {
 	      case "new_book":
-		settingsForm("<%= new_book_path %>");
+		settingsForm("<%= new_book_path %>", "New Book");
 		break;
 	      case "new_series":
-		settingsForm("<%= new_book_series_path %>");
+		settingsForm("<%= new_book_series_path %>", "New Series");
 		break;
 	   };
       });

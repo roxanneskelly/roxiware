@@ -87,6 +87,7 @@ div#text_properties_dialog .contentWrap
 		  "Georgia" => "Georgia",
 		  "Lucida" => "Lucida Console",
 		  "Open Sans" => "Open Sans",
+		  "Metro Icons" => "Metro Icons",
 		  "Tahoma" => "Tahoma"}) %><br/>
 	      <%= label_tag :font_size, "Font Size" %><%= select_tag :font_size, options_for_select(
 		  ["8px", "9px", "10px", "11px", "12px", "14px", "16px", "18px", "20px", "22px", "24px", "26px", "28px", "36px", "48px", "72px"]) %><br/>

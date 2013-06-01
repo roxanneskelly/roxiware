@@ -18,9 +18,10 @@ later.
        <% end %>
     </div>
 </div>
-<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"button", :type=>"back"%><%= button_tag "Next >>", :id=>"save", :value=>"save", :type=>"button" %></div>
+<div class="setup_buttons">
+    <%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
+    <%= button_tag :id=>"save", :value=>"save", :type=>"button" do %>Next&nbsp;<span class="icon-arrow-right-2"></span><% end %>
 </div>
-
 <script>
 $(function() {
     $("button#back_button").click(function() {
@@ -131,6 +132,9 @@ $(function() {
    
    $("button#save").click(function() {
       $("input#setup_action").val($(this).attr("id"));
+
+      $.notice("Saving Books");
+
       var current_selected_book = $(".list_box_item_selected");
       if(current_selected_book.length != 0) {
         updateBook(current_selected_book);

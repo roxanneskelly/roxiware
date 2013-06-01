@@ -14,7 +14,9 @@ Let's get started.  First, lets set up an account.  You will use this account to
   <%= hidden_field_tag :setup_type, @setup_type %>
   <%= hidden_field_tag :setup_step, @setup_step %>
 <% end -%>
-<div class="setup_buttons"><%= button_tag "Create Account", :type=>"button", :id=>"create_account", :disabled=>true %></div>
+<div class="setup_buttons">
+    <%= button_tag :id=>"create_account", :value=>"create_account", :type=>"button" do %>Create Account&nbsp;<span class="icon-arrow-right-2"></span><% end %>
+</div>
 <script>
 $(function() {
      $("#email, #username, #password, #password_confirmation").bind("input blur propertychange", function() {

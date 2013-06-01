@@ -24,7 +24,12 @@ You can change this later, of course</br>
    <%= hidden_field_tag :setup_action, "import" %>
    <%= hidden_field_tag :setup_step, @setup_step %>
 <% end %>
-<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "No, Skip import", :id=>"skip_import", :value=>"skip", :type=>"button", :disabled=>true %><%= button_tag "Yes, Import my information", :id=>"import", :value=>"import", :type=>"button", :disabled=>true %></div>
+<div class="setup_buttons">
+    <%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
+    <%= button_tag "No, Skip import", :id=>"skip_import", :value=>"skip", :type=>"button", :disabled=>true %>
+    <%= button_tag "Yes, Import my information", :id=>"import", :value=>"import", :type=>"button", :disabled=>true %>
+</div>
+
 <script>
   $(function() {
      $("button#import").button("disable");

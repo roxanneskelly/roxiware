@@ -8,7 +8,13 @@ You can always create, delete, and manage series later, if you want to skip this
 </div>
 
 <%= form_tag '/setup', :method=>"put" do %>
-   <div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "No, Skip Series", :id=>"skip_series", :value=>"skip", :type=>"button" %><%= button_tag "Yes, Set Up Series", :id=>"import", :value=>"import", :type=>"button" %></div>
+<div class="setup_buttons">
+    <%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
+    <%= button_tag "No, Skip Series", :id=>"skip_series", :value=>"skip", :type=>"button" %>
+    <%= button_tag "Yes, Set Up Series", :id=>"import", :value=>"import", :type=>"button" %>
+</div>
+
+
    <%= hidden_field_tag :setup_action, "import" %>
    <%= hidden_field_tag :setup_step, @setup_step %>
 <% end %>

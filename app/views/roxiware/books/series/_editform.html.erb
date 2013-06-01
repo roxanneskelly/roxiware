@@ -9,9 +9,9 @@
 	      <div id="import_pane">
 		  <div class="wizard_step">Import your series.</div>
 		  <div class="wizard_instructions">Paste or type the title, ISBN, or ISBN13 of a book in the series, a Goodreads or Amazon link to the book, the series title, the author name, or a Goodreads link to the series.</div>
-		  <%= search_field_tag(:import_search, "", {:watermark=>"Member ISBN, Member Book Title, Goodreads Book or Series Link, Amazon Link"}) %><%= button_tag "Search", :id=>"import_search", :type=>"button", :disabled=>"disabled" %>
+		  <div id="import_search_field"><%= text_field_tag(:import_search, "", {:watermark=>"Member ISBN, Member Book Title, Goodreads Book or Series Link, Amazon Link", :class=>"search_field"}) %><%= button_tag :id=>"import_search", :type=>"button", :class=>"search_button", :disabled=>"disabled" do %><span class="icon-search"></span>&nbsp;Search<% end %></div>
 		  <div id="import_search_status"></div>
-		  <div id="import_search_results"></div>
+		  <div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
 	      </div>
 	      <div id="edit_pane">
 		 <%= form_for @series do |series_fields| %>
@@ -58,7 +58,7 @@
 	     $("#import_search_status").html("Searching...");
 	     $.getJSON(endpoint,
 		       function(data) {
-			   $("div#import_search_results").html("");
+			   $("div#import_search_results div.list_box_content").html("");
 			   $("#import_search_status").html("Click on your series");
 
 			   if(data.length > 0) {
@@ -100,7 +100,7 @@
 				  if(authors_by_count.length > 1) {
 				      authors.append(" and others");
 				  }
-				  var series_html_root = $("<div class='search_result'>");
+				  var series_html_root = $("<div class='search_result list_box_item'>");
 				  var series_html = $("<div class='series_info'/>");
 				  if(series["image"]) {
 				     series_html.append("<img src='"+series["image"]+"'/>");
@@ -112,7 +112,7 @@
 				  series_html.append("<br style='clear:both'/>");
 				  series_html_root.append(series_html);
 				  series_html_root.data().series_data = series;
-				  $("div#import_search_results").append(series_html_root)
+				  $("div#import_search_results div.list_box_content").append(series_html_root)
 			       });
 			       $("div#import_search_results .search_result").click(function() {
 				   var goodreads_id = $(this).data().series_data.goodreads_id;

@@ -2,7 +2,7 @@
 <div class="wizard_instructions">
 Let's see if we can find your biography information online.<br/><br/>
 Paste or type your name, a link to your authors page on goodreads, or the link, ISBN, or ISBN13 of one of your books, and we'll search for your biography.</div>
-<div id="import_search_field"><%= text_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN", :class=>"search_field") %><%= button_tag "Search", :id=>"import_search", :type=>"button", :class=>"search_button"%></div>
+<div id="import_search_field"><%= text_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN", :class=>"search_field") %><%= button_tag :id=>"import_search", :type=>"button", :class=>"search_button" do %><span class="icon-search"></span>&nbsp;Search<% end %></div>
 <div id="import_search_status"></div>
 <div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
 
@@ -12,7 +12,10 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
 <%= hidden_field_tag :setup_step, @setup_step %>
 <% end %>
 </div>
-<div class="setup_buttons"><%= button_tag "<< Back", :id=>"back_button", :value=>"back", :type=>"button"%><%= button_tag "Skip >>", :id=>"skip_import", :value=>"skip", :type=>"button" %></div>
+<div class="setup_buttons">
+<%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
+<%= button_tag :id=>"skip_import", :value=>"skip", :type=>"button" do %>Skip&nbsp;<span class="icon-arrow-right-2"></span><% end %>
+</div>
 <script>
   $(function() {
     $("button#back_button,button#skip_import").click(function() {

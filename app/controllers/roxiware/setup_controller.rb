@@ -33,7 +33,7 @@ class Roxiware::SetupController < ApplicationController
 	     when "premium_blog"
 	        @setup_type = "blog"
 	     else
-	        @setup_type = "idunno"
+	        @setup_type = "custom"
 	  end
 	  puts "SETUP TYPE IS #{@setup_type}"
 	  @user = Roxiware::User.create({:username=>username, :email=>email, :password=>"Password", :password_confirmation=>"Password", :role=>"admin"}, :as=>"")

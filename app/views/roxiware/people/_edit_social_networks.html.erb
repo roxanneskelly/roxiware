@@ -1,20 +1,21 @@
 <div id="social_networks_pane">
    <% social_networks = {}
       if @person.get_param("social_networks").present?
-         social_networks = Hash[@person.get_param("social_networks").h.collect{|network, network_id| [network.to_sym, network_id.to_s]}] 
+         @person.get_param("social_networks").h.each do |network_name, network_info|
+              puts "BLEAH: " + Hash[network_info.h.collect{|name, info| [name, info.to_s]}].inspect
+              social_networks[network_name.to_sym] =  Hash[network_info.h.collect{|name, info| [name.to_sym, info.conv_value]}]
+         end
+         puts "SOCNET " + social_networks.inspect
       end %>
    <%= person_form.fields_for :params do |params| %>
       <%= params.fields_for :social_networks do |social_networks_fields| %>
-          <%= social_networks_fields.label :twitter, "Twitter"%>
-          <%= social_networks_fields.text_field :twitter, :watermark=>"Twitter Username (ie. 'janedoe')", :value=>social_networks[:twitter] %>
-	  <br/>
-
-	  <%= social_networks_fields.label :facebook, "Facebook"%>
-	  <%= social_networks_fields.text_field :facebook, :watermark=>"Facebook Username (ie. 'johndoe')", :value=>social_networks[:facebook] %>
-	  <br/>
-
-	  <%= social_networks_fields.label :google, "Google+"%>
-	  <%= social_networks_fields.text_field :google, :watermark=>"012345678", :value=> social_networks[:google] %>
+          <%= social_networks_fields.fields_for :facebook do |facebook_fields| %>
+              <div "facebook_entry"><%= facebook_fields.label :facebook, "Facebook"%>
+                  <%= facebook_fields.text_field :uid, :watermark=>"Facebook Username (ie. 'janedoe')", :value=>(social_networks.include?(:facebook)?social_networks[:facebook][:uid]:nil) %>
+		  <div class="labeled-checkbox social_network_login"><%= facebook_fields.check_box(:allow_login, {}, "true", false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
+con")%> Allow Login</div>
+	      </div>
+          <% end %>
       <% end %>
   <% end %>
 </div>

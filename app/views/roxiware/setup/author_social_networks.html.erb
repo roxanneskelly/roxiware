@@ -31,7 +31,7 @@ services you're a member of.
         $(".watermark").val("");
         $("input#setup_action").val($(this).attr("id"));
         if($(this).is("button#save")) {
-            $.notice("Retrieving Books");
+            $.alertWait("We're importing your books.");
         }
         $.ajax({type:"PUT",
             processData: true,

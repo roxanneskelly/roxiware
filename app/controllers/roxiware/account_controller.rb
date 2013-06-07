@@ -1,9 +1,9 @@
 class Roxiware::AccountController < ApplicationController
-  before_filter :authenticate_user!
-  load_and_authorize_resource :except=>[:edit, :update, :show, :new], :class=>"Roxiware::User"
+  before_filter :authenticate_user!, :except=>[:authenticate]
+  load_and_authorize_resource :except=>[:edit, :update, :show, :new, :authenticate], :class=>"Roxiware::User"
 
   before_filter do
-    @role = current_user.role 
+    @role = current_user.role if current_user.present?
     @role = "self" if current_user == @user
   end
 
@@ -123,6 +123,14 @@ class Roxiware::AccountController < ApplicationController
     end
   end
 
+  # GET - new login form
+  def sign_in
+    @robots="noindex,nofollow"
+    respond_to do |format|
+      format.html { render :partial =>"devise/sessions/login" }
+    end
+  end
+
   # GET - return form for editing the current users password
   def edit_password
     @robots="noindex,nofollow"
@@ -163,7 +171,14 @@ class Roxiware::AccountController < ApplicationController
      end
   end
 
-
+  # GET - check if a user can be authenticated
+  def authenticate
+      if signed_in?
+          render(:nothing => true, :status=>:ok)
+      else
+          render(:nothing => true, :status=>:unauthorized)
+      end
+  end
 
   # DELETE - delete a user
   def destroy

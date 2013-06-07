@@ -133,7 +133,7 @@ $(function() {
    $("button#save").click(function() {
       $("input#setup_action").val($(this).attr("id"));
 
-      $.notice("Saving Books");
+      $.alertWait("We're saving your books.");
 
       var current_selected_book = $(".list_box_item_selected");
       if(current_selected_book.length != 0) {

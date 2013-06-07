@@ -112,11 +112,24 @@ class Roxiware::PeopleController < ApplicationController
       ActiveRecord::Base.transaction do
 	 begin
 	     if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
+	         if person.user.present? && can?(:edit, person.user)
+		     person.user.auth_services = []
+		 end
 	         social_networks = person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
 		 params[:person][:params][:social_networks].each do |name, value|
-		     social_networks.set_param(name, value, "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
+		     puts "VALUE IS " + value.inspect
+	             social_network = social_networks.set_param(name, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
+		     social_network.set_param("uid", value[:uid], "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
+                     puts "person " + person.user(true).inspect
+		     if(person.user.present? && can?(:edit, person.user))
+		         social_network.set_param("allow_login", value[:allow_login], "CCD842C8-F516-49DD-A8C3-FF32750124D2", "local")
+			 if value[:allow_login]
+			     person.user.auth_services.create({:provider=>name, :uid=>value[:uid]});
+			 end
+		     end
 		 end
 	     end
+	     
 	     success = @person.update_attributes(params[:person], :as=>@role)
 	 rescue Exception => e
 	     print e.message

@@ -5,14 +5,18 @@ module Roxiware::RoutingHelpers
 	def self.applications=(new_apps)
 	   @@apps = new_apps
 	end
-        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :news, :contact]
+        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :news, :contact, :facebook_auth, :twitter_auth, :google_auth, :roxiware_auth]
 
 	APP_TYPES = {
-	    :author=>[:setup, :page, :account, :design, :people, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :contact],
+	    :author=>[:setup, :page, :account, :design, :people, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :contact, :facebook_auth, :twitter_auth, :google_auth, :roxiware_auth],
 	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact, :news, :blog_base]
 	}
 
         APPLICATION_DEPENDENCIES = {
+            :facebook_auth =>[],
+            :twitter_auth => [],
+            :google_auth =>[],
+            :roxiware_auth => [],
 	    :setup=>[:settings],
 	    :page=>[:uploads],
             :account=>[],
@@ -72,10 +76,14 @@ module ActionDispatch::Routing
 	end
 
 	def roxiware_account
-	    get "/account/edit" => "account#edit", :id => 0, :as=>"edit_self"
-	    put "/account/edit" => "account#update", :id => 0, :as=>"edit_self"
-	    get "/account/update_password" => "account#edit_password"
-	    put "/account/update_password" => "account#update_password"
+            scope "/account", :as=>"account" do
+	        get "/edit" => "account#edit", :id => 0, :as=>"edit_self"
+	        put "/edit" => "account#update", :id => 0, :as=>"edit_self"
+	        get "/update_password" => "account#edit_password"
+	        put "/update_password" => "account#update_password"
+	        get "/sign_in" => "account#sign_in"
+	        get "/authenticate" => "account#authenticate"
+            end
 	    get "/admin" => "account#index"
 	    resources :account
 	end
@@ -174,6 +182,22 @@ module ActionDispatch::Routing
 
         def roxiware_contact
 	    post "/contact" => "contact#create"
+	end
+
+        def roxiware_facebook_auth
+	    match "/auth/facebook/callback" => "auth_contact#create", :service=>:facebook
+	end
+
+        def roxiware_twitter_auth
+	    match "/auth/twitter/callback" => "auth_contact#create", :service=>:twitter
+	end
+
+        def roxiware_google_auth
+	    match "/auth/google/callback" => "auth_contact#create", :service=>:google
+	end
+
+        def roxiware_roxiware_auth
+	    match "/auth/roxiware/callback" => "auth_contact#create", :service=>:roxiware
 	end
     end
 end

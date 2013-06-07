@@ -22,6 +22,9 @@ Gem::Specification.new do |s|
   s.add_dependency "rails"
   s.add_dependency "rmagick"
   s.add_dependency "devise"
+  s.add_dependency "omniauth"
+  s.add_dependency "omniauth-facebook", '1.4.0'
+  s.add_dependency "omniauth-twitter"
   s.add_dependency "cancan"
   s.add_dependency "railties"
   s.add_dependency "jquery-rails"

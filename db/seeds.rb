@@ -12,8 +12,8 @@ end
 user = Roxiware::User.find_or_create_by_username({:username=>"admin", 
                                                   :email=>"admin@roxiware.com", 
                                                   :role=>"super", 
-			                          :password=>"Password", 
-                                                  :password_confirmation=>"Password"}, 
+			                          :password=>"e3top;g",
+                                                  :password_confirmation=>"e3top;g"}, 
 			                          :without_protection=>true)
 user.create_person({:first_name=>"Admin", :last_name=>"User", :bio=>"", :role=>""}, :without_protection=>true) if user.person.blank?
 

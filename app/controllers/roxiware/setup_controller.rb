@@ -14,13 +14,11 @@ class Roxiware::SetupController < ApplicationController
       @verifier ||= ActiveSupport::MessageVerifier.new(AppConfig.host_setup_verify_key)
       @verified_params = @verifier.verify(params[:key]) if params[:key].present?
       @verified_params = nil if @verified_params.present? && (@verified_params.shift < Time.now)
-      
    end
 
    # GET /setup
    def show
       if @verified_params.present? && @setup_step == "welcome"
-          puts @verified_params.inspect
           app_type, hostname, username, email, first_name, middle_name, last_name = @verified_params
 
 	  case app_type
@@ -41,6 +39,7 @@ class Roxiware::SetupController < ApplicationController
           Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", @setup_type)
           Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", hostname)
           @user.create_person({:first_name=>first_name, :last_name=>last_name, :middle_name=>middle_name, :role=>"", :bio=>"", :email=>email}, :as=>"")
+	  @user.auth_services.create({:provider=>"roxiware", :uid=>username}, :as=>"")
           _set_setup_step("import_biography")
       end
 

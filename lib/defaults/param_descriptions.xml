@@ -750,14 +750,28 @@
     <name>Social Networks</name>
     <description>List of social networks</description>
     <field_type>hash</field_type>
-    <permissions>super</permissions>
+    <permissions></permissions>
+    <meta></meta>
+  </param_description>
+  <param_description guid="5CC121A6-AB23-49B4-BB14-0E03119F00E6">
+    <name>Social Network</name>
+    <description>Social Network</description>
+    <field_type>hash</field_type>
+    <permissions></permissions>
     <meta></meta>
   </param_description>
   <param_description guid="FB528C00-8510-4876-BD82-EF694FEAC06D">
-    <name>Social Network</name>
+    <name>UID</name>
     <description>Social Network ID</description>
     <field_type>string</field_type>
-    <permissions>super</permissions>
+    <permissions></permissions>
+    <meta></meta>
+  </param_description>
+  <param_description guid="CCD842C8-F516-49DD-A8C3-FF32750124D2">
+    <name>Allow Login</name>
+    <description>Allow login with this account</description>
+    <field_type>bool</field_type>
+    <permissions></permissions>
     <meta></meta>
   </param_description>
   <param_description guid="BEDD0F51-5E0A-489F-9495-195CDC090877">

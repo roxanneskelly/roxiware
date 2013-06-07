@@ -1,5 +1,6 @@
 require 'devise'
 require 'roxiware/engine'
+require 'omniauth'
 autoload :AppConfig, 'roxiware/appconfig'
 
 module Roxiware

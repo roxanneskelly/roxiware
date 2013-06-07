@@ -99,11 +99,12 @@
 			complete: function() {
 			},
 			success: function(data) {
+			    formfind("input").removeClass("field-error");
 			    if(data["error"]) {
 				$(data["error"]).each(function(index, value) {
 					$.error(value[0]+": "+value[1]);
 					if(conf.form) {
-					    form.find("input#"+value[0]).css("background", "#ffcccc");
+					    form.find("input#"+value[0]).addClass("field-error");
 					}
 				    });
 			    }
@@ -121,7 +122,8 @@
             alertTemplate: "<div class='settings settings_dialog settings_alert'><a class='close icon-cancel-circle'></a><div class='settings_title'>&nbsp;</div><div class='alert_content'></div></div>",
 	    alertPopupNoticeClass: "alert_notice",
 	    alertPopupAlertClass: "alert_alert",
-	    alertPopupErrorClass: "alert_error"
+	    alertPopupErrorClass: "alert_error",
+            alertPopupWaitClass: "alert_wait"
 	    
 	}, 
 	popup: null
@@ -145,6 +147,17 @@
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupErrorClass);
 	    },
+            alertWait: function(alert_string, conf) {
+		if(!$.roxiware.alert.popup) {
+		    $.roxiware.alert.popup = new AlertPopup("Please Wait", $.extend(true, {iconClass:"spinner-icon"}, $.roxiware.alert.conf, conf));
+		}
+		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupWaitClass);
+	    },
+            alertResume: function() {
+		if($.roxiware.alert.popup) {
+		    $.roxiware.alert.popup.close();
+		}
+	    },
 	   alertHtml: function(alert_html, conf) {
 		if(!$.roxiware.alert.popup) {
 		    $.roxiware.alert.popup = new AlertPopup("", $.extend(true, {}, $.roxiware.alert.conf, conf));
@@ -158,7 +171,8 @@
     function AlertPopup(alert_type, conf) {
 	this.alertDialog = $(conf.alertTemplate);
 	$("body").append(this.alertDialog);
-	this.alertDialog.find("div.settings_title").html("<span class='alert-icon " + conf.iconClass + "'></span>&nbsp;" + alert_type);
+	this.alertDialog.find("div.settings_title").html("<div class='alert-icon " + conf.iconClass + "'></div>&nbsp;" + alert_type);
+	$.resume();
 	this.alertDialog.overlay({
 	    top: "center",
             oneInstance: false,
@@ -186,6 +200,9 @@
 	this.appendHtml = function(alertHtml) {
 	    this.alertDialog.find(".alert_content").append(alertHtmlstring);
 	}
+	this.close = function() {
+	    this.alertDialog.data("overlay").close();
+	}
     };
 
 
@@ -193,7 +210,7 @@
     $.roxiware.wait = {
 	waitInstance: null,
 	conf: {
-            waitContent: "<div id='wait_content'>&nbsp;</div>",
+            waitContent: "<div class='wait-icon spinner-icon'></div>",
 	    mask: {
 		closeOnClick:false,
 		closeOnEsc:false,
@@ -209,6 +226,7 @@
     // Bring up a wait spinner and mask out the rest of the screen
 
     function Wait(conf) {
+	console.log(conf);
 	this.waitElement = $(conf.waitContent);
 	this.waitElement.css("position", "absolute");
 	this.waitElement.css("top", ( $(window).height() - this.waitElement.height() ) / 2+$(window).scrollTop() + "px");
@@ -220,12 +238,15 @@
 	}
     }
     $.extend({
-	wait: function() {
-		if(!$.roxiware.wait.waitInstance) {
-		    $.roxiware.wait.waitInstance = new Wait($.roxiware.wait.conf);
+	    wait: function(conf) {
+		    console.log("wait");
+		if((!$.roxiware.wait.waitInstance) && (!$.roxiware.alert.popup)) {
+		    console.log("wait success");
+		    $.roxiware.wait.waitInstance = new Wait($.extend({}, $.roxiware.wait.conf, conf));
 		}
 	    },
 	resume: function() {
+		    console.log("resume");
 		if($.roxiware.wait.waitInstance) {
 		    $.roxiware.wait.waitInstance.close();
 		    $.roxiware.wait.waitInstance = null;
@@ -893,6 +914,7 @@ function settingsForm(source, title)
 	         },
 		 onLoad: function(event) {
 		  $("button").button();
+		  $("input[watermark]").watermark();
 		  $("div.settings_wysiwyg textarea").wysiwyg({ css: $.roxiware.main_css,
                                        iFrameClass:"wysiwyg_iframe",
                                        controls: {
@@ -1113,3 +1135,62 @@ $(document).bind("ajaxStart", function(event) {
 $(document).bind("ajaxStop", function(event) {
 		$.resume();
 	    });
+
+var login_form_template = '<form accept-charset="UTF-8" action="/account/login" method="post">' + 
+                              '<div id="login_status"></div>' + 
+                              '<div id="username_entry">' +
+                              '<label for="user_username">Username</label>' +
+                              '<input id="user_username" name="user[username]" size="30" type="text" watermark="username" /></div>' +
+                              '<div id="password_entry"><label for="user_password">Password</label><input id="user_password" name="user[password]" size="30" type="password" watermark="password" /></div>' +
+                              '<div id="remember_me_check" class="labeled-checkbox">' +
+                                  '<input name="user[remember_me]" type="hidden" value="0" />' +
+                                  '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
+                               '<div><button disabled="disabled" id="login_button" name="button" type="button">login</button></div>' +
+                               '<a id="forgot_password" href="/account/password/new">Forgot your password?</a>' +
+                               '<a id="facebook_login" href="http://localhost:3000/account/auth/facebook">Sign In with Facebook</a>'+
+                               '<a id="twitter_login" href="http://localhost:3000/account/auth/twitter">Sign In with Twitter?</a>' +
+                               '</form>';
+
+
+function get_login_form_template() {
+    var template = $(login_form_template);
+    template.find("#user_username, #user_password").bind("input blur propertychange", function() {
+        var button_enable = "enable";
+        console.log("loginlink");
+	$("#user_username, #user_password").each(function(index, value) {
+	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+	        button_enable = "disable";
+	    }
+        });
+        template.find("button#login_button").button(button_enable);
+    });
+
+    template.find("#login_button").click(function() {
+        $.ajax({
+                type:"POST",
+		url: "/account/auth/roxiware/callback",
+                processData: true,
+                data: template.serializeArray(),
+                error: function(xhr, textStatus, errorThrown) {
+                        template.find("input").removeClass("field-error");
+                        if(xhr.status == 401) {
+                            template.find("#login_status").text("Invalid username or password, please try again.");
+                            template.find("input#user_username, input#user_password").addClass("field-error");
+                        }
+                        else {
+                            $.error(errorThrown);
+                        }
+                },
+                complete: function() {
+                },
+                success: function(data) {
+		    console.log(data);
+                    window.location.reload();
+                }});
+        });
+        return template;
+}
+
+function loginForm() {
+    settingsForm($("<div class='small_form' id='login_form'/>").append(get_login_form_template()), "Sign In");
+}

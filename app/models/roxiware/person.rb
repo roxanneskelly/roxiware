@@ -8,7 +8,7 @@ class Roxiware::Person < ActiveRecord::Base
 
    self.default_image = "unknown_person"
 
-   belongs_to :user, :polymorphic=>true
+   belongs_to :user
    has_many :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
    has_many :books
    belongs_to :books

@@ -4,6 +4,8 @@ module Roxiware
     self.table_name="users"
     has_one :person, :autosave=>true, :dependent=>:destroy
 
+    has_many :auth_services, :dependent=>:destroy
+
     validates :username, :length=>{:minimum=>3,
                                    :too_short => "The username must be at least %{count} characters.", 
                                    :maximum=>32,
@@ -28,7 +30,7 @@ module Roxiware
     # Include default devise modules. Others available are:
     # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
     devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable
+         :recoverable, :rememberable, :trackable, :omniauthable
 
     def is_admin?
       return (self.role == "admin") || (self.role == "super")

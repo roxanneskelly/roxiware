@@ -38,7 +38,7 @@ class Roxiware::PageController < ApplicationController
     end
 
     def update
-      page_type = params[:page_type] || "content"
+      page_type = params[:page][:page_type] || "content"
       @page = Roxiware::Page.where(:page_type=>page_type, :page_identifier=>params[:id]).first
       @page ||=  Roxiware::Page.new({:page_type=>page_type, :page_identifier=>params[:id], :content=>""}, :as=>"") if can? :create, Roxiware::Page
       raise ActiveRecord::RecordNotFound if @page.nil?

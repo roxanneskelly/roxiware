@@ -237,6 +237,12 @@ end
 
 
 namespace :roxiware do
+    desc "Package a roxiware image"
+    task :package, [:packagename]=>:environment do |t,args|
+        packagename ||= Rails.root.basename(".git") + "." + `git log -1 --format="%H"`[0..7]
+        #system "tar -czf #{targetdir}.tar.gz #{targetdir}"
+    end
+ 
     desc "Backup a roxiware instance"
     task :backup do |t|
         root_path = Rails.root.join("backups").to_s
@@ -299,13 +305,8 @@ namespace :roxiware do
 
     end
 
-    desc "Initialize a roxiware instance"
-    task :init, [:instance_type]=>:environment do |t,args|
-       instance_type = args[:instance_type] || :author
-       settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml")
-       if !File.file?(settings_file)
-           settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
-       end
+    desc "Base Initialize a roxiware instance"
+    task :base_init, [:instance_type]=>:environment do |t,args|
        Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:drop"].invoke
        Rake::Task["db:create"].invoke
@@ -314,15 +315,25 @@ namespace :roxiware do
        Rake::Task["param_descriptions:import"].invoke
        Rake::Task["widgets:import"].invoke
        Rake::Task["templates:import"].invoke
-       Rake::Task["settings:import"].invoke(settings_file)
-       File.open(Rails.root.join("config", "instance_config.yml"), "w") do |f|
-           f.write("roxiware_params:\n")
-           f.write("    application: #{instance_type}\n")
-       end
        if ENV['RAILS_ENV'] == "production"
            Rake::Task["assets:precompile"].invoke
            Dir.mkdir Rails.root.join("tmp") if !(File.directory? Rails.root.join("tmp"))
            FileUtils.touch Rails.root.join("tmp","restart.txt")
+       end
+    end
+
+    desc "Initialize a roxiware instance"
+    task :init, [:instance_type]=>:environment do |t,args|
+       Rake::Task["roxiware:base_init"].invoke
+       instance_type = args[:instance_type] || :author
+       settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml")
+       if !File.file?(settings_file)
+           settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
+       end
+       Rake::Task["settings:import"].invoke(settings_file)
+       File.open(Rails.root.join("config", "instance_config.yml"), "w") do |f|
+           f.write("roxiware_params:\n")
+           f.write("    application: #{instance_type}\n")
        end
     end
 

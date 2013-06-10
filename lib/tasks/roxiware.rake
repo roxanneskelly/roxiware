@@ -318,13 +318,12 @@ namespace :roxiware do
        if ENV['RAILS_ENV'] == "production"
            Rake::Task["assets:precompile"].invoke
            Dir.mkdir Rails.root.join("tmp") if !(File.directory? Rails.root.join("tmp"))
-           FileUtils.touch Rails.root.join("tmp","restart.txt")
        end
     end
 
-    desc "Initialize a roxiware instance"
-    task :init, [:instance_type]=>:environment do |t,args|
-       Rake::Task["roxiware:base_init"].invoke
+ 
+    desc "Initialize a cold deployed package"
+    task :package_init, [:instance_type]=>:environment do |t,args|
        instance_type = args[:instance_type] || :author
        settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml")
        if !File.file?(settings_file)
@@ -335,6 +334,13 @@ namespace :roxiware do
            f.write("roxiware_params:\n")
            f.write("    application: #{instance_type}\n")
        end
+       FileUtils.touch Rails.root.join("tmp","restart.txt")
+    end
+
+    desc "Initialize a roxiware instance"
+    task :init, [:instance_type]=>:environment do |t,args|
+       Rake::Task["roxiware:base_init"].invoke
+       Rake::Task["roxiware:package_init"].invoke
     end
 
     desc "update a roxiware instance"

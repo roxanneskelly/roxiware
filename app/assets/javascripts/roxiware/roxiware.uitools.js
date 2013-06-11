@@ -1140,23 +1140,34 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
                               '<div id="login_status"></div>' + 
                               '<div id="username_entry">' +
                               '<label for="user_username">Username</label>' +
-                              '<input id="user_username" name="user[username]" size="30" type="text" watermark="username" /></div>' +
+                              '<input id="user_username" name="user[username]" size="255" type="text" watermark="username" /></div>' +
                               '<div id="password_entry"><label for="user_password">Password</label><input id="user_password" name="user[password]" size="30" type="password" watermark="password" /></div>' +
                               '<div id="remember_me_check" class="labeled-checkbox">' +
                                   '<input name="user[remember_me]" type="hidden" value="0" />' +
                                   '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
-                               '<div><button disabled="disabled" id="login_button" name="button" type="button">login</button></div>' +
-                               '<a id="forgot_password" href="/account/password/new">Forgot your password?</a>' +
+                               '<div><button disabled="disabled" id="login_button" name="button" type="submit">login</button></div>' +
+                               '<a id="forgot_password">Forgot your password?</a>' +
                                '<a id="facebook_login" href="http://localhost:3000/account/auth/facebook">Sign In with Facebook</a>'+
                                '<a id="twitter_login" href="http://localhost:3000/account/auth/twitter">Sign In with Twitter?</a>' +
                                '</form>';
 
 
+var forgot_password_template = '<div class="small_form" id="forgot_password_form"><form accept-charset="UTF-8" action="/account/password" method="POST">' + 
+                              "<div class='wizard_text'>We'll send you an email containing information on how to reset your password.</div>" + 
+                              '<div id="email_entry">' +
+                              '<label for="user_email">Email</label>' +
+                              '<input id="user_email" name="user[email]" size="255" type="email" watermark="my@email.com" /></div>' +
+                               '<div><button disabled="disabled" id="forgot_password_button" name="commit" type="submit">Submit</button></div>' +
+                               '</form></div>';
+
+
 function get_login_form_template() {
     var template = $(login_form_template);
+    template.find("a#forgot_password").click(function() {
+	    forgotPassword();
+    });
     template.find("#user_username, #user_password").bind("input blur propertychange", function() {
         var button_enable = "enable";
-        console.log("loginlink");
 	$("#user_username, #user_password").each(function(index, value) {
 	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
 	        button_enable = "disable";
@@ -1164,8 +1175,7 @@ function get_login_form_template() {
         });
         template.find("button#login_button").button(button_enable);
     });
-
-    template.find("#login_button").click(function() {
+    template.submit(function(e) {
         $.ajax({
                 type:"POST",
 		url: "/account/auth/roxiware/callback",
@@ -1184,9 +1194,9 @@ function get_login_form_template() {
                 complete: function() {
                 },
                 success: function(data) {
-		    console.log(data);
                     window.location.reload();
                 }});
+	    return false;
         });
         return template;
 }
@@ -1194,3 +1204,34 @@ function get_login_form_template() {
 function loginForm() {
     settingsForm($("<div class='small_form' id='login_form'/>").append(get_login_form_template()), "Sign In");
 }
+
+function forgotPassword() {
+    var template = $(forgot_password_template);
+    template.find("#user_email").bind("input blur propertychange", function() {
+        var button_enable = "enable";
+	$("#user_email").each(function(index, value) {
+	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+	        button_enable = "disable";
+	    }
+        });
+        template.find("button#forgot_password_button").button(button_enable);
+    });
+    template.submit(function(e) {
+        $.ajax({
+                type:"POST",
+		url: "/account/password",
+                processData: true,
+		    data: template.find("form").serializeArray(),
+                error: function(xhr, textStatus, errorThrown) {
+                     $.error(errorThrown);
+                },
+                complete: function() {
+                },
+                success: function(data) {
+                    window.location.reload();
+                }});
+	    return false;
+        });
+    settingsForm(template, "Forgot Password");
+}
+

@@ -5,11 +5,9 @@ module OmniAuth
 	class Roxiware
 	    include OmniAuth::Strategy
 
-
             option :fields, [:username]
 	    option :uid_field, :username
 	    option :auth_server, "http://customer.roxiware.com/account/authenticate"
-
 
 	    uid do
 	      request.params['user'][options.uid_field.to_s]

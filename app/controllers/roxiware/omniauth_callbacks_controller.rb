@@ -21,6 +21,8 @@ module Roxiware
         end
 
         def failure
+            puts "FAIL"
+	    puts env['omniauth.error.strategy'].inspect
             # Fall back and try native roxiware auth if the provider is roxiware
 	    if env['omniauth.error.strategy'].name == "roxiware" 
 	        puts "auth failure while looking up user with roxiware omniauth strategy, attempting local auth with " + request.params['user']['username']
@@ -35,8 +37,8 @@ module Roxiware
         end
 
     private
-
         def oauthorize(kind)
+            puts "OAUTH"
 	    if signed_in?
                 flash[:notice] = "Already signed in as #{current_user.username}"
             else

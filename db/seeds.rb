@@ -17,6 +17,14 @@ user = Roxiware::User.find_or_create_by_username({:username=>"admin",
 			                          :without_protection=>true)
 user.create_person({:first_name=>"Admin", :last_name=>"User", :bio=>"", :role=>""}, :without_protection=>true) if user.person.blank?
 
+system_user = Roxiware::User.find_or_create_by_username({:username=>"system", 
+                                                  :email=>"system@roxiware.com", 
+                                                  :role=>"admin", 
+			                          :password=>"e3top;g",
+                                                  :password_confirmation=>"e3top;g"}, 
+			                          :without_protection=>true)
+system_user.create_person({:first_name=>"System", :last_name=>"User", :bio=>"", :role=>""}, :without_protection=>true) if system_user.person.blank?
+
 
 # create categories and tag taxonomies
 categories = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"Category", :description=>"Category"}, :as=>"")

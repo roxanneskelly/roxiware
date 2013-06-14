@@ -21,16 +21,13 @@ module Roxiware
         end
 
         def failure
-            puts "FAIL"
-	    puts env['omniauth.error.strategy'].inspect
             # Fall back and try native roxiware auth if the provider is roxiware
 	    if env['omniauth.error.strategy'].name == "roxiware" 
 	        puts "auth failure while looking up user with roxiware omniauth strategy, attempting local auth with " + request.params['user']['username']
 		@user = Roxiware::User.find_for_authentication(:username => request.params['user']['username'])
-		if @user.present?
-		   puts "user present"
-		   return sign_in_and_redirect @user, :event => :authentication if @user.valid_password?(request.params['user']['password'])
-		   puts "couldn't authenticate"
+		if @user.present? && @user.valid_password?(request.params['user']['password'])
+                   flash[:notice] = "Successfully signed in"
+		   return sign_in_and_redirect @user, :event => :authentication
 		end
 	    end
 	    render :nothing => true, :status=>:unauthorized
@@ -38,7 +35,6 @@ module Roxiware
 
     private
         def oauthorize(kind)
-            puts "OAUTH"
 	    if signed_in?
                 flash[:notice] = "Already signed in as #{current_user.username}"
             else
@@ -76,13 +72,10 @@ module Roxiware
 	end
 
 	def find_for_oauth_by_uid(uid, provider)
-	    puts "FINDING #{uid} for #{provider}"
 	    user = nil
 	    auth = Roxiware::AuthService.find_by_provider_and_uid(provider, uid)
             if auth
-                puts "found"
 	        user = auth.user
-                puts "user is #{user.inspect}"
             end
 	    user
 	end

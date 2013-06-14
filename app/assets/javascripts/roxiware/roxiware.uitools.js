@@ -1176,6 +1176,7 @@ function get_login_form_template() {
         template.find("button#login_button").button(button_enable);
     });
     template.submit(function(e) {
+	    e.preventDefault();
         $.ajax({
                 type:"POST",
 		url: "/account/auth/roxiware/callback",

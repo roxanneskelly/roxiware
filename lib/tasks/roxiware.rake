@@ -307,8 +307,6 @@ namespace :roxiware do
 
     desc "Base Initialize a roxiware instance"
     task :base_init, [:instance_type]=>:environment do |t,args|
-       Rake::Task["roxiware:backup"].invoke
-       Rake::Task["db:drop"].invoke
        Rake::Task["db:create"].invoke
        Rake::Task["db:migrate"].invoke
        Rake::Task["db:seed"].invoke
@@ -339,6 +337,8 @@ namespace :roxiware do
 
     desc "Initialize a roxiware instance"
     task :init, [:instance_type]=>:environment do |t,args|
+       Rake::Task["roxiware:backup"].invoke
+       Rake::Task["db:drop"].invoke
        Rake::Task["roxiware:base_init"].invoke
        Rake::Task["roxiware:package_init"].invoke
     end

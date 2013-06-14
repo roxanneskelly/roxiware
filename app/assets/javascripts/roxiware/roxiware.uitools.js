@@ -226,7 +226,6 @@
     // Bring up a wait spinner and mask out the rest of the screen
 
     function Wait(conf) {
-	console.log(conf);
 	this.waitElement = $(conf.waitContent);
 	this.waitElement.css("position", "absolute");
 	this.waitElement.css("top", ( $(window).height() - this.waitElement.height() ) / 2+$(window).scrollTop() + "px");
@@ -239,14 +238,11 @@
     }
     $.extend({
 	    wait: function(conf) {
-		    console.log("wait");
 		if((!$.roxiware.wait.waitInstance) && (!$.roxiware.alert.popup)) {
-		    console.log("wait success");
 		    $.roxiware.wait.waitInstance = new Wait($.extend({}, $.roxiware.wait.conf, conf));
 		}
 	    },
 	resume: function() {
-		    console.log("resume");
 		if($.roxiware.wait.waitInstance) {
 		    $.roxiware.wait.waitInstance.close();
 		    $.roxiware.wait.waitInstance = null;

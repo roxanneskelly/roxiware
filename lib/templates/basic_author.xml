@@ -37,138 +37,6 @@ body.application_body
   background: <%= background %>;
 }
 
-
-/* Fonts and text */
-div#mainBody
-{
-    font-size:12px;
-    font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
-
-    padding-left: 10px;
-    padding-right: 10px;
-    margin:0px auto 20px auto;
-    background: <%= background %>;
-    color:<%= text_color %>;
-
-    h1, h2, h3, h4, h5, h6 {
-	font-family:Georgia, serif;
-	color:<%= text_color %>;
-    }
-
-    h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
-    h2 {font-size:1.2em;margin-bottom:0.75em;}
-    h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
-    h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
-    h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
-    h6 {font-size:1em;font-weight:bold;}
-
-    hr {
-        color: <%= text_color %>;
-        background: <%= text_color %>;
-    }
-    b {
-        text-shadow:2px 2px 4px rgba(0, 0, 0, 0.7);
-    }
-   
-    a, a:visited, a:link {
-        color: <%= link_color %>;
-        text-decoration:none;
-        font-style:none;
-    }
-
-    a, a:visited, a:link, a:hover {
-        color: <%= link_color %>;
-    }
-    a:hover {
-      color: <%= link_hover_color %>;
-    }
-    
-  .watermark {
-       color:#ccc !important;
-    }
-    input {
-        margin:0px;
-        padding:1px;
-    }
-    label {
-        padding:2px
-    }
-
-    button {
-        border:none;
-        background:<%= text_color %>;
-        color:<%= background %>;
-        border-radius:0px;
-        padding:0.2em 3em 0.2em 3em;
-    }
-    button:hover {
-        background:<%= link_color %>;
-    }
-}
-
-
-/* General layout */
-div#mainBody
-{
-    header {
-       width:100%;
-    }
-
-    #layout_body
-    {
-       margin:0px;
-       width:100%;
-       display:block;
-      
-    }
-
-    #content_section {
-       display:block;
-       width:100%;
-       position:relative;
-
-        #left_bar_section {
-            position:absolute;
-            left:-45px;
-            padding-right:10px;
-            top:0px;
-            bottom:0px;
-            width:50px;
-        }
-
-        #center_bar {
-            margin:0px 220px 0px 0px;
-
-            position:relative;
-            display:inline-block;
-            vertical-align:top;
-
-            #top_bar_section {
-            }
-
-            #bottom_bar_section {
-            }
-
-            .content_background_container {
-                #center_content {
-                    position:relative;
-                    width:100%;
-                }
-            }
-        }
-
-        #right_bar_section {
-            position:absolute;
-            width:185px;
-            top:0px;
-            bottom:0px;
-            right:0px;
-            padding:5px;
-        }
-
-    }
-}
-
 /* Sizing for various devices */
 div#mainBody {
      font-size:12px;
@@ -280,6 +148,143 @@ div#mainBody {
 }
 
 
+/* Fonts and text */
+div#mainBody
+{
+    font-size:12px;
+    font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    margin:0px auto 20px auto;
+    background: <%= background %>;
+    color:<%= text_color %>;
+
+    h1, h2, h3, h4, h5, h6 {
+	font-family:Georgia, serif;
+	color:<%= text_color %>;
+    }
+
+    h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
+    h2 {font-size:1.2em;margin-bottom:0.75em;}
+    h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
+    h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
+    h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+    h6 {font-size:1em;font-weight:bold;}
+
+    hr {
+        color: <%= text_color %>;
+        background: <%= text_color %>;
+    }
+    b {
+        text-shadow:2px 2px 4px rgba(0, 0, 0, 0.7);
+    }
+   
+    a, a:visited, a:link {
+        color: <%= link_color %>;
+        text-decoration:none;
+        font-style:none;
+        cursor:pointer;
+    }
+
+    a, a:visited, a:link, a:hover {
+        color: <%= link_color %>;
+    }
+    a:hover {
+      color: <%= link_hover_color %>;
+    }
+    
+  .watermark {
+       color:#ccc !important;
+    }
+    input {
+        margin:0px;
+        padding:1px;
+    }
+    label {
+        padding:2px
+    }
+
+    button {
+        border:none;
+        background:<%= text_color %>;
+        color:<%= background %>;
+        border-radius:0px;
+        padding:0.2em 3em 0.2em 3em;
+    }
+    button:hover {
+        background:<%= link_color %>;
+    }
+}
+
+
+/* General layout */
+div#mainBody
+{
+    header {
+       width:100%;
+    }
+
+    #layout_body
+    {
+       margin:0px;
+       width:100%;
+       display:block;
+      
+    }
+
+    #content_section {
+       display:block;
+       width:100%;
+       position:relative;
+
+        #left_bar_section {
+            position:absolute;
+            left:-45px;
+            padding-right:10px;
+            top:0px;
+            bottom:0px;
+            width:50px;
+        }
+
+        #center_bar {
+            padding:0px 220px 0px 0px;
+
+            position:relative;
+            width:100%;
+            box-sizing:border-box;
+            display:inline-block;
+            vertical-align:top;
+
+            #top_bar_section {
+            }
+
+            #bottom_bar_section {
+            }
+
+            .content_background_container {
+                #center_content {
+                    position:relative;
+                    width:100%;
+                }
+            }
+        }
+
+        #right_bar_section {
+            position:absolute;
+            width:185px;
+            top:0px;
+            bottom:0px;
+            right:0px;
+            padding:5px;
+        }
+
+    }
+}
+
+
+
+
 
 /* Content and widget background boxes */
 /* set the content background to relative so we can position the content background off of it */
@@ -337,7 +342,7 @@ div#mainBody .post {
     @media all and (min-device-height: 320px) and (orientation:portrait) {
         .post_title {
             font-size:1.5em;
-            margin-top:1em;
+            margin: 1em 0em 0.5em 0em;
         }
     }
 
@@ -371,7 +376,7 @@ div#mainBody .post {
          }
     }
     .content {
-        margin-top:6em;
+        margin-top:7em;
         margin-left:0em;
         overflow:hidden;
         width:100%;
@@ -557,28 +562,51 @@ div#mainBody .post {
                      top:60px;
                      right:1em;
                  }
+
                   .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+                      font-size:17px;
+                      font-family: 'Metro Icons';
+                      speak: none;
+                      font-weight: normal;
+                      font-variant: normal;
+                      text-transform: none;
+                      line-height: 1;
+                       -webkit-font-smoothing: antialiased;
+                      color: <%= link_color %>;
                       position:absolute;
                       right:0px;            
-                      width:16px;
-                      height:16px;
+                      width:19px;
+                      height:19px;
                       cursor:pointer;
+                  }
+                  .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+                      color: <%= link_hover_color %>;
                   }
                   .captcha_reload {
                         top:0px;
-                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                   }
+                   .captcha_reload:before {
+                       content: "\e070";
                    }
                    .captcha_audio {
-                        top:16px;
-                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                        top:20px;
                     }
+                   .captcha_audio:before {
+                        content: "\e067";
+                    }
+
                     .captcha_image {
-                        top:16px;
-                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                        top:20px;
                     }
+                    .captcha_image:before {
+                        content: "\e0b5";
+                    }
+
                     .captcha_help {
-                        top:32px;
-                        background:url('<%= CGI::unescape cdn_icon("twitter_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
+                        top:40px;
+                    }
+                    .captcha_help:before {
+                        content: "\e056";
                     }
                 
             }
@@ -1044,28 +1072,28 @@ a.<%= soc_net %>_button:hover {
 }]]>
   </style>
   <params>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
     <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
     <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image"></param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
           <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
         <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3"></param>
@@ -1073,17 +1101,17 @@ a.<%= soc_net %>_button:hover {
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1"></param>
         </param>
       </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
           <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
         <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3"></param>
@@ -1113,14 +1141,14 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
+            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="0">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
                 <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">2px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">13px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Faith Hunter</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
                     <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
@@ -1128,13 +1156,13 @@ a.<%= soc_net %>_button:hover {
                 </param>
               </params>
             </instance>
-            <instance order="6" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="6">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance order="2" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
@@ -1174,7 +1202,7 @@ a.<%= soc_net %>_button:hover {
                 </param>
               </params>
             </instance>
-            <instance order="5" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="5">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1202,11 +1230,11 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C">
+            <instance widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" order="0">
               <params>
               </params>
             </instance>
-            <instance order="1" widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065">
+            <instance widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065" order="1">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">prev_next_post</param>
               </params>
@@ -1238,21 +1266,14 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
-            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
-              <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
-              </params>
-            </instance>
-            <instance order="2" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
+            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="2">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1268,7 +1289,7 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="1">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>

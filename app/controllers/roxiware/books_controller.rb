@@ -22,10 +22,8 @@ class Roxiware::BooksController < ApplicationController
     books = Roxiware::Book.includes(:book_series_joins).order("publish_date DESC")
     @books = books.select{|book| book.book_series_joins.blank?}
     books.each do |book|
-       puts "BOOK #{book.publish_date.strftime("%-m/%-d/%Y")}  #{book.title}"
        book.book_series_joins.each do |series_join|
           series_ids << series_join.book_series_id unless series_ids.include?(series_join.book_series_id)
-	  puts "SERIES IDS " + series_ids.inspect
        end
     end
     series_map = Hash[Roxiware::BookSeries.where(:id=>series_ids).collect{|series| [series.id, series]}]

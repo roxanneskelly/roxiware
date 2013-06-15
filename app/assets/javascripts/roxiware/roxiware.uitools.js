@@ -1149,7 +1149,7 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
 
 
 var forgot_password_template = '<div class="small_form" id="forgot_password_form"><form accept-charset="UTF-8" action="/account/password" method="POST">' + 
-                              "<div class='wizard_text'>We'll send you an email containing information on how to reset your password.</div>" + 
+                              "<div class='wizard_text'>We'll send you an email containing information on how to reset your password.</div><br/><br/>" + 
                               '<div id="email_entry">' +
                               '<label for="user_email">Email</label>' +
                               '<input id="user_email" name="user[email]" size="255" type="email" watermark="my@email.com" /></div>' +

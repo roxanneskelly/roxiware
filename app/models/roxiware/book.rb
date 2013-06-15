@@ -81,7 +81,6 @@ class Roxiware::Book < ActiveRecord::Base
       self.thumbnail_url=goodreads_result[:thumbnail_url]
       self.description=goodreads_result[:description]
       self.goodreads_id = goodreads_result[:goodreads_id]
-      puts "PUB DATE #{goodreads_result[:publication_year]}, #{goodreads_result[:publication_month]}, #{goodreads_result[:publication_month]}" 
       self.publish_date = DateTime.new(goodreads_result[:publication_year], goodreads_result[:publication_month], goodreads_result[:publication_day])
    end
 

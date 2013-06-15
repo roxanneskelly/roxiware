@@ -2,17 +2,29 @@
    <% social_networks = {}
       if @person.get_param("social_networks").present?
          @person.get_param("social_networks").h.each do |network_name, network_info|
-              puts "BLEAH: " + Hash[network_info.h.collect{|name, info| [name, info.to_s]}].inspect
               social_networks[network_name.to_sym] =  Hash[network_info.h.collect{|name, info| [name.to_sym, info.conv_value]}]
          end
-         puts "SOCNET " + social_networks.inspect
       end %>
    <%= person_form.fields_for :params do |params| %>
       <%= params.fields_for :social_networks do |social_networks_fields| %>
           <%= social_networks_fields.fields_for :facebook do |facebook_fields| %>
               <div "facebook_entry"><%= facebook_fields.label :facebook, "Facebook"%>
-                  <%= facebook_fields.text_field :uid, :watermark=>"Facebook Username (ie. 'janedoe')", :value=>(social_networks.include?(:facebook)?social_networks[:facebook][:uid]:nil) %>
+                  <%= facebook_fields.text_field :uid, :watermark=>"Facebook Username (ie. 'janedoe')", :value=>(social_networks.include?(:facebook)?social_networks[:facebook][:uid]:nil), :autocorrect=>"off", :autocapitalize=>"off" %>
 		  <div class="labeled-checkbox social_network_login"><%= facebook_fields.check_box(:allow_login, {}, "true", false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
+con")%> Allow Login</div>
+	      </div>
+          <% end %>
+          <%= social_networks_fields.fields_for :twitter do |twitter_fields| %>
+              <div "twitter_entry"><%= twitter_fields.label :twitter, "Twitter"%>
+                  <%= twitter_fields.text_field :uid, :watermark=>"Twitter Username (ie. 'janedoe')", :value=>(social_networks.include?(:twitter)?social_networks[:twitter][:uid]:nil), :autocorrect=>"off", :autocapitalize=>"off" %>
+		  <div class="labeled-checkbox social_network_login"><%= twitter_fields.check_box(:allow_login, {}, "true", false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
+con")%> Allow Login</div>
+	      </div>
+          <% end %>
+          <%= social_networks_fields.fields_for :google do |google_fields| %>
+              <div "google_entry"><%= google_fields.label :google, "Google"%>
+                  <%= google_fields.text_field :uid, :watermark=>"Google ID (ie. '123456')", :value=>(social_networks.include?(:google)?social_networks[:google][:uid]:nil), :autocorrect=>"off", :autocapitalize=>"off" %>
+		  <div class="labeled-checkbox social_network_login"><%= google_fields.check_box(:allow_login, {}, "true", false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
 con")%> Allow Login</div>
 	      </div>
           <% end %>

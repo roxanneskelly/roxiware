@@ -16,6 +16,7 @@ module Roxiware
 		    respond_to do |format|
 		        num_posts = Roxiware::Param::Param.application_param_val("blog", "blog_posts_per_page")
 		        @posts = Roxiware::Blog::Post.where(:post_status=>"publish").order("post_date DESC").limit(num_posts+1)
+			@blog_class="blog"
 			if(@posts.length > num_posts)
 			   @next_page_link = url_for({:page=>1})
 			end
@@ -25,6 +26,7 @@ module Roxiware
 		    respond_to do |format|
 			posts = Roxiware::Blog::Post.where(:post_status=>"publish").order("post_date DESC").limit(2)
 			@post = posts.first
+			@blog_class="blog"
 			if @post.present?
 
 			    @next_post_link = posts.last.post_link if posts.length > 1

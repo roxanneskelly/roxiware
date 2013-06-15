@@ -7,36 +7,42 @@ else
    method = "put"
 end %>
   <%= form_for @user, :url=>endpoint, :method=>method do |user| %>
-      <%= user.label :role, "Role"%>
+    <div>
       <% if ((current_user.role == "super") || (current_user.role == "admin")) && (@user != current_user) %> 
+          <div id="role_entry"><%= user.label :role, "Role"%>
           <% role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} %>
           <% role_options["Super"] = :super if current_user.role == "super" %>
-          <%= user.select :role, options_for_select(role_options, @user.role), {:disabled=>"disabled"}%>
-          <br/>
+          <%= user.select :role, options_for_select(role_options, @user.role), {:disabled=>"disabled"}%></div>
       <% end %>
-      <%= user.label :username, "Username" %>
-      <%= user.text_field :username, :watermark=>"username" %>
-      <br/>
+      <% if (current_user.role == "super") || (current_user.role == "admin") %>
+          <div id="username_entry"><%= user.label :username, "Username" %>
+          <%= user.text_field :username, :watermark=>"username" %>
+          </div>
+      <% end %>
 
-      <%= user.label :name, "Name"%>
-      <%= user.text_field :first_name, :altname=>:seo_index, :watermark=>"First" %>
-      <%= user.text_field :middle_name, :altname=>:seo_index, :watermark=>"Middle" %>
-      <%= user.text_field :last_name, :altname=>:seo_index, :watermark=>"Last" %>
-      <br/>
+      <div id="name_entry" class="justify_inputs"><%= user.label :name, "Name"%>
+          <%= user.text_field :first_name, :altname=>:seo_index, :watermark=>"First" %>
+          <%= user.text_field :middle_name, :altname=>:seo_index, :watermark=>"Middle" %>
+          <%= user.text_field :last_name, :altname=>:seo_index, :watermark=>"Last" %>
+      </div>
 
-      <%= user.label :email, "Email"%>
-      <%= user.text_field :email, :watermark=>"email" %>
-      <br/>
+      <div id="email_entry">
+	<%= user.label :email, "Email"%>
+        <%= user.email_field :email, :watermark=>"email" %>
+      </div>
 
       <% if(@role != "self") %>
-	 <%= user.label :password, "Password"%>
-	 <%= user.password_field :password, :autocomplete=>"off", :watermark=>"*******" %>
-	 <br/>
+         <div id="password_entry">
+	     <%= user.label :password, "Password"%>
+	     <%= user.password_field :password, :autocomplete=>"off", :watermark=>"*******" %>
+	 </div>
 
-	 <%= user.label :password_confirmation, "Confirm"%>
-	 <%= user.password_field :password_confirmation, :watermark=>"*******"  %>
+	 <div id="password_confirmation_entry">
+	     <%= user.label :password_confirmation, "Confirm"%>
+	     <%= user.password_field :password_confirmation, :watermark=>"*******"  %>
+	 </div>
       <% end %>
-      <br/>
+      </div>
       <%= button_tag "Save", :id=>"save_account", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
   <% end %>
 </div>

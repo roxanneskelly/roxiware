@@ -117,8 +117,8 @@
 			       $("div#import_search_results .search_result").click(function() {
 				   var goodreads_id = $(this).data().series_data.goodreads_id;
 				   var endpoint = "<%= import_book_series_index_path %>.json?goodreads_id="+goodreads_id;
-				   var series_books = $("div#series_books");
-				   var current_books = $("div#current_books");
+				   var series_books = $("div#series_books_list");
+				   var current_books = $("div#current_books_list");
 				   current_books.append(series_books.find(".series_book[book_id]"));
 				   current_books.find(".series_book").each(function(index, book) {
 				      if($(book).attr("book_id") === undefined) {

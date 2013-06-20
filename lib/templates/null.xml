@@ -9,11 +9,14 @@
 <li>Contact</li>
 </ul>]]>
   </description>
+  <settings_form/>
   <setup>
     <![CDATA[]]>
   </setup>
   <categories>
   </categories>
+  <packages>
+  </packages>
   <style>
     <![CDATA[/* Document layout */
 /* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.

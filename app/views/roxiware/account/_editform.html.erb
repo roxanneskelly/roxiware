@@ -48,17 +48,17 @@ end %>
 </div>
 <script>
 $(function() {
-  $("input[watermark]").watermark();
-     $("#user_email, #user_username").bind("input blur propertychange", function() {
-        var button_enable = "enable";
-        $("#user_username, #user_email").each(function(index, value) {
-          if ($(this).is(".watermark") || ($(this).val().length == 0)) {
-             button_enable = "disable";
-          }
-        });
-        $("button#save_account").button(button_enable);
-     });
-
+    $("input[watermark]").watermark();
+    $("button#save_account").require_fields("#user_email, #user_username");
+    $("form").submit(function(e) {
+        e.preventDefault();
+        $.ajaxSetParamsJSON('<%= "#{endpoint}.json" %>', $("form").serializeArray(), {form:$("#account_edit_form form"), 
+                                                                                      fieldPrefix:"user_", 
+                                                                                      method:"<%= method %>",
+                                                                                      success: function() {
+                                                                                          window.location.reload();
+                                                                                      }});
+    });
   
 });
 

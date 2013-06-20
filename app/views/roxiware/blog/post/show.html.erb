@@ -20,7 +20,7 @@
 </section>
 
 <% if can? :edit, @post %>
-<ul id="blog_show_application_menu" class="application_menu"><li><span aria-hidden="true" class="icon-file"></span>&nbsp;Post<ul>
+<ul id="blog_show_application_menu" class="application_menu"><li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit Post"><span aria-hidden="true" class="icon-file"></span>&nbsp;Post</a><ul>
 <li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit Post"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
 <li><a id="delete_post_app_menu">Delete</a></li>
 </ul></li></ul>

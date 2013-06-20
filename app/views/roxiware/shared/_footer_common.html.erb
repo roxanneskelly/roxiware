@@ -2,7 +2,6 @@
    <%= render :partial=>"roxiware/shared/context_menus" %>
    <% end %>
   <script>
-
    <% if flash[:notice].present? %>
      $.notice("<%= flash[:notice] %>");
    <% end %>
@@ -12,9 +11,6 @@
    <% if flash[:error].present? %>
      $.error("<%= flash[:error] %>");
    <% end %>
-
-
-
 
    <% if can? :edit, Roxiware::Layout::Layout %>
   $(".widget").context_menu($("#widget_context_menu"));

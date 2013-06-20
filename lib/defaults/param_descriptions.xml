@@ -86,6 +86,13 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+  <param_description guid="EE71224A-52E0-42D6-A7C9-97FFB7972329">
+    <name>Hosting Package</name>
+    <description>Hosting package</description>
+    <field_type>select</field_type>
+    <permissions>super</permissions>
+    <meta>Custom:custom,Basic Author:basic_author,Premium Author:premium_author,Basic Blog:basic_blog,Premium Blog:premium_blog</meta>
+  </param_description>
  <param_description guid="9311CEF8-86CE-44C0-B3DD-126B718A26C2">
     <name>Hostname</name>
     <description>Hostname</description>

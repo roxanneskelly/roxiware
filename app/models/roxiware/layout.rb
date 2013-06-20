@@ -41,7 +41,7 @@ module Roxiware
 	  self.table_name= "layouts"
 
           has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
-          has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
+          has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term", :autosave=>true
 
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  has_many        :page_layouts, :autosave=>true, :dependent=>:destroy
@@ -61,7 +61,7 @@ module Roxiware
 				      :too_long => "The description can be no larger than ${count} characters."
 				      }
 
-	  edit_attr_accessible :description, :style, :setup, :name, :category_csv, :as=>[:super, nil]
+	  edit_attr_accessible :description, :style, :setup, :name, :category_csv, :settings_form, :as=>[:super, nil]
 	  ajax_attr_accessible :guid, :category_csv, :as=>[:super, :admin, nil]
 
 	  def get_by_path(path)
@@ -110,7 +110,7 @@ module Roxiware
 	  end
 
 	  def category_ids=(category_ids)
-	      self.term_ids = (self.category_ids.to_set + category_ids.to_set).to_a
+	      self.term_ids = (self.package_ids.to_set + category_ids.to_set).to_a
 	  end
 
 	  def category_csv
@@ -118,25 +118,60 @@ module Roxiware
 	  end
 
 	  def category_csv=(csv)
-	     category_strings = csv.split(",").collect {|x| x.gsub(/[^a-z0-9]+/i,' ').gsub(/\s+/,' ').strip.capitalize}.select{|y| !y.empty?}
+	     category_strings = csv.split(",").collect {|x| x.gsub(/[^a-z0-9]+/i,' ').gsub(/\s+/,' ').strip.titleize}.select{|y| !y.empty?}
 	     self.category_ids = Roxiware::Terms::Term.get_or_create(category_strings, Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME).map{|term| term.id}
 	  end
 
 	  def categories
-	    self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME))
+           self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME))
+	  end
+
+	  def package_ids
+	    self.packages.collect{|term| term.id}
+	  end
+
+	  def package_ids=(package_ids)
+	      self.term_ids = (self.category_ids.to_set + package_ids.to_set).to_a
+	  end
+
+	  def package_csv
+	     self.packages.collect{|term| term.name}.join(", ")
+	  end
+
+	  def package_csv=(csv)
+	     package_strings = csv.split(",")
+	     self.package_ids = Roxiware::Terms::Term.get_or_create(package_strings, Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME).map{|term| term.id}
+	  end
+
+	  def packages
+	    self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME))
 	  end
 
 
 	  def import(layout_node)
 	     self.guid = layout_node["guid"]
-
              # import layout chooser information
 	     self.name = layout_node.find_first("name").content
 	     self.description = layout_node.find_first("description").content.strip
+	     self.settings_form = layout_node.find_first("settings_form").content.strip if layout_node.find_first("settings_form")
              layout_category_nodes = layout_node.find("categories/category")
-	     category_strings = layout_category_nodes.collect{|layout_category_node| layout_category_node.content.gsub(/[^a-z0-9]+/i,' ').gsub(/\s+/,' ').strip.capitalize}
 
-	     self.term_ids = Roxiware::Terms::Term.get_or_create(category_strings, Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME).map{|term| term.id}
+	     # generate a list of categories, cleaning them up and splitting them into sub categories
+	     # Sub categories are split by '/' as in 'Sci-Fi/Military' and will be split into 'Sci-Fi' and 'Sci-Fi/Military'
+	     categories = Set.new([])
+	     layout_category_nodes.collect{|layout_category_node| layout_category_node.content}.each do |category|
+	         puts "CATEGORY #{category.inspect}"
+	         category_elems = category.split("/")
+		 puts "CAT ELEMS #{category_elems.inspect}"
+	         while category_elems.present?
+		    categories.add(category_elems.join("/"))
+		    category_elems = category_elems.take(category_elems.length-1)
+		 end
+	     end
+
+             layout_package_nodes = layout_node.find("packages/package")
+	     packages = layout_package_nodes.collect{|layout_package_node| layout_package_node.content}
+	     self.term_ids = (Roxiware::Terms::Term.get_or_create(packages, Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME).map{|term| term.id} + Roxiware::Terms::Term.get_or_create(categories, Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME).map{|term| term.id})
 
 	     self.style = layout_node.find_first("style").content.strip
 	     self.setup = layout_node.find_first("setup").content.strip
@@ -158,11 +193,15 @@ module Roxiware
 	       xml_layout.name self.name
 	       xml_layout.description {|s| s.cdata!(self.description.strip)}
 	       xml_layout.setup {|s| s.cdata!((self.setup || "").strip)}
+	       xml_layout.setup {|s| s.cdata!((self.settings_form || "").strip)}
 	       xml_layout.categories do |xml_categories|
-                  self.terms.each do |term|
-		     xml_categories.category do |xml_category|
-                        xml_category.category term.name
-                     end
+                  self.categories.each do |term|
+                     xml_categories.category term.name
+                  end
+               end
+	       xml_layout.packages do |xml_packages|
+                  self.packages.each do |term|
+                     xml_package.package term.name
                   end
                end
 	       xml_layout.style {|s| s.cdata!(self.style.strip) }
@@ -256,6 +295,9 @@ module Roxiware
 	  end
 	  before_validation do
 	     self.description = Sanitize.clean(self.description, Roxiware::Sanitizer::BASIC_SANITIZER)
+	     self.style = self.style.gsub(/\r\n?/, "\n") if self.style.present?
+	     self.setup = self.setup.gsub(/\r\n?/, "\n") if self.setup.present?
+	     self.settings_form = self.settings_form.gsub(/\r\n?/, "\n") if self.settings_form.present?
 	  end
       end
 
@@ -408,6 +450,9 @@ module Roxiware
 	  def section(section_name)
 	     @sections[section_name] ||= self.layout_sections.create({:name=>section_name, :style=>""}, :as=>"")
 	  end
+	  before_validation do
+	     self.style = self.style.gsub(/\r\n?/, "\n");
+	  end
       end
 
       # LayoutSection
@@ -502,7 +547,6 @@ module Roxiware
 	  end
 
 	  def widget_instance_insert(index, insert_instance)
-	      puts "INSERT #{index} #{insert_instance.inspect}"
 	      instance_array = get_widget_instances.collect{|instance| instance}
 	      instance_array.insert(index, insert_instance)
 	      widget_instances << insert_instance
@@ -533,6 +577,9 @@ module Roxiware
 	  def get_styles(params)
 	     new_params = params.merge(style_params)
 	     eval_style(new_params) + self.widget_instances.collect{|instance| instance.get_styles(new_params)}.join(" ")
+	  end
+	  before_validation do
+	     self.style = self.style.gsub(/\r\n?/, "\n");
 	  end
       end
 
@@ -579,6 +626,9 @@ module Roxiware
 		end
               end
           end
+	  before_validation do
+	     self.style = self.style.gsub(/\r\n?/, "\n");
+	  end
       end
 
       # WidgetInstance

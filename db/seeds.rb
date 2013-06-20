@@ -29,3 +29,5 @@ system_user.create_person({:first_name=>"System", :last_name=>"User", :bio=>"", 
 # create categories and tag taxonomies
 categories = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"Category", :description=>"Category"}, :as=>"")
 tags = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"Tag", :description=>"tag"}, :as=>"")
+layout_category = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"LayoutCategory", :description=>"Layout Category"}, :as=>"")
+layout_package = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"LayoutPackage", :description=>"Layout Package"}, :as=>"")

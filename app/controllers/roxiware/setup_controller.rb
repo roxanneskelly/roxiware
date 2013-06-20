@@ -18,6 +18,9 @@ class Roxiware::SetupController < ApplicationController
 
    # GET /setup
    def show
+       Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", "basic_author") if @setup_step == "welcome"
+       Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", request.host) if @setup_step == "welcome"
+
       if @verified_params.present? && @setup_step == "welcome"
           app_type, hostname, username, email, first_name, middle_name, last_name = @verified_params
 
@@ -33,10 +36,10 @@ class Roxiware::SetupController < ApplicationController
 	     else
 	        @setup_type = "custom"
 	  end
-	  puts "SETUP TYPE IS #{@setup_type}"
 	  @user = Roxiware::User.create({:username=>username, :email=>email, :password=>"Password", :password_confirmation=>"Password", :role=>"admin"}, :as=>"")
           sign_in(:user, @user)
           Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", @setup_type)
+          Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", app_type)
           Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", hostname)
           @user.create_person({:first_name=>first_name, :last_name=>last_name, :middle_name=>middle_name, :role=>"", :bio=>"", :email=>email}, :as=>"")
 	  @user.auth_services.create({:provider=>"roxiware", :uid=>username}, :as=>"")
@@ -106,7 +109,6 @@ class Roxiware::SetupController < ApplicationController
 	     result = goodreads.search_author(search_params)
 	     result.each do |author| 
 	        author[:bio] = Sanitize.clean(author[:about][0..300], Roxiware::Sanitizer::BASIC_SANITIZER)+"..."
-	        puts "AUTHOR " + author[:bio]
 	     end
 	   end
        end
@@ -355,7 +357,6 @@ class Roxiware::SetupController < ApplicationController
 		    end
 		    books.each do |book|
 		       new_book = Roxiware::Book.new(book, :as=>@role)
-		       puts "ADDING BOOK #{new_book.goodreads_id.inspect } " + new_book.inspect 
 		       new_book.init_sales_links
 		       new_book.save!
 		       @books << new_book
@@ -410,8 +411,6 @@ class Roxiware::SetupController < ApplicationController
        @books = Roxiware::Book.all
        # filter series by books
        @books_by_goodreads_id = Hash[@books.select{|book| book.goodreads_id.present?}.collect{|book| [book.goodreads_id, book]}]
-
-       @books.each{|book| puts "BOOK #{book.goodreads_id.inspect} : #{book.id}"}
 
        @series = []
        if current_user.person.goodreads_id
@@ -484,7 +483,9 @@ class Roxiware::SetupController < ApplicationController
     def _show_author_choose_template
         @layouts = []
         category_ids = Set.new([])
-	Roxiware::Layout::Layout.all.each do |layout|
+	package_name = Roxiware::Param::Param.application_param_val("system", "hosting_package")
+	package_term = Roxiware::Terms::Term.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME), :name=>package_name).first
+	Roxiware::Layout::Layout.joins(:term_relationships).where(:term_relationships=>{:term_id=>package_term.id}).each do |layout|
 	   next if cannot? :read, layout
 	   schemes = []
 	   layout.get_param("schemes").h.each do |scheme_id, scheme|
@@ -495,21 +496,36 @@ class Roxiware::SetupController < ApplicationController
 			:large_images=>large_image_urls}
 	   end
 
-	   categories=layout.terms(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME)).collect{|category| category.id}
-	   category_ids.merge(categories)
+	   category_ids.merge(layout.category_ids)
+           schemes.sort!{|x,y| x[:name] <=> y[:name]}
 	   layout_data = {:name=>layout.name,
 			  :guid=>layout.guid,
 			  :thumbnail_url=>layout.get_param("chooser_image").to_s,
 			  :description=>layout.description,
-			  :categories=>categories,
+			  :categories=>layout.category_ids,
 			  :schemes=>schemes}
-	   if(@default_template.blank? && categories.blank?) 
+	   if(@default_template.blank? && layout.category_ids.blank?) 
 	       @default_template = layout.guid
 	       @default_scheme=schemes[0][:id]
 	   end
 	   @layouts << layout_data
 	end
-	@categories = Roxiware::Terms::Term.where(:id=>category_ids.to_a)
+          @layouts.sort!{|x,y| x[:name] <=> y[:name]}
+	  cat_tree_build = {}
+          # grab the categories and sort them so lesser specific items will come before their contained categories
+	  Roxiware::Terms::Term.where(:id=>category_ids.to_a).sort{|x, y| x.name <=> y.name}.each do |category|
+	      # for the category, split off it's name and find the parent name
+	      parent = category.name.split("/").reverse
+	      parent.shift
+	      
+	      cat_tree_build[parent.reverse.join("/")] ||= []
+	      cat_tree_build[parent.reverse.join("/")] << category
+	  end
+	  dfs = lambda do |current|
+	     Hash[cat_tree_build[current].collect{|category| [category, dfs.call(category.name)]}] if cat_tree_build[current].present?
+	  end
+
+	  @categories = dfs.call("")
     end
 
     def _author_choose_template

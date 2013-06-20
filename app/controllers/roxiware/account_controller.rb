@@ -5,6 +5,7 @@ class Roxiware::AccountController < ApplicationController
   before_filter do
     @role = current_user.role if current_user.present?
     @role = "self" if current_user == @user
+    @auth_server = Pathname.new(AppConfig.auth_server || "/")
   end
 
   # GET - enumerate user
@@ -113,7 +114,8 @@ class Roxiware::AccountController < ApplicationController
          format.html { redirect_to "/", :notice=>flash_from_object_errors(@user) } 
          format.json { render :json=>report_error(@user)}
       else
-         format.json { render :json => @user.ajax_attrs(@role) }
+	 flash[:notice]="Successfully updated."
+         format.json { render :json => @user.ajax_attrs(@role)}
          if update_params.has_key?("password")
              format.html { redirect_to "/", :notice=>"User successfully updated.  You must log in again."}
 	 else
@@ -137,9 +139,9 @@ class Roxiware::AccountController < ApplicationController
     @user = Roxiware::User.find(current_user.id) unless current_user.nil?
     raise ActiveRecord::RecordNotFound if @user.nil?
     authorize! :edit, @user
-    
+    @update_password_path = @auth_server.join(account_update_password_path).to_s
     respond_to do |format|
-      format.html { render :partial =>"roxiware/account/change_password" }
+        format.html { render :partial =>"roxiware/account/change_password" }
     end
   end
 
@@ -157,17 +159,20 @@ class Roxiware::AccountController < ApplicationController
 
     respond_to do |format|
         if(update_params[:password].blank?) 
+	    format.json { render :json=>{:error=>[["password", "New password can't be blank."]] }}
 	    format.html { redirect_to "/",  :alert=>"Password cannot be blank." }
 	elsif @user.valid_password?(update_params[:current_password]) 
 	    if !@user.update_attributes(update_params, :as=>current_user.role)
+	       format.json { render :json=>report_error(@user)}
 	       format.html { redirect_to "/", :alert=>flash_from_object_errors(@user) } 
 	    else
+	      format.json { render :json=>@user.ajax_attrs(@role)}
 	      format.html { redirect_to "/",  :notice=>"Password successfully updated.  You will need to log in again." }
 	    end
 	else
+	    format.json { render :json=>{:error=>[["current_password", "Current password is invalid."]] }}
 	    format.html { redirect_to "/",  :alert=>"Current password is invalid" }
 	end
-
      end
   end
 

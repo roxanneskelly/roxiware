@@ -46,6 +46,8 @@
     $.roxiware.ajaxSetParamsJSON = {
 	conf: {
 	       method:"PUT",
+	       fieldPrefix:"",
+	       success:function() {}
 	}
     }
 
@@ -99,19 +101,18 @@
 			complete: function() {
 			},
 			success: function(data) {
-			    formfind("input").removeClass("field-error");
-			    if(data["error"]) {
+			    if(conf.form && data["error"]) {
+			        conf.form.find("input").removeClass("field-error");
 				$(data["error"]).each(function(index, value) {
-					$.error(value[0]+": "+value[1]);
-					if(conf.form) {
-					    form.find("input#"+value[0]).addClass("field-error");
-					}
-				    });
+				    $.error(value[1]);
+				    if(conf.form) {
+					console.log("input#"+conf.fieldPrefix+value[0]);
+				        conf.form.find("input#"+conf.fieldPrefix+value[0]).addClass("field-error");
+				    }
+				});
 			    }
 			    else {
-				if(conf.success) {
-				    conf.success();
-				}
+				conf.success();
 			    }
 			}
 		    });
@@ -904,7 +905,7 @@ function settingsForm(source, title)
 	             loadSpeed: 200,
 		     opacity: 0.6
 		      },
-		 onClose: function (event) {
+		onClose: function (event) {
 		         $.roxiware.alert.popup = null;
 		         overlay.remove();
 	         },
@@ -1157,22 +1158,27 @@ var forgot_password_template = '<div class="small_form" id="forgot_password_form
                                '</form></div>';
 
 
+$.fn.require_fields = function(fields) {
+    var button = $(this);
+    $(fields).bind("input blur propertychange", function() {
+	    var button_enable = "enable";
+	    $(fields).each(function(index, value) {
+		    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+			button_enable = "disable";
+		    }
+		});
+	    button.button(button_enable);
+	});
+}
+
 function get_login_form_template() {
     var template = $(login_form_template);
     template.find("a#forgot_password").click(function() {
 	    forgotPassword();
     });
-    template.find("#user_username, #user_password").bind("input blur propertychange", function() {
-        var button_enable = "enable";
-	$("#user_username, #user_password").each(function(index, value) {
-	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
-	        button_enable = "disable";
-	    }
-        });
-        template.find("button#login_button").button(button_enable);
-    });
+    template.find("button#login_button").require_fields(template.find("#user_username, #user_password"));
     template.submit(function(e) {
-	    e.preventDefault();
+	e.preventDefault();
         $.ajax({
                 type:"POST",
 		url: "/account/auth/roxiware/callback",
@@ -1204,16 +1210,9 @@ function loginForm() {
 
 function forgotPassword() {
     var template = $(forgot_password_template);
-    template.find("#user_email").bind("input blur propertychange", function() {
-        var button_enable = "enable";
-	$("#user_email").each(function(index, value) {
-	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
-	        button_enable = "disable";
-	    }
-        });
-        template.find("button#forgot_password_button").button(button_enable);
-    });
+    template.find("button").require_fields($("#user_email"));
     template.submit(function(e) {
+	e.preventDefault();
         $.ajax({
                 type:"POST",
 		url: "/account/password",

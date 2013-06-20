@@ -26,8 +26,23 @@ Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11
 Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
 Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", person.full_name+", Author")]]>
   </setup>
+  <setup>
+    <![CDATA[]]>
+  </setup>
   <categories>
+      <category>Horror</category>
+      <category>Sci-Fi/Military</category>
+      <category>Horror/Zombies</category>
+      <category>Sci-Fi/Dystopian/Zombies</category>
+      <category>General</category>
+      <category>Sci-Fi</category>
+      <category>General/Flowers</category>
+      <category>Sci-Fi/Dystopian</category>
   </categories>
+  <packages>
+      <package>premium_author</package>
+      <package>basic_author</package>
+  </packages>
   <style>
     <![CDATA[/* Document layout */
 /* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
@@ -1096,9 +1111,8 @@ a.<%= soc_net %>_button:hover {
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
         <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3"></param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2"></param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1"></param>
+          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">http://jquerytools.org/media/img/logo-medium.png</param>
+          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">http://images.amazon.com/images/P/1849517800.01.LZZZZZZZ.jpg</param>
         </param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
@@ -1114,9 +1128,9 @@ a.<%= soc_net %>_button:hover {
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
         <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3"></param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2"></param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1"></param>
+          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3">http://jquerytools.org/media/img/MaxCDN-Black-200x33.png</param>
+          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">http://jquerytools.org/media/img/tabs/thumb/blue_panes.jpg</param>
+          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">http://www.rawstory.com/rs/wp-content/uploads/2013/03/sweatyangrylady-shutterstock-230x105.jpg</param>
         </param>
       </param>
     </param>
@@ -1141,7 +1155,7 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="0">
+            <instance order="0" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
                 <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
@@ -1156,13 +1170,13 @@ a.<%= soc_net %>_button:hover {
                 </param>
               </params>
             </instance>
-            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="6">
+            <instance order="6" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">
+            <instance order="2" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
@@ -1202,7 +1216,7 @@ a.<%= soc_net %>_button:hover {
                 </param>
               </params>
             </instance>
-            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="5">
+            <instance order="5" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1230,11 +1244,7 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="ECD4F103-EFB0-4516-8F07-BAA7D224D57C" order="0">
-              <params>
-              </params>
-            </instance>
-            <instance widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065" order="1">
+            <instance order="2" widget_guid="20B56D82-B1D2-4487-8ACE-B61427CC2065">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">prev_next_post</param>
               </params>
@@ -1266,14 +1276,14 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
+            <instance order="0" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">3508553872</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
-            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="2">
+            <instance order="2" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1289,7 +1299,7 @@ a.<%= soc_net %>_button:hover {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="1">
+            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>

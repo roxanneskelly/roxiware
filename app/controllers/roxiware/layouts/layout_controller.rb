@@ -9,7 +9,9 @@ module Roxiware
        def index
 	  @layouts = []
 	  category_ids = Set.new([])
-	  Roxiware::Layout::Layout.all.each do |layout|
+	  package_name = Roxiware::Param::Param.application_param_val("system", "hosting_package")
+	  package_term = Roxiware::Terms::Term.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME), :name=>package_name).first
+	  Roxiware::Layout::Layout.joins(:term_relationships).where(:term_relationships=>{:term_id=>package_term.id}).each do |layout|
 	     next if cannot? :read, layout
 	     schemes = []
 	     if(layout.get_param("schemes").present?)
@@ -22,18 +24,34 @@ module Roxiware
 		 end
              end
 
-	     categories=layout.terms(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME)).collect{|category| category.id}
-	     category_ids.merge(categories)
+	     category_ids.merge(layout.category_ids)
+             schemes.sort!{|x,y| x[:name] <=> y[:name]}
 	     layout_data = {:name=>layout.name,
 			    :guid=>layout.guid,
 			    :thumbnail_url=>layout.get_param("chooser_image").to_s,
 			    :description=>layout.description,
-			    :categories=>categories,
+			    :categories=>layout.category_ids,
 			    :schemes=>schemes}
 	     @layouts << layout_data
 	  end
-	  @categories = Roxiware::Terms::Term.where(:id=>category_ids.to_a)
+          @layouts.sort!{|x,y| x[:name] <=> y[:name]}
 
+	  cat_tree_build = {}
+          # grab the categories and sort them so lesser specific items will come before their contained categories
+	  Roxiware::Terms::Term.where(:id=>category_ids.to_a).sort{|x, y| x.name <=> y.name}.each do |category|
+	      # for the category, split off it's name and find the parent name
+	      parent = category.name.split("/").reverse
+	      parent.shift
+	      
+	      cat_tree_build[parent.reverse.join("/")] ||= []
+	      cat_tree_build[parent.reverse.join("/")] << category
+	  end
+	  dfs = lambda do |current|
+	     Hash[cat_tree_build[current].collect{|category| [category, dfs.call(category.name)]}] if cat_tree_build[current].present?
+	  end
+
+	  @categories = dfs.call("")
+	  
 	  respond_to do |format|
 	     format.html {render :partial => "roxiware/templates/choose_template", :locals=>{:selected_scheme=>@layout_scheme, :selected_template=>@current_layout.guid} }
 	     format.json {render :json =>@layouts}

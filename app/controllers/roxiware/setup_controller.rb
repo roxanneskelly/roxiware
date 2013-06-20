@@ -504,7 +504,7 @@ class Roxiware::SetupController < ApplicationController
 			  :description=>layout.description,
 			  :categories=>layout.category_ids,
 			  :schemes=>schemes}
-	   if(@default_template.blank? && layout.category_ids.blank?) 
+	   if(@default_template.blank?) 
 	       @default_template = layout.guid
 	       @default_scheme=schemes[0][:id]
 	   end

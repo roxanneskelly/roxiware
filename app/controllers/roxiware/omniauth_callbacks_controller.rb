@@ -22,16 +22,18 @@ module Roxiware
 
         def failure
             # Fall back and try native roxiware auth if the provider is roxiware
-	    if env['omniauth.error.strategy'].name == "roxiware" && env['omniauth.error.type'] == :not_found
+	    if env['omniauth.error.strategy'].name == "roxiware" && env['omniauth.error.type'] == :service_unavailable
 	        puts "auth failure while looking up user with roxiware omniauth strategy, attempting local auth with " + request.params['user']['username']
 		@user = Roxiware::User.find_for_authentication(:username => request.params['user']['username'])
 
 		# return unauthorized if user can't be found so we don't leak the fact that the
                 # user doesn't exist.
-	        render :nothing => true, :status=>:unauthorized
+	        return render :nothing => true, :status=>:unauthorized if @user.blank?
 		if @user.valid_password?(request.params['user']['password'])
                    flash[:notice] = "Successfully signed in"
 		   return sign_in_and_redirect @user, :event => :authentication
+		else
+	           return render :nothing => true, :status=>:unauthorized
 		end
             end
 	    if env['omniauth.error.type'] == :invalid_credentials

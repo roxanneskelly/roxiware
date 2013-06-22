@@ -48,6 +48,7 @@ module OmniAuth
 
                          return fail!(:internal_server_error) if !authentication_response
                          return fail!(:invalid_credentials) if authentication_response.code.to_i == 401
+                         return fail!(:service_unavailable) if authentication_response.code.to_i == 404
                          return fail!(authentication_response.code) if authentication_response.code.to_i != 200
 		    end
 		end

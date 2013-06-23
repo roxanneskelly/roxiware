@@ -91,101 +91,99 @@ $(function() {
            });
        }
 
+    });
 
-       $(".template_item").click(function() {
-           // a template item was clicked, so build and bring up the template/scheme dialog
+    $(".template_item").click(function() {
+       // a template item was clicked, so build and bring up the template/scheme dialog
+       var overlay = $($("#template_template").text());
+       var current_scheme = $(this).attr("selected_scheme");
+       var template_item = $(this);
 
-           var overlay = $($("#template_template").text());
-           var current_scheme = $(this).attr("selected_scheme");
-           var template_item = $(this);
+       // bring up the layout info
+       var layout = layouts[parseInt($(this).attr("id"))];
+       $(overlay).find("div#template_popup_form").attr("template_guid", $(this).attr("template_guid"));
+       $(overlay).find("div#name,div#name_reflect").text(layout['name']);
+       $(overlay).find("div#description").html(layout['description']);
+       $(overlay).find("a#export_template").attr("href", "<%= layout_index_path %>/"+$(this).attr("template_guid")+".xml");
 
-           // bring up the layout info
-	   var layout = layouts[parseInt($(this).attr("id"))];
-	   $(overlay).find("div#template_popup_form").attr("template_guid", $(this).attr("template_guid"));
-	   $(overlay).find("div#name,div#name_reflect").text(layout['name']);
-	   $(overlay).find("div#description").html(layout['description']);
-	   $(overlay).find("a#export_template").attr("href", "<%= layout_index_path %>/"+$(this).attr("template_guid")+".xml");
+       // Populate schemes
+       $(overlay).find("div#schemes").html("");
+       $(overlay).find("div#left_pane #images").html("");
 
-           // Populate schemes
-	   $(overlay).find("div#schemes").html("");
-	   $(overlay).find("div#left_pane #images").html("");
+       $.each(layout['schemes'], function(index, layout_scheme) {
+           // append scheme selector to right pane
+          $(overlay).find("div#schemes").append($("<a class='template_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_image']+"'/><div class='template_scheme_name'>"+layout_scheme['name']+"</div></a>"));
 
-	   $.each(layout['schemes'], function(index, layout_scheme) {
-
-              // append scheme selector to right pane
-	      $(overlay).find("div#schemes").append($("<a class='template_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_image']+"'/><div class='template_scheme_name'>"+layout_scheme['name']+"</div></a>"));
-
-              // generate left pane preview images list
-	      var preview_images = $("<div class='preview_image_block'><div class='scrollable'><div class='items preview_images'></div></div><div class='preview_nav_controls'><div class='expand icon-fullscreen'></div><div class='prev icon-arrow-left-9'></div><div class='next icon-arrow-right-9'></div></div></div></div>");
-	      $.each(layout_scheme['large_images'], function(index, image) {
-	          preview_images.find(".preview_images").append("<div><img src='"+image+"'/></div>");
-	      });
+          // generate left pane preview images list
+	  var preview_images = $("<div class='preview_image_block'><div class='scrollable'><div class='items preview_images'></div></div><div class='preview_nav_controls'><div class='expand icon-fullscreen'></div><div class='prev icon-arrow-left-9'></div><div class='next icon-arrow-right-9'></div></div></div></div>");
+	  $.each(layout_scheme['large_images'], function(index, image) {
+	      preview_images.find(".preview_images").append("<div><img src='"+image+"'/></div>");
+	  });
                      
-	      $(overlay).find("div#left_pane #images").append(preview_images);
+	  $(overlay).find("div#left_pane #images").append(preview_images);
 
-              // left pane is a scroller of images
-	      preview_images.find(".scrollable").scrollable({circular:false, next:overlay.find(".next"), prev:overlay.find(".prev")});
-              preview_images.find(".expand").click(function() {
-                  var api = preview_images.find(".scrollable").data("scrollable");
-                  var image = api.getItems().eq(api.getIndex()).find("img").attr('src');
-                  var image_overlay = $("<div style='z-index:4000' class='settings settings_dialog'><div class='full_preview_overlay'><a class='close icon-cancel-circle'></a><img src='" + image + "'/></div></div>");
-                  $("body").append(image_overlay);
-                  image_overlay.overlay({ top:"center", left:"center", close:image_overlay.find(".close"), oneInstance:false, load:true, zIndex:4000, fixed:false, onClose: function(event) {image_overlay.remove()}});
-              });
-	   });
-
-           // the preview images are overlayed with a nav control that will appear when hovered.
-	   $(overlay).find(".preview_image_block").hover(function() {
-	           $(this).find(".preview_nav_controls").fadeIn(300);
-	       },
-               function() {
-	           $(this).find(".preview_nav_controls").fadeOut(300);
-           });
-
-
-           // scheme selectors in the right pane treat all of the scheme previews in the left pane as
-           // if they're tab clients.  The current tab is indicated by the layout html
-           var current_index = $(overlay).find("div#schemes .template_scheme#"+template_item.attr("selected_scheme")).index();
-	   $(overlay).find("div#schemes").tabs($(overlay).find("div#left_pane #images > div"), {initialIndex:current_index});
-           $(overlay).find("button#select_template").click(function() {
-               var api = $(overlay).find("div#schemes").data("tabs");
-               template_item.attr("selected_scheme", api.getCurrentTab().attr("id")); 
-               $(".template_item_selected").removeClass("template_item_selected");
-               template_item.addClass("template_item_selected");
-
-               $(overlay).find(".close").click();
-           });
-
-           $("body").append(overlay);
-           overlay.overlay({
-		top: "15%",
-		left: "center",
-                oneInstance: false,
-		load: true,
-		zIndex: 3000,
-                closeOnClick: false,
-                fixed:false, 
-		mask: {
-		     zIndex: 2999,
-		     color: "#222",
-	             loadSpeed: 200,
-		     opacity: 0.6
-		      },
-		onClose: function (event) {
-		         $.roxiware.alert.popup = null;
-		         overlay.remove();
-	         },
-                 onLoad: function(e) {
-                 }
-           });
+          // left pane is a scroller of images
+	  preview_images.find(".scrollable").scrollable({circular:false, next:overlay.find(".next"), prev:overlay.find(".prev")});
+          preview_images.find(".expand").click(function() {
+              var api = preview_images.find(".scrollable").data("scrollable");
+              var image = api.getItems().eq(api.getIndex()).find("img").attr('src');
+              var image_overlay = $("<div style='z-index:4000' class='settings settings_dialog'><div class='full_preview_overlay'><a class='close icon-cancel-circle'></a><img src='" + image + "'/></div></div>");
+              $("body").append(image_overlay);
+              image_overlay.overlay({ top:"center", left:"center", close:image_overlay.find(".close"), oneInstance:false, load:true, zIndex:4000, fixed:false, onClose: function(event) {image_overlay.remove()}});
+          });
        });
 
-       $(".template_item[template_guid=<%=selected_template%>]").addClass("template_item_selected");
-       <% if selected_scheme.present? %>
-           $(".template_item[template_guid=<%=selected_template%>]").attr("selected_scheme", "<%= selected_scheme %>");
-       <% end %>
-       
-      $(".category_entry").first().click();
-  });
+       // the preview images are overlayed with a nav control that will appear when hovered.
+       $(overlay).find(".preview_image_block").hover(function() {
+              $(this).find(".preview_nav_controls").fadeIn(300);
+	   },
+           function() {
+	       $(this).find(".preview_nav_controls").fadeOut(300);
+       });
+
+
+       // scheme selectors in the right pane treat all of the scheme previews in the left pane as
+       // if they're tab clients.  The current tab is indicated by the layout html
+       var current_index = $(overlay).find("div#schemes .template_scheme#"+template_item.attr("selected_scheme")).index();
+       $(overlay).find("div#schemes").tabs($(overlay).find("div#left_pane #images > div"), {initialIndex:current_index});
+       $(overlay).find("button#select_template").button();
+       $(overlay).find("button#select_template").click(function() {
+           var api = $(overlay).find("div#schemes").data("tabs");
+           template_item.attr("selected_scheme", api.getCurrentTab().attr("id")); 
+           $(".template_item_selected").removeClass("template_item_selected");
+           template_item.addClass("template_item_selected");
+
+           $(overlay).find(".close").click();
+       });
+
+       $("body").append(overlay);
+       overlay.overlay({
+           top: "15%",
+	   left: "center",
+           oneInstance: false,
+	   load: true,
+	   zIndex: 3000,
+           closeOnClick: false,
+           fixed:false, 
+	   mask: {
+	     zIndex: 2999,
+	     color: "#222",
+	     loadSpeed: 200,
+	     opacity: 0.6
+	   },
+	   onClose: function (event) {
+	       $.roxiware.alert.popup = null;
+               overlay.remove();
+           },
+           onLoad: function(e) {
+           }
+       });
+   });
+
+   $(".category_entry").first().click();
+   $(".template_item[template_guid=<%=selected_template%>]").addClass("template_item_selected");
+   <% if selected_scheme.present? %>
+      $(".template_item[template_guid=<%=selected_template%>]").attr("selected_scheme", "<%= selected_scheme %>");
+   <% end %>
 });
 </script>

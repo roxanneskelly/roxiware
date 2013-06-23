@@ -270,11 +270,14 @@ namespace :roxiware do
 	FileUtils.rm_r(path)
         if AppConfig.root_backup_location.present?
 	    backup_server, backup_path = AppConfig.root_backup_location.split(":")
-	    puts "BACKUP SERVER: #{backup_server}"
-	    puts "BACKUP PATH #{backup_path}"
-	    backup_path += "/#{Rails.root.split().last}"
-	    sh "ssh #{backup_server} '[ -d #{backup_path} ] || mkdir -p #{backup_path}'"
-	    sh "scp #{path}.tgz '#{backup_server}:#{backup_path}'"
+	    if backup_path.nil?
+	        backup_path = backup_server
+	        sh "cp #{path}.tgz  #{backup_path}"
+	    else
+	        backup_path += "/#{Rails.root.split().last}"
+	        sh "ssh #{backup_server} '[ -d #{backup_path} ] || mkdir -p #{backup_path}'"
+	        sh "scp #{path}.tgz '#{backup_server}:#{backup_path}'"
+	    end
         end
     end
 

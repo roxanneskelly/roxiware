@@ -621,7 +621,7 @@ class Roxiware::SetupController < ApplicationController
 <p>Welcome to my website!</p>
 <p>Be sure to check out my <a href="/books">books</a>, and if you'd like to find out more about me, take a look at my <a href="/biography">biography</a>.</p>
 <p>And definitely enjoy my latest</p></br>
-<a href="#{book_path(latest_book.seo_index)}" style="font-size:2em">#{ latest_book.title}</a><p style="clear:both"><a href="#{book_path(latest_book.seo_index)}"><img src="#{latest_book.image_url}" style="float:left;margin:5px;"/></a>#{latest_book.description}<br></p>
+<a href="#{book_path(latest_book.seo_index)}" style="font-size:2em">#{ latest_book.title}</a><p style="clear:both"><a href="#{book_path(latest_book.seo_index)}"><img src="#{latest_book.image_url}" style="float:left;"/></a>#{latest_book.description}<br></p>
 <p><br/>
 <br/>
 - #{current_user.person.full_name}

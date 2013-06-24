@@ -49,8 +49,6 @@
 	       $("button#import_search").click();
 	     }
 	});
-	populate_series(<%= raw @series.book_ids.to_json %>);
-
 
 	$("button#import_search").click(function() {
 	     var search_val = $("input#import_search").val();
@@ -160,6 +158,8 @@
 			}
 		      );
 	});
+    <% else %>
+	populate_series(<%= raw @series.book_ids.to_json %>);
     <% end %>
       $("#series_edit_form button.save_button").click(function() {
          var post_data = $("#series_edit_form form").serializeArray();

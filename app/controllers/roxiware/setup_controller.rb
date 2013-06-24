@@ -452,6 +452,8 @@ class Roxiware::SetupController < ApplicationController
 		           # create joins, linking books to the series
 		           order = 1
 		           books = series[:books][:book]
+			   books = [books] if books.class != Array
+			   
 			   books.sort! {|x, y| x[:order].to_i <=> y[:order].to_i}
 			   books.each do |book|
 			       book_obj = Roxiware::Book.find(book[:id].to_i)

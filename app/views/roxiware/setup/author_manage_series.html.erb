@@ -23,7 +23,7 @@ $(function() {
     $.each(<%= raw @series.to_json %>,
            function(index, series) {
               // add series to series list
-              var series_html = $("<div class='series'><div class='series_details'><div class='series_title'>"+series.title+"</div></div></div>");
+              var series_html = $("<div class='series list_box_item'><div class='series_details'><div class='series_title'>"+series.title+"</div></div></div>");
               series_html.data().series = series;
               // add book ids for items we think are in the series
               $("div#series_list").append(series_html);
@@ -168,18 +168,39 @@ $(function() {
 
      });
 
+   $("input#series_fields_title").bind("input blur propertychange", function() {
+      var current_selected_series = $(".list_box_item_selected");
+      if(current_selected_series.length != 0) {
+          current_selected_series.find(".series_title").text($(this).val());
+          current_selected_series.data().series.title = $(this).val();
+      }
+   });
+
+   $("div#delete_series").click(function() {
+      var current_selected_series = $(".list_box_item_selected");
+      var next_series = current_selected_series.next();
+      if (next_series.length == 0) {
+          next_series = current_selected_series.prev();
+      }
+      current_selected_series.remove();
+      if (next_series.length != 0) {
+	   $(next_series).addClass("list_box_item_selected");
+	   updateForm(next_series);
+      }
+   });
+
    $("div#new_series").click(function() {
       var current_selected_series = $(".list_box_item_selected");
-      var series_html = $("<div class='series'><div class='series_details'><div class='series_title'>New Series</div></div></div>");
-      series_html.data().series = {
+      var series = $("<div class='series list_box_item'><div class='series_details'><div class='series_title'>New Series</div></div></div>");
+      series.data().series = {
 	 title:"New Series",
          description: ""
       }
       if(current_selected_series.length != 0) {
-        current_selected_series.after(series_html);
+        current_selected_series.after(series);
       }
       else {
-        $("#series_list").append(series_html);
+        $("#series_list").append(series);
       }
       series.click(function() {
 	   var current_selected_series = $(".list_box_item_selected");

@@ -3,7 +3,7 @@
      <hr class="post_separator"/>
      <% if (can? :edit, post) %>
          <div class="manage_post_menu manage_menu" id="manage_<%= post.id %>"><ul>
-             <li><div class="manage_button">&nbsp;</div><ul>
+             <li><div class="manage_button icon-arrow-down-9"></div><ul>
 		<li class="edit_post"><a>Edit</a></li>
 		<li class="post_status"  post_status="<%= post.post_status %>"><a><%= "Hide" if post.post_status == "publish" %><%= "Show" unless post.post_status == "publish"%></a></li>
 		<hr/>

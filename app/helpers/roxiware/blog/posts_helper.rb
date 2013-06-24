@@ -18,7 +18,7 @@ module Roxiware::Blog::PostsHelper
 		if allow_edit
 		  result += <<-HTML
 		  <div class="manage_menu manage_comment" id="manage_comment_#{child.id}">
-		    <ul><li><div class="manage_button">&nbsp;</div><ul>
+		    <ul><li><div class="manage_button icon-arrow-down-9"></div><ul>
 		      <li class="#{ "selected_item" if child.comment_status == "publish" }" ><a class="publish_comment"><div class="checkbox"></div>Publish</a></li>
 		      <li class="#{ "selected_item" unless child.comment_status == "publish" }" ><a class="hide_comment"><div class="checkbox"></div>Hide</a></li>
 		      <hr/>

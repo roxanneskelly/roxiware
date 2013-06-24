@@ -18,6 +18,11 @@ author_name =  @current_layout.get_by_path("_/header_bar/logo_bar/display_items/
 author_name.value = person.full_name
 author_name.save!
 
+social_networks_bio = @current_layout.get_by_path("_/left_bar/social_networks_header/biography_id")
+
+social_networks_bio.value = person_id
+social_networks_bio.save!
+
 Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
 Roxiware::Param::Param.set_application_param("system", "title", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", person.full_name+", Author")
 Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
@@ -30,18 +35,18 @@ Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9
     <![CDATA[]]>
   </setup>
   <categories>
-      <category>Horror</category>
-      <category>Sci-Fi/Military</category>
-      <category>Horror/Zombies</category>
-      <category>Sci-Fi/Dystopian/Zombies</category>
-      <category>General</category>
-      <category>Sci-Fi</category>
-      <category>General/Flowers</category>
-      <category>Sci-Fi/Dystopian</category>
+    <category>Horror</category>
+    <category>Sci-Fi/Military</category>
+    <category>General</category>
+    <category>General/Flowers</category>
+    <category>Sci-Fi</category>
+    <category>Sci-Fi/Dystopian</category>
+    <category>Horror/Zombies</category>
+    <category>Sci-Fi/Dystopian/Zombies</category>
   </categories>
   <packages>
-      <package>premium_author</package>
-      <package>basic_author</package>
+    <package>basic_author</package>
+    <package>premium_author</package>
   </packages>
   <style>
     <![CDATA[/* Document layout */
@@ -255,11 +260,11 @@ div#mainBody
 
         #left_bar_section {
             position:absolute;
-            left:-45px;
+            left:-50px;
             padding-right:10px;
             top:0px;
             bottom:0px;
-            width:50px;
+            width:40px;
         }
 
         #center_bar {
@@ -299,7 +304,10 @@ div#mainBody
 
 
 
-
+.manage_button {
+    opacity:0;
+    color: <%= link_color %>
+}
 
 /* Content and widget background boxes */
 /* set the content background to relative so we can position the content background off of it */
@@ -454,7 +462,7 @@ div#mainBody .post {
     .comment:hover {
         .manage_button {
             cursor:pointer;
-            background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
+            opacity:0.5;
         }
     }
 }
@@ -462,7 +470,7 @@ div#mainBody .post {
 .post:hover {
     .manage_button {
         cursor:pointer;
-        background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
+        opacity:0.5;
     }
 }
 
@@ -634,11 +642,8 @@ div#mainBody .post {
         position:absolute;
         top:0px;
         right:0px;
-        background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
-    }
-
-    .manage_button:hover {
-        background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", asset_color_scheme.to_s) %>');
+        cursor:pointer;
+        opacity:0.5;
     }
 }
 
@@ -772,7 +777,7 @@ section.events {
    .event:hover {
        .manage_button {
            cursor:pointer;
-            background:url('<%= CGI::unescape cdn_icon("settings_16", "clean", active_asset_color_scheme.to_s) %>');
+            opacity:0.5;
         }
     }
 }
@@ -982,55 +987,33 @@ section.events {
     }
 }
 /* Social networking icons */
-<% %w(youtube goodreads google facebook twitter rss).each do |soc_net| %>
-a#<%= soc_net %>.social_networks_icon {
+a.social_networks_icon {
+     font-size:16px;
      display:inline-block;
-     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
-     width:16px;
-     height:16px;
-}    
-a#<%= soc_net %>.social_networks_icon:hover {
-     display:inline-block;
-     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
-     width:16px;
-     height:16px;
-}    
-<% end %>
+        font-family: 'Metro Icons';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+}
+
+a#twitter.social_networks_icon:before { content:'\e0a2'; }
+a#google.social_networks_icon:before { content:'\e09c'; }
+a#facebook.social_networks_icon:before { content:'\e09f'; }
+a#rss.social_networks_icon:before { content:'\e0a5'; }
+a#youtube.social_networks_icon:before { content:'\e0a9'; }
+a#vimeo.social_networks_icon:before { content:'\e0aa'; }
 
 @media all and (min-device-width: 640px)  {
       div#mainBody {
-          <% %w(youtube goodreads google facebook twitter rss).each do |soc_net| %>
-          a#<%= soc_net %>.social_networks_icon {
-              display:inline-block;
-              background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", asset_color_scheme.to_s) %>') no-repeat center;
-              width:32px;
-              height:32px;
-          }    
-
-       a#<%= soc_net %>.social_networks_icon:hover {
-           display:inline-block;
-           background:url('<%= CGI::unescape cdn_icon("#{soc_net}_32", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
-           width:32px;
-           height:32px;
-       }    
-       <% end %>
+          a.social_networks_icon {
+                font-size:32px;
+          }
     }
 }
-
-<% %w(google facebook twitter).each do |soc_net| %>
-a.<%= soc_net %>_button {
-     display:inline-block;
-     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", asset_color_scheme.to_s) %>') no-repeat center;
-     width:16px;
-     height:16px;
-}    
-a.<%= soc_net %>_button:hover {
-     display:inline-block;
-     background:url('<%= CGI::unescape cdn_icon("#{soc_net}_16", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
-     width:16px;
-     height:16px;
-}    
-<% end %>
 
 /* Prev/Next post */
 .widget#prev_next_post {
@@ -1088,42 +1071,25 @@ a.<%= soc_net %>_button:hover {
   </style>
   <params>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image"></param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
-        </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
-        <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">http://jquerytools.org/media/img/logo-medium.png</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">http://images.amazon.com/images/P/1849517800.01.LZZZZZZZ.jpg</param>
-        </param>
-      </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
@@ -1131,6 +1097,23 @@ a.<%= soc_net %>_button:hover {
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3">http://jquerytools.org/media/img/MaxCDN-Black-200x33.png</param>
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">http://jquerytools.org/media/img/tabs/thumb/blue_panes.jpg</param>
           <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">http://www.rawstory.com/rs/wp-content/uploads/2013/03/sweatyangrylady-shutterstock-230x105.jpg</param>
+        </param>
+      </param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+        <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
+          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">http://jquerytools.org/media/img/logo-medium.png</param>
+          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">http://images.amazon.com/images/P/1849517800.01.LZZZZZZZ.jpg</param>
         </param>
       </param>
     </param>
@@ -1162,7 +1145,7 @@ a.<%= soc_net %>_button:hover {
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">2px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">13px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne C Skelly</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
                     <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
@@ -1301,17 +1284,17 @@ a.<%= soc_net %>_button:hover {
           <widget_instances>
             <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id">2</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
+                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id">3</param>
                 <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
                   <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
                   <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
                   <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
                 </param>
               </params>
             </instance>

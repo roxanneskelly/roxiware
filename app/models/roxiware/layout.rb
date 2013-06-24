@@ -201,7 +201,7 @@ module Roxiware
                end
 	       xml_layout.packages do |xml_packages|
                   self.packages.each do |term|
-                     xml_package.package term.name
+                     xml_packages.package term.name
                   end
                end
 	       xml_layout.style {|s| s.cdata!(self.style.strip) }

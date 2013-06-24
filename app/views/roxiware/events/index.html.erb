@@ -4,7 +4,7 @@
     <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">
      <% if (can? :edit, event) %>
          <div class="manage_event_menu manage_menu" id="manage_<%= event.id %>"><ul>
-             <li><div class="manage_button">&nbsp;</div><ul>
+             <li><div class="manage_button icon-arrow-down-9"></div><ul>
 		<li class="edit_event"><a><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
 		<li class="delete_event"><a>Delete</a></li>
 	    </ul></li></ul></div>

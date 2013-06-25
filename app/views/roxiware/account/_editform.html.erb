@@ -14,11 +14,10 @@ end %>
           <% role_options["Super"] = :super if current_user.role == "super" %>
           <%= user.select :role, options_for_select(role_options, @user.role), {:disabled=>"disabled"}%></div>
       <% end %>
-      <% if (current_user.role == "super") || (current_user.role == "admin") %>
           <div id="username_entry"><%= user.label :username, "Username" %>
-          <%= user.text_field :username, :watermark=>"username" %>
+              <% username_edit_enabled = %w(super admin).include?(current_user.role) && current_user.auth_services.find_by_provider('roxiware').blank? %>
+              <%= user.text_field :username, :watermark=>"username", :disabled=>!username_edit_enabled %>
           </div>
-      <% end %>
 
       <div id="name_entry" class="justify_inputs"><%= user.label :name, "Name"%>
           <%= user.text_field :first_name, :altname=>:seo_index, :watermark=>"First" %>

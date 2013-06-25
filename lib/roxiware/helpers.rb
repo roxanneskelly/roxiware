@@ -10,7 +10,7 @@ module Roxiware
 	    label = field_group.label(param.name.to_sym, param.name.titleize)
             case param.param_description.field_type
                when "color"
-                 result += label + field_group.text_field(param.name.to_sym, options.merge({:type=>"color", :value=>param.value, :param_name=>param.name}))
+                 result += label + field_group.text_field(param.name.to_sym, options.merge({:type=>"text", :alt_type=>"color", :watermark=>"none", :value=>param.value, :param_name=>param.name}))
 	       # number field doesn't grab focus as far as 'backspace', which affects jstree
                # when "integer"
                #  result += label + field_group.number_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))

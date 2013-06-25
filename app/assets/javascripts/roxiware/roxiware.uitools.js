@@ -911,6 +911,8 @@ function settingsForm(source, title)
 	         },
 		 onLoad: function(event) {
 		  $("button").button();
+		  console.log($("input[alt_type=color]"));
+		  $("input[alt_type=color]").colorpicker();
 		  $("input[watermark]").watermark();
 		  $("div.settings_wysiwyg textarea").wysiwyg({ css: $.roxiware.main_css,
                                        iFrameClass:"wysiwyg_iframe",

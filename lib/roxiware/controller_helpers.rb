@@ -74,7 +74,7 @@ module Roxiware
 
     def resolve_layout
        # we need to ultimately cache this info in-memory
-       if(@page_layout.present? && (request.format == :html))
+       if(@page_layout.present? && (request.format.html? || request.format.to_sym.blank?))
           @page_layout.render_layout
        else
           false

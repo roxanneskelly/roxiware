@@ -22,7 +22,6 @@ module Roxiware::Blog::PostsHelper
 		      <li class="#{ "selected_item" if child.comment_status == "publish" }" ><a class="publish_comment"><div class="checkbox"></div>Publish</a></li>
 		      <li class="#{ "selected_item" unless child.comment_status == "publish" }" ><a class="hide_comment"><div class="checkbox"></div>Hide</a></li>
 		      <hr/>
-		      <li><a class="edit_comment">Edit</a></li>
 		      <li><a class="delete_comment">Delete</a></li>
 		    </ul></li></ul>
 		  </div>

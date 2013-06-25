@@ -1144,8 +1144,8 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
                                   '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
                                '<div><button disabled="disabled" id="login_button" name="button" type="submit">login</button></div>' +
                                '<a id="forgot_password">Forgot your password?</a>' +
-                               '<a id="facebook_login" href="http://localhost:3000/account/auth/facebook">Sign In with Facebook</a>'+
-                               '<a id="twitter_login" href="http://localhost:3000/account/auth/twitter">Sign In with Twitter?</a>' +
+                               '<a id="facebook_login" href="/account/auth/facebook">Sign In with Facebook</a>'+
+                               '<a id="twitter_login" href="/account/auth/twitter">Sign In with Twitter?</a>' +
                                '</form>';
 
 

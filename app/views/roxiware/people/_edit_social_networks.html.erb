@@ -10,14 +10,14 @@
           <%= social_networks_fields.fields_for :facebook do |facebook_fields| %>
               <div "facebook_entry"><%= facebook_fields.label :facebook, "Facebook"%>
                   <%= facebook_fields.text_field :uid, :watermark=>"Facebook Username (ie. 'janedoe')", :value=>(social_networks.include?(:facebook)?social_networks[:facebook][:uid]:nil), :autocorrect=>"off", :autocapitalize=>"off" %>
-		  <div class="labeled-checkbox social_network_login"><%= facebook_fields.check_box(:allow_login, {}, "true", false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
+		  <div class="labeled-checkbox social_network_login"><%= facebook_fields.check_box(:allow_login, {:checked=>social_networks.include?(:facebook) && social_networks[:facebook][:allow_login]}, true, false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
 con")%> Allow Login</div>
 	      </div>
           <% end %>
           <%= social_networks_fields.fields_for :twitter do |twitter_fields| %>
               <div "twitter_entry"><%= twitter_fields.label :twitter, "Twitter"%>
                   <%= twitter_fields.text_field :uid, :watermark=>"Twitter Username (ie. 'janedoe')", :value=>(social_networks.include?(:twitter)?social_networks[:twitter][:uid]:nil), :autocorrect=>"off", :autocapitalize=>"off" %>
-		  <div class="labeled-checkbox social_network_login"><%= twitter_fields.check_box(:allow_login, {}, "true", false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
+		  <div class="labeled-checkbox social_network_login"><%= twitter_fields.check_box(:allow_login, {:checked=>social_networks.include?(:twitter) && social_networks[:twitter][:allow_login]}, true, false)%><%= content_tag(:span, "", :class=>"control-icon checkbox-i\
 con")%> Allow Login</div>
 	      </div>
           <% end %>

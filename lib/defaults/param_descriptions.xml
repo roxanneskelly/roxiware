@@ -760,6 +760,13 @@
     <permissions></permissions>
     <meta></meta>
   </param_description>
+  <param_description guid="D52AAF6A-0228-427B-8529-348282E4C771">
+    <name>RSS Feed Source</name>
+    <description>Source of RSS feed for social networks list</description>
+    <field_type>select</field_type>
+    <permissions></permissions>
+    <meta>Blog:blog,News:news,None:none</meta>
+  </param_description>
   <param_description guid="5CC121A6-AB23-49B4-BB14-0E03119F00E6">
     <name>Social Network</name>
     <description>Social Network</description>

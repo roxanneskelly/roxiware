@@ -284,46 +284,16 @@ div.menu_edit
 }
 
 div.ddsmoothmenu_widget {
-    font: bold 10px Verdana;
-    margin-left:auto;
-    margin-right:auto;
-    height:1.2em;
-
     form {
        float:right;   
     }
 
     ul {
-	margin-left:auto;
-	margin-right:auto;
-	z-index:100;
-	padding: 0;
 	list-style-type: none;
-	display: inline-block;
 
 	/*Top level list items*/
 	li {
-	    display: inline-block;
 	    position: relative;
-	    padding-left:0px;
-	    padding-right:0px;
-	    height:20px;
-	    vertical-align:middle;
-	    text-align:center;
-	    line-height:22px;
-	    font-weight:bold;
-
-	    /*Top level menu link items style*/
-	    a {
-		display: block;
-		padding-left:10px;
-		padding-right:10px;
-		text-decoration: none;
-		width:auto;
-
-		 /*IE6 hack to get sub menu links to behave correctly*/
-		display: inline-block;
-	    }
 
 	    /*Top level menu link items style*/
 	    div.no_menu_link {
@@ -337,29 +307,12 @@ div.ddsmoothmenu_widget {
 		left: 0;
 		display: none; /*collapse all sub menus to begin with*/
 		visibility: hidden;
-		width: auto; /*width of sub menus*/
 
 		/* Sub level menu links style */
 		li {
-		    opacity:0.9;
 		    width: 100%; /*width of sub menus*/
-		    padding-bottom:0px;
 		    display: list-item;
-		    margin:0px;
-		    height:auto;
-		    border:none;
-
-		    a {
-			padding-top:5px;
-			padding-bottom:5px;
-			margin:0px;
-		    }
-
 		    /*Top level menu link items style*/
-		    span {
-			padding:5px;
-			line-height:22px;
-		    }
 		}
 		/*All subsequent sub menu levels vertical offset after 1st level sub menu */
 		li ul {

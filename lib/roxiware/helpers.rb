@@ -6,8 +6,10 @@ module Roxiware
       end
 
       def param_field(field_group, param, options={})
-            result = "<div title='#{h param.param_description.description}' style='display:inline' class='param-field param-field-#{param.param_description.field_type}'>"
-	    label = field_group.label(param.name.to_sym, param.name.titleize)
+            title = param.param_description.description
+            result = "<div style='display:inline' class='param-field param-field-#{param.param_description.field_type}'>"
+	    label = field_group.label(param.name.to_sym, param.name.titleize, {:title=>title})
+	    options[:title] = title
             case param.param_description.field_type
                when "color"
                  result += label + field_group.text_field(param.name.to_sym, options.merge({:type=>"text", :alt_type=>"color", :watermark=>"none", :value=>param.value, :param_name=>param.name}))

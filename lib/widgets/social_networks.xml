@@ -33,7 +33,9 @@ or they can be entered directly into the widget.
 		<%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
 
 		<%= fields_for :params do |params| %>
-		   <%= label :default_biography, "Default Biography" %><%= params.collection_select :biography_id, Roxiware::Person.all, :id, :full_name, {:selected=>widget_instance.get_param("biography_id").conv_value}%><br/>
+		  <% bio_param = widget_instance.get_param("biography_id") %>
+		   <div style='display:inline' class='param-field param-field-<%= bio_param.param_description.field_type %>'><%= params.label :biography_id, "Default Biography", :title=>bio_param.param_description.description %><%= params.collection_select :biography_id, Roxiware::Person.all, :id, :full_name, {:title=>bio_param.param_description.description, :selected=>bio_param.conv_value}%></div><br/>
+		   <%= param_field(params, @widget_instance.get_param("rss_feed_source")) %>
 
 		<% end %>
 	<% end %>
@@ -89,7 +91,7 @@ $(function() {
     <render_view>
       <![CDATA[
 <div class="social_networks">
-  <% networks.each do |network, network_id| %><% if network_id.present? %> <%= link_to "", social_network_url(network.to_s, network_id), {:target=>"_blank", :class=>"social_networks_icon", :id=>network} %><% end %><% end %><a href="<%= url_for(:controller=>'roxiware/blog/post', :action=>'index_by_date', :only_path=>false, :format=>:rss) %>"  class="social_networks_icon" id="rss" target="_blank" alt="RSS"></a>
+  <% networks.each do |network, network_id| %><% if network_id.present? %> <%= link_to "", social_network_url(network.to_s, network_id), {:target=>"_blank", :class=>"social_networks_icon", :id=>network} %><% end %><% end %><% if rss_feed_source != "none" %><a href="<%= send(rss_feed_source+'_path') %>.rss" class="social_networks_icon" id="rss" target="_blank" alt="RSS"></a><% end %>
 </div>
 ]]>
     </render_view>
@@ -101,6 +103,7 @@ $(function() {
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
       <param class="local" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" name="biography_id"></param>
+      <param class="local" description="D52AAF6A-0228-427B-8529-348282E4C771" name="rss_feed_source">blog</param>
       <param class="local" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" name="social_networks">
          <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="facebook"></param>
          <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="twitter"></param>

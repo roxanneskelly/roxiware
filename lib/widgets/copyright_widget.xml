@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
+    <name>Copyright Widget</name>
+    <description>
+      <![CDATA[
+Displays a copyright entry based on the website copyright settings.
+]]>
+    </description>
+    <editform/>
+    <preload/>
+    <render_view>
+      <![CDATA[
+<div class="site_copyright">©<%= @site_copyright_first_year+"-" if @site_copyright_first_year != Date.today.strftime("%Y") %><%= Date.today.strftime("%Y") %> <%= @site_copyright %>.  <%= additional_text %></div><div class="scribaroo_site">A <a href="http://www.scribaroo.com">Scribaroo</a> site</a></div>
+]]>
+    </render_view>
+    <style>
+      <![CDATA[
+]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">copyright</param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="additional_text"></param>
+    </params>
+  </widget>
+</widgets>

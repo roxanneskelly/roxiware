@@ -26,28 +26,7 @@ later.
 $(function() {
     $("button#back_button").click(function() {
         $("input#setup_action").val($(this).attr("id"));
-        $.ajax({type:"PUT",
-            processData: true,
-	    url: "<%= setup_path %>.json",
-	    dataType: "json",
-	    data: jQuery.param($("form").serializeArray()),
-	    error: function(xhr, textStatus, errorThrown) {
-                  $.error(errorThrown);
-	    },
-	    complete: function() {
-	    },
-	    success: function(data) {
-		if(data["error"]) {
-		    $(data["error"]).each(function(index, value) {
-	                $.error(value[0]+": "+value[1])
-                        $("form input#"+value[0]).css("background", "#ffcccc");
-	            })
-		}
-		else {
-		    window.location="<%= setup_path %>";
-		}
-	    }}); 
-
+        $.ajaxSetParamsJSON("<%= setup_path %>.json", $("form").serializeArray(), {form:$("form"), success:function() {window.location.reload()}});
      });
 
    $.each(<%= raw @books.collect{|book| {:description=>book.description || "", 
@@ -88,7 +67,6 @@ $(function() {
       $("#book_edit_form input#book_isbn13").val($(book).data().book.isbn13);
       $("#book_edit_form input#book_publish_date").val($(book).data().book.publish_date);
       var api = $("#book_edit_form input#book_publish_date").data("dateinput");
-      console.log("SETTING DATE TO " + $(book).data().book.publish_date);
       api.setValue(new Date($(book).data().book.publish_date));
 
       $("#book_edit_form input#book_goodreads_id").val($(book).data().book.goodreads_id);
@@ -157,33 +135,8 @@ $(function() {
               '</book>';
       });
       xml_data = xml_data + '</books>';
-
-      var endpoint = "<%= setup_path %>.xml?setup_step=<%=@setup_step%>&setup_action=save";
-      $.ajax({
-          url:endpoint,
-          data:xml_data,
-          processData:false,
-          contentType: "application/xml",
-          cache:false,
-          type:'PUT',
-	  error: function(xhr, textStatus, errorThrown) {
-                  $.error(errorThrown);
-	  },
-	  complete: function() {
-	  },
-	  success: function(data, status, jqxhr) {
-              var errors = $(data).find("error");
-              if(errors.length > 0) {
-	          errors.each(function(index, err) {
-	              $.error($(err).find("parameter").text()+": "+$(err).find("message").text());
-                  });
-              }
-	      else {
-		  window.location="<%= setup_path %>";
-	      }
-	    }}); 
-      });
-
+      $.ajaxSetParamsXML("<%= setup_path %>.xml", xml_data, {additionalData: {setup_step:"<%= @setup_step %>", setup_action:"save"}, success:function() {window.location.reload()}});
+   });
    $(".book").first().click();
 
    $("div#new_book").click(function() {

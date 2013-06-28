@@ -40,7 +40,8 @@
 
     $.roxiware.ajaxSetParamsXML = {
 	conf: {
-	       method:"PUT",
+	    method:"PUT",
+	       success:function() {}
 	}
     }
     $.roxiware.ajaxSetParamsJSON = {
@@ -48,6 +49,7 @@
 	       method:"PUT",
 	       fieldPrefix:"",
 	       success:function() {}
+               
 	}
     }
 
@@ -58,6 +60,9 @@
 		if (conf.additionalData) {
 		    endpoint = endpoint + "?" + jQuery.param(conf.additionalData);
 		}
+		if(conf.form) {
+		    conf.form.find("input").removeClass("field-error");
+                }
 		
 		$.ajax({
 			type:conf.method,
@@ -72,11 +77,11 @@
 			complete: function() {
 			},
 			success: function(data) {
-			    if(data["error"]) {
-				$(data["error"]).each(function(index, value) {
-					$.error(value[0]+": "+value[1]);
+			    if($(data).find("error").length > 0) {
+				    $(data).find("error").each(function(index, value) {
+					    $.error($(value).find("parameter").text()+": "+$(value).find("message").text());
 					if(conf.form) {
-					    form.find("input#"+value[0]).css("background", "#ffcccc");
+					    conf.form.find("input#"+$(value).find("parameter").text()).css("background", "#ffcccc");
 					}
 				    });
 			    }
@@ -90,6 +95,11 @@
 	    },
 	    ajaxSetParamsJSON: function(url, data, conf_params) {
 		var conf = $.extend({}, $.roxiware.ajaxSetParamsJSON.conf, conf_params);
+		if(conf.form) {
+		    conf.form.find("input").removeClass("field-error");
+                }
+                console.log("sending data");
+		console.log(data);
 		$.ajax({
 			type:conf.method,
 			url: url,
@@ -101,12 +111,10 @@
 			complete: function() {
 			},
 			success: function(data) {
-			    if(conf.form && data["error"]) {
-			        conf.form.find("input").removeClass("field-error");
+			    if(data["error"]) {
 				$(data["error"]).each(function(index, value) {
 				    $.error(value[1]);
 				    if(conf.form) {
-					console.log("input#"+conf.fieldPrefix+value[0]);
 				        conf.form.find("input#"+conf.fieldPrefix+value[0]).addClass("field-error");
 				    }
 				});
@@ -911,7 +919,6 @@ function settingsForm(source, title)
 	         },
 		 onLoad: function(event) {
 		  $("button").button();
-		  console.log($("input[alt_type=color]"));
 		  $("input[alt_type=color]").colorpicker();
 		  $("input[watermark]").watermark();
 		  $("div.settings_wysiwyg textarea").wysiwyg({ css: $.roxiware.main_css,

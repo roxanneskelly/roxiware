@@ -29,29 +29,7 @@
     $("button#back_button,button#save").click(function() {
         $(".watermark").val("");
         $("input#setup_action").val($(this).attr("id"));
-        $.ajax({type:"PUT",
-            processData: true,
-	    url: "<%= setup_path %>.json",
-	    dataType: "json",
-	    data: jQuery.param($("form").serializeArray()),
-	    error: function(xhr, textStatus, errorThrown) {
-                  $.error(errorThrown);
-	    },
-	    complete: function() {
-	    },
-	    success: function(data) {
-		if(data["error"]) {
-		    $(data["error"]).each(function(index, value) {
-	                $.error(value[0]+": "+value[1])
-                        $("form input#"+value[0]).css("background", "#ffcccc");
-	            })
-		}
-		else {
-                    $.wait();
-		    window.location="<%= setup_path %>";
-		}
-	    }}); 
-
+        $.ajaxSetParamsJSON("<%= setup_path %>.json", $("form").serializeArray(), {form:$("form"), success:function() {window.location.reload()}});
      });
 
   });

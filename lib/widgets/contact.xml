@@ -158,7 +158,7 @@ Thank you for your interest.  We'll get right back to you.
           <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Contact Request</param>
           <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
       <![CDATA[
-<p>A Contact Request Has Been Received from: <%= params[:email] %>
+<p>A Contact Request Has Been Received from: $email %>
 </p>
     ]]></param>
         </param>

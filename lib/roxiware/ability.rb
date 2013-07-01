@@ -35,7 +35,7 @@ module Roxiware
       can :read_comments, Roxiware::Blog::Post
 
     when "user"
-      can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page, Roxiware::Event, Roxiware::GalleryItem, Roxiware::Gallery, Roxiware::Service]
+      can :read, [Roxiware::NewsItem, Roxiware::PortfolioEntry, Roxiware::Page, Roxiware::Event, Roxiware::GalleryItem, Roxiware::Gallery, Roxiware::Service, Roxiware::Layout::Layout]
       can :read, Roxiware::Person
       can :manage, Roxiware::Person, :id=>user.person_id
       can :create, Roxiware::GalleryItem

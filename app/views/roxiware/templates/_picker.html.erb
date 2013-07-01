@@ -32,14 +32,15 @@
 	  <% end %>
         </div>
       </div>
+<% if selected_template.present? %>
     <%= button_tag "Select", :id=>"select_template", :type=>"button", :class=>"save_button" %>
+<% end %>
     </div>
 </script>
 
 <script>
 $(function() {
    var layouts = <%= raw @layouts.to_json %>;
-
    $.each(layouts, function(index, layout) {
        if(layout['schemes'].length) {
            var selected_scheme = layout['schemes'][0]['id'];
@@ -181,7 +182,9 @@ $(function() {
    });
 
    $(".category_entry").first().click();
+<% if selected_template.present? %>
    $(".template_item[template_guid=<%=selected_template%>]").addClass("template_item_selected");
+<% end %>
    <% if selected_scheme.present? %>
       $(".template_item[template_guid=<%=selected_template%>]").attr("selected_scheme", "<%= selected_scheme %>");
    <% end %>

@@ -164,23 +164,11 @@ div.menu_edit
      );
 
      var right_pane = $("#menu_widget_instance_edit  #menu_edit_right_pane");
-     right_pane.find("input#name").bind("input blur propertychange",function() {
+     right_pane.find("input#name, input#url, input#identifier, select#permission").bind("input blur propertychange",function() {
         var selected_node = $(this_jstree).jstree("get_selected");
         selected_node.data().params[$(this).attr("name")] = {value:$(this).val(), guid:"CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"};
-        $(selected_node).trigger("data_changed.jstree_param");
-     });
-     right_pane.find("input#url").bind("input blur propertychange",function() {
-        var selected_node = $(this_jstree).jstree("get_selected");
         selected_node.data().params[$(this).attr("name")] = {value:$(this).val(), guid:"43EE6D21-7BEB-4F45-8105-78ED08A931B0"};
-        $(selected_node).trigger("data_changed.jstree_param");
-     });
-     right_pane.find("input#identifier").bind("input blur propertychange",function() {
-        var selected_node = $(this_jstree).jstree("get_selected");
         selected_node.data().params[$(this).attr("name")] = {value:$(this).val(), guid:"6AF49BA2-97E3-46FD-A538-9680DEF268D3"};
-        $(selected_node).trigger("data_changed.jstree_param");
-     });
-     right_pane.find("select#permission").bind("input blur propertychange change",function() {
-        var selected_node = $(this_jstree).jstree("get_selected");
         selected_node.data().params[$(this).attr("name")] = {value:$(this).val(), guid:"14E5907E-2C02-413B-8F3B-6C03C2AC9EA1"};
         $(selected_node).trigger("data_changed.jstree_param");
      });
@@ -190,11 +178,7 @@ div.menu_edit
         right_pane.find("input#url").val(selected_item.data().params.url.value);
         right_pane.find("input#name").val(selected_item.data().params.name.value);
         right_pane.find("input#identifier").val(selected_item.data().params.identifier.value);
-        var permission = "guest";
-        if(selected_item.data().params.permission) {
-           permission = selected_item.data().params.permission;
-        }
-        right_pane.find("select#permission").val(permission.value);
+        right_pane.find("select#permission").val(selected_item.data().params.permission.value);
       });
 
       $("#menu_widget_instance_edit #delete_menu_item").click(function() {

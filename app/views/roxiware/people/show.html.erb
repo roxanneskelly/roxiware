@@ -15,9 +15,9 @@
     <img src="<%= @person.large_image_url %>" class="person_portrait"/>
     <div>
      <div class="person_name"><%= @person.full_name %></div>
-     <% if !@person.role.blank? %><div class="person_role">, <%= @person.role %></div><% end %>
+     <% if !@person.role.blank? %><div class="person_role"><%= @person.role %></div><% end %>
      <% if !@person.email.nil? && @person.email != ""%>
-      <div><address><a href="mailto:<%= @person.email %>"><%= @person.email %></a></address></div>
+      <div><a href="mailto:<%= @person.email %>"><%= @person.email %></a></div>
      <% end %>
     </div>
     <% if !website.nil? %>

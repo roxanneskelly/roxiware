@@ -8,7 +8,6 @@ class Roxiware::AccountController < ApplicationController
     @auth_server = AppConfig.omniauth_server || "/"
   end
 
-  # GET - enumerate user
   def index
     @users = @accounts
     @robots="noindex,nofollow"

@@ -403,11 +403,20 @@ module Roxiware
 	     if(@compiled_style_cache.blank?)
 	        new_params = params.merge(style_params)
 	        evaled_layout_style = eval_style(new_params) + self.sections.values.collect{|section| section.get_styles(new_params)}.join(" ")
-		@compiled_style_cache = Sass::Engine.new(evaled_layout_style, {
-			    :style=>:expanded,
-			    :syntax=>:scss,
-			    :cache=>false
-			}).render()
+		begin
+		   @compiled_style_cache = Sass::Engine.new(evaled_layout_style, {
+			       :style=>:expanded,
+			       :syntax=>:scss,
+			       :cache=>false
+			   }).render()
+		rescue Sass::SyntaxError=>e
+		   puts e.message
+		   puts self.inspect
+		   sass_style = evaled_layout_style.split("\n")
+		   sass_style[e.sass_line] = "--> " + sass_style[e.sass_line]  
+		   puts sass_style.join("\n")
+		   @compiled_style_cache = ""
+		end
              end
 	     @compiled_style_cache
 	  end

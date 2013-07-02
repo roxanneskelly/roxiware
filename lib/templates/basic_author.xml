@@ -41,13 +41,6 @@ books_menu_permission.save!]]>
     <![CDATA[]]>
   </setup>
   <categories>
-    <category>Sci-Fi/Dystopian/Zombies</category>
-    <category>Horror</category>
-    <category>Horror/Zombies</category>
-    <category>Sci-Fi/Military</category>
-    <category>Sci-Fi</category>
-    <category>Sci-Fi/Dystopian</category>
-    <category>General/Flowers</category>
     <category>General</category>
   </categories>
   <packages>

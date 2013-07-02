@@ -2,13 +2,7 @@
 <layout guid="9D077BF9-0C25-4E49-9AC6-F2FBA0459355" version="1.0">
   <name>Simple Lines</name>
   <description>
-    <![CDATA[<p>Basic Author template, containing</p><p></p><ul>
-<li>Blog</li>
-<li>Calendar</li>
-<li>Books</li>
-<li>Biography</li>
-<li>Contact</li>
-</ul>]]>
+    <![CDATA[A simple, clean layout.]]>
   </description>
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -290,15 +284,6 @@ div#mainBody
             }
         }
 
-        #right_bar_section {
-            position:absolute;
-            width:185px;
-            top:0px;
-            bottom:0px;
-            right:0px;
-            padding:5px;
-        }
-
     }
 }
 
@@ -324,7 +309,6 @@ div.widget_background, div.content_background
     height:100%;
     z-index:-1;
 }
-
 
 /* Post*/
 div#mainBody .post {
@@ -955,40 +939,7 @@ section.events {
     }
 }
 
-#right_bar_section {
-    .widget#events_widget {
-        .events_widget_title:before {
-            content: "Calendar"
-        }
-        .events_widget_title {
-            font-size:1.3em;
-        }
 
-        .events_widget_all_events {
-            border-top:solid 1px <%= text_color %>;
-            margin-top:0em;
-            padding-top:1em;
-         }
-         .events_widget_all_events:before {
-             content: "More >"
-         }
-
-        .event_widget_event {
-            border-top:solid 1px <%= text_color %>;
-            margin-top:0em;
-            padding-top:1em;
-            padding-bottom:2em;
-            .event_widget_title {
-               font-size:1.0em;
-               font-weight:900;
-            }
-            .event_widget_date, .event_widget_city, .event_widget_location {
-                font-size:0.8em;
-                margin-left:1em;
-            }
-        }
-    }
-}
 /* Social networking icons */
 a.social_networks_icon {
      font-size:16px;
@@ -1082,7 +1033,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
     <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
     <param class="local" description="67BFE233-F4D1-400B-855F-393BF53B05A4" name="asset_theme">clear</param>
     <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_description_length">500</param>
-    <param class="template" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image"></param>
+    <param class="template" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">http://cdn.roxiware.com/templates/basic_author/thumbnail.jpeg</param>
     <param class="scheme" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="schemes">
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
@@ -1097,9 +1048,12 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
         <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="1">http://www.rawstory.com/rs/wp-content/uploads/2013/03/sweatyangrylady-shutterstock-230x105.jpg</param>
-          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="2">http://jquerytools.org/media/img/tabs/thumb/blue_panes.jpg</param>
-          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="3">http://jquerytools.org/media/img/MaxCDN-Black-200x33.png</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="1">http://cdn.roxiware.com/templates/basic_author/white/front.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="2">http://cdn.roxiware.com/templates/basic_author/white/blog.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="3">http://cdn.roxiware.com/templates/basic_author/white/books.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="4">http://cdn.roxiware.com/templates/basic_author/white/book.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="5">http://cdn.roxiware.com/templates/basic_author/white/calendar.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="5">http://cdn.roxiware.com/templates/basic_author/white/contact.jpeg</param>
         </param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
@@ -1115,8 +1069,12 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Black</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
         <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="1">http://images.amazon.com/images/P/1849517800.01.LZZZZZZZ.jpg</param>
-          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="2">http://jquerytools.org/media/img/logo-medium.png</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="1">http://cdn.roxiware.com/templates/basic_author/black/front.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="2">http://cdn.roxiware.com/templates/basic_author/black/blog.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="3">http://cdn.roxiware.com/templates/basic_author/black/books.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="4">http://cdn.roxiware.com/templates/basic_author/black/book.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="5">http://cdn.roxiware.com/templates/basic_author/black/calendar.jpeg</param>
+          <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="5">http://cdn.roxiware.com/templates/basic_author/black/contact.jpeg</param>
         </param>
       </param>
     </param>
@@ -1148,7 +1106,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
                   <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-0">
                     <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">2px</param>
                     <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">13px</param>
-                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Roxanne Skelly</param>
+                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Stieg Larsson</param>
                     <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">'Times New Roman'</param>
                     <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">48</param>
                     <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color"></param>
@@ -1227,7 +1185,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
         display:inline-block;
     }
     .scribaroo_site {
-         float:right;
+         padding-left:2em;
     }
 }]]>
           </style>
@@ -1274,23 +1232,68 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
         </section>
         <section name="right_bar">
           <style>
-            <![CDATA[]]>
+            <![CDATA[#right_bar_section {
+            position:absolute;
+            width:185px;
+            top:0px;
+            bottom:0px;
+            right:0px;
+            padding:5px;
+
+    .widget#events_widget {
+
+        margin-bottom:1em;
+        padding-bottom:1em;
+
+
+        .events_widget_title:before {
+            content: "Calendar"
+        }
+        .events_widget_title {
+            font-size:1.3em;
+        }
+
+        .events_widget_all_events {
+            border-top:solid 1px <%= text_color %>;
+            margin-top:0em;
+            padding-top:1em;
+         }
+         .events_widget_all_events:before {
+             content: "More >"
+         }
+
+        .event_widget_event {
+            border-top:solid 1px <%= text_color %>;
+            margin-top:0em;
+            padding-top:1em;
+            padding-bottom:2em;
+            .event_widget_title {
+               font-size:1.0em;
+               font-weight:900;
+            }
+            .event_widget_date, .event_widget_city, .event_widget_location {
+                font-size:0.8em;
+                margin-left:1em;
+            }
+        }
+    }
+}]]>
           </style>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="2">
               <params>
-                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">3508553872</param>
+                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">2452453078</param>
                 <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
                 <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
               </params>
             </instance>
-            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="2">
+            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="1">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">events_widget</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
                 <param class="local" description="6CD4546A-E350-46AC-BAF5-A788047DCD08" name="events_count">3</param>
+                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">events_widget</param>
               </params>
             </instance>
           </widget_instances>
@@ -1361,11 +1364,13 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
                 <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="mailer_form">
                   <![CDATA[
                   
+                  
 <p>Join my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>
     
+                
                 ]]>
                 </param>
                 <param class="local" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" name="mailers">
@@ -1374,8 +1379,10 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
                     <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
                       <![CDATA[
                       
+                      
       
 Thank you for signing up for my mailing list.
+                    
                     ]]>
                     </param>
                   </param>
@@ -1384,10 +1391,12 @@ Thank you for signing up for my mailing list.
                     <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
                       <![CDATA[
                       
+                      
       
 A mailing-list request Has Been Received from: $email
 
     
+                    
                     ]]>
                     </param>
                   </param>

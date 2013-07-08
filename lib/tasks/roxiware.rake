@@ -162,10 +162,11 @@ namespace :templates do
 	    url = "http://#{hostname}/"
 	    filename = File.join(dir_path, "thumbnail.jpg")
 	    File.open(filename, "w") do |f|
-	        f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x400/?url=#{url}").read
+	        f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x400/?url=#{url}&freshness=1").read
 	    end
-	    
-
+	    template_obj.set_param("chooser_image", "http://cdn.roxiware.com/templates/#{template_obj.name.to_seo}/thumbnail.jpg", "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "template")
+	    sh "ssh roxiwarevps@ps77127.dreamhost.com 'mkdir -p ~/cdn.roxiware.com/templates/#{template_obj.name.to_seo}'"
+	    sh "scp #{dir_path}/thumbnail.jpg roxiwarevps@ps77127.dreamhost.com:~/cdn.roxiware.com/templates/#{template_obj.name.to_seo}"
       end
 
 
@@ -181,18 +182,18 @@ namespace :templates do
 	    pages = {:home=>"/",:posts=>"/blog",:calendar=>"/events",:contact=>"/contact",:biography=>"/biography"}
 	    dir_path = File.expand_path(File.join("~", "template_images", template_obj.name.to_seo, scheme_data["name"].to_s.to_seo)).to_s
 	    FileUtils.mkdir_p(dir_path)
-	    scheme_data["large_images"].params.delete
+	    scheme_data["large_images"].params.delete if scheme_data["large_images"].present?
 	    large_images = []
 	    index = 1
 	    pages.each do |page,path|
 	        url = "http://#{hostname}#{path}"
 		filename = File.join(dir_path, page.to_s+".jpg")
 		File.open(filename, "w") do |f|
-		    f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x400/?url=#{url}").read
+		    f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x400/?url=#{url}&freshness=1").read
 		end
 		filename = File.join(dir_path, page.to_s+"_l.jpg")
 		File.open(filename, "w") do |f|
-		    f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/600x700/?url=#{url}").read
+		    f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/600x700/?url=#{url}&freshness=1").read
 		end
 		
                 large_image_pair = Roxiware::Param::Param.new({:name=>index.to_s, :description_guid=>"5D2D7A30-591E-4377-A1B5-971757ABC479", :param_class=>"scheme"}, :as=>"")
@@ -202,8 +203,7 @@ namespace :templates do
 		large_images << large_image_pair
 		index = index + 1
 	    end
-	    scheme_data["large_images"].params = large_images
-	    scheme_data["large_images"].save!
+            template_obj.get_param("schemes").h[scheme].set_param("large_images", large_images, "975967EA-A9BC-40EE-8E1B-7F3CA8089E66", "scheme")
 	    sh "ssh roxiwarevps@ps77127.dreamhost.com 'mkdir -p ~/cdn.roxiware.com/templates/#{template_obj.name.to_seo}/#{scheme_data["name"].to_s.to_seo}'"
 	    sh "scp #{dir_path}/* roxiwarevps@ps77127.dreamhost.com:~/cdn.roxiware.com/templates/#{template_obj.name.to_seo}/#{scheme_data["name"].to_s.to_seo}"
 	    template_obj.save!

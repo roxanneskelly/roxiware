@@ -1083,6 +1083,26 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
         <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="1">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/black/biography.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/black/biography_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="2">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/black/home.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/black/home_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="3">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/black/posts.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/black/posts_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="4">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/black/calendar.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/black/calendar_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="5">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/black/contact.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/black/contact_l.jpg</param>
+          </param>
         </param>
       </param>
     </param>

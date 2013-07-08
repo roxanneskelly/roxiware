@@ -18,14 +18,14 @@ end %>
        </ul>
        <div class="panes">
 	 <div id="general_pane">
-	   <%= layout_form.label :name, "Name"%><%= layout_form.text_field :name %>
+	   <div id="layout_name"><%= layout_form.label :name, "Name"%><%= layout_form.text_field :name %></div>
 	   <%= layout_form.fields_for :params do |fields_for_params| %>
 	     <div id="layout_chooser_image">
 		 <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
 		 <img id="layout_image_upload" class="upload_target" src="<%= @layout.get_param('chooser_image').to_s %>" />
 	     </div>
 	     <div class="description_pos"><div class="settings_wysiwyg"><%= layout_form.text_area :description %></div></div>
-	     <div id="template_settings">
+	     <div id="template_settings_box" class="list_box"><div id="template_settings" class="list_box_content">
 	          <%= layout_form.label :category_csv, "Categories"%><%= layout_form.text_field :category_csv %>
 		  <% @params.each do |param| %>
 		      <%= param_field(fields_for_params, param) %>
@@ -40,7 +40,7 @@ end %>
 		         <%= param_class_fields.hidden_field param.name, :value=>param.param_class %>
 		      <% end %>
 		  <% end %>
-	     </div>
+	     </div></div>
 	   <% end %>
 	 </div>
 	 <div id="schemes_pane">
@@ -64,7 +64,7 @@ end %>
 			<div class="scheme_form" id="<%=scheme_id %>">
 			   <%= schemes_fields.fields_for scheme_id.to_sym do |fields_for_scheme| %>
 			      <div class="scheme_top_block">
-				<%= fields_for_scheme.label :name, "Name"%><%= fields_for_scheme.text_field :name, :value=>scheme[:name], :class=>"scheme_name_field", :scheme_id=>scheme[:id] %>			  
+				<div id="scheme_name"><%= fields_for_scheme.label :name, "Name"%><%= fields_for_scheme.text_field :name, :value=>scheme[:name], :class=>"scheme_name_field", :scheme_id=>scheme[:id] %></div> 
 				<img class="upload_target scheme_thumbnail" src="<%= scheme[:thumbnail_image] %>" scheme_id="<%= scheme_id %>"/>
 			      <%= fields_for_scheme.hidden_field :thumbnail_image, :value=>scheme[:thumbnail_image], :class=>"thumbnail_url" %></div>
 
@@ -84,10 +84,9 @@ end %>
 				</div>
 			      </div>
 			      <div class="scheme_large_images">
-				<%= fields_for_scheme.hidden_field :large_images, :class=>"template_large_image" %>
 				<div class="scheme_large_image_panes">
-				  <% (scheme[:large_images] || []).each do |large_image_url| %>
-				     <div><img src="<%=large_image_url%>"/><div class="scheme_large_image_delete">x</div></div>
+				  <% (scheme[:large_images] || []).each do |large_image_pair| %>
+				     <div><img src="<%=large_image_pair[:thumbnail] %>"/><div class="scheme_large_image_delete">x</div></div>
 				  <% end %>
 				</div>
 				<div class="scheme_large_image_tabs">
@@ -96,7 +95,6 @@ end %>
 					 <a class="layout_image_block_tab"><%=index%></a>
 				     <% end %>
 				  <% end %>
-				 <a class="scheme_large_image_add">+</a>
 				</div>
 			      </div>
 			   <% end %>
@@ -138,7 +136,6 @@ end %>
               self.find(".scheme_large_image_tabs .scheme_large_image_add").before("<a class='layout_image_block_tab'>"+(index+1)+"</a>");
               self.find(".scheme_large_image_tabs").append(input_template);
 	   });
-          self.find(".scheme_large_image_tabs").tabs(self.find(".scheme_large_image_panes > div"), {tabs:"a.layout_image_block_tab"});
      }
       $("#layout_edit_form ul.tabs").tabs($("div.panes > div"));
 
@@ -152,40 +149,13 @@ end %>
 	  $("#scheme_list").tabs($("#scheme_forms > div"), 
 	      {
 		  current:"list_box_item_selected"
-	      });
+	  });
 
-          /* Set up large image tabs */
+
 	  $("#scheme_forms .scheme_form .scheme_large_images").each(function(index, form) {
-	     config_large_image_tabs($(form));
+             $(form).find(".scheme_large_image_tabs").tabs($(form).find(".scheme_large_image_panes > div"), {tabs:"a.layout_image_block_tab"});
 	  });
 
-	  $(".scheme_large_image_delete").click(function() {
-	      var self = $(this).parents(".scheme_large_images");
-	      $(this).parent().remove();
-	      config_large_image_tabs(self);
-	  });
-	  $(".scheme_large_image_add").click(function() {
-		 var self = $(this).parents(".scheme_large_images");
-		 imageDialog({
-		      initialImage: "",
-		      previewSize:"large",
-		      uploadParams:{
-			imageSizes: {
-			   large:  {width:300, height:360}
-			}
-		      },
-		      sizeLimit: 10000000,
-		      onSuccess: function(upload_result){
-			  var new_image=$("<div><img src='"+upload_result["urls"]["large"]+"'><div class='scheme_large_image_delete'>x</div></div>");
-			  self.find(".scheme_large_image_panes").append(new_image);
-			  new_image.find(".scheme_large_image_delete").click(function() {
-			      $(this).parent().remove();
-			      config_large_image_tabs(self);
-			  });
-			  config_large_image_tabs(self);
-		    }
-		});
-	   });
 	   $("input.scheme_name_field").bind("input blur propertychange", function() {
 	       var scheme_id = $(this).parents(".scheme_form").attr("id");
 	       $("#"+scheme_id+".layout_scheme .layout_scheme_title").text($(this).val());

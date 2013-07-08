@@ -138,10 +138,14 @@ $(function() {
                                        zIndex:4000, 
                                        fixed:false, 
                                        onClose: function(event) {image_overlay.remove();
-                                            $.mask.getMask().css("zIndex",2999);
+                                            if($.mask.getMask()) {
+                                                $.mask.getMask().css("zIndex",2999);
+                                            }
                                        },
                                        onBeforeLoad: function(e) {
-                                           $.mask.getMask().css("zIndex",3999);
+                                           if($.mask.getMask()) {
+                                               $.mask.getMask().css("zIndex",3999);
+                                           }
                                        }});
           });
        });
@@ -181,10 +185,14 @@ $(function() {
 	   onClose: function (event) {
 	       $.roxiware.alert.popup = null;
                overlay.remove();
-               $.mask.getMask().css("zIndex",1999);
+               if($.mask.getMask()) {
+                   $.mask.getMask().css("zIndex",1999);
+               }
            },
            onBeforeLoad: function(e) {
-               $.mask.getMask().css("zIndex",2999);
+               if($.mask.getMask()) {
+                   $.mask.getMask().css("zIndex",2999);
+               }
            }
        });
    });

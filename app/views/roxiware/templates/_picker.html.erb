@@ -118,7 +118,7 @@ $(function() {
           // generate left pane preview images list
 	  var preview_images = $("<div class='preview_image_block'><div class='scrollable'><div class='items preview_images'></div></div><div class='preview_nav_controls'><div class='expand icon-fullscreen'></div><div class='prev icon-arrow-left-9'></div><div class='next icon-arrow-right-9'></div></div></div></div>");
 	  $.each(layout_scheme['large_images'], function(index, image) {
-	      preview_images.find(".preview_images").append("<div><img src='"+image+"'/></div>");
+	      preview_images.find(".preview_images").append("<div><img src='"+image['thumbnail']+"' full='"+image['full']+"'/></div>");
 	  });
                      
 	  $(overlay).find("div#left_pane #images").append(preview_images);
@@ -127,10 +127,22 @@ $(function() {
 	  preview_images.find(".scrollable").scrollable({circular:false, next:overlay.find(".next"), prev:overlay.find(".prev")});
           preview_images.find(".expand").click(function() {
               var api = preview_images.find(".scrollable").data("scrollable");
-              var image = api.getItems().eq(api.getIndex()).find("img").attr('src');
+              var image = api.getItems().eq(api.getIndex()).find("img").attr('full');
               var image_overlay = $("<div style='z-index:4000' class='settings settings_dialog'><div class='full_preview_overlay'><a class='close icon-cancel-circle'></a><img src='" + image + "'/></div></div>");
               $("body").append(image_overlay);
-              image_overlay.overlay({ top:"center", left:"center", close:image_overlay.find(".close"), oneInstance:false, load:true, zIndex:4000, fixed:false, onClose: function(event) {image_overlay.remove()}});
+              image_overlay.overlay({ top:"5%", 
+                                      left:"center", 
+                                       close:image_overlay.find(".close"), 
+                                       oneInstance:false, 
+                                       load:true, 
+                                       zIndex:4000, 
+                                       fixed:false, 
+                                       onClose: function(event) {image_overlay.remove();
+                                            $.mask.getMask().css("zIndex",2999);
+                                       },
+                                       onBeforeLoad: function(e) {
+                                           $.mask.getMask().css("zIndex",3999);
+                                       }});
           });
        });
 
@@ -166,17 +178,13 @@ $(function() {
 	   zIndex: 3000,
            closeOnClick: false,
            fixed:false, 
-	   mask: {
-	     zIndex: 2999,
-	     color: "#222",
-	     loadSpeed: 200,
-	     opacity: 0.6
-	   },
 	   onClose: function (event) {
 	       $.roxiware.alert.popup = null;
                overlay.remove();
+               $.mask.getMask().css("zIndex",1999);
            },
-           onLoad: function(e) {
+           onBeforeLoad: function(e) {
+               $.mask.getMask().css("zIndex",2999);
            }
        });
    });

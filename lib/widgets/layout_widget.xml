@@ -93,7 +93,7 @@ div#text_properties_dialog .contentWrap
 		  ["8px", "9px", "10px", "11px", "12px", "14px", "16px", "18px", "20px", "22px", "24px", "26px", "28px", "36px", "48px", "72px"]) %><br/>
 	      <%= label_tag :font_weight, "Font Weight" %><%= select_tag :font_weight, options_for_select(
 		  ["100", "200", "300", "400", "500", "600", "700", "800", "900"]) %><br/>
-	      <%= label_tag :color, "Color" %><%= text_field_tag :color, nil, :type=>"color" %><br/>
+	      <%= label_tag :color, "Color" %><%= text_field_tag :color, nil, :type=>"text" %><br/>
 	      <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
        </div>
 <script>
@@ -247,7 +247,7 @@ $(document).bind("ready", function() {
 			  xml_result = xml_result + "<param class='local' name='font'><param_description guid='FEF4B0C8-C449-4A50-84FF-3E7EC96287C0'/><value>"+$(child).css('font-family') + "</value></param>";
 			  xml_result = xml_result + "<param class='local' name='weight'><param_description guid='74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78'/><value>"+$(child).css('font-weight') + "</value></param>";
 			  xml_result = xml_result + "<param class='local' name='size'><param_description guid='63275631-EEB0-43E3-A2D9-407B6423CDC9'/><value>"+font_size + "</value></param>";
-			  xml_result = xml_result + "<param class='local' name='color'><param_description guid='DA84EE57-3D89-489E-8B81-08DA7A560550'/><value>"+$(child).css('color') + "</value></param>";
+			  if ($(child).css('color') != "") {xml_result = xml_result + "<param class='local' name='color'><param_description guid='DA84EE57-3D89-489E-8B81-08DA7A560550'/><value>"+$(child).css('color') + "</value></param>"; }
 		       }
 		    xml_result = xml_result + "</value></param>";
 	     });

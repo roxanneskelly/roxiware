@@ -16,7 +16,7 @@ module Roxiware
 	     schemes = []
 	     if(layout.get_param("schemes").present?)
 		 layout.get_param("schemes").h.each do |scheme_id, scheme|
-		    large_image_urls = scheme.h["large_images"].a.each.collect{|image| image.conv_value}
+		    large_image_urls = scheme.h["large_images"].a.each.collect{|image| {:thumbnail=>image.h["thumbnail"].to_s, :full=>image.h["full"].to_s}}
 		    schemes << {:id=>scheme_id,
 			      :name=>scheme.h["name"].to_s,
 			      :thumbnail_image=>scheme.h["thumbnail_image"].to_s,
@@ -64,7 +64,8 @@ module Roxiware
 	   authorize! :read, @layout
 	   @schemes = {}
 	   @layout.get_param("schemes").h.each do |scheme_id, scheme|
-	       large_image_urls = scheme.h["large_images"].a.each.collect{|image| image.conv_value}
+               large_image_urls = scheme.h["large_images"].a.each.collect{|image| {:thumbnail=>image.h["thumbnail"].to_s, :full=>image.h["full"].to_s}}
+	       puts "LARGE IMAGE URLS #{large_image_urls.inspect}"
 	       @schemes[scheme_id] = {
 	                          :name=>scheme.h["name"].to_s,
 			          :thumbnail_image=>scheme.h["thumbnail_image"].to_s,
@@ -91,7 +92,8 @@ module Roxiware
 		 
 	   @schemes = {}
 	   @layout.get_param("schemes").h.each do |scheme_id, scheme|
-	       large_image_urls = scheme.h["large_images"].a.each.collect{|image| image.conv_value}
+               large_image_urls = scheme.h["large_images"].a.each.collect{|image| {:thumbnail=>image.h["thumbnail"].to_s, :full=>image.h["full"].to_s}}
+	       puts "LARGE IMAGE URLS #{large_image_urls.inspect}"
 	       @schemes[scheme_id] = {
 	                          :name=>scheme.h["name"].to_s,
 			          :thumbnail_image=>scheme.h["thumbnail_image"].to_s,
@@ -125,7 +127,7 @@ module Roxiware
 		 
 		 @schemes = {}
 		 @layout.get_param("schemes").h.each do |scheme_id, scheme|
-		     large_image_urls = scheme.h["large_images"].a.each.collect{|image| image.conv_value}
+                     large_image_urls = scheme.h["large_images"].a.each.collect{|image| {:thumbnail=>image.h["thumbnail"].to_s, :full=>image.h["full"].to_s}}
 		     @schemes[scheme_id] = {
 					:name=>scheme.h["name"].to_s,
 					:thumbnail_image=>scheme.h["thumbnail_image"].to_s,
@@ -206,7 +208,9 @@ module Roxiware
 		        layout_scheme.set_param("thumbnail_image", scheme_data[:thumbnail_image], "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
 		        large_images = layout_scheme.set_param("large_images", [], "975967EA-A9BC-40EE-8E1B-7F3CA8089E66", "scheme")
 			(scheme_data[:large_images] || []).each do |name, large_image|
-			    large_images.set_param(name, large_image, "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
+			    large_image_pair = large_image.set_param(name, {}, "5D2D7A30-591E-4377-A1B5-971757ABC479", "scheme")
+			    large_image_pair.set_param("thumbnail", large_image[0], "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
+			    large_image_pair.set_param("full", large_image[1], "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
 			end
 		     end
 		 end

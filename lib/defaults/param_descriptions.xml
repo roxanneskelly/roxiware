@@ -177,6 +177,13 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+  <param_description guid="5D2D7A30-591E-4377-A1B5-971757ABC479">
+    <name>Large Image Pair</name>
+    <description>Hash of various images representing a large image</description>
+    <field_type>hash</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
   <param_description guid="48C77594-AA7C-4424-90F8-BCA2EFFF7546">
     <name>Enable Events</name>
     <description>Enable event listings.</description>

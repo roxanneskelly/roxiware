@@ -53,6 +53,7 @@
 	}
     }
 
+
     $.extend({
 	    ajaxSetParamsXML: function(url, data, conf_params) {
 		var conf = $.extend({}, $.roxiware.ajaxSetParamsXML.conf, conf_params);
@@ -257,8 +258,6 @@
 		    $.roxiware.wait.waitInstance = null;
 		}
 	    }});
-
-
 
 
     $.roxiware.progressbar = {
@@ -1239,4 +1238,3 @@ function forgotPassword() {
         });
     settingsForm(template, "Forgot Password");
 }
-

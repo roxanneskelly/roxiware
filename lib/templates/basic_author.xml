@@ -38,15 +38,11 @@ books_menu_permission.save!]]>
     <category>General</category>
   </categories>
   <packages>
-    <package>basic_author</package>
     <package>premium_author</package>
+    <package>basic_author</package>
   </packages>
   <style>
-    <![CDATA[/* Roxiware Scribaroo Basic Author template */
-/* Copyright 2013, Roxiware */
-
-
-/* Document layout */
+    <![CDATA[/* Document layout */
 /* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
     It's better to apply styles to the #mainBody which only contains client website content */
 body.application_body
@@ -57,14 +53,17 @@ body.application_body
 /* Sizing for various devices */
 div#mainBody {
      font-size:12px;
-     max-width:750px;
-     width:100%;
+     width:750px;
 }
 
 /* for all mobile devices, set width to 100% */
-@media all and (max-device-width: 800px) {
+@media all and (max-device-width: 1024px) {
       div#mainBody {
-          width:100%;
+          border:solid 1px black;
+          position:absolute;
+          right:0px;
+          left:0px;
+          width:auto;
       }
 }
 
@@ -160,6 +159,7 @@ div#mainBody {
           font-size:12px;
       }
 }
+
 
 /* Fonts and text */
 div#mainBody
@@ -283,8 +283,11 @@ div#mainBody
                 }
             }
         }
+
     }
 }
+
+
 
 .manage_button {
     opacity:0;
@@ -307,7 +310,7 @@ div.widget_background, div.content_background
     z-index:-1;
 }
 
-/* Quick post listing, shown both on the front page and in the 'blog' section */
+/* Post*/
 div#mainBody .post {
     position:relative;
     margin: 0;
@@ -388,12 +391,236 @@ div#mainBody .post {
             margin:0.5em;
         }
     }
+
+}
+
+.comments {
+    margin-top:2em;
+    .comment {
+
+        border-top:solid 1px <%= text_color %>;
+        position:relative;
+        clear:both;
+        margin-bottom:3em;
+        .comment {
+            margin-left:3em;
+         }
+
+        .comment_status_moderate {
+            float:right;
+            color: <%= text_alert_color %>;
+            margin-right:4em;
+        }
+        .comment_status_publish {
+              display:none;
+        }
+
+        .comment_header {
+            vertical-align:top;
+            color: <%= link_color %>;
+           
+
+            .comment_author_image {
+               display:none;
+            }
+
+            .comment_author_name {
+                display:inline-block;
+                margin-right:0.5em;
+                float:left;
+            }
+            .comment_author_date:before {
+                content:"on ";
+            }
+            .comment_author_date {
+                display:inline-block;
+                margin-right:1em;
+            }
+        }
+        .comment_footer {
+            clear:both;
+            text-align:center;
+            .comment_reply {
+                cursor:pointer;
+                
+            }
+        }
+    }
+    .comment:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
 }
 
 .post:hover {
     .manage_button {
         cursor:pointer;
         opacity:0.5;
+    }
+}
+
+/* Full post display with comments */
+.post_listing {
+    .post_footer {
+        hr.post_separator {
+            margin:0 10% 0 10%;
+            width:80%;
+        }
+        .comment_count {
+            font-size:1.3em;
+            display:inline-block;
+        }
+        .pending_comment_count {
+            display:inline-block;
+            color: <%= text_alert_color %>;
+            font-size:1.3em;
+            margin-left:2em;
+        }
+
+        .comment_form {
+            position:relative;
+             width:100%;
+            margin:2em 0 3em 0;
+
+            label {
+                width:5em;
+            }
+            div.comment_form_header {
+                position:relative;
+                width:100%;
+                height:10em;
+                input.comment_author, div.comment_author {
+                    position:absolute;
+                    top:0px;
+                    left:80px;
+                    right:20%;
+                }
+                div.comment_author {
+                   font-size:1.5em;
+                }
+                label.comment_author {
+                    position:absolute;
+                    left:2em;
+                    top:0px;
+                }
+                .comment_author_image {
+                    display:none;
+                } 
+                textarea.comment_form_content {
+                    resize:none;
+                    position:absolute;
+                    right:0px;
+                    left:80px;
+                    top:2em;
+                    height:6em;   
+                }
+             }
+             button.post_comment_button {
+                    float:right;
+             }
+            .comment_form_footer {
+                position:relative;
+                width:100%;
+                .comment_auth_info {
+                    position:relative;
+                    height:80px;
+                }
+                label {
+                   width:5em !important;
+                }
+                label.comment_form_author_url {
+                    position:absolute;
+                    left:0px;
+                    top:0px;
+                } 
+                input.comment_form_author_url {
+                    position:absolute;
+                    top:0px;
+                    left:80px;
+                    right:330px;
+                }
+                label.comment_form_author_email {
+                    position:absolute;
+                    top:2em;
+                    left:0px;
+                }
+                input.comment_form_author_email {
+                    position:absolute;
+                    top:2em;
+                    left:80px;
+                    right:330px;
+                }
+                 .recaptcha_response_field {
+                      position:absolute;
+                      top:4em;
+                      left:80px;
+                      right:330px;
+                  }
+
+                .recaptcha_image {
+                    width:300px;
+                    height:57px;
+                    position:absolute;
+                    top:0px;
+                    right:20px;
+                    border:solid 1px black;
+                }
+                .recaptcha_only_if_incorrect_sol {
+                     position:absolute;
+                     top:60px;
+                     right:1em;
+                 }
+
+                  .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+                      font-size:17px;
+                      font-family: 'Metro Icons';
+                      speak: none;
+                      font-weight: normal;
+                      font-variant: normal;
+                      text-transform: none;
+                      line-height: 1;
+                       -webkit-font-smoothing: antialiased;
+                      color: <%= link_color %>;
+                      position:absolute;
+                      right:0px;            
+                      width:19px;
+                      height:19px;
+                      cursor:pointer;
+                  }
+                  .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+                      color: <%= link_hover_color %>;
+                  }
+                  .captcha_reload {
+                        top:0px;
+                   }
+                   .captcha_reload:before {
+                       content: "\e070";
+                   }
+                   .captcha_audio {
+                        top:20px;
+                    }
+                   .captcha_audio:before {
+                        content: "\e067";
+                    }
+
+                    .captcha_image {
+                        top:20px;
+                    }
+                    .captcha_image:before {
+                        content: "\e0b5";
+                    }
+
+                    .captcha_help {
+                        top:40px;
+                    }
+                    .captcha_help:before {
+                        content: "\e056";
+                    }
+                
+            }
+        }
     }
 }
 
@@ -559,170 +786,21 @@ section.events {
     }
 }
 
+/* Individual widget settings */
 
-/* Social networking icons */
-a.social_networks_icon {
-     font-size:16px;
-     display:inline-block;
-        font-family: 'Metro Icons';
-        speak: none;
-        font-style: normal;
-        font-weight: normal;
-        font-variant: normal;
-        text-transform: none;
-        line-height: 1;
-        -webkit-font-smoothing: antialiased;
-}
+#left_bar_section {
+    .widget#social_networks_header {
+         margin-top:0px;
 
-a#twitter.social_networks_icon:before { content:'\e0a2'; }
-a#google.social_networks_icon:before { content:'\e09c'; }
-a#facebook.social_networks_icon:before { content:'\e09f'; }
-a#rss.social_networks_icon:before { content:'\e0a5'; }
-a#youtube.social_networks_icon:before { content:'\e0a9'; }
-a#vimeo.social_networks_icon:before { content:'\e0aa'; }
-
-@media all and (min-device-width: 640px)  {
-      div#mainBody {
-          a.social_networks_icon {
-                font-size:32px;
-          }
-    }
-}
-
-/* Prev/Next post */
-.widget#prev_next_post {
-    text-align:center;
-    margin:2em 0em 1em 0em;
-    .widget_content {
-        width:20em;
-        .prev_post {
-            float:left;
-        }
-        .prev_post:before {
-           content: "<< ";
-        }
-
-        .next_post {
-             float:right;
-        }
-        .next_post:after {
-            content:" >>";
-        }
-    }
-}
-
-/* Overrides for mobile */
-@media all and (max-width: 640px) {
-    div#mainBody {
-        #right_bar_section {
-            display:none;
-         }
-        #content_section #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px;
-        }
-        #left_bar_section {
-            right:-20px;
-            width:20px;
-         }
-         #header_bar_section {
-             #book_bar {
-                 display:none;
+         .widget_content {
+             text-align:right;
+             .social_networks_icon {
+                 padding-bottom:5px;
+                 display:block;
              }
-             #logo_bar {
-                 height:40px;
-                 .display_item:nth-child(1) {
-                     font-size:16px !important;
-                     top:0em !important;
-                 }
-
-            }
-        }
-    .person_portrait {
-            width:30%;
-            height:auto;
+         }
     }
-
-div.book_listing {
-    a {
-        .book_title {
-             font-size:1.0em;
-        }
-        img {
-            width:30%;
-            height:auto;
-        }
-     }
 }
-    }
-}]]>
-  </style>
-  <params>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_posts</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
-    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
-    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/basic_author/thumbnail.jpeg</param>
-    <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
-        </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
-        <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="5">http://cdn.roxiware.com/templates/basic_author/black/contact.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="4">http://cdn.roxiware.com/templates/basic_author/black/book.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3">http://cdn.roxiware.com/templates/basic_author/black/books.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">http://cdn.roxiware.com/templates/basic_author/black/blog.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">http://cdn.roxiware.com/templates/basic_author/black/front.jpeg</param>
-        </param>
-      </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
-        </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
-        <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="5">http://cdn.roxiware.com/templates/basic_author/white/contact.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="4">http://cdn.roxiware.com/templates/basic_author/white/book.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="3">http://cdn.roxiware.com/templates/basic_author/white/books.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="2">http://cdn.roxiware.com/templates/basic_author/white/blog.jpeg</param>
-          <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="1">http://cdn.roxiware.com/templates/basic_author/white/front.jpeg</param>
-        </param>
-      </param>
-    </param>
-  </params>
-  <pages>
-    <page application="" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-        <section name="header_bar">
-          <style>
-            <![CDATA[/* Header layout */
 #header_bar_section {
     position:relative;
     margin:0 0 3em 0;
@@ -731,10 +809,11 @@ div.book_listing {
         position:relative;
         width:20%;
         height:150px;
-        .widget_content {
-        vertical-align:top;
-       }
+        .display_item:nth-child(0) {
+              display:none;
+         }
     }
+
 
     .widget#login_bar {
         position:absolute;
@@ -838,6 +917,191 @@ div.book_listing {
           }
       }
   }
+}
+
+#header_bar_section {
+    .widget#book_bar {
+         position:absolute;
+         right:0px;
+         top:2em;
+        .book_list {
+            float:right;
+            .book_list_book {
+                .book_list_book_title {
+                    display:none;
+                }
+                .book_list_book_cover {
+                     width:100px;
+                     height:150px;
+                 }
+            }
+        }
+    }
+}
+
+
+/* Social networking icons */
+a.social_networks_icon {
+     font-size:16px;
+     display:inline-block;
+        font-family: 'Metro Icons';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+}
+
+a#twitter.social_networks_icon:before { content:'\e0a2'; }
+a#google.social_networks_icon:before { content:'\e09c'; }
+a#facebook.social_networks_icon:before { content:'\e09f'; }
+a#rss.social_networks_icon:before { content:'\e0a5'; }
+a#youtube.social_networks_icon:before { content:'\e0a9'; }
+a#vimeo.social_networks_icon:before { content:'\e0aa'; }
+
+@media all and (min-device-width: 640px)  {
+      div#mainBody {
+          a.social_networks_icon {
+                font-size:32px;
+          }
+    }
+}
+
+/* Prev/Next post */
+.widget#prev_next_post {
+    text-align:center;
+    margin:2em 0em 1em 0em;
+    .widget_content {
+        width:20em;
+        .prev_post {
+            float:left;
+        }
+        .prev_post:before {
+           content: "<< ";
+        }
+
+        .next_post {
+             float:right;
+        }
+        .next_post:after {
+            content:" >>";
+        }
+    }
+}
+@media all and (max-device-width: 640px)  {
+    div#mainBody {
+        width:100%;
+        #right_bar_section {
+            display:none;
+        }
+        #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px;
+        }
+        #left_bar_section {
+            right:-20px;
+            
+            width:20px;
+            background:red;
+        }
+        #header_bar_section {
+            #book_bar {
+                display:none;
+            }
+            #logo_bar {
+                height:40px;
+                .display_item:nth-child(1) {
+                    display:none;
+                }
+                .display_item:nth-child(0) {
+                    display:block;;
+                 }
+            }
+        }
+    }
+}]]>
+  </style>
+  <params>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_post</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/basic_author/thumbnail.jpeg</param>
+    <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+        <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="1">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/white/biography.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/white/biography_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="2">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/white/home.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/white/home_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="3">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/white/posts.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/white/posts_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="4">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/white/calendar.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/white/calendar_l.jpg</param>
+          </param>
+          <param description="5D2D7A30-591E-4377-A1B5-971757ABC479" class="scheme" name="5">
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail">http://cdn.roxiware.com/templates/simple-lines/white/contact.jpg</param>
+            <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="full">http://cdn.roxiware.com/templates/simple-lines/white/contact_l.jpg</param>
+          </param>
+        </param>
+      </param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+        <param description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" class="scheme" name="large_images">
+        </param>
+      </param>
+    </param>
+  </params>
+  <pages>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="header_bar">
+          <style>
+            <![CDATA[/* Header layout */
+#header_bar_section {
+   min-height:20px;
+   position:relative; 
 }]]>
           </style>
           <params>
@@ -848,13 +1112,12 @@ div.book_listing {
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
                 <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
-                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">14px</param>
-                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">0px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Kim Harrison</param>
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">2px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">13px</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Times New Roman'</param>
-                    <param description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" class="local" name="weight">normal</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
-                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color">rgb(255, 255, 255)</param>
+                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
                   </param>
                 </param>
               </params>
@@ -887,7 +1150,7 @@ div.book_listing {
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_2">
                     <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
                     <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">admin</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/books</param>
                   </param>
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_3">
@@ -978,13 +1241,12 @@ div.book_listing {
         <section name="right_bar">
           <style>
             <![CDATA[#right_bar_section {
-    position:absolute;
-    width:185px;
-    top:0px;
-    bottom:0px;
-    right:0px;
-    padding:5px;
-    text-align:right;
+            position:absolute;
+            width:185px;
+            top:0px;
+            bottom:0px;
+            right:0px;
+            padding:5px;
 
     .widget#events_widget {
 
@@ -1046,19 +1308,7 @@ div.book_listing {
         </section>
         <section name="left_bar">
           <style>
-            <![CDATA[#left_bar_section {
-    .widget#social_networks_header {
-         margin-top:0px;
-
-         .widget_content {
-             text-align:right;
-             .social_networks_icon {
-                 padding-bottom:5px;
-                 display:block;
-             }
-         }
-    }
-}]]>
+            <![CDATA[]]>
           </style>
           <params>
           </params>
@@ -1175,246 +1425,6 @@ A mailing-list request Has Been Received from: $email
             </instance>
           </widget_instances>
         </section>
-      </sections>
-    </page>
-    <page application="blog" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-      </sections>
-    </page>
-    <page application="blog" action="show_by_title">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[/* Full post display with comments */
-.post_listing {
-    .post_footer {
-        hr.post_separator {
-            margin:0 10% 0 10%;
-            width:80%;
-        }
-        .comment_count {
-            font-size:1.3em;
-            display:inline-block;
-        }
-        .pending_comment_count {
-            display:inline-block;
-            color: <%= text_alert_color %>;
-            font-size:1.3em;
-            margin-left:2em;
-        }
-
-        .comment_form {
-            position:relative;
-             width:100%;
-            margin:2em 0 3em 0;
-
-            label {
-                width:5em;
-            }
-            div.comment_form_header {
-                position:relative;
-                width:100%;
-                height:10em;
-                input.comment_author, div.comment_author {
-                    position:absolute;
-                    top:0px;
-                    left:80px;
-                    right:20%;
-                }
-                div.comment_author {
-                   font-size:1.5em;
-                }
-                label.comment_author {
-                    position:absolute;
-                    left:2em;
-                    top:0px;
-                }
-                .comment_author_image {
-                    display:none;
-                } 
-                textarea.comment_form_content {
-                    resize:none;
-                    position:absolute;
-                    right:0px;
-                    left:80px;
-                    top:2em;
-                    height:6em;   
-                }
-             }
-             button.post_comment_button {
-                    float:right;
-             }
-            .comment_form_footer {
-                position:relative;
-                width:100%;
-                .comment_auth_info {
-                    position:relative;
-                    height:80px;
-                }
-                label {
-                   width:5em !important;
-                }
-                label.comment_form_author_url {
-                    position:absolute;
-                    left:0px;
-                    top:0px;
-                } 
-                input.comment_form_author_url {
-                    position:absolute;
-                    top:0px;
-                    left:80px;
-                    right:330px;
-                }
-                label.comment_form_author_email {
-                    position:absolute;
-                    top:2em;
-                    left:0px;
-                }
-                input.comment_form_author_email {
-                    position:absolute;
-                    top:2em;
-                    left:80px;
-                    right:330px;
-                }
-                 .recaptcha_response_field {
-                      position:absolute;
-                      top:4em;
-                      left:80px;
-                      right:330px;
-                  }
-
-                .recaptcha_image {
-                    width:300px;
-                    height:57px;
-                    position:absolute;
-                    top:0px;
-                    right:20px;
-                    border:solid 1px black;
-                }
-                .recaptcha_only_if_incorrect_sol {
-                     position:absolute;
-                     top:60px;
-                     right:1em;
-                 }
-
-                  .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
-                      font-size:17px;
-                      font-family: 'Metro Icons';
-                      speak: none;
-                      font-weight: normal;
-                      font-variant: normal;
-                      text-transform: none;
-                      line-height: 1;
-                       -webkit-font-smoothing: antialiased;
-                      color: <%= link_color %>;
-                      position:absolute;
-                      right:0px;            
-                      width:19px;
-                      height:19px;
-                      cursor:pointer;
-                  }
-                  .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
-                      color: <%= link_hover_color %>;
-                  }
-                  .captcha_reload {
-                        top:0px;
-                   }
-                   .captcha_reload:before {
-                       content: "\e070";
-                   }
-                   .captcha_audio {
-                        top:20px;
-                    }
-                   .captcha_audio:before {
-                        content: "\e067";
-                    }
-
-                    .captcha_image {
-                        top:20px;
-                    }
-                    .captcha_image:before {
-                        content: "\e0b5";
-                    }
-
-                    .captcha_help {
-                        top:40px;
-                    }
-                    .captcha_help:before {
-                        content: "\e056";
-                    }
-                
-            }
-        }
-    }
-
-    .comments {
-        margin-top:2em;
-        .comment {
-
-            border-top:solid 1px <%= text_color %>;
-            position:relative;
-            clear:both;
-            margin-bottom:3em;
-            .comment {
-                margin-left:3em;
-             }
-
-            .comment_status_moderate {
-                float:right;
-                color: <%= text_alert_color %>;
-                margin-right:4em;
-            }
-            .comment_status_publish {
-                display:none;
-            }
-
-            .comment_header {
-                vertical-align:top;
-                color: <%= link_color %>;
-           
-
-                .comment_author_image {
-                   display:none;
-                }
-
-                .comment_author_name {
-                    display:inline-block;
-                    margin-right:0.5em;
-                    float:left;
-                }
-                .comment_author_date:before {
-                    content:"on ";
-                }
-                .comment_author_date {
-                    display:inline-block;
-                    margin-right:1em;
-                }
-            }
-            .comment_footer {
-                clear:both;
-                text-align:center;
-                .comment_reply {
-                    cursor:pointer;                
-                }
-            }
-        }
-        .comment:hover {
-            .manage_button {
-                cursor:pointer;
-                opacity:0.5;
-            }
-        }
-    }
-}]]>
-      </style>
-      <params>
-      </params>
-      <sections>
       </sections>
     </page>
   </pages>

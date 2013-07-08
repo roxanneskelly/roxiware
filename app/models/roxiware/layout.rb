@@ -68,7 +68,7 @@ module Roxiware
 	     path_components = path.split("/", 2)
 	     return self if(path_components.blank?)
 
-	     page_components = path_components.shift.split("_")
+	     page_components = path_components.shift.split("_",2)
 	     page_params = {}
 	     page_params[:application] = (page_components[0] || "")
 	     page_params[:application_path] = page_components[1] || ""
@@ -220,11 +220,12 @@ module Roxiware
 
           def find_page_layout(params)
 	       stack = page_layout_stack(params)
+	       puts "STACK #{stack[-1].inspect}"
 	       stack[-1] if stack.present?
 	  end
 
 	  def page_layout_by_url(layout_id, url_identifier)
-	      page_id = URI.decode(url_identifier).split("_")
+	      page_id = URI.decode(url_identifier).split("_",2)
 	      find_page_layout({:application=>(page_id[0] || ""), :application_path=>(page_id[1] || "")})
 	  end
 
@@ -341,7 +342,7 @@ module Roxiware
 	  end
 	  
 	  def set_url_identifier(url_identifier)
-	      page_id = URI.decode(url_identifier).split("_")
+	      page_id = URI.decode(url_identifier).split("_",2)
 	      self.application = page_id[0] || ""
 	      self.action = page_id[1] || ""
 	  end

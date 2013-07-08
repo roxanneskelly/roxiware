@@ -1,6 +1,8 @@
 require 'builder'
 require 'xml'
 require 'fileutils'
+require "open-uri"
+require 'tempfile'
 
 ENV['RAILS_ENV'] ||= "development"
 
@@ -146,6 +148,65 @@ namespace :templates do
 	 Roxiware::Layout::Layout.all.each do |layout|
 	    print "#{layout.name}\n#{layout.description}\n\n"
          end
+      end
+
+      desc "Get thumbnail for layout running on server"
+      task :get_thumbnail, [:hostname]=>:environment do |t,args|
+            template = Roxiware::Param::Param.application_param_val("system","current_template")
+            scheme = Roxiware::Param::Param.application_param_val("system","layout_scheme")
+	    hostname = args[:hostname] || Roxiware::Param::Param.application_param_val("system","hostname")
+	    template_obj = Roxiware::Layout::Layout.find_by_guid(template)
+
+	    dir_path = File.expand_path(File.join("~", "template_images", template_obj.name.to_seo)).to_s
+	    FileUtils.mkdir_p(dir_path)
+	    url = "http://#{hostname}/"
+	    filename = File.join(dir_path, "thumbnail.jpg")
+	    File.open(filename, "w") do |f|
+	        f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x400/?url=#{url}").read
+	    end
+	    
+
+      end
+
+
+      desc "Get images for layout/scheme running on server"
+      task :get_images, [:hostname]=>:environment do |t,args|
+            template = Roxiware::Param::Param.application_param_val("system","current_template")
+            scheme = Roxiware::Param::Param.application_param_val("system","layout_scheme")
+	    hostname = args[:hostname] || Roxiware::Param::Param.application_param_val("system","hostname")
+	    
+	    template_obj = Roxiware::Layout::Layout.find_by_guid(template)
+	    scheme_data = template_obj.get_param("schemes").h[scheme].h
+
+	    pages = {:home=>"/",:posts=>"/blog",:calendar=>"/events",:contact=>"/contact",:biography=>"/biography"}
+	    dir_path = File.expand_path(File.join("~", "template_images", template_obj.name.to_seo, scheme_data["name"].to_s.to_seo)).to_s
+	    FileUtils.mkdir_p(dir_path)
+	    scheme_data["large_images"].params.delete
+	    large_images = []
+	    index = 1
+	    pages.each do |page,path|
+	        url = "http://#{hostname}#{path}"
+		filename = File.join(dir_path, page.to_s+".jpg")
+		File.open(filename, "w") do |f|
+		    f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x400/?url=#{url}").read
+		end
+		filename = File.join(dir_path, page.to_s+"_l.jpg")
+		File.open(filename, "w") do |f|
+		    f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/600x700/?url=#{url}").read
+		end
+		
+                large_image_pair = Roxiware::Param::Param.new({:name=>index.to_s, :description_guid=>"5D2D7A30-591E-4377-A1B5-971757ABC479", :param_class=>"scheme"}, :as=>"")
+
+		large_image_pair.set_param("thumbnail", "http://cdn.roxiware.com/templates/#{template_obj.name.to_seo}/#{scheme_data['name'].to_s.to_seo}/#{page}.jpg","0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
+		large_image_pair.set_param("full","http://cdn.roxiware.com/templates/#{template_obj.name.to_seo}/#{scheme_data['name'].to_s.to_seo}/#{page}_l.jpg","0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
+		large_images << large_image_pair
+		index = index + 1
+	    end
+	    scheme_data["large_images"].params = large_images
+	    scheme_data["large_images"].save!
+	    sh "ssh roxiwarevps@ps77127.dreamhost.com 'mkdir -p ~/cdn.roxiware.com/templates/#{template_obj.name.to_seo}/#{scheme_data["name"].to_s.to_seo}'"
+	    sh "scp #{dir_path}/* roxiwarevps@ps77127.dreamhost.com:~/cdn.roxiware.com/templates/#{template_obj.name.to_seo}/#{scheme_data["name"].to_s.to_seo}"
+	    template_obj.save!
       end
 
       desc "Import templates"

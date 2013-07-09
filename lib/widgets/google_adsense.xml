@@ -65,7 +65,7 @@ google_ad_height = <%= ad_units[google_ad_slot].h["height"].conv_value %>;
 <script type="text/javascript"
 src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
-<% if current_user.present? && current_user.role == "super" %><div style="width:100%;height:100%;position:absolute;top:0px;left:0px;"/></div><% end %>
+<% if current_user.present? && (current_user.role == "super") %><div style="width:100%;height:100%;position:absolute;top:0px;left:0px;"/></div><% end %>
 </div>
 ]]>
     </render_view>

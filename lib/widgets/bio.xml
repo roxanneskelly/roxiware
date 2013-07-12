@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="BED8AFA4-4853-4FF8-B53E-1841147A9E4F">
+    <name>Biography</name>
+    <description>
+      <![CDATA[Show biography]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[
+         locals[:biography_link] = "/biography" unless (locals[:person_id].to_i > 0)
+         locals[:person_id] = Roxiware::Param::Param.application_param_val("people", "default_biography") unless (locals[:person_id].to_i > 0)
+         puts "PERSON ID #{locals[:person_id]}"
+         locals[:person_bio] = Roxiware::Person.find(locals[:person_id].to_i)
+         locals[:biography_link] ||= person_path(locals[:person_bio].seo_index)
+         puts "biography link  #{locals[:biography_link]}"
+         locals[:person_bio].present?
+      ]]>
+    </preload>
+    <render_view>
+      <![CDATA[<div class="biography">
+           <a href="<%= biography_link %>"><div class="bio_title"></div>
+           <div class="bio_name"><%= person_bio.full_name %></div>
+           <img class="bio_portrait" src='<%= person_bio.send(portrait_size + "_url") %>'/></a>
+      </div>]]>
+    </render_view>
+    <style>
+      <![CDATA[
+]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="C94F5738-AEDF-46B1-99F1-8A526393DD54" name="person_id"></param>
+      <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="portrait_size">image</param>
+    </params>
+  </widget>
+</widgets>

@@ -18,8 +18,15 @@ module Roxiware
 		        @posts = Roxiware::Blog::Post.where(:post_status=>"publish").order("post_date DESC").limit(num_posts+1)
 			@blog_class="blog"
 			if(@posts.length > num_posts)
-			   @next_page_link = url_for({:page=>1})
+			   @next_page_link = send("#{@blog_class}_path")+"?page=2"
 			end
+			format.html { render :template=>"roxiware/blog/post/index"}
+		    end
+		when "first_blog_post"
+		    respond_to do |format|
+		        @posts = Roxiware::Blog::Post.where(:post_status=>"publish").order("post_date DESC").limit(1)
+			@blog_class="blog"
+			@next_page_link = send("#{@blog_class}_path")
 			format.html { render :template=>"roxiware/blog/post/index"}
 		    end
 		when "blog_post"

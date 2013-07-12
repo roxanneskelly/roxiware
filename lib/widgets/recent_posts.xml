@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+    <name>Recent Posts</name>
+    <description>
+      <![CDATA[Show recent posts]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
+	 globals[:recent_posts] = []
+	 Roxiware::Blog::Post.published().select("post_title, post_link, post_date, person_id, post_exerpt").order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
+	   globals[:recent_posts] << {:post=>post, :snippet=>truncate(Sanitize.clean(post.post_exerpt), :separator=>' ', :length=>50, :omission=>'')}
+	 end
+         globals[:recent_posts_last_update] = Roxiware::Blog.last_update
+       end
+       locals[:recent_posts] = globals[:recent_posts]
+       locals[:recent_posts].present?]]>
+    </preload>
+    <render_view>
+      <![CDATA[<nav class="recent_post">
+	<div class="recent_post_title"></div>
+	<% recent_posts.each do |post_data| 
+	   post = post_data[:post] %>
+	   <div class="recent_post_entry"><%= link_to post.post_title, post.post_link %>
+	     <div class="post_date"><%= post.post_date.localtime.strftime("%D") %>,&nbsp;
+		<div class="post_author">
+		    <a href="<%= people_url %>/<%= post.person.seo_index %>">
+		      <%= post.person.full_name %>
+		    </a>
+		</div>
+	     </div>
+	     <div class="post_snippet"><%= post_data[:snippet] %><%= link_to " ...", post.post_link %></div>
+	   </div>
+	<% end %>
+      </nav>]]>
+    </render_view>
+    <style>
+      <![CDATA[div.recent_post_entry
+{
+   font-size:0.8em;
+   margin-top:10px;
+}
+
+div.recent_post_entry .post_date
+{
+   margin-left:10px;
+   font-size:0.8em;
+}
+
+div.recent_post_entry .post_author
+{
+   display:inline-block;
+}
+
+div.recent_post_entry .post_snippet
+{
+   margin-left:10px;
+   font-size:0.9em;
+}]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="5AD23478-C90D-4BA8-81DF-7112B0762257" name="recent_posts_count">5</param>
+    </params>
+  </widget>
+</widgets>

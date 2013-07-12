@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
+    <name>Calendar Blog Navigation</name>
+    <description>
+      <![CDATA[Navigate to blog posts via post date]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[if globals[:calendar_posts].blank? || globals[:calendar_nav_last_update].blank? || globals[:calendar_nav_last_update] < Roxiware::Blog.last_update
+         calendar_posts = {}
+         calendar_posts_index = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
+         published_post_ids = []
+
+         calendar_posts_index.each do |post|
+	   year = post.post_date.year
+	   calendar_posts[year] ||= {:count=>0, :unpublished_count=>0, :monthly=>{}}
+	   calendar_posts[year][:monthly][post.post_date.month] ||= {:count=>0, :unpublished_count=>0, :name=>post.post_date.strftime("%B"), :posts=>[]}
+	   calendar_posts[year][:monthly][post.post_date.month][:posts] << {:title=>post.post_title, :published=>(post.post_status == "publish"), :link=>post.post_link}
+	   if post.post_status == "publish"
+	     calendar_posts[year][:count] += 1
+	     calendar_posts[year][:monthly][post.post_date.month][:count] += 1
+	     published_post_ids << post.id
+	   elsif can? :edit, post
+	     calendar_posts[year][:unpublished_count] += 1
+	     calendar_posts[year][:monthly][post.post_date.month][:unpublished_count] += 1
+	   end
+         end
+         globals[:calendar_nav_last_update] = Time.now() 
+	 globals[:calendar_posts] = calendar_posts
+       end
+       locals[:calendar_posts] = globals[:calendar_posts]
+       locals[:calendar_posts].present?]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+    <div class="calendar_nav_title">Archive</div>
+    <nav class="calendar_nav">
+    <ul class="calendar_nav_years">
+      <% calendar_posts.keys.sort.reverse.each do |year| %>
+        <% year_posts = calendar_posts[year] %>
+        <li class="calendar_nav_year calendar_nav_hidden"><a><%= year %><span class="post_count"><%= year_posts[:count]%></span>
+	      <% if (year_posts[:unpublished_count] > 0) %>
+	        <span class="post_count post_unpublished"><%= year_posts[:unpublished_count] %></span>
+              <% end %></a>
+	  <ul class="calendar_nav_months">
+	    <% year_posts[:monthly].keys.sort.reverse.each do |month| %>
+	      <% month_posts = year_posts[:monthly][month] %>
+	      <li class="calendar_nav_month calendar_nav_hidden"><a><%= month_posts[:name] %><span class="post_count"><%= month_posts[:count] %></span>
+                <% if (month_posts[:unpublished_count] > 0) %>
+	           <span class="post_unpublished post_count"><%= month_posts[:unpublished_count] %></span>
+                 <% end %>
+		</a>
+	        <ul class="calendar_nav_posts">
+		  <% month_posts[:posts].each do |post| %>
+                      <li><%= link_to post[:title], post[:link], :class=>post[:published]?"":"post_unpublished" %></li>
+		  <% end %>
+	        </ul>
+	      </li>
+	    <% end %>
+	  </ul>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+  <script>
+     $(".calendar_nav li a").click(function(){
+       $(this).parent().toggleClass("calendar_nav_hidden");
+     });
+  </script>]]>
+    </render_view>
+    <style>
+      <![CDATA[li.calendar_nav_year a {
+ cursor:pointer;
+}
+
+li.calendar_nav_hidden ul
+{
+   display:none;
+}]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+    </params>
+  </widget>
+</widgets>

@@ -320,7 +320,7 @@ div#mainBody .post {
     .post_title {
         position:absolute;
         top:1.0em;
-        font-size:3em;
+        font-size:2em;
         font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
     }
 
@@ -1072,11 +1072,11 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
                   <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-0">
                     <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">21px</param>
                     <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">12px</param>
-                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Stieg Larsson</param>
+                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text"></param>
                     <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">Geneva</param>
                     <param class="local" description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" name="weight">300</param>
                     <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">48</param>
-                    <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color">rgb(0, 0, 0)</param>
+                    <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color"></param>
                   </param>
                 </param>
               </params>

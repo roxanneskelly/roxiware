@@ -1,245 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <widgets>
-  <widget version="1.0" guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
-    <name>Recent Posts</name>
-    <description>
-      <![CDATA[Show recent posts]]>
-    </description>
-    <editform>
-      <![CDATA[]]>
-    </editform>
-    <preload>
-      <![CDATA[if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
-	 globals[:recent_posts] = []
-	 Roxiware::Blog::Post.published().select("post_title, post_link, post_date, person_id, post_exerpt").order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
-	   globals[:recent_posts] << {:post=>post, :snippet=>truncate(Sanitize.clean(post.post_exerpt), :separator=>' ', :length=>50, :omission=>'')}
-	 end
-         globals[:recent_posts_last_update] = Roxiware::Blog.last_update
-       end
-       locals[:recent_posts] = globals[:recent_posts]
-       locals[:recent_posts].present?]]>
-    </preload>
-    <render_view>
-      <![CDATA[<nav class="recent_post">
-	<div class="recent_post_title">Recent Posts</div>
-	<% recent_posts.each do |post_data| 
-	   post = post_data[:post] %>
-	   <div class="recent_post_entry"><%= link_to post.post_title, post.post_link %>
-	     <div class="post_date"><%= post.post_date.localtime.strftime("%D") %>,&nbsp;
-		<div class="post_author">
-		    <a href="<%= people_url %>/<%= post.person.seo_index %>">
-		      <%= post.person.full_name %>
-		    </a>
-		</div>
-	     </div>
-	     <div class="post_snippet"><%= post_data[:snippet] %><%= link_to " ...", post.post_link %></div>
-	   </div>
-	<% end %>
-      </nav>]]>
-    </render_view>
-    <style>
-      <![CDATA[div.recent_post_entry
-{
-   font-size:0.8em;
-   margin-top:10px;
-}
-
-div.recent_post_entry .post_date
-{
-   margin-left:10px;
-   font-size:0.8em;
-}
-
-div.recent_post_entry .post_author
-{
-   display:inline-block;
-}
-
-div.recent_post_entry .post_snippet
-{
-   margin-left:10px;
-   font-size:0.9em;
-}]]>
-    </style>
-    <params>
-      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-      <param class="local" description="5AD23478-C90D-4BA8-81DF-7112B0762257" name="recent_posts_count">5</param>
-    </params>
-  </widget>
-  <widget version="1.0" guid="2933001C-F5C3-457D-940A-E20B7F9FD69D">
-    <name>Category Blog Navigation</name>
-    <description>
-      <![CDATA[Navigate to blog posts via category]]>
-    </description>
-    <editform>
-      <![CDATA[]]>
-    </editform>
-    <preload>
-      <![CDATA[categories = Roxiware::Terms::Term.categories()
-
-       category_counts = {}
-       Roxiware::Terms::TermRelationship.count(:term_id=>categories.keys,
-                                               :term_object_id=>Roxiware::Blog::Post.published.map{|post| post.id},
-                                               :term_object_type=>"Roxiware::Blog::Post").each do |relationship|
-         category_counts[relationship.term_id] ||= 0
-         category_counts[relationship.term_id] += 1
-       end
-       locals[:categories] = categories
-       locals[:category_counts] = category_counts
-       category_counts.present?]]>
-    </preload>
-    <render_view>
-      <![CDATA[<nav class="categories_nav">
-     <div class="category_nav_title">Categories</div>
-     <ul>
-       <% categories.each do |category_id, category|
-         if category_counts[category_id].present? %>
-           <li><%= link_to category.name, blog_path(:category=>category.seo_index) %>(<%= category_counts[category_id] %>)</li>
-	 <% end %>
-       <% end %>
-     </ul>
-   </nav>]]>
-    </render_view>
-    <style>
-      <![CDATA[]]>
-    </style>
-    <params>
-      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-    </params>
-  </widget>
-  <widget version="1.0" guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
-    <name>Calendar Blog Navigation</name>
-    <description>
-      <![CDATA[Navigate to blog posts via post date]]>
-    </description>
-    <editform>
-      <![CDATA[]]>
-    </editform>
-    <preload>
-      <![CDATA[if globals[:calendar_posts].blank? || globals[:calendar_nav_last_update].blank? || globals[:calendar_nav_last_update] < Roxiware::Blog.last_update
-         puts "LAST UPDATE IS #{Roxiware::Blog.last_update}"
-         calendar_posts = {}
-         calendar_posts_index = Roxiware::Blog::Post.order("post_date DESC").select("id, post_title, post_date, post_link, post_status")
-         published_post_ids = []
-
-         calendar_posts_index.each do |post|
-	   year = post.post_date.year
-	   calendar_posts[year] ||= {:count=>0, :unpublished_count=>0, :monthly=>{}}
-	   calendar_posts[year][:monthly][post.post_date.month] ||= {:count=>0, :unpublished_count=>0, :name=>post.post_date.strftime("%B"), :posts=>[]}
-	   calendar_posts[year][:monthly][post.post_date.month][:posts] << {:title=>post.post_title, :published=>(post.post_status == "publish"), :link=>post.post_link}
-	   if post.post_status == "publish"
-	     calendar_posts[year][:count] += 1
-	     calendar_posts[year][:monthly][post.post_date.month][:count] += 1
-	     published_post_ids << post.id
-	   elsif can? :edit, post
-	     calendar_posts[year][:unpublished_count] += 1
-	     calendar_posts[year][:monthly][post.post_date.month][:unpublished_count] += 1
-	   end
-         end
-         globals[:calendar_nav_last_update] = Time.now() 
-	 globals[:calendar_posts] = calendar_posts
-       end
-       locals[:calendar_posts] = globals[:calendar_posts]
-       locals[:calendar_posts].present?]]>
-    </preload>
-    <render_view>
-      <![CDATA[<nav class="calendar_nav">
-    <div class="calendar_nav_title">Archive</div>
-    <ul class="calendar_nav_years">
-      <% calendar_posts.keys.sort.reverse.each do |year| %>
-        <% year_posts = calendar_posts[year] %>
-        <li class="calendar_nav_year calendar_nav_hidden"><a>
-	    <%= year %> (<%= year_posts[:count]%>)
-	      <% if (year_posts[:unpublished_count] > 0) %>
-	        <span class="post_unpublished">(<%= year_posts[:unpublished_count] %>)</span>
-              <% end %>
-	  </a>
-	  <ul class="calendar_nav_months">
-	    <% year_posts[:monthly].keys.sort.reverse.each do |month| %>
-	      <% month_posts = year_posts[:monthly][month] %>
-	      <li class="calendar_nav_month calendar_nav_hidden"><a><%= month_posts[:name] %> (<%= month_posts[:count] %>)
-                <% if (month_posts[:unpublished_count] > 0) %>
-	           <span class="post_unpublished">(<%= month_posts[:unpublished_count] %>)</span>
-                 <% end %>
-		</a>
-	        <ul class="calendar_nav_posts">
-		  <% month_posts[:posts].each do |post| %>
-                      <li><%= link_to post[:title], post[:link], :class=>post[:published]?"":"post_unpublished" %></li>
-		  <% end %>
-	        </ul>
-	      </li>
-	    <% end %>
-	  </ul>
-        </li>
-      <% end %>
-    </ul>
-  </nav>
-  <script>
-     $(".calendar_nav li a").click(function(){
-       $(this).parent().toggleClass("calendar_nav_hidden");
-     });
-  </script>]]>
-    </render_view>
-    <style>
-      <![CDATA[li.calendar_nav_year a
-{
-   cursor:pointer;
-}
-
-nav.calendar_nav
-{
-  padding-left:15px;
-}
-
-ul.calendar_nav_posts
-{
-   list-style-type:none;
-   padding: 5px 0px 5px 0px;
-}
-
-ul.calendar_nav_posts li
-{
-   padding: 3px 0px 4px 0px;
-}
-
-ul.calendar_nav_months, ul.calendar_nav_years
-{
-   list-style-type:circle;
-   list-style-position:outside;
-   padding-left:8px;
-   margin:0px;
-}
-
-nav.calendar_nav li
-{
-   font-size:0.9em;
-}
-
-nav.calendar_nav li.calendar_nav_year
-{
-}
-
-nav.calendar_nav li.calendar_nav_months li.calendar_nav_posts
-{
-}
-
-li.calendar_nav_hidden
-{
-   list-style-type:disc;
-}
-
-li.calendar_nav_hidden ul
-{
-   display:none;
-}]]>
-    </style>
-    <params>
-      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-    </params>
-  </widget>
   <widget version="1.0" guid="8A7C2B2B-2C57-4408-A699-C4BCABEAD4CA">
     <name>Currently Reading</name>
     <description>
@@ -353,7 +113,7 @@ li.calendar_nav_hidden ul
 	    Blog listing required
 	 <% else %>
          <nav class="blog_num_nav">
-           <div class="blog_num_nav"><%= link_to("<<", @prev_page_link, :class=>"num_nav_last") if @prev_page_link %></div>
+           <div class="blog_num_nav"><%= link_to("", @prev_page_link, :class=>"num_nav_prev") if @prev_page_link %></div>
            <% current_page = 1
               page_list_start = @page - nav_width 
               page_list_end = @page + nav_width 
@@ -364,9 +124,9 @@ li.calendar_nav_hidden ul
 	          <% current_page = page_list_start
 		     end %>
                   <% if current_page != @page %>
-		     <%= link_to(current_page.to_s, url_for({:page=>current_page}.merge @link_params)) %>
+		     <%= link_to(current_page.to_s, url_for({:page=>current_page}.merge @link_params), :class=>"num_nav_num") %>
 		  <% else %>
-		     <%= current_page.to_s %>
+		     <span class="num_nav_num"><%= current_page.to_s %></span>
 		  <% end %>
 		  <% if((current_page == page_list_end) && (current_page < (@num_pages-1))) %>
 	               <div class="blog_num_nav">&#133;</div>
@@ -375,7 +135,7 @@ li.calendar_nav_hidden ul
                   <% current_page = current_page + 1 %>
 		</div>
              <% end %>
-           <div class="blog_num_nav"><%= link_to(">>", @next_page_link, :class=>"num_nav_last") if @next_page_link %></div>
+           <div class="blog_num_nav"><%= link_to("", @next_page_link, :class=>"num_nav_next") if @next_page_link %></div>
 	 </nav>
       <% end %>]]>
     </render_view>
@@ -409,8 +169,8 @@ nav.blog_num_nav
     </preload>
     <render_view>
       <![CDATA[<nav class="blog_page_nav">
-           <div class="blog_page_nav_prev"><%= link_to("<< Previous", @prev_page_link, :class=>"num_nav_prev") if @prev_page_link %></div>
-           <div class="blog_page_nav_next"><%= link_to("Next >>", @next_page_link, :class=>"num_nav_next") if @next_page_link %></div>
+           <div class="blog_page_nav_prev"><%= link_to("", @prev_page_link, :class=>"num_nav_prev") if @prev_page_link %></div>
+           <div class="blog_page_nav_next"><%= link_to("", @next_page_link, :class=>"num_nav_next") if @next_page_link %></div>
 	   <% if @next_page_link.blank? && @prev_page_link.blank? %>
 	      Blog listing required.
 	   <% end %>

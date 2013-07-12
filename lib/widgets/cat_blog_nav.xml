@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="2933001C-F5C3-457D-940A-E20B7F9FD69D">
+    <name>Category Blog Navigation</name>
+    <description>
+      <![CDATA[Navigate to blog posts via category]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[categories = Roxiware::Terms::Term.categories()
+
+       category_counts = {}
+       Roxiware::Terms::TermRelationship.where(:term_id=>categories.keys,
+                                               :term_object_id=>Roxiware::Blog::Post.published.map{|post| post.id},
+                                               :term_object_type=>"Roxiware::Blog::Post").each do |relationship|
+         category_counts[relationship.term_id] ||= 0
+         category_counts[relationship.term_id] += 1
+       end
+       locals[:categories] = categories
+       locals[:category_counts] = category_counts
+       category_counts.present?]]>
+    </preload>
+    <render_view>
+      <![CDATA[<nav class="categories_nav">
+     <div class="category_nav_title">Categories</div>
+     <ul>
+       <% categories.each do |category_id, category|
+         if category_counts[category_id].present? %>
+           <li><%= link_to category.name, blog_path(:category=>category.seo_index) %><span class="cat_nav_count">(<%= category_counts[category_id] %>)</span></li>
+	 <% end %>
+       <% end %>
+     </ul>
+   </nav>]]>
+    </render_view>
+    <style>
+      <![CDATA[]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+    </params>
+  </widget>
+</widgets>

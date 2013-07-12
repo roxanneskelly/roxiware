@@ -20,7 +20,7 @@
 	    if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
 	      show_date += " - " + end_time.strftime(@event_date_format)
 	    end
-	    show_date %>
+	    raw show_date %>
 	<%= event.city unless event.city.blank? %> 
 	<%= ", " + event.state unless event.state.blank? %>
       </div>

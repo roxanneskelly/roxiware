@@ -31,12 +31,7 @@ Displays images of books in the authors book list
     <render_view>
       <![CDATA[
 <div class="book_list">
-  <% books.each do |book| %>
-      <%= link_to(book_path(book.seo_index), :class=>"book_list_book") do %>
-         <img class="book_list_book_cover" src="<%= book[(cover_size+'_url').to_sym] %>"/>
-         <div class="book_list_book_title"><%= book.title %></div>
-      <% end %>
-  <% end %>
+<% books.each do |book| %><%= link_to(link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_book") do %><img class="book_list_book_cover" src="<%= book[(cover_size+'_url').to_sym] %>"/><div class="book_list_book_title"><%= book.title %></div><% end %><% end %>
 </div>
 ]]>
     </render_view>
@@ -50,6 +45,7 @@ Displays images of books in the authors book list
       <param description="F247867F-5D91-4D9F-A73B-B0022130FD88" class="local" name="selection_order">newest</param>
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
       <param class="local" description="BEDD0F51-5E0A-489F-9495-195CDC090877" name="book_count">5</param>
+      <param class="local" description="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0" name="link_path"></param>
       <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="cover_size">image</param>
     </params>
   </widget>

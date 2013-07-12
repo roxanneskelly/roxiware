@@ -20,32 +20,23 @@ Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight
 <nav class="events_widget">
   <%= link_to("", events_path, :class=>"events_widget_title") %>
   <% events.each do |event|  %>
-    <div id="event-<%= event.id %>" class="event_widget_event">
-      <%= link_to(event.title || "", events_path, :anchor => "event-#{ event.id }", :class=>:event_widget_title) %>
-      <div class="event_widget_date">
-	<%= show_time = event.start.strftime("%b %e")
-	    if (event.duration_units == "days" && event.duration.present? && event.duration > 1)
-	      end_time = event.start + (event.duration.days - 1)
-	      show_time = event.start.strftime("%b %e, %Y") unless end_time.year == event.start.year
-	      show_time += " - "
-	      show_time += end_time.strftime("%b %e, %Y") if event.start.month != end_time.month
-	      show_time += end_time.strftime("%e, %Y") if event.start.month == end_time.month
-	    end
-	    show_time %>
-      </div>
-      <% if !(event.city.blank? && event.state.blank?) %>
-	<div class="event_widget_city">
-	  <%= event.city unless event.city.blank? %> 
-	  <%= ", " + event.state unless event.state.blank? %>
-	</div>
+      <%= link_to (events_path, :anchor => "event-#{ event.id }", :id=> "event-#{event.id}", :class=>"event_widget_event") do %>
+          <div class="event_widget_title"><%= event.title %></div>
+          <div class="event_widget_date">
+	      <%= # generate the date range string
+	          show_date = event.start.strftime(@event_date_format)
+	          end_time = event.end_time
+
+	          if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
+	              show_date += " - " + end_time.strftime(@event_date_format)
+	          end
+	       raw show_date %>
+          </div><% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %><span class="event_widget_start"><%= event.start.strftime("%l:%M %p") %></span><% end %>
+          <% if !(event.city.blank? && event.state.blank?) %>
+	      <div class="event_widget_city"><%= event.city unless event.city.blank? %><%= ", " + event.state unless event.state.blank? %></div>
+          <% end %>
+          <div class="event_widget_location"><%= event.location %></div>
       <% end %>
-      <div class="event_widget_location">
-        <% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
-	  <span class="event_widget_start"><%= event.start.strftime("%l:%M %p") %> <%= ", " unless event.location.blank? %></span>
-        <% end %>
-        <%= event.location %>
-      </div>
-    </div>
   <% end %>
   <%= link_to("", events_path, :class=>"events_widget_all_events") %>
 </nav>

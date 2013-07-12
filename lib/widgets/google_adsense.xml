@@ -54,7 +54,7 @@ $(function() {
     </preload>
     <render_view>
       <![CDATA[
-<div style="display:relative;width:<%=ad_units[google_ad_slot].h['width'] %>;height:<%=ad_units[google_ad_slot].h['height'] %>"><script type="text/javascript"><!--
+<div style="display:relative;width:<%=ad_units[google_ad_slot].h['width'] %>px;height:<%=ad_units[google_ad_slot].h['height'] %>px"><% if ENV['RAILS_ENV'] == "production" %><script type="text/javascript"><!--
 google_ad_client = "<%= @google_ad_client %>";
 google_ad_slot = "<%= google_ad_slot %>";
 <% puts "AD UNITS #{ad_units[google_ad_slot].h.inspect}" %>
@@ -65,6 +65,7 @@ google_ad_height = <%= ad_units[google_ad_slot].h["height"].conv_value %>;
 <script type="text/javascript"
 src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </script>
+<% end %>
 <% if current_user.present? && (current_user.role == "super") %><div style="width:100%;height:100%;position:absolute;top:0px;left:0px;"/></div><% end %>
 </div>
 ]]>

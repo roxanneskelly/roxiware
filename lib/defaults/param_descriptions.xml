@@ -27,7 +27,15 @@
     <description>Type of display for the list of books on the main books page, and in the series pages</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Simple:simple,Accordion:accordion</meta>
+    <meta>Simple:simple,Accordion:accordion,Slide Show:slideshow</meta>
+  </param_description>
+
+  <param_description guid="21D5E42E-7D66-4ECF-9802-3B813ECC51AB">
+    <name>Share Link</name>
+    <description>Link to share for share widget</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
   </param_description>
 
   <param_description guid="6C16D934-0643-48EC-806C-95BDAF52E078">

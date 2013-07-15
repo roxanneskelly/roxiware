@@ -341,9 +341,7 @@ div#mainBody .post {
     width:100%;
 
     div.share_bar {
-        position:absolute;
-        bottom:0.5em;
-        right:1em;
+
         > div {
             display:inline-block;
             vertical-align:middle;
@@ -504,168 +502,6 @@ div#mainBody .post {
     }
 }
 
-/* Full post display with comments */
-.post_listing {
-    .post_footer {
-        hr.post_separator {
-            margin:0 10% 0 10%;
-            width:80%;
-        }
-        .comment_count {
-            font-size:1.3em;
-            display:inline-block;
-        }
-        .pending_comment_count {
-            display:inline-block;
-            color: <%= text_alert_color %>;
-            font-size:1.3em;
-            margin-left:2em;
-        }
-
-        .comment_form {
-            position:relative;
-             width:100%;
-            margin:2em 0 3em 0;
-
-            label {
-                width:5em;
-            }
-            div.comment_form_header {
-                position:relative;
-                width:100%;
-                height:10em;
-                input.comment_author, div.comment_author {
-                    position:absolute;
-                    top:0px;
-                    left:80px;
-                    right:20%;
-                }
-                div.comment_author {
-                   font-size:1.5em;
-                }
-                label.comment_author {
-                    position:absolute;
-                    left:2em;
-                    top:0px;
-                }
-                .comment_author_image {
-                    display:none;
-                } 
-                textarea.comment_form_content {
-                    resize:none;
-                    position:absolute;
-                    right:0px;
-                    left:80px;
-                    top:2em;
-                    height:6em;   
-                }
-             }
-             button.post_comment_button {
-                    float:right;
-             }
-            .comment_form_footer {
-                position:relative;
-                width:100%;
-                .comment_auth_info {
-                    position:relative;
-                    height:80px;
-                }
-                label {
-                   width:5em !important;
-                }
-                label.comment_form_author_url {
-                    position:absolute;
-                    left:0px;
-                    top:0px;
-                } 
-                input.comment_form_author_url {
-                    position:absolute;
-                    top:0px;
-                    left:80px;
-                    right:330px;
-                }
-                label.comment_form_author_email {
-                    position:absolute;
-                    top:2em;
-                    left:0px;
-                }
-                input.comment_form_author_email {
-                    position:absolute;
-                    top:2em;
-                    left:80px;
-                    right:330px;
-                }
-                 .recaptcha_response_field {
-                      position:absolute;
-                      top:4em;
-                      left:80px;
-                      right:330px;
-                  }
-
-                .recaptcha_image {
-                    width:300px;
-                    height:57px;
-                    position:absolute;
-                    top:0px;
-                    right:20px;
-                    border:solid 1px black;
-                }
-                .recaptcha_only_if_incorrect_sol {
-                     position:absolute;
-                     top:60px;
-                     right:1em;
-                 }
-
-                  .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
-                      font-size:17px;
-                      font-family: 'Metro Icons';
-                      speak: none;
-                      font-weight: normal;
-                      font-variant: normal;
-                      text-transform: none;
-                      line-height: 1;
-                       -webkit-font-smoothing: antialiased;
-                      color: <%= link_color %>;
-                      position:absolute;
-                      right:0px;            
-                      width:19px;
-                      height:19px;
-                      cursor:pointer;
-                  }
-                  .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
-                      color: <%= link_hover_color %>;
-                  }
-                  .captcha_reload {
-                        top:0px;
-                   }
-                   .captcha_reload:before {
-                       content: "\e070";
-                   }
-                   .captcha_audio {
-                        top:20px;
-                    }
-                   .captcha_audio:before {
-                        content: "\e067";
-                    }
-
-                    .captcha_image {
-                        top:20px;
-                    }
-                    .captcha_image:before {
-                        content: "\e0b5";
-                    }
-
-                    .captcha_help {
-                        top:40px;
-                    }
-                    .captcha_help:before {
-                        content: "\e056";
-                    }
-                
-            }
-        }
-    }
-}
 
 .page_content, .person_listing {
     .manage_button {
@@ -896,43 +732,43 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
 }]]>
   </style>
   <params>
-    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%A, %B %e, %Y</param>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">first_blog_post</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%A, %B %e, %Y</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">slideshow</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%A, %B %e, %Y</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="c2397527-ee0d-d7e9-98a5-1470c67839f4">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_text_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_2_hover">#44ff44</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="facebook_background">rgb(59,89,152)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(49,86,120,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="twitter_background_hover">rgba(174,218,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_3_hover">#4444ff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_1_hover">rgba(255,222,129,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(255,255,255,0.7)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(255,255,255,0.95)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="feed_background_hover">#ff7711</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_5">#ffff22</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,0.5)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(49,86,120,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_5_hover">#ffff44</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="google_background_hover">rgb(235,85,67)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_2_hover">#44ff44</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="google_background">rgb(221,75,57)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="facebook_background">rgb(59,89,152)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_4_hover">#ff44ff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="twitter_background">rgb(0,172,237)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="feed_background_hover">#ff7711</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_text_color">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_5">#ffff22</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_4">#ff22ff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_3_hover">#4444ff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_3">#2222ff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_2">rgba(33,227,33,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_1">rgba(243,188,32,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="facebook_background_hover">rgb(109,132,180)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,0.5)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="google_background">rgb(221,75,57)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="google_background_hover">rgb(235,85,67)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(255,255,255,0.95)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_1_hover">rgba(255,222,129,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(255,255,255,0.7)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="feed_background">#ff6600</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="twitter_background_hover">rgba(174,218,240,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="twitter_background">rgb(0,172,237)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_5_hover">#ffff44</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
@@ -1364,11 +1200,13 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                   
                   
                   
+                  
 <p>Join my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>
     
+                
                 
                 
                 
@@ -1397,8 +1235,10 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                       
                       
                       
+                      
       
 Thank you for signing up for my mailing list.
+                    
                     
                     
                     
@@ -1427,10 +1267,12 @@ Thank you for signing up for my mailing list.
                       
                       
                       
+                      
       
 A mailing-list request Has Been Received from: $email
 
     
+                    
                     
                     
                     
@@ -1902,7 +1744,7 @@ A mailing-list request Has Been Received from: $email
                  position:relative;
                  width:100%;
                  height:100%;
-                 padding:3em 0em 2em 0em;
+                 padding:5em 0em 2em 0em;
                  box-sizing:border-box;
 
                  #center_content {
@@ -1952,17 +1794,69 @@ A mailing-list request Has Been Received from: $email
           }
 
          .widget#category_nav {
-             height:50%;
+             height:48%;
+             background:<%= metro_background_3 %>;
+             padding:1em;
+             .category_nav_title {
+                 font-family:'Open Sans',Geneva,sans-serif;
+                 font-weight:300;
+                 font-size:2em;
+                 margin-bottom:0.5em;
+             }
+             ul {
+                   list-style-type:none;
+                   li a {
+                       font-family:'Open Sans',Geneva,sans-serif;
+                       font-weight:400;
+                       font-size:1.5em;
+                      margin-left:0.5em;
+                 }
+                 li span {
+                      display:none;
+                 }
+            }
          }
          .widget#calendar_nav {
-             min-height:50%;
+             height:48%;
              background:<%= metro_background_1 %>;
              padding:1em;
+             margin-bottom:4%;
              .calendar_nav_title {
                  font-family:'Open Sans',Geneva,sans-serif;
                  font-weight:300;
                  font-size:2em;
              }
+             .calendar_nav {
+                 overflow:scroll;
+             }
+             ul {
+                   li a {
+                       font-family:'Open Sans',Geneva,sans-serif;
+                       font-weight:400;
+                       font-size:1.5em;
+                      margin-left:0.5em;
+                 }
+                 li span {
+                      display:none;
+                 }
+                 ul.calendar_nav_posts {
+                     list-style-type:none;
+                     > li >a {
+                         font-weight:400;
+                     }
+                 }
+                 ul.calendar_nav_months, ul.calendar_nav_years {
+                     list-style-type:circle;
+                     list-style-position:outside;
+                     > li >a {
+                         font-weight:300;
+                     }
+                 }
+                 li.calendar_nav_hidden {
+                     list-style-type:hidden;
+                 }
+ 
+            }
          }
     }
 }
@@ -1994,7 +1888,7 @@ A mailing-list request Has Been Received from: $email
           <style>
             <![CDATA[div#mainBody {
     #top_bar_section {
-        height:3em;
+        height:4em;
         box-sizing:border-box;
         padding-top:1em;
         z-index:2;
@@ -2002,6 +1896,25 @@ A mailing-list request Has Been Received from: $email
         top:0px;
         left:14em;
         right:130px;
+
+         .num_nav_prev,.num_nav_next {
+             font-family: 'Metro Icons';
+             speak: none;
+             font-style: normal;
+             font-weight: normal;
+             font-variant: normal;
+             text-transform: none;
+             line-height: 1;
+             -webkit-font-smoothing: antialiased;
+            font-size:3em;
+         }
+
+         .num_nav_prev:before {
+             content:"\e08b";
+         }
+         .num_nav_next:after {
+             content:"\e087";
+         }
     }
 }
 
@@ -2032,11 +1945,33 @@ A mailing-list request Has Been Received from: $email
         bottom:0px;
         left:14em;
         right:130px;
+         .num_nav_prev,.num_nav_next {
+             font-family: 'Metro Icons';
+             speak: none;
+             font-style: normal;
+             font-weight: normal;
+             font-variant: normal;
+             text-transform: none;
+             line-height: 1;
+             -webkit-font-smoothing: antialiased;
+            font-size:2em;
+         }
+         .num_nav_num {
+             font-size:2em;
+             margin:0 0.2em 0 0.2em;
+         }
+
+         .num_nav_prev:before {
+             content:"\e08b";
+         }
+         .num_nav_next:after {
+             content:"\e087";
+         }
     }
 }
 
 @media all and (max-width: 767px) {
-      div#mainBody #content_section #center_bar #bottom_bar_section {
+      div#mainBody #content_section #center_bar #top_bar_section {
            left:2em;
            right:60px;
       }
@@ -2051,6 +1986,454 @@ A mailing-list request Has Been Received from: $email
             </instance>
           </widget_instances>
         </section>
+      </sections>
+    </page>
+    <page application="blog" action="show_by_title">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+        height:100%;
+        box-sizing:border-box;
+        #center_bar {
+             position:relative;
+             box-sizing:border-box;
+             padding-left:15em;
+             height:100%;
+             .content_background_container {
+                 position:relative;
+                 width:100%;
+                 height:100%;
+                 padding:5em 0em 2em 0em;
+                 box-sizing:border-box;
+
+                 #center_content {
+                     width:100%;
+                     height:100%;
+                     overflow-y:scroll;
+                     -webkit-overflow-scrolling: touch;
+                     hr.post_separator {
+                         display:block;
+                     }
+
+                     .posts  .post_list_item .post img { max-height:150px; width:auto; }
+                 }
+             }
+        }
+     }
+}
+#left_bar_section {
+    z-index:2;
+}
+
+/* Full post display with comments */
+.post_listing {
+    .post_footer {
+        hr.post_separator {
+            margin:0 10% 0 10%;
+            width:80%;
+        }
+        .comment_count {
+            font-size:1.3em;
+            display:inline-block;
+        }
+        .pending_comment_count {
+            display:inline-block;
+            color: <%= text_alert_color %>;
+            font-size:1.3em;
+            margin-left:2em;
+        }
+
+        .comment_form {
+            position:relative;
+             width:100%;
+            margin:2em 0 3em 0;
+
+            label {
+                width:5em;
+            }
+            div.comment_form_header {
+                position:relative;
+                width:100%;
+                height:10em;
+                input.comment_author, div.comment_author {
+                    position:absolute;
+                    top:0px;
+                    left:80px;
+                    right:20%;
+                }
+                div.comment_author {
+                   font-size:1.5em;
+                }
+                label.comment_author {
+                    position:absolute;
+                    left:2em;
+                    top:0px;
+                }
+                .comment_author_image {
+                    display:none;
+                } 
+                textarea.comment_form_content {
+                    resize:none;
+                    position:absolute;
+                    right:0px;
+                    left:80px;
+                    top:2em;
+                    height:6em;   
+                }
+             }
+             button.post_comment_button {
+                    float:right;
+             }
+            .comment_form_footer {
+                position:relative;
+                width:100%;
+                .comment_auth_info {
+                    position:relative;
+                    height:80px;
+                }
+                label {
+                   width:5em !important;
+                }
+                label.comment_form_author_url {
+                    position:absolute;
+                    left:0px;
+                    top:0px;
+                } 
+                input.comment_form_author_url {
+                    position:absolute;
+                    top:0px;
+                    left:80px;
+                    right:330px;
+                }
+                label.comment_form_author_email {
+                    position:absolute;
+                    top:2em;
+                    left:0px;
+                }
+                input.comment_form_author_email {
+                    position:absolute;
+                    top:2em;
+                    left:80px;
+                    right:330px;
+                }
+                 .recaptcha_response_field {
+                      position:absolute;
+                      top:4em;
+                      left:80px;
+                      right:330px;
+                  }
+
+                .recaptcha_image {
+                    width:300px;
+                    height:57px;
+                    position:absolute;
+                    top:0px;
+                    right:20px;
+                    border:solid 1px black;
+                }
+                .recaptcha_only_if_incorrect_sol {
+                     position:absolute;
+                     top:60px;
+                     right:1em;
+                 }
+
+                  .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+                      font-size:17px;
+                      font-family: 'Metro Icons';
+                      speak: none;
+                      font-weight: normal;
+                      font-variant: normal;
+                      text-transform: none;
+                      line-height: 1;
+                       -webkit-font-smoothing: antialiased;
+                      color: <%= link_color %>;
+                      position:absolute;
+                      right:0px;            
+                      width:19px;
+                      height:19px;
+                      cursor:pointer;
+                  }
+                  .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+                      color: <%= link_hover_color %>;
+                  }
+                  .captcha_reload {
+                        top:0px;
+                   }
+                   .captcha_reload:before {
+                       content: "\e070";
+                   }
+                   .captcha_audio {
+                        top:20px;
+                    }
+                   .captcha_audio:before {
+                        content: "\e067";
+                    }
+
+                    .captcha_image {
+                        top:20px;
+                    }
+                    .captcha_image:before {
+                        content: "\e0b5";
+                    }
+
+                    .captcha_help {
+                        top:40px;
+                    }
+                    .captcha_help:before {
+                        content: "\e056";
+                    }
+                
+            }
+        }
+    }
+}
+
+
+.comments {
+    margin-top:2em;
+    .comment {
+
+        border-top:solid 1px <%= text_color %>;
+        position:relative;
+        clear:both;
+        margin-bottom:3em;
+        .comment {
+            margin-left:3em;
+         }
+
+        .comment_status_moderate {
+            float:right;
+            color: <%= text_alert_color %>;
+            margin-right:4em;
+        }
+        .comment_status_publish {
+              display:none;
+        }
+
+        .comment_header {
+            vertical-align:top;
+            color: <%= link_color %>;
+           
+
+            .comment_author_image {
+               display:none;
+            }
+
+            .comment_author_name {
+                display:inline-block;
+                margin-right:0.5em;
+                float:left;
+            }
+            .comment_author_date:before {
+                content:"on ";
+            }
+            .comment_author_date {
+                display:inline-block;
+                margin-right:1em;
+            }
+        }
+        .comment_footer {
+            clear:both;
+            text-align:center;
+            .comment_reply {
+                cursor:pointer;
+                
+            }
+        }
+    }
+    .comment:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+}
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar {
+           padding-left:2em;
+      }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #bottom_bar_section {
+        height:2em;
+        box-sizing:border-box;
+        z-index:2;
+        position:absolute;
+        bottom:0px;
+        left:14em;
+        right:130px;
+         .num_nav_prev,.num_nav_next {
+             font-family: 'Metro Icons';
+             speak: none;
+             font-style: normal;
+             font-weight: normal;
+             font-variant: normal;
+             text-transform: none;
+             line-height: 1;
+             -webkit-font-smoothing: antialiased;
+            font-size:2em;
+         }
+         .num_nav_num {
+             font-size:2em;
+             margin:0 0.2em 0 0.2em;
+         }
+
+         .num_nav_prev:before {
+             content:"\e08b";
+         }
+         .num_nav_next:after {
+             content:"\e087";
+         }
+    }
+}
+
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar #top_bar_section {
+           left:2em;
+           right:60px;
+      }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        height:4em;
+        box-sizing:border-box;
+        padding-top:1em;
+        z-index:2;
+        position:absolute;
+        top:0px;
+        left:14em;
+        right:130px;
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+          }
+     }
+}
+
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar #top_bar_section {
+           left:2em;
+           right:60px;
+      }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/twocolumn_left</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/twocolumn_left</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="series" action="">
+      <render_layout>roxiware/layouts/twocolumn_left</render_layout>
+      <style>
+        <![CDATA[.series {
+    position:relative;
+    height:100%;
+    width:100%;
+    .series_info {
+        .series_title {
+            font-family:'Open Sans', Geneva, sans-serif;
+            font-size:3em;
+            font-weight:300;
+        }
+        .series_description {
+            padding:1em;
+        }
+    }
+
+     
+    .books_listing {
+       position:absolute;
+       top:15em;
+       bottom:0px;
+       left:0px;
+       right:0px;
+      .book_nav_controls {
+          position:absolute;
+          left:0px;
+          right:300px;
+          top:50%;
+       
+          > div {
+              position:absolute;
+              font-size:3em;
+              cursor:pointer;
+          }
+          > div:hover {
+              opacity:0.8;
+          }
+          div.forward {
+              right:1em;
+              top:50%;
+          }
+      }
+      .book_slide {
+          position:relative;
+          width:100%;
+          height:100%;
+          .book_description {
+              position:absolute;
+              left:420px;
+              right:0px;
+              top:0px;
+          }
+          img.book_cover {
+               position:absolute;
+               left:2em;
+               bottom:0em;
+               top:15em;
+               width:auto;
+
+          }
+      }
+   }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
       </sections>
     </page>
   </pages>

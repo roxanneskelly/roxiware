@@ -1,0 +1,29 @@
+<div class="books">
+<% puts "DISPLAY TYPE #{display_type}" %>
+<% if display_type == "simple" %>
+    <% @books.each do |book| %>
+        <%= render :partial=>"roxiware/books/book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
+    <% end %>
+<% elsif display_type == "accordion" %>
+    <% books.each do |book| %>
+        <div class="book_tab"><div class="book_title"><%= book.title %></div></div><div class="book_info"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>book_description_length}  %></div>
+    <% end %>
+<% elsif display_type == "slideshow" %>
+    <div class="book_slides">
+        <% books.each do | book| %>
+            <div class="book_slide"><%= render :partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image_url, :book_description_length=>0}  %></div>
+        <% end %>
+   </div>
+   <div class="book_nav_controls"><div class="backwards icon-arrow-left-9"></div><div class="forward icon-arrow-right-9"></div></div>
+   <div class="book_slide_tabs"><%= raw books.collect{|book| "<a href='#'>x</a>"} %></div>
+<% end %>
+</div>
+<script>
+$(function() {
+
+<% if display_type == "accordion" %>
+<% elsif display_type == "slideshow" %>
+   $(".book_slide_tabs").tabs(".book_slides > div", {rotate:true}).slideshow({autoplay:true});
+<% end %>
+});
+</script>

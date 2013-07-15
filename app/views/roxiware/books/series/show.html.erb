@@ -4,9 +4,7 @@
     <div class="series_description"><%= raw @series.description %></div>
   </div>
   <section class="books_listing">
-    <% @series.books.each do |book| %>
-        <%= render :partial=>"roxiware/books/book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
-    <% end %>
+    <%= render :partial=>"roxiware/books/books",  :locals=>{:display_type=>@books_display_type, :books=>@series.books.order(:series_order)} %>
   </section>
 </div>
 <% if can? :edit, @series %>

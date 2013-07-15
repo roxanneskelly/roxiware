@@ -2,6 +2,8 @@ require 'xml'
 require 'set'
 
 class Roxiware::BookSeriesController < ApplicationController
+  application_name "series"
+
   before_filter do
     @role = "guest"
     @role = current_user.role unless current_user.nil?

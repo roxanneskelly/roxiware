@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="" guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+    <name>Share</name>
+    <description>
+      <![CDATA[Share on Social Networks.]]>
+    </description>
+    <editform/>
+    <preload>
+      <![CDATA[
+          locals[:share_link] = "#{request.protocol}#{request.host_with_port}#{request.fullpath}" if locals[:share_link].blank?
+          true
+]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+<div class="share_bar">
+<div class="facebook_like"><div class="fb-like" data-href="<%= share_link %>" data-send="false" data-layout="button_count" data-width="90" data-show-faces="false" data-font="arial"></div></div>
+<!-- Place this tag where you want the share button to render. -->
+<div class="google_share"><div class="g-plus" data-action="share" data-annotation="bubble"></div></div>
+<div class="twitter_share"><a href="https://twitter.com/share" class="twitter-share-button" data-size="10"  data-url="<%= share_link %>" style="display:inline-block">Tweet</a></div>
+</div>
+]]>
+    </render_view>
+    <style>
+      <![CDATA[]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB" name="share_link"></param>
+    </params>
+  </widget>
+</widgets>

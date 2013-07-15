@@ -1,7 +1,7 @@
 
 <section class="series_listings">
   <% @series.each do |series| %>
-    <%= render :partial=>"series",  :locals=>{:series=>series, :series_book_description_length=>@series_book_description_length} %>
+    <%= render :partial=>"series",  :locals=>{:display_type=>@series_display_type, :series=>series, :series_book_description_length=>@series_book_description_length} %>
    <% end %>
 </section>
 <section class="book_listings">

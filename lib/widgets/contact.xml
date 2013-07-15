@@ -8,6 +8,8 @@
     <editform>
       <![CDATA[
 <style>
+
+
 #contact_widget_instance_edit {
    padding-top:10px;
 }
@@ -21,7 +23,7 @@
 }
 
 #contact_widget_instance_edit input {
-   width:40%;
+   width:80%;
 }
 
 #contact_widget_instance_edit div#form_pane {

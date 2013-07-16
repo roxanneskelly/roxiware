@@ -1,12 +1,16 @@
+<% if ((current_user.role == "super") || (current_user.role == "admin")) %> 
+<div class="account_edit_form medium_form" id="account_edit_form">
+<% else %>
 <div class="account_edit_form small_form" id="account_edit_form">
+<% end %>
 <% if @user.id.blank?
    endpoint = account_index_path
-   method = "post"
+   method = :post
 else
    endpoint = account_path(@user.id)
-   method = "put"
+   method = :put
 end %>
-  <%= form_for @user, :url=>endpoint, :method=>method do |user| %>
+  <%= form_for(@user, :url=>endpoint) do |user| %>
     <div>
       <% if ((current_user.role == "super") || (current_user.role == "admin")) && (@user != current_user) %> 
           <div id="role_entry"><%= user.label :role, "Role"%>
@@ -51,9 +55,9 @@ $(function() {
     $("button#save_account").require_fields("#user_email, #user_username");
     $("form").submit(function(e) {
         e.preventDefault();
-        $.ajaxSetParamsJSON('<%= "#{endpoint}.json" %>', $("form").serializeArray(), {form:$("#account_edit_form form"), 
+        $.ajaxSetParamsJSON('<%= "#{endpoint}.json" %>', $("#account_edit_form form").serializeArray(), {form:$("#account_edit_form form"), 
                                                                                       fieldPrefix:"user_", 
-                                                                                      method:"<%= method %>",
+                                                                                      method:"<%= method.to_s %>",
                                                                                       success: function() {
                                                                                           window.location.reload();
                                                                                       }});

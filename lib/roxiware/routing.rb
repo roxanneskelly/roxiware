@@ -77,6 +77,7 @@ module ActionDispatch::Routing
 
 	def roxiware_account
             scope "/account", :as=>"account" do
+	        post "/" => "account#create"
 	        get "/edit" => "account#edit", :id => 0, :as=>"edit_self"
 	        put "/edit" => "account#update", :id => 0, :as=>"edit_self"
 	        get "/update_password" => "account#edit_password"

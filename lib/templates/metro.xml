@@ -693,28 +693,6 @@ span#youtube.social_network_icon:before { content:'\e0a9'; }
 span#vimeo.social_network_icon:before { content:'\e0aa'; }
 
 
-/* Prev/Next post */
-.widget#prev_next_post {
-    text-align:center;
-    margin:2em 0em 1em 0em;
-    .widget_content {
-        width:20em;
-        .prev_post {
-            float:left;
-        }
-        .prev_post:before {
-           content: "<< ";
-        }
-
-        .next_post {
-             float:right;
-        }
-        .next_post:after {
-            content:" >>";
-        }
-    }
-}
-
 @media all and (max-width: 767px)  {
     div#mainBody {
         width:100%;

@@ -11,8 +11,7 @@
      <% end %>
 
       <div class="event_title"><%= event.title %></div>
-      <div class="event_date_range">
-	<%= 
+      <div class="event_date_range"><%= 
 	   # generate the date range string
 	    show_date = event.start.strftime(@event_date_format)
 	    end_time = event.end_time
@@ -20,20 +19,9 @@
 	    if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
 	      show_date += " - " + end_time.strftime(@event_date_format)
 	    end
-	    raw show_date %>
-	<%= event.city unless event.city.blank? %> 
-	<%= ", " + event.state unless event.state.blank? %>
-      </div>
-	<% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
-	  <div class="event_start_time"><%= event.start.strftime("%l:%M %p") %> </div>
-	<% end %>
-      <div class="event_location">
-	<% if !event.location_url.blank? %>
-	  <%= link_to event.location, event.location_url, :target=>"_blank"%>
-	<% else %>
-	  <%= event.location %>
-	<% end %>
-      </div>
+	    raw show_date %></div><% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
+          <div class="event_start_time"><%= event.start.strftime("%l:%M %p") %></div>
+      <% end %><%= content_tag(:div, event.location_url.present? ? link_to(event.location, event.location_url, :target=>"_blank") : event.location, :class=>"event_location")%><%= content_tag(:div, event.city, :class=>"event_city")  unless event.city.blank? %><%= content_tag(:div, event.state, :class=>"event_state")  unless event.state.blank? %>
       <div class="event_description"><%= raw event.description %></div>
     </div>
   <% end %>

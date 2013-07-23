@@ -1,14 +1,8 @@
+<section class="books_listing">
+  <% book_series_list = @series.collect{|series| series} + @books.collect{|book| book} %>
+  <%= render :partial=>"roxiware/books/books",  :locals=>{:display_type=>@books_display_type, :books=>book_series_list} %>
+</section>
 
-<section class="series_listings">
-  <% @series.each do |series| %>
-    <%= render :partial=>"series",  :locals=>{:display_type=>@series_display_type, :series=>series, :series_book_description_length=>@series_book_description_length} %>
-   <% end %>
-</section>
-<section class="book_listings">
-  <% @books.each do |book| %>
-    <%= render :partial=>"roxiware/books/book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
-  <% end %>
-</section>
 <% if can? :edit, Roxiware::Book %>
   <%= render :partial=>"roxiware/books/context_menus" %>
   <ul id="books_context_menu" class="context_menu">

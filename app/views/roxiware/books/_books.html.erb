@@ -1,5 +1,4 @@
 <div class="books">
-<% puts "DISPLAY TYPE #{display_type}" %>
 <% if display_type == "simple" %>
     <% @books.each do |book| %>
         <%= render :partial=>"roxiware/books/book",  :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>@book_description_length} %>
@@ -11,11 +10,15 @@
 <% elsif display_type == "slideshow" %>
     <div class="book_slides">
         <% books.each do | book| %>
-            <div class="book_slide"><%= render :partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image_url, :book_description_length=>0}  %></div>
+            <% if book.class == Roxiware::Book %>
+                <div class="book_slide"><%= render :partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image_url, :book_description_length=>0}  %></div>
+            <% elsif book.class == Roxiware::BookSeries %>
+                <div class="book_slide"><%= render :partial=>"roxiware/books/series", :locals=>{:series=>book, :book_description_length=>0, :display_type=>"slide"}  %></div>
+            <% end %>
         <% end %>
    </div>
-   <div class="book_nav_controls"><div class="backwards icon-arrow-left-9"></div><div class="forward icon-arrow-right-9"></div></div>
-   <div class="book_slide_tabs"><%= raw books.collect{|book| "<a href='#'>x</a>"} %></div>
+   <div id="backward" class="backward icon-arrow-left-9"></div><div id="forward" class="forward icon-arrow-right-9"></div><div id="play" class="play icon-play-3"></div><div id="pause" class="pause icon-pause-2" style="display:none"></div>
+   <div class="book_slide_tabs"><%= raw books.collect{|book| "<a href='#'></a>"} %></div>
 <% end %>
 </div>
 <script>
@@ -23,7 +26,19 @@ $(function() {
 
 <% if display_type == "accordion" %>
 <% elsif display_type == "slideshow" %>
-   $(".book_slide_tabs").tabs(".book_slides > div", {rotate:true}).slideshow({autoplay:true});
+   $(".book_slide_tabs").tabs(".book_slides > div", {rotate:true, effect:"fade"}).slideshow({autoplay:false, next:"#forward", prev:"#backward", clickable:false, interval:2000, });
+   $("#play").click(function() { 
+      $(".book_slide_tabs").data("tabs").next();
+      $(".book_slide_tabs").data("slideshow").play();
+      $(this).css("display","none");
+      $("#pause").css("display","inline-block");
+   });
+   $("#pause").click(function() { 
+      $(".book_slide_tabs").data("slideshow").stop();
+      $(this).css("display","none");
+      $("#play").css("display","inline-block");
+   });
+  
 <% end %>
 });
 </script>

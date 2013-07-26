@@ -1,0 +1,81 @@
+<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+<script type="text/javascript">
+    var RecaptchaOptions = {
+	theme : 'custom',
+	custom_theme_widget: 'recaptcha_widget'
+    };
+</script>
+<script type="text/javascript"	src="http://www.google.com/recaptcha/api/challenge?k=<%= AppConfig.recaptcha_public_key %>"></script>
+<div id="root_form" class="comment_form">
+    <form>
+       <%= hidden_field_tag :parent_id, 0 %>
+       <div class="comment_form_header">
+           <% if user_signed_in? %>
+	       <div class="comment_author"><%= current_user.person.full_name %></div>
+	   <% else %>
+	      <div><%= label_tag :comment_author, "Name", :class=>"comment_author" %><%= text_field_tag :comment_author, "", :class=>"comment_author", :watermark=>"Required" %></div>
+	      <div><%= label_tag :comment_author_url, "URL", :class=>"comment_form_author_url" %><%= text_field_tag :comment_author_url, nil, :class=>"comment_form_author_url", :watermark=>"Optional" %></div>
+	      <div><%= label_tag :comment_author_email, "Email", :class=>"comment_form_author_email" %><%= text_field_tag :comment_author_email, nil, :class=>"comment_form_author_email", :watermark=>"Required.  Not visible." %></div>
+	   <% end %>
+	   <div><%= text_area_tag :comment_content, nil, :class=>"comment_form_content" %></div>
+       </div>
+       <% if user_signed_in? %>
+            <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button" %>
+       <% else %>
+	   <div id="comment_recaptcha" class="comment_recaptcha">
+	       <div id="recaptcha_image" class="recaptcha_image"></div>
+	       <div class="recaptcha_only_if_incorrect_sol">Incorrect please try again</div>
+	       <div class="captcha_reload" onclick="Recaptcha.reload()"></div>
+	       <div class="captcha_audio recaptcha_only_if_image" onclick="Recaptcha.switch_type('audio')"></div>
+	       <div class="captcha_image recaptcha_only_if_audio" onclick="Recaptcha.switch_type('image')"></div>
+	       <div class="captcha_help" onclick="Recaptcha.showhelp()"></div>
+	       <input type="text" class="recaptcha_response_field" id="recaptcha_response_field" name="recaptcha_response_field" watermark="Type the two verification words." />
+               
+	   </div>
+           <a id="facebook_login" href="/account/auth/facebook">Sign In with Facebook</a>
+           <a id="twitter_login" href="/account/auth/twitter">Sign In with Twitter</a>
+	   <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button", :disabled=>"disabled" %>
+        <% end %>
+    </form>
+</div>
+<script>
+    var initCommentForm = function(comment_path) {
+       var comment_form=$(".comment_form");
+       comment_form.find("button").button();
+
+       <% if !user_signed_in? %>
+         Recaptcha.destroy();
+	 Recaptcha.create("<%= AppConfig.recaptcha_public_key %>",
+			  "comment_recaptcha",
+			  {
+			      theme: "custom",
+			      callback: function() {$(comment_form).find("#recaptcha_response_field").blur(); }
+			  }
+	 );
+       <% end %>
+
+       $(comment_form).find("input[watermark]").watermark();
+       comment_form.find("button.post_comment_button").require_fields("input.comment_author, input.comment_form_author_email, input.recaptcha_response_field");
+       comment_form.find("input.comment_author").focus();
+
+       comment_form.find("button.post_comment_button").click(function() {
+           comment_form.find("input.watermark").val("");
+           $.ajaxSetParamsJSON(comment_path, jQuery.param($(this).parents("form").serializeArray()), {method:"POST",
+               success:function(data) {
+                   console.log(data);
+                   if(data["comment_status"] == "publish") { 
+                       window.location.reload();
+                   }
+                   else {
+                       $.notice("Your comment will be posted after it's reviewed", {
+                           onClose: function() {
+                               window.location.reload();
+                           }
+                       });
+                   }
+               }
+           });
+        });
+    }
+
+</script>

@@ -140,7 +140,7 @@ module Roxiware
 	   conditions = {}
 	   person_id = ((current_user && current_user.person)?current_user.person.id : -1)
 
-           comments = Roxiware::Blog::Comment.visible(current_user).where(:post_id=>@post.id).order("comment_date DESC")
+           comments = @post.comments.visible(current_user).order("comment_date DESC")
 
            # create comment hierarchy
 	   @comments = {}

@@ -7,14 +7,16 @@
 	   <% if can?(:edit, @post) %>
                <div class="pending_comment_count"><%= pluralize(@post.pending_comment_count, "Unmoderated Comment") %></div>
 	   <% end %>
-           <div class="base_comment_form"></div>
 	   <% if @comments.present?
                   can_reply = can? :comment, @post 
 	          can_manage = can? :edit, @post %>
 	       <div class="comments">
-	         <%= raw Roxiware::Blog::PostsHelper.display_comments(@comments, :allow_reply=>can_reply, :allow_edit=>can_manage, :comment_date_format=>@post_date_format) %>
+	         <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>can_reply, :allow_edit=>can_manage, :comment_date_format=>@post_date_format) %>
 	       </div>
            <% end %>
+	   <% if can? :comment, @post %>
+	       <%= render :partial=>"roxiware/shared/comment_form" %>
+	   <% end %>
 	 <% end %>
     </div>
 </section>
@@ -25,65 +27,6 @@
 <li><a id="delete_post_app_menu">Delete</a></li>
 </ul></li></ul>
 <%= render :partial=>"roxiware/blog/post/context_menus" %>
-<% end %>
-
-<% if can? :comment, @post %>
-    <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
-
-    <script type="text/javascript">
-     var RecaptchaOptions = {
-	theme : 'custom',
-	custom_theme_widget: 'recaptcha_widget'
-     };
-    </script>
-
-    <script id="comment_form_template" type="text/plain">
-      <div class="comment_form">
-	<%= form_tag blog_post_comment_index_path(@post.id) do %>
-	   <%= hidden_field_tag :parent_id, 0 %>
-	   <div class="comment_form_header">
-	       <% if user_signed_in? %>
-		  <img class="comment_author_image" src="<%= current_user.person.thumbnail_url %>"/>
-		  <div class="comment_author"><%= current_user.person.full_name %></div>
-	       <% else %>
-		  <%= label_tag :comment_author, "Name", :class=>"comment_author" %><%= text_field_tag :comment_author, "", :class=>"comment_author", :watermark=>"Required" %>
-		  <img class="comment_author_image" src="<%= default_image_path(:person, "thumbnail") %>"/>
-	       <% end %>
-	       <div><%= text_area_tag :comment_content, nil, :class=>"comment_form_content" %></div>
-	   </div>
-	   <% if !user_signed_in? %>
-	      <div class="comment_form_footer" id="comment_form_footer"></div>
-	   <% end %>
-	   <% if user_signed_in? %>
-	       <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button" %>
-	   <% else %>
-	       <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button", :disabled=>"disabled" %>
-	   <% end %>
-	<% end %>
-      </div>
-    </script>
-
-    <% if !user_signed_in? %>
-	<script id="comment_form_footer_template" type="text/plain">
-	       <div class="comment_auth_info">
-		     <%= label_tag :comment_author_url, "URL", :class=>"comment_form_author_url" %>
-			  <%= text_field_tag :comment_author_url, nil, :class=>"comment_form_author_url", :watermark=>"Optional" %><br/>
-		     <%= label_tag :comment_author_email, "Email", :class=>"comment_form_author_email" %>
-			  <%= text_field_tag :comment_author_email, nil, :class=>"comment_form_author_email", :watermark=>"Required.  Not visible." %>
-
-		   <div id="recaptcha_image" class="recaptcha_image"></div>
-		   <div class="recaptcha_only_if_incorrect_sol">Incorrect please try again</div>
-		   <div class="captcha_reload" onclick="Recaptcha.reload()"/>
-		   <div class="captcha_audio recaptcha_only_if_image" onclick="Recaptcha.switch_type('audio')"/>
-		   <div class="captcha_image recaptcha_only_if_audio" onclick="Recaptcha.switch_type('image')"/>
-		   <div class="captcha_help" onclick="Recaptcha.showhelp()"/>
-		   <input type="text" class="recaptcha_response_field" id="recaptcha_response_field" name="recaptcha_response_field" watermark="Type the two words to the right." />
-	       </div>
-	</script>
-    <% end %>
-     <script type="text/javascript"
-	src="http://www.google.com/recaptcha/api/challenge?k=<%= AppConfig.recaptcha_public_key %>">
-     </script>
 <% end %>
 
 <script>
@@ -99,88 +42,18 @@ $(document).ready(function() {
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
 
-    var initCommentForm = function(comment_form) {
-       comment_form.find("button").button();
-
-       <% if !user_signed_in? %>
-         Recaptcha.destroy();
-         $("#comment_form_footer").attr("id",null).text("");
-         comment_form.find(".comment_form_footer").append($("#comment_form_footer_template").text());
-         comment_form.find(".comment_form_footer").attr("id", "comment_form_footer");
-	 Recaptcha.create("<%= AppConfig.recaptcha_public_key %>",
-			  "comment_form_footer",
-			  {
-			      theme: "custom",
-			      callback: function() {$(comment_form).find("#recaptcha_response_field").blur(); }
-			  }
-	 );
-       <% end %>
-
-       $(comment_form).find("input[watermark]").watermark();
-
-       comment_form.find("input.comment_author, input.comment_form_author_email, input.recaptcha_response_field").on("blur input change", function() {
-           if(comment_form.find("input.comment_author").is(".watermark") || 
-              comment_form.find("input.recaptcha_response_field").is(".watermark") || 
-              comment_form.find("input.comment_form_email").is(".watermark")) {
-              comment_form.find("button.post_comment_button").button("disable");
-           }
-           else {
-              comment_form.find("button.post_comment_button").button("enable");
-           }
-       });
-       comment_form.find("input.comment_author").focus();
-
-       comment_form.find("button.post_comment_button").click(function() {
-           comment_form.find("input.watermark").val("");
-	   $.ajax("<%= blog_post_comment_index_path(@post.id) %>.json", {
-		  type:"POST",
-		  data: jQuery.param($(this).parents("form").serializeArray()),
-		  error: function(xhr, textStatus, errorThrown) {
-		      $.error(errorThrown);
-		  },
-		  complete: function() {
-		   },
-		  success: function(data) {
-		     if(data["error"]) {
-		         $(data["error"]).each(function(index, value) {
-			     $.error(value[1]);
-			     comment_form.find("input#"+value[0]).css("background", "#ffcccc");
-		         });
-                     }
-		     else {
-<% if ((!user_signed_in?) && ((@post.comment_permissions == "moderate") || ((@post.comment_permissions == "default") && (@blog_comment_permissions == "moderate")))) %>
-                        $.notice("Your comment will be posted after it's reviewed", {
-                            onClose: function() {
-			 window.location.reload();
-                            }});
-<% else %>
-			 window.location.reload();
-<% end %>
-		     }
-                  }
-            });
-        });
-    }
-    var root_comment_form = $(".base_comment_form").append($("#comment_form_template").text());
+    var root_comment_form = $(".comment_form");
     root_comment_form.attr("id", "root_form");
     
-    root_comment_form.find("input.comment_author").watermark();
-    root_comment_form.find("textarea.comment_form_content, input.comment_author").focus(function() {
-        if(root_comment_form.find(".comment_form_footer").text() == "") {
-             initCommentForm(root_comment_form);
-         }
-       $(".comments .comment_form").remove();
-   });
+    initCommentForm("<%= blog_post_comment_path(@post.id) %>.json");
 
- 
+    /* Move the comment form when comment_reply is clicked */ 
     $("a.comment_reply").click(function() {
-       $(".comments .comment_form").remove();
         var parent_id = $(this).parents("[comment_id]").attr("comment_id");
-        var form_div = $($("#comment_form_template").text());
+        var form_div = $(".comment_form");
         form_div.attr("id", "reply_to_"+parent_id);
         form_div.find("input[name=parent_id]").val(parent_id);
         $(this).after(form_div);
-        initCommentForm(form_div);
      });
 
 <% end %>
@@ -209,7 +82,7 @@ $(document).ready(function() {
             upload_params[csrf_param] = csrf_token;
         };
 
-	$.ajax("<%= blog_post_comment_index_path(@post.id) %>/"+blog_comment_id+".json", {
+	$.ajax("<%= blog_post_comment_path(@post.id) %>/"+blog_comment_id+".json", {
 		type:"PUT",
                 data: upload_params,
 	       error: function(xhr, textStatus, errorThrown) {
@@ -242,7 +115,7 @@ $(document).ready(function() {
         if (csrf_param !== undefined && csrf_token !== undefined) {
             delete_params[csrf_param] = csrf_token;
         };
-	$.ajax("<%= blog_post_comment_index_path(@post.id) %>/"+blog_comment_id+".json", {
+	$.ajax("<%= blog_post_comment_path(@post.id) %>/"+blog_comment_id+".json", {
 	       type:"DELETE",
                data: delete_params,
 	       error: function(xhr, textStatus, errorThrown) {

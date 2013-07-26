@@ -1,5 +1,5 @@
 include Roxiware::Helpers
-module Roxiware::Blog::PostsHelper
+module Roxiware::CommentHelper
     include ActionView::Helpers::UrlHelper
     include Roxiware::Helpers
   
@@ -27,22 +27,13 @@ module Roxiware::Blog::PostsHelper
 		  </div>
 		  HTML
 		end
-		if(child.person.nil?)
-		  comment_author_url = child.comment_author_url
-		else
-		   comment_author_url = "/people/#{child.person.seo_index}"
-		   comment_image_url = child.person.thumbnail_url
-		end
-
-		comment_image_url ||= default_image_path(:person, "thumbnail")
-
-		result += "<div class='comment_header'><img src='#{comment_image_url}' class='comment_author_image'/>"
+		result += "<div class='comment_header'><img src='#{child.comment_author.thumbnail_url}' class='comment_author_image'/>"
 		date = child.comment_date.localtime
 		result += "<div class='comment_author_date'>" + date.strftime(comment_date_format)+"</div>"
-		if comment_author_url.blank?
-		    result += "<div class='comment_author_name'>#{child.comment_author}</div>"
+		if child.comment_author.url.blank?
+		    result += "<div class='comment_author_name'>#{child.comment_author.name}</div>"
 		else
-		    result += "<a href='#{child.comment_author_url}' class='comment_author_name'>#{child.comment_author}</a>"
+		    result += "<a href='#{child.comment_author.url}' class='comment_author_name'>#{child.comment_author.name}</a>"
 		end
                 if allow_edit 
 		        result += "<div class='comment_moderate_indicator comment_status_#{child.comment_status}'>Hidden</div>"

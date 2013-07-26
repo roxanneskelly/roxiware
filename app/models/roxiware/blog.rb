@@ -18,7 +18,7 @@ module Roxiware
     ALLOWED_STATUS = %w(new publish draft trash)
     ALLOWED_COMMENT_PERMISSIONS = %w(default open moderate closed hide)
     belongs_to :person
-    has_many :comments, :dependent=>:destroy, :inverse_of=>:post
+    has_many :comments, :dependent=>:destroy
     has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
     has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
 
@@ -116,53 +116,5 @@ module Roxiware
     end
   end
 
-  class Comment < ActiveRecord::Base
-    include ActionView::Helpers::TextHelper
-    include Roxiware::BaseModel
-    self.table_name="blog_comments"
-    ALLOWED_STATUS = %w(moderate publish)
-    belongs_to :person
-    belongs_to :post
-    acts_as_tree :foreign_key => "parent_id"
-
-    validates :comment_content, :length=>{:minimum=>5,
-                                      :too_short => "The comment must contain at least  %{count} characters.",
-				      :maximum=>10000,
-				      :too_long => "The comment can be no larger than ${count} characters."
-				      }
-    validates_presence_of :post_id, :null=>false, :message=>"The post id is missing."
-    validates_presence_of :comment_date, :message=>"The comment date is missing."
-    validates_presence_of :comment_status, :inclusion=> {:in => ALLOWED_STATUS}, :message=>"Invalid comment status."
-    validates_presence_of :comment_author
-
-    validates :comment_author_email, :length=>{:minimum=>1,
-                                      :too_short => "The you must provide an email address.",
-				      :maximum=>256,
-				      :too_long => "Your email address must be no more than ${count} characters."
-				      }
-    validates :comment_author_url, :length=>{
-				      :maximum=>256,
-				      :too_long => "Your url must be no more than ${count} characters."
-				      }
-
-    validates :comment_author, :length=>{
-				      :maximum=>256,
-				      :too_long => "Your name must be no more than ${count} characters."
-				      }
-
-
-    edit_attr_accessible :comment_status, :as=>[:super, :admin, :user, nil]
-    edit_attr_accessible :person_id, :as=>[:super, :admin, nil]
-    edit_attr_accessible :parent_id, :post_id, :as=>[nil]
-    edit_attr_accessible :comment_content, :comment_date, :comment_author, :comment_author_email, :comment_author_url, :parent_id, :as=>[:super, :admin, :user, :guest, nil]
-    ajax_attr_accessible :comment_content, :comment_date, :comment_author, :comment_author_email, :comment_author_url, :person_id, :parent_id, :comment_status
-    
-    scope :published, where(:comment_status=>"publish")
-    scope :visible, lambda{|user| where((user.blank?) ? "comment_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id} OR comment_status='publish'")) }
-
-    before_validation() do
-       self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))
-    end
-  end
  end
 end

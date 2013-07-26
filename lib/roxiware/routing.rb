@@ -158,7 +158,9 @@ module ActionDispatch::Routing
         def roxiware_blog_base
 	    namespace :blog do
 	      resources :post do
-		 resources :comment
+	          post "comment" => "comment#create", :comment_root_type=>"Roxiware::Blog::Post"
+	          put "comment/:id" => "comment#update", :comment_root_type=>"Roxiware::Blog::Post"
+	          delete "comment/:id" => "comment#destroy", :comment_root_type=>"Roxiware::Blog::Post"
 	      end
 	    end
 	end

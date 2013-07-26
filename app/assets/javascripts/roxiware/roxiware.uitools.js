@@ -99,8 +99,6 @@
 		if(conf.form) {
 		    conf.form.find("input").removeClass("field-error");
                 }
-                console.log("sending data");
-		console.log(data);
 		$.ajax({
 			type:conf.method,
 			url: url,
@@ -121,7 +119,7 @@
 				});
 			    }
 			    else {
-				conf.success();
+				conf.success(data);
 			    }
 			}
 		    });

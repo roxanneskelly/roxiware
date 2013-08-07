@@ -8,7 +8,7 @@ module Roxiware
 	    params[:from]  ||= Roxiware::Param::Param.application_param_val("system", "webmaster_email")
 	    params[:site_title] = Roxiware::Param::Param.application_param_val("system", "title")
 	    mail(:to => to, :subject => subject % params, :from=>"\" #{params[:site_title]} \" < #{params[:from]} >") do |format|
-	        format.html { render :inline=>raw mailer, :locals=>params}
+	        format.html { render :inline=>(raw mailer), :locals=>params}
 	    end
 	end
     end

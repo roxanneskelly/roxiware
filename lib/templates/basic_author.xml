@@ -465,122 +465,119 @@ div#mainBody .post {
             font-size:1.3em;
             margin-left:2em;
         }
-
-        .comment_form {
-            position:relative;
-             width:100%;
-            margin:2em 0 3em 0;
-
-            div.comment_form_header {
-                position:relative;
-                width:100%;
-
-            > div {
-                width:100%;
-                label {
-                   width:10%;
-                   display:inline-block;
-                }
-                input {
-                    display:inline-block;
-                    width:85%;
-                }
-            }
-                input.comment_author, div.comment_author {
-                }
-                div.comment_author {
-                   font-size:1.5em;
-                }
-
-                .comment_author_image {
-                    display:none;
-                } 
-                textarea.comment_form_content {
-                    resize:vertical;
-                    position:relative;
-                    width:100%;
-                    height:8em;   
-                }
-             }
-             button.post_comment_button {
-                    float:right;
-                    clear:both;
-             }
-             #twitter_login,#facebook_login {
-                 float:right;
-                 margin-bottom:0.3em;
-             }
-
-            .comment_recaptcha {
-                position:relative;
-                width:325px;
-                display:inline-block;
-                float:left;
-                label {
-                   width:5em !important;
-                }
-                input {
-                      width:300px;
-                }
-
-                .recaptcha_image {
-                    width:300px;
-                    height:57px;
-                    border:solid 1px black;
-                    margin-bottom:0.5em;
-                }
-                .recaptcha_only_if_incorrect_sol {
-                 }
-
-                  .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
-                      font-size:17px;
-                      font-family: 'Metro Icons';
-                      speak: none;
-                      font-weight: normal;
-                      font-variant: normal;
-                      text-transform: none;
-                      line-height: 1;
-                       -webkit-font-smoothing: antialiased;
-                      color: <%= link_color %>;
-                      position:absolute;
-                      left:305px;            
-                      width:19px;
-                      height:19px;
-                      cursor:pointer;
-                  }
-                  .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
-                      color: <%= link_hover_color %>;
-                  }
-                  .captcha_reload {
-                        top:0px;
-                   }
-                   .captcha_reload:before {
-                       content: "\e070";
-                   }
-                   .captcha_audio {
-                        top:20px;
-                    }
-                   .captcha_audio:before {
-                        content: "\e067";
-                    }
-
-                    .captcha_image {
-                        top:20px;
-                    }
-                    .captcha_image:before {
-                        content: "\e0b5";
-                    }
-
-                    .captcha_help {
-                        top:40px;
-                    }
-                    .captcha_help:before {
-                        content: "\e056";
-                    }
-            }
-        }
     }
 }
+
+.comment_form {
+    position:relative;
+    width:100%;
+    margin:2em 0 3em 0;
+
+    div.comment_form_header {
+        position:relative;
+        width:100%;
+
+        > div {
+            width:100%;
+            label {
+                width:10%;
+                display:inline-block;
+            }
+            input {
+                display:inline-block;
+                width:85%;
+            }
+        }
+        div.comment_author {
+            display:none;
+        }
+
+        .comment_author_image {
+            display:none;
+        } 
+    }
+    textarea.comment_form_content {
+        resize:vertical;
+        position:relative;
+        width:100%;
+        height:8em;   
+    }
+        
+    button.post_comment_button {
+        float:right;
+            clear:both;
+     }
+     #twitter_login,#facebook_login {
+         float:right;
+         margin-bottom:0.3em;
+     }
+
+     .comment_recaptcha {
+         position:relative;
+         width:325px;
+         display:inline-block;
+         float:left;
+         label {
+             width:5em !important;
+         }
+         input {
+             width:300px;
+         }
+
+         .recaptcha_image {
+             width:300px;
+             height:57px;
+             border:solid 1px black;
+             margin-bottom:0.5em;
+         }
+         .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+             font-size:17px;
+             font-family: 'Metro Icons';
+             speak: none;
+             font-weight: normal;
+             font-variant: normal;
+             text-transform: none;
+             line-height: 1;
+             -webkit-font-smoothing: antialiased;
+             color: <%= link_color %>;
+             position:absolute;
+             left:305px;            
+             width:19px;
+             height:19px;
+             cursor:pointer;
+         }
+         .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+             color: <%= link_hover_color %>;
+         }
+         .captcha_reload {
+             top:0px;
+         }
+         .captcha_reload:before {
+             content: "\e070";
+         }
+         .captcha_audio {
+             top:20px;
+         }
+         .captcha_audio:before {
+             content: "\e067";
+         }
+
+         .captcha_image {
+             top:20px;
+         }
+         .captcha_image:before {
+            content: "\e0b5";
+         }
+
+         .captcha_help {
+             top:40px;
+         }
+         .captcha_help:before {
+             content: "\e056";
+         }
+     }
+}
+
 
 .page_content, .person_listing {
     .manage_button {
@@ -808,39 +805,39 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
 }]]>
   </style>
   <params>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
     <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_posts</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
     <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
           <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
           <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
@@ -1017,7 +1014,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
+            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="0">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
                 <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
@@ -1033,13 +1030,13 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
                 </param>
               </params>
             </instance>
-            <instance order="6" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="6">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance order="2" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1085,7 +1082,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
                 </param>
               </params>
             </instance>
-            <instance order="5" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="5">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1111,7 +1108,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
+            <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="1">
               <params>
               </params>
             </instance>
@@ -1144,7 +1141,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="367F87CF-2B37-481A-B02E-9918E989BBB7">
+            <instance widget_guid="367F87CF-2B37-481A-B02E-9918E989BBB7" order="1">
               <params>
               </params>
             </instance>
@@ -1221,14 +1218,14 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="2" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="2">
               <params>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
               </params>
             </instance>
-            <instance order="1" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
+            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="1">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
@@ -1275,7 +1272,7 @@ font-size:16px;
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="1">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
@@ -1327,7 +1324,7 @@ font-size:16px;
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+            <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="1">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
@@ -1457,7 +1454,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
               <params>
               </params>
             </instance>
@@ -1485,7 +1482,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
               <params>
               </params>
             </instance>
@@ -1513,7 +1510,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
               <params>
               </params>
             </instance>
@@ -1564,6 +1561,130 @@ A mailing-list request Has Been Received from: $email
              width:20%;
         }
     }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="forum" action="show_topic">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.forum_topic {
+    width:100%;
+    .forum_topic_header {
+        width:100%;
+        .forum_topic_new_posts, .forum_topic_no_new_posts {
+            display:none;
+        }
+        .forum_topic_title {
+            font-size:2em;
+        }
+        .forum_topic_post_date {
+            display:none;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="forum" action="show">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.forum_board {
+    width:100%;
+
+     .forum_board_header {
+         .forum_no_new_posts, .forum_new_posts {
+             display:none;
+         }
+         .forum_board_counters {
+             display:none;
+         }
+         .forum_board_name {
+              font-size:2.0em;
+         }
+     }
+
+
+    .forum_topics {
+        display:table;
+        width:100%;
+        .forum_topic:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }
+
+        .forum_topic {
+            display:table-row;
+            width:100%;
+            > div {
+                display:table-cell;
+                border:solid 1px rgba(255,255,255,0.5);
+                padding:0.3em;
+                position:relative;
+            }
+
+            .forum_num_new_posts, .topic_permission_open,.topic_permission_close,.topic_permission_moderate,.topic_permission_hide {
+                width:5%;
+                text-align:center;
+                vertical-align:middle;
+            }
+
+            .topic_permission_open:before,.topic_permission_close:before,.topic_permission_moderate:before,.topic_permission_hide:before {
+                 font-family: 'Metro Icons';
+                 font-size:1.5em;
+                 speak: none;
+                 font-weight: normal;
+                 font-variant: normal;
+                 text-transform: none;
+                 line-height: 1;
+                 -webkit-font-smoothing: antialiased;
+            }
+            .topic_permission_open:before { content:'\e002';}
+            .topic_permission_close:before { content:'\e002';}
+            .topic_permission_moderate:before { content:'\e059';}
+            .topic_permission_hide:before { content:'\e059';}
+
+            .forum_topic_info {
+                .forum_topic_title {
+                    display:block;
+                }
+                .forum_topic_post_date {
+                   display:inline;
+                }
+                .forum_topic_post_date:before {
+                    content:" on ";
+                }
+                .forum_topic_author:before {
+                    content:"by ";
+                }
+            }
+       }
+    }
+}
+.comment_form {
+     margin-top:1em;
+     label {
+         width:10%;
+     }
+     #comment_form_title {
+            width:100%;
+            label {
+                width:10%;
+                display:inline-block;
+            }
+            input {
+                display:inline-block;
+                width:85%;
+            }
+        }
 }]]>
       </style>
       <params>

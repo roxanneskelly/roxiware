@@ -1,0 +1,17 @@
+<div id="topic_edit_form" class="small_form">
+   <%= form_for(@topic, :url=>forum_update_topic_path(@topic.board, @topic.id)+".json") do |topic| %>
+      <%= content_tag(:div, topic.label(:title) + topic.text_field(:title, :watermark=>"Title"), :id=>"topic_title_entry") %>
+      <%= content_tag(:div, topic.label(:permissions) + topic.select(:permissions, Roxiware::Forum::Topic::ALLOWED_TOPIC_PERMISSIONS), :id=>"topic_permissions_entry") %>
+      <%= button_tag "Save", :id=>"save_button", :value=>"save", :type=>"button", :class=>"save_button" %></div>
+   <% end %>
+</div>
+<script>
+$(function() {
+      $("#topic_edit_form button#save_button").click(function() {
+	 $("form input.watermark").val("");
+         $.ajaxSetParamsJSON("<%= forum_update_topic_path(@topic.board, @topic.id)%>.json", $("#topic_edit_form form").serializeArray(), {form:$("#topic_edit_form form"), success:function() {window.location.reload()}});
+
+
+    });
+});
+</script>

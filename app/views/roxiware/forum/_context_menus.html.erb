@@ -1,0 +1,29 @@
+<ul id="forum_topic_context_menu" class="context_menu">
+   <li id="edit_forum_topic"><a menu_item="edit_forum_topic"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit Forum_Topic</a></li>
+   <li id="delete_forum_topic"><a menu_item="delete_forum_topic"><span aria-hidden="true" class="icon-delete">x</span>&nbsp;Delete Forum_Topic</a></li>
+</ul>
+
+<script>
+$(document).bind("ready", function() {
+    $(".forum_topic").context_menu("#forum_topic_context_menu");
+    $(".forum_topic").on("context_menu", function(event, menu_item) {
+       var forum_topic_link=$(this).attr("rel");
+       switch (menu_item) {
+	  case "edit_forum_topic":
+	    settingsForm(forum_topic_link+"/edit", "Edit Forum Topic");
+	    break;
+          case "delete_forum_topic":
+            if(confirm("Remove Forum Topic\nAre you sure?")) {
+              $.ajax({url:forum_topic_link, 
+                      type:"DELETE",
+                      dataType: "json", 
+                      success: function(json_data, textStatus, jqXHR) {
+                         window.location.reload();
+                      }
+               });
+              }
+              break;
+        }
+    });
+});
+</script>

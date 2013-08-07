@@ -5,18 +5,16 @@ module Roxiware::RoutingHelpers
 	def self.applications=(new_apps)
 	   @@apps = new_apps
 	end
-        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :news, :contact, :facebook_auth, :twitter_auth, :google_auth, :roxiware_auth]
+        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :news, :forum, :contact,:authproxy]
 
 	APP_TYPES = {
-	    :author=>[:setup, :page, :account, :design, :people, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :contact, :facebook_auth, :twitter_auth, :google_auth, :roxiware_auth],
+	    :author=>[:setup, :page, :account, :design, :people, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :contact],
 	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact, :news, :blog_base]
 	}
 
         APPLICATION_DEPENDENCIES = {
-            :facebook_auth =>[],
-            :twitter_auth => [],
-            :google_auth =>[],
-            :roxiware_auth => [],
+            :comments=>[],
+	    :authproxy=>[],
 	    :setup=>[:settings],
 	    :page=>[:uploads],
             :account=>[],
@@ -29,9 +27,10 @@ module Roxiware::RoutingHelpers
 	    :uploads=>[],
 	    :settings=>[],
 	    :sitemap=>[],
-	    :blog_base=>[:uploads],
+	    :blog_base=>[:uploads, :comments],
 	    :blog=>[:blog_base, :uploads],
 	    :news=>[:blog_base, :uploads],
+	    :forum=>[:comments],
 	    :contact=>[]
 	}
 end
@@ -183,24 +182,27 @@ module ActionDispatch::Routing
 	    end
 	end
 
+        def roxiware_comments
+	    resources :comment, :only=>[:create, :update, :destroy], :shallow=>true
+        end
+
+        def roxiware_forum
+	    resources :forum do
+	        get ":year/:month/:day/:title"=> "forum#show_topic", :as=>:topic
+                post ""=>"forum#create_topic", :as=>:create_topic
+                put ":id"=>"forum#update_topic", :as=>:update_topic
+                get ":id/edit"=>"forum#edit_topic", :as=>:edit_topic
+                get ":id/new"=>"forum#new_topic", :as=>:new_topic
+                delete ":id"=>"forum#destroy_topic", :as=>:delete_topic
+	    end
+	end
+
         def roxiware_contact
 	    post "/contact" => "contact#create"
 	end
 
-        def roxiware_facebook_auth
-	    match "/auth/facebook/callback" => "auth_contact#create", :service=>:facebook
-	end
-
-        def roxiware_twitter_auth
-	    match "/auth/twitter/callback" => "auth_contact#create", :service=>:twitter
-	end
-
-        def roxiware_google_auth
-	    match "/auth/google/callback" => "auth_contact#create", :service=>:google
-	end
-
-        def roxiware_roxiware_auth
-	    match "/auth/roxiware/callback" => "auth_contact#create", :service=>:roxiware
+	def roxiware_authproxy
+  	    get "/account/proxylogin/:provider" => "roxiware/account#proxy_login"
 	end
     end
 end

@@ -1,0 +1,27 @@
+<div id="forum_board_groups">
+<% @forum_board_groups.each do |group| %>
+    <%= content_tag(:div, group.name, :class=>"forum_board_group_name") %>
+    <%= content_tag(:div, :id=>group.id, :class=>"forum_board_group") do %>
+       <% group.boards.visible(current_user).each do |board| %>
+          <%= content_tag(:div, :id=>board.id, :class=>"forum_board") do %>
+	     <%= content_tag(:div, board.new_post_count, :class=>(board.new_post_count > 0) ? "forum_new_posts" : "forum_no_new_posts") %>
+             <%= content_tag(:div, :class=>"forum_board_info") do %>
+                 <%= link_to(board.name, forum_path(board.seo_index), :class=>"forum_board_name") %>
+                 <%= content_tag(:div, board.description, :class=>"forum_board_description") if board.description.present? %>
+             <% end %>
+             <%= content_tag(:div, :class=>"forum_board_counters") do %>
+                 <%= content_tag(:div, board.topic_count, :class=>"forum_board_topic_count") %>
+                 <%= content_tag(:div, board.post_count, :class=>"forum_board_post_count") %>
+             <% end %>
+	     <%= content_tag(:div, :class=>"forum_board_last_post") do %>
+	         <% if board.last_post.present? %>
+		     <%= link_to(board.last_post.post.title, board.last_post.post.topic_link, :class=>"forum_board_last_post_title") %>
+		     <%= link_to(board.last_post.comment_author.name, board.last_post.comment_author.url, :class=>"forum_board_last_post_author") %>
+		     <%= content_tag(:div, board.last_post.comment_date.localtime.strftime("%c"), :class=>"forum_board_last_post_date") %>
+		 <% end %>
+             <% end %>
+          <% end %>
+       <% end %>
+    <% end %>
+<% end %>
+</div>

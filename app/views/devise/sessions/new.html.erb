@@ -6,6 +6,6 @@
 </section>
 <script>
 $(function() {
-    loginForm();
+    loginForm('<%= Roxiware::AuthHelpers::AuthState.new().get_state%>');
 });
 </script>

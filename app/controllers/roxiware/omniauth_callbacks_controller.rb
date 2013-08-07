@@ -1,3 +1,4 @@
+require 'uri'
 # omniauth handling.
 # copied from https://gist.github.com/schleg/993566
 
@@ -5,6 +6,7 @@ module Roxiware
     class OmniauthCallbacksController < ApplicationController
 
         def facebook
+	    puts "OATH FACEBOOK"
             oauthorize :facebook
         end
 
@@ -19,6 +21,19 @@ module Roxiware
         def roxiware
             oauthorize :roxiware
         end
+
+	# if it's a login, and not a proxy, redirect to the callback provider
+	def authproxy
+            @auth_info = env["omniauth.auth"]['info']
+	    @login_url = @auth_info['login_url']
+	    @provider = @auth_info['auth_kind']
+	    if @login_url.present?
+	        redirect_to @login_url
+            else
+	        # not logging into roxiware site, so simply close the window
+		render :inline=>"<script>window.close()</script>"
+	    end
+	end
 
         def failure
             # Fall back and try native roxiware auth if the provider is roxiware
@@ -49,10 +64,17 @@ module Roxiware
                 flash[:notice] = "Already signed in as #{current_user.username}"
             else
 	       @user = find_for_ouath(kind, env["omniauth.auth"])
-	       if @user
+	       if @user.present?
                    flash[:notice] = "Logged in with #{kind.to_s.titleize}"
 		   session["devise.#{kind.to_s}_data"] = env["omniauth.auth"]
-		   sign_in_and_redirect @user, :event => :authentication
+                   if kind == :roxiware
+		       sign_in_and_redirect @user, :event => :authentication
+		   else
+		       # on 3rd party omniauth servers, render the code that 
+		       # reloads the parent window
+		       sign_in(@user)
+	               render :inline=>"<script>window.opener.location.reload();window.close()</script>"
+		   end
                else
                    flash[:error] = "Unable to sign in with #{kind.to_s.titleize}"
 		   render :nothing => true, :status=>:unauthorized

@@ -15,7 +15,7 @@
 	       </div>
            <% end %>
 	   <% if can? :comment, @post %>
-	       <%= render :partial=>"roxiware/shared/comment_form" %>
+	       <%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""} %>
 	   <% end %>
 	 <% end %>
     </div>
@@ -45,7 +45,7 @@ $(document).ready(function() {
     var root_comment_form = $(".comment_form");
     root_comment_form.attr("id", "root_form");
     
-    initCommentForm("<%= blog_post_comment_path(@post.id) %>.json");
+    initCommentForm("<%= comment_index_path %>.json", <%= @post.id %>, "Roxiware::Blog::Post");
 
     /* Move the comment form when comment_reply is clicked */ 
     $("a.comment_reply").click(function() {

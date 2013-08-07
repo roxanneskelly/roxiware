@@ -12,16 +12,18 @@ module Roxiware
     when "super"
       can :manage, :all
       can :comment, Roxiware::Comment
-      can :comment, Roxiware::CommentAuthor
       can :comment, Roxiware::Blog::Post
+      can :create_topic, Roxiware::Forum::Board
+      can :post, Roxiware::Forum::Topic
       can :read_comments, Roxiware::Blog::Post
       cannot :delete, Roxiware::User, :id=>user.id
 
     when "admin"
       can :manage, :all
       can :comment, Roxiware::Comment
-      can :comment, Roxiware::CommentAuthor
       can :comment, Roxiware::Blog::Post
+      can :create_topic, Roxiware::Forum::Board
+      can :post, Roxiware::Forum::Topic
       cannot :delete, Roxiware::User, :id=>user.id
       cannot [:create, :update, :delete], Roxiware::User, :role=>"super"
       cannot [:create, :destroy], [Roxiware::Layout::Layout, Roxiware::Layout::PageLayout, Roxiware::Layout::LayoutSection, Roxiware::Layout::WidgetInstance, Roxiware::Layout::Widget]
@@ -44,6 +46,22 @@ module Roxiware
       can :manage, Roxiware::GalleryItem, :person_id=>user.person_id
       can :create, Roxiware::Blog::Post
       can :manage, Roxiware::Blog::Post, :person_id=>user.person_id
+
+      can :create_topic, Roxiware::Forum::Board do |board|
+          ["open", "moderate"].include?(board.resolve_permissions)
+      end
+
+      can :read, Roxiware::Forum::Board do |board|
+          ["open", "moderate", "close"].include?(board.resolve_permissions)
+      end
+
+      can :read, Roxiware::Forum::Topic do |topic|
+          ["open", "moderate", "closed"].include?(topic.resolve_comment_permissions)
+      end
+      can :post, Roxiware::Forum::Topic do |topic|
+          ["open", "moderate"].include?(topic.resolve_comment_permissions)
+      end
+
       can :read, Roxiware::Blog::Post, :post_status=>"publish"
       can :read, Roxiware::Comment, :comment_status=>"publish"
       can :comment, Roxiware::Blog::Post do |post|
@@ -71,6 +89,21 @@ module Roxiware
                   Roxiware::BookSeries,
                   Roxiware::Service]
       can :read, Roxiware::Person
+
+      can :read, Roxiware::Forum::Board do |board|
+          ["open", "moderate", "close"].include?(board.resolve_permissions)
+      end
+
+      can :create_topic, Roxiware::Forum::Board do |board|
+          ["open", "moderate"].include?(board.resolve_permissions)
+      end
+
+      can :read, Roxiware::Forum::Topic do |topic|
+          ["open", "moderate", "closed"].include?(topic.resolve_comment_permissions)
+      end
+      can :post, Roxiware::Forum::Topic do |topic|
+          ["open", "moderate"].include?(topic.resolve_comment_permissions)
+      end
       can :read, Roxiware::Blog::Post, :post_status=>"publish"
       can :read_comments, Roxiware::Blog::Post, :post_status=>"publish", :resolve_comment_permissions=>["open", "moderate", "closed"]
 

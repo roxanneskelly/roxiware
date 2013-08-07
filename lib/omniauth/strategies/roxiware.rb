@@ -9,6 +9,8 @@ module OmniAuth
 	    option :uid_field, :username
 	    option :auth_server, nil
 
+	    puts "LOADED ROXIWARE OMNIAUTH PROVIDER"
+
 	    uid do
 	      request.params['user'][options.uid_field.to_s]
 	    end
@@ -19,9 +21,6 @@ module OmniAuth
 		hash
 	      end
 	    end
-
-            def request_phase
-            end
 
             def callback_phase
 	        if request.params['user'].present? && request.params['user']['username'].present?

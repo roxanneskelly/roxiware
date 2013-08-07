@@ -1024,7 +1024,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">21px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">12px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanna Skelly</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
                     <param description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" class="local" name="weight">300</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
@@ -1341,11 +1341,13 @@ font-size:16px;
                   
                   
                   
+                  
 <p>Join my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>
     
+                
                 
                 
                 
@@ -1368,8 +1370,10 @@ font-size:16px;
                       
                       
                       
+                      
       
 Thank you for signing up for my mailing list.
+                    
                     
                     
                     
@@ -1392,10 +1396,12 @@ Thank you for signing up for my mailing list.
                       
                       
                       
+                      
       
 A mailing-list request Has Been Received from: $email
 
     
+                    
                     
                     
                     
@@ -1513,6 +1519,56 @@ A mailing-list request Has Been Received from: $email
             </instance>
           </widget_instances>
         </section>
+      </sections>
+    </page>
+    <page application="forum" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.forum_board_group_name {
+        font-size:1.5em;
+        width:100%;
+    }
+.forum_board_group {
+    border:solid 1px <%= text_color %>;
+    width:100%;
+    margin-bottom:1em;
+    display:table;
+    border-collapse:collapse;
+
+    .forum_board {
+        display:table-row;
+        width:100%;
+        > div {
+            display:table-cell;
+            border:solid 1px rgba(255,255,255,0.5);
+            padding:0.3em;
+        }
+        .forum_new_posts, .forum_no_new_posts {
+            width:5%;
+            text-align:center;
+            vertical-align:middle;
+        }
+        .forum_board_info {
+            width:60%;
+        }
+        .forum_board_counters {
+             width:15%;
+             .forum_board_topic_count:after {
+                 content:" topics";
+             }
+             .forum_board_post_count:after {
+                 content:" posts";
+             }
+        }
+        .forum_board_last_post {
+             width:20%;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
       </sections>
     </page>
   </pages>

@@ -65,6 +65,7 @@ module Roxiware::Terms
     TAG_NAME = "Tag"
     LAYOUT_CATEGORY_NAME = "LayoutCategory"
     LAYOUT_PACKAGE_NAME = "LayoutPackage"
+    FORUM_BOARD_NAME = "ForumBoard"
 
     def self.taxonomy_id(name)
        @@taxonomy_ids ||= {}

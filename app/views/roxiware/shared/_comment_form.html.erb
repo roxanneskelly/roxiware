@@ -9,6 +9,10 @@
 <div id="root_form" class="comment_form">
     <form>
        <%= hidden_field_tag :parent_id, 0 %>
+       <%= hidden_field_tag :root_id, 0 %>
+       <%= hidden_field_tag :root_type, "" %>
+       <%= raw additional_fields if additional_fields.present? %>
+       <div><%= text_area_tag :comment_content, nil, :class=>"comment_form_content" %></div>
        <div class="comment_form_header">
            <% if user_signed_in? %>
 	       <div class="comment_author"><%= current_user.person.full_name %></div>
@@ -17,7 +21,6 @@
 	      <div><%= label_tag :comment_author_url, "URL", :class=>"comment_form_author_url" %><%= text_field_tag :comment_author_url, nil, :class=>"comment_form_author_url", :watermark=>"Optional" %></div>
 	      <div><%= label_tag :comment_author_email, "Email", :class=>"comment_form_author_email" %><%= text_field_tag :comment_author_email, nil, :class=>"comment_form_author_email", :watermark=>"Required.  Not visible." %></div>
 	   <% end %>
-	   <div><%= text_area_tag :comment_content, nil, :class=>"comment_form_content" %></div>
        </div>
        <% if user_signed_in? %>
             <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button" %>
@@ -39,8 +42,10 @@
     </form>
 </div>
 <script>
-    var initCommentForm = function(comment_path) {
+    var initCommentForm = function(comment_path, comment_root_id, comment_root_type) {
        var comment_form=$(".comment_form");
+       comment_form.find("input[name=root_type]").val(comment_root_type);
+       comment_form.find("input[name=root_id]").val(comment_root_id);
        comment_form.find("button").button();
 
        <% if !user_signed_in? %>

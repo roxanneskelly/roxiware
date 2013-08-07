@@ -1,0 +1,51 @@
+<%= content_tag(:div, :id=>@topic.id, :class=>"forum_topic") do %>
+    <%= content_tag(:div, :class=>"forum_topic_header") do %>
+        <%= content_tag(:div, @topic.new_post_count, :class=>(@topic.new_post_count > 0) ? "forum_topic_new_posts" : "forum_topic_no_new_posts") %>
+        <%= content_tag(:div, @topic.title, :class=>"forum_topic_title") %>
+        <%= content_tag(:div, @topic.root_post.comment_date.strftime("%c"), :class=>"forum_topic_post_date") %>
+    <% end %>
+    <%= content_tag(:div, :class=>"comments") do %>
+        <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>true, :allow_edit=>false, :comment_date_format=>"%c") %>
+    <% end %>
+<% end %>
+<% if can? :post, @topic %>
+<%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""} %>
+<% end %>
+<% if can? :edit, @topic %>
+<ul id="topic_show_application_menu" class="application_menu"><li><a rel="<%= forum_edit_topic_path(@topic.board.seo_index, @topic.id) %>" form="Edit Topic"><span aria-hidden="true" class="icon-file"></span>&nbsp;Topic</a><ul>
+<li><a rel="<%= forum_edit_topic_path(@topic.board.seo_index, @topic.id) %>" form="Edit Topic"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
+<% if can? :delete, @topic %><li><a id="delete_forum_topic_app_menu">Delete</a></li><% end %>
+</ul></li></ul>
+<%= render :partial=>"roxiware/forum/context_menus" %>
+<% end %>
+
+<script>
+$(function() {
+
+<% if can? :delete, @topic %>
+    $("#delete_forum_topic_app_menu").click(function() {
+        $(".post").trigger("context_menu", "delete_forum_topic");
+    });
+<% end %>
+
+
+    var root_comment_form = $(".comment_form");
+    root_comment_form.attr("id", "root_form");
+
+
+<% if can? :post, @topic %>
+    initCommentForm("<%= comment_index_path %>.json", <%= @topic.id %>, "Roxiware::Forum::Topic");
+
+    /* Move the comment form when comment_reply is clicked */ 
+    $("a.comment_reply").click(function() {
+        var parent_id = $(this).parents("[comment_id]").attr("comment_id");
+        var form_div = $(".comment_form");
+        form_div.attr("id", "reply_to_"+parent_id);
+        form_div.find("input[name=parent_id]").val(parent_id);
+        $(this).after(form_div);
+     });
+<% end %>
+
+});
+</script>
+

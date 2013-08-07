@@ -9,15 +9,20 @@ module Roxiware
            @role = "guest"
 	   @role = current_user.role unless current_user.nil?
            
-           @post_class = params[:comment_root_type].split('::').inject(Object) do |mod, class_name|
-               mod.const_get(class_name)
-           end
-	   @post=@post_class.find(params[:post_id])
 	 end
 
 	 def create
           ActiveRecord::Base.transaction do
                begin
+                   
+                   @post_class = params[:root_type].split('::').inject(Object) do |mod, class_name|
+                       mod.const_get(class_name)
+                   end
+		   raise ActiveRecord::RecordNotFound if @post_class.nil?
+
+	           @post=@post_class.find(params[:root_id])
+		   raise ActiveRecord::RecordNotFound if @post.nil?
+
 		   params[:comment_date] = DateTime.now
 		   person_id = (current_user && current_user.person)?current_user.person.id : -1
 		   comment_status = "moderate"
@@ -52,10 +57,8 @@ module Roxiware
 	       respond_to do |format|
 		   if (user_signed_in? || verify_recaptcha(:model=>@comment, :attribute=>:recaptcha_response_field)) && @comment.update_attributes(params, :as=>"")
 		      if(@comment.comment_status == "publish")
-			 @post_class.increment_counter(:comment_count, @post.id)
 			 notice = "Your comment has been published."
 		      else
-			 @post_class.increment_counter(:pending_comment_count, @post.id)
 			 notice = "Your comment will be added once it is moderated."
 		      end		  
 		      @post.save
@@ -80,19 +83,8 @@ module Roxiware
 	 def update
 	   params[:comment_date] = DateTime.now
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
-	   old_comment_status = @comment.comment_status
 	   respond_to do |format|
 	       if @comment.update_attributes(params, :as=>@role)
-	          if(old_comment_status != @comment.comment_status)
-		      if(@comment.comment_status != "publish")
-			 @post_class.decrement_counter(:comment_count, @post.id)
-			 @post_class.increment_counter(:pending_comment_count, @post.id)
-		      else
-			 @post_class.decrement_counter(:pending_comment_count, @post.id)
-			 @post_class.increment_counter(:comment_count, @post.id)
-		      end
-		  end
-
 		  format.json { render :json => @comment.ajax_attrs(@role) }
 	       else
 		  format.json { render :json=>report_error(@comment)}
@@ -109,12 +101,6 @@ module Roxiware
 	       format.json { render :json=>report_error(@comment)}
 	       format.html { redirect_to @comment, :alert => 'Failure deleting blog post.' }
 	     else
-               if(comment_status == "publish")
-	           @post_class.decrement_counter(:comment_count, @post.id)
-	       else
-		   @post_class.decrement_counter(:pending_comment_count, @post.id)
-	       end		  
-               @post.save
 	       format.json { render :json=>{}}
 	     end
 	   end

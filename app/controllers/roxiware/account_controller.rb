@@ -1,6 +1,6 @@
 class Roxiware::AccountController < ApplicationController
   before_filter :authenticate_user!, :except=>[:authenticate]
-  load_and_authorize_resource :except=>[:edit, :update, :show, :new, :authenticate], :class=>"Roxiware::User"
+  load_and_authorize_resource :except=>[:proxy_login, :edit, :update, :show, :new, :authenticate], :class=>"Roxiware::User"
 
   before_filter do
     @role = current_user.role if current_user.present?

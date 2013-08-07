@@ -1150,8 +1150,8 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
                                   '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
                                '<div><button disabled="disabled" id="login_button" name="button" type="submit">login</button></div>' +
                                '<a id="forgot_password">Forgot your password?</a>' +
-                               '<a id="facebook_login" href="/account/auth/facebook">Sign In with Facebook</a>'+
-                               '<a id="twitter_login" href="/account/auth/twitter">Sign In with Twitter?</a>' +
+                               '<a id="facebook" class="oauth_login">Sign In with Facebook</a>'+
+                               '<a id="twitter" class="oauth_login">Sign In with Twitter?</a>' +
                                '</form>';
 
 
@@ -1177,11 +1177,27 @@ $.fn.require_fields = function(fields) {
 	});
 }
 
-function get_login_form_template() {
+function do_login(data) {
+    // Bring up a 3rd party login window
+
+    
+    var login_url = "/account/auth/authproxy?"+$.param(data);
+    var width=500;
+    var height=300;
+    var left = $(window).width()/2-width/2;
+    var top=$(window).height()/2-height/2;
+    window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+};
+function get_login_form_template(oauth_state) {
     var template = $(login_form_template);
     template.find("a#forgot_password").click(function() {
-	    forgotPassword();
+	forgotPassword();
     });
+    template.find("a#facebook, a#twitter").click(function() {
+	    var data = {provider:$(this).attr("id"), oauth_state:oauth_state};
+		// do a direct facebook login to gather the auth token
+	    do_login(data);
+	});
     template.find("button#login_button").require_fields(template.find("#user_username, #user_password"));
     template.submit(function(e) {
 	e.preventDefault();
@@ -1210,8 +1226,8 @@ function get_login_form_template() {
         return template;
 }
 
-function loginForm() {
-    settingsForm($("<div class='small_form' id='login_form'/>").append(get_login_form_template()), "Sign In");
+function loginForm(oauth_state) {
+    settingsForm($("<div class='small_form' id='login_form'/>").append(get_login_form_template(oauth_state)), "Sign In");
 }
 
 function forgotPassword() {

@@ -1,0 +1,50 @@
+<%= content_tag(:div, :id=>@board.id, :class=>"forum_board") do %>
+    <%= content_tag(:div, :class=>"forum_board_header") do %>
+        <%= content_tag(:div, @board.new_post_count, :class=>(@board.new_post_count > 0) ? "forum_new_posts" : "forum_no_new_posts") %>
+        <%= content_tag(:div, @board.name, :class=>"forum_board_name") %>
+        <%= content_tag(:div, @board.description, :class=>"forum_board_description") if @board.description.present? %>
+	<%= content_tag(:div, :class=>"forum_board_counters") do %>
+	    <%= content_tag(:div, @board.topic_count, :class=>"forum_board_topic_count") %>
+	    <%= content_tag(:div, @board.post_count, :class=>"forum_board_post_count") %>
+	<% end %>
+    <% end %>
+    <%= content_tag(:div, :class=>"forum_topics") do %>
+	<% @board.topics.visible(current_user).each do |topic| %>
+            <% new_post_class=(topic.new_post_count > 0) ? "forum_new_posts" : "forum_no_new_posts"
+               permissions_class= "topic_permission_"+topic.resolve_comment_permissions %>
+	    <%= content_tag(:div, :id=>topic.id, :class=>"forum_topic #{new_post_class}", :rel=>forum_update_topic_path(topic.board.seo_index, topic.id)) do %>
+	       <%= content_tag(:div, "", :class=>permissions_class) %>
+	       <%= content_tag(:div, topic.new_post_count, :class=>"forum_num_new_posts") %>
+	       <%= content_tag(:div, :class=>"forum_topic_info") do %>
+	           <%= link_to(topic.title, topic.topic_link, :class=>"forum_topic_title") %>
+	           <%= link_to(topic.root_post.comment_author.name, topic.root_post.comment_author.url, :class=>"forum_topic_author") %>
+	           <%= content_tag(:div, topic.last_post.comment_date, :class=>"forum_topic_post_date") %>
+		   <% if (can? :edit, topic) %>
+		       <div class="manage_topic_menu manage_menu" id="manage_<%= topic.id %>"><ul>
+			   <li><div class="manage_button icon-arrow-down-9"></div><ul>
+			      <li class="edit_forum_topic"><a>Edit</a></li>
+			      <hr/>
+			      <li class="topic_permissions"><span>Topic</span></li>
+			      <% Roxiware::Forum::Topic::ALLOWED_TOPIC_PERMISSIONS.each do |permission| %>
+				  <% current_perm = "selected_item" if topic.permissions == permission %>
+				  <li permission="<%= permission %>" class="topic_permission permission_<%= permission %> <%= current_perm %>"><a><div class="checkbox"></div><%= permission.titleize %></a></li>
+			      <% end %>
+			      <hr/>
+			      <li class="delete_forum_topic"><a>Delete</a></li>
+			  </ul></li></ul></div>
+		   <% end %>
+	       <% end %>
+	    <% end %>
+	<% end %>
+    <% end %>
+<% end %>
+<% if can? :create_topic, @board %>
+<%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>content_tag(:div, :id=>"comment_form_title") {label_tag(:title) + text_field_tag(:title, "", :watermark=>"Title")}} %>
+
+<script>
+$(function() {
+    initCommentForm("<%= forum_create_topic_path(@board.seo_index) %>.json", 0, "Roxiware::Forum::Topic");
+});
+</script>
+<% end %>
+<%= render :partial=>"roxiware/forum/topic_manage_control" %>

@@ -7,7 +7,6 @@ module Roxiware
         class AuthState 
 	    def initialize(auth_state_or_options={})
 
-	        puts "STATE OR OPTIONS #{auth_state_or_options.inspect}"
                 @verifier = ActiveSupport::MessageVerifier.new(AppConfig.auth_state_verify_key)
 	        if auth_state_or_options.class == String
 		    # unpack and validate the auth state

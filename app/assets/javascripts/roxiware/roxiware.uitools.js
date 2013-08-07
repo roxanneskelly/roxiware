@@ -1150,8 +1150,8 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
                                   '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
                                '<div><button disabled="disabled" id="login_button" name="button" type="submit">login</button></div>' +
                                '<a id="forgot_password">Forgot your password?</a>' +
-                               '<a id="facebook" class="oauth_login">Sign In with Facebook</a>'+
-                               '<a id="twitter" class="oauth_login">Sign In with Twitter?</a>' +
+                               '<a id="facebook_login" class="oauth_login">Sign In with Facebook</a>'+
+                               '<a id="twitter_login" class="oauth_login">Sign In with Twitter?</a>' +
                                '</form>';
 
 
@@ -1193,7 +1193,7 @@ function get_login_form_template(oauth_state) {
     template.find("a#forgot_password").click(function() {
 	forgotPassword();
     });
-    template.find("a#facebook, a#twitter").click(function() {
+    template.find("a#facebook_login, a#twitter_login").click(function() {
 	    var data = {provider:$(this).attr("id"), oauth_state:oauth_state};
 		// do a direct facebook login to gather the auth token
 	    do_login(data);

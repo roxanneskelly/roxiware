@@ -748,7 +748,7 @@ section.events {
 
 
 /* Social networking icons */
-a.social_networks_icon {
+span.social_network_icon {
      font-size:32px;
      display:inline-block;
         font-family: 'Metro Icons';
@@ -761,12 +761,12 @@ a.social_networks_icon {
         -webkit-font-smoothing: antialiased;
 }
 
-a#twitter.social_networks_icon:before { content:'\e0a2'; }
-a#google.social_networks_icon:before { content:'\e09c'; }
-a#facebook.social_networks_icon:before { content:'\e09f'; }
-a#rss.social_networks_icon:before { content:'\e0a5'; }
-a#youtube.social_networks_icon:before { content:'\e0a9'; }
-a#vimeo.social_networks_icon:before { content:'\e0aa'; }
+span#twitter.social_network_icon:before { content:'\e0a2'; }
+span#google.social_network_icon:before { content:'\e09c'; }
+span#facebook.social_network_icon:before { content:'\e09f'; }
+span#rss.social_network_icon:before { content:'\e0a5'; }
+span#youtube.social_network_icon:before { content:'\e0a9'; }
+span#vimeo.social_network_icon:before { content:'\e0aa'; }
 
 
 /* Prev/Next post */
@@ -1253,7 +1253,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
 
                 .widget_content {
                     text-align:left;
-                    .social_networks_icon {
+                    .social_network_icon {
                  
                         padding-bottom:5px;
                         display:block;
@@ -1264,7 +1264,7 @@ a#vimeo.social_networks_icon:before { content:'\e0aa'; }
 }
 
 @media all and (max-width: 640px)  {
-#mainBody #content_section #left_bar_section .widget#social_networks_header .widget_content .social_networks_icon {
+#mainBody #content_section #left_bar_section .widget#social_networks_header .widget_content .social_network_icon {
 font-size:16px;
 }
 }]]>

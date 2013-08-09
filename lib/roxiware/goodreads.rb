@@ -89,21 +89,23 @@ module Roxiware
 	       
 	 works = []
 	 result_series["series_works"]["series_work"].each do |work_data|
-	    order = work_data["user_position"]["__content__"]
-	    parser = ::XML::Parser.io(StringIO.new(work_data["__content__"]))
-	    doc = parser.parse
-	    work_node = doc.find("//work//best_book").first
-	    book_id = work_node.find_first("id").content
-	    if(!options[:simple_book_info])
-	       works << get_book(book_id, goodreads_options)
-	    else
-	       title = work_node.find_first('title').content.strip
-	       match = /^\s*([^\(]*).*/.match(title)
-	       title = match[1] if match.present?
-	       author = {:author_name=>work_node.find_first('//author//name').content, :goodreads_id=>work_node.find_first('//author/id').content}
-	       works << {:id=>work_node.find_first("id").content, :title=>title, :authors=>[author]}
-	    end
-            works[-1][:order] = order
+	    if(work_data.class != Array)
+		order = work_data["user_position"]["__content__"] if work_data["user_position"].present?
+		parser = ::XML::Parser.io(StringIO.new(work_data["__content__"]))
+		doc = parser.parse
+		work_node = doc.find("//work//best_book").first
+		book_id = work_node.find_first("id").content
+		if(!options[:simple_book_info])
+		   works << get_book(book_id, goodreads_options)
+		else
+		   title = work_node.find_first('title').content.strip
+		   match = /^\s*([^\(]*).*/.match(title)
+		   title = match[1] if match.present?
+		   author = {:author_name=>work_node.find_first('//author//name').content, :goodreads_id=>work_node.find_first('//author/id').content}
+		   works << {:id=>work_node.find_first("id").content, :title=>title, :authors=>[author]}
+		end
+		works[-1][:order] = order
+             end
 	 end
 	 works.sort!{|x, y| x[:order].to_f <=> y[:order].to_f}
 	 result = {:title=>result_series['title'].strip, 

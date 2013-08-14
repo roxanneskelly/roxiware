@@ -40,8 +40,6 @@ module Roxiware
     # multiple counters depending on comment_status
     before_create do
         count_column = ((comment_status == "publish") ? :comment_count : :pending_comment_count)
-        puts "POST #{self.post.inspect}"
-        puts "POST ID #{self.post_id.inspect}"
         self.post.class.increment_counter(count_column, self.post_id)
         self.post.reload
         self.post.touch
@@ -55,7 +53,7 @@ module Roxiware
     end
 
     before_update do 
-        if comment_status_changed
+        if comment_status_changed?
            self.post.class.decrement_counter(((comment_status != "publish") ? :comment_count : :pending_comment_count), post.id)
            self.post.class.increment_counter(((comment_status == "publish") ? :comment_count : :pending_comment_count), post.id)
            self.post.reload

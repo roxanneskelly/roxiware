@@ -8,6 +8,8 @@ module Roxiware::CommentHelper
 	allow_edit = params[:allow_edit] || false
 	comment_id = params[:comment_id] || 0
         comment_date_format = params[:comment_date_format] || "%A, %B %e, %Y %I:%M %p"
+	puts comment_map.inspect
+	puts "comment_map #{comment_id}"
 	root=comment_map[comment_id] 
 	result = ""
 

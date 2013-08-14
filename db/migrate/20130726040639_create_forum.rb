@@ -37,5 +37,11 @@ class CreateForum < ActiveRecord::Migration
       t.timestamps
     end
     add_column :comments, :post_type, :string, :default=>"Roxiware::Blog::Post"
+
+    Roxiware::Comment.where(:parent_id=>[0,nil]).each do |comment|
+        comment.parent_type = "Roxiware::Blog::Post"
+	comment.parent_id = 0
+        comment.save!
+    end
   end
 end

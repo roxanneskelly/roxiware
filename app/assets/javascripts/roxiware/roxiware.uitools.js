@@ -49,7 +49,6 @@
 	       method:"PUT",
 	       fieldPrefix:"",
 	       success:function() {}
-               
 	}
     }
 
@@ -1179,8 +1178,6 @@ $.fn.require_fields = function(fields) {
 
 function do_login(data) {
     // Bring up a 3rd party login window
-
-    
     var login_url = "/account/auth/authproxy?"+$.param(data);
     var width=500;
     var height=300;

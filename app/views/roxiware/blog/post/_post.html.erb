@@ -26,7 +26,7 @@
      <% end %>
      <div class="post_header">
          <% if show_full_header && post.person.present? %><img class="post_author_img" src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/><% end %>
-	 <div class="post_date" data="<%= post.post_date %>"><%= raw post.post_date.localtime.strftime(@post_date_format) %></div>
+	 <div class="post_date" data="<%= post.post_date %>"><%= raw post.post_date.localtime.strftime(@post_date_format || "") %></div>
          <% if show_full_header %>
 	     <% if post.person.present? %><div class="post_author"><a href="<%= people_url %>/<%= post.person.seo_index %>"><%= post.person.full_name %></a></div><% end %>
              <div class="comments_link">

@@ -1,5 +1,6 @@
 
 class Roxiware::EventsController < ApplicationController
+  application_name "events"
   include Roxiware::EventsHelper
   load_and_authorize_resource :except=>[:index, :new], :class=>"Roxiware::Event"
   
@@ -10,7 +11,7 @@ class Roxiware::EventsController < ApplicationController
 
   def index
     time_check = Time.now.utc.midnight - 1.month
-    @events = Roxiware::Event.order("start ASC").select{|event| event.end_time > time_check}
+    @events = (Roxiware::Event.order("start ASC").select{|event| event.end_time > time_check}) || []
     @title = @title + " : Events"
     @meta_description = @meta_description +" : Events"
     authorize! :read, Roxiware::Event

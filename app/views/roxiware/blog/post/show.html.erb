@@ -3,10 +3,8 @@
    <div class="post_footer">
        <hr class="post_separator"/>
         <% if can?(:read_comments, @post) %>
-	   <div class="comment_count"><%= pluralize(@post.comment_count, "Comment") %></div>
-	   <% if can?(:edit, @post) %>
-               <div class="pending_comment_count"><%= pluralize(@post.pending_comment_count, "Unmoderated Comment") %></div>
-	   <% end %>
+	   <%= content_tag(:div, @post.comment_count, :class=>((@post.comment_count == 1) ? "comment_count comments_singular" : "comment_count comments_plural")) %>
+	   <%= content_tag(:div, @post.pending_comment_count, :class=>((@post.pending_comment_count == 1) ? "pending_comment_count comments_singular" : "pending_comment_count comments_plural")) if can?(:edit, @post) %>
 	   <% if @comments.present?
                   can_reply = can? :comment, @post 
 	          can_manage = can? :edit, @post %>

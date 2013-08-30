@@ -84,6 +84,7 @@ module Roxiware
     def populate_layout_params
       return if @@current_layout.nil?
       @@current_layout.resolve_layout_params(@layout_scheme, params).each do |key, value|
+        puts "POP PARAM #{key} #{value}"
         self.instance_variable_set("@#{key}".to_sym, value)
       end
     end

@@ -30,7 +30,7 @@
          <% if show_full_header %>
 	     <% if post.person.present? %><div class="post_author"><a href="<%= people_url %>/<%= post.person.seo_index %>"><%= post.person.full_name %></a></div><% end %>
              <div class="comments_link">
-	         <%= link_to pluralize(post.comment_count, "Comment"), post.post_link %>
+	         <%= link_to post.comment_count, post.post_link, :class=>((post.comment_count == 1) ? "comments_singular" : "comments_plural") %>
 	         <% if can?(:edit, post) && (post.pending_comment_count > 0) %>
 	             <span class="pending_comments">(<%= post.pending_comment_count %>)</span>
 	         <% end %>
@@ -43,7 +43,7 @@
 	     <%= raw post.post_content %>
 	 <% else %>
 	     <%= raw post.post_exerpt %>
-	     <div><%= link_to "", post.post_link, :class=>"more_link"%></div>
+	     <%= link_to "", post.post_link, :class=>"more_link"%>
 	 <% end %>
      </div>
      <% if show_full_content %>

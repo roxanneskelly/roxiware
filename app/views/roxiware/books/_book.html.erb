@@ -1,15 +1,21 @@
 <div class="book_listing" rel="<%= book_path(book.id)%>" id="<%= book.seo_index %>">
-    <a href="<%= book_path(book.seo_index)%>"><img src="<%= book_image_url %>" class="book_cover"/>
-    <div class="book_title"><%= book.title %></div></a>
+     <% if (can? :edit, book) %>
+         <div class="manage_book_menu manage_menu" id="manage_<%= book.id %>"><ul>
+             <li><div class="manage_button icon-arrow-down-9"></div><ul>
+		<li class="edit_book"><a>Edit</a></li>
+		<li class="delete_book"><a>Delete</a></li>
+	    </ul></li></ul></div>
+     <% end %>
+
+    <%= link_to(content_tag(:div, book.title, :class=>"book_title"), book_path(book.seo_index),  :class=>"book_title_link") %>
+    <%= link_to(tag(:img, :src=>book_image_url, :class=>"book_cover"), book_path(book.seo_index), :class=>"book_cover_link") %>
     <% if book_description_length > 0
-          book_description = Sanitize.clean(truncate(book.description || "", 
-                                         :length => book_description_length, :omission=>""), Sanitize::Config::RELAXED)
-          book_description += "<br/>"+link_to("More...", book_path(book.seo_index)) + "<br/>"
+          book_description = raw book.description_excerpt(book_description_length){link_to("", book_path(book.seo_index), :class=>"book_more_link")}
        else
-          book_description = book.description
+          book_description = raw book.description
        end 
     %>
-    <div class="book_description"><%= raw book_description %></div>
+    <div class="book_description"><%= book_description %></div>
 
     <% bookstores = book.get_param("bookstores")
        bookstore_list = []

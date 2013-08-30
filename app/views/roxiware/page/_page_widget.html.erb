@@ -1,4 +1,4 @@
-<% page = Roxiware::Page.where(:page_type=>page_type).first || Roxiware::Page.new({:page_type=>page_type, :content=>"New Content"}, :as=>"") %>
+<% page = Roxiware::Page.where(:page_type=>page_type).first || Roxiware::Page.new({:page_type=>page_type, :content=>""}, :as=>"") %>
 <div class="page_widget">
   <% if (can? :edit, @page) %>
     <%= button_tag "Edit", :id=>"edit-#{page_type}", :class=>"page_edit button_edit", :type=>"button"  %>

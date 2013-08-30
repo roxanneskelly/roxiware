@@ -29,11 +29,22 @@ Displays images of books in the authors book list
       ]]>
     </preload>
     <render_view>
-      <![CDATA[
-<div class="book_list">
-<% books.each do |book| %><%= link_to(link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_book") do %><img class="book_list_book_cover" src="<%= book[(cover_size+'_url').to_sym] %>"/><div class="book_list_book_title"><%= book.title %></div><% end %><% end %>
-</div>
-]]>
+      <![CDATA[<%= content_tag(:div, :class=>"book_list") do 
+    raw(books.collect do |book| 
+        link_to(link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_book") do
+            tag(:img, :class=>"book_list_book_cover", :src=>book[cover_size+'_url']) + 
+            content_tag(:div, book.title, :class=>"book_list_book_title")
+        end +
+        case show_description
+          when "excerpt"
+            content_tag(:div, raw(book.description_excerpt(excerpt_length) {link_to("", book_path(book.seo_index), :class=>"book_more_link")}), :class=>"book_list_book_description")
+          when "all"
+            content_tag(:div, raw(book.description), :class=>"book_list_book_description")
+          else ""
+        end
+    end.join("<br id='foo' style='clear:both;display:block;'/>"))
+ end
+%>]]>
     </render_view>
     <style>
       <![CDATA[
@@ -46,7 +57,9 @@ Displays images of books in the authors book list
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
       <param class="local" description="BEDD0F51-5E0A-489F-9495-195CDC090877" name="book_count">5</param>
       <param class="local" description="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0" name="link_path"></param>
+      <param class="local" description="B3155EA7-F1AD-481C-93B2-FC7DE542D5E4" name="show_description">none</param>
       <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="cover_size">image</param>
+      <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="excerpt_length">500</param>
     </params>
   </widget>
 </widgets>

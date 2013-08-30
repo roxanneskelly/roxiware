@@ -7,7 +7,7 @@ module Roxiware
 
       def param_field(field_group, param, options={})
             title = param.param_description.description
-            result = "<div style='display:inline' class='param-field param-field-#{param.param_description.field_type}'>"
+            result = "<div class='param-field param-field-#{param.param_description.field_type}'>"
 	    label = field_group.label(param.name.to_sym, param.name.titleize, {:title=>title})
 	    options[:title] = title
             case param.param_description.field_type

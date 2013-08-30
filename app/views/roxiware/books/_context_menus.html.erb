@@ -13,11 +13,70 @@
     $("div.book_listing").context_menu("#book_context_menu");
     $("div.series_listing").context_menu("#series_context_menu");
 
+    $(".series_listing .manage_series_menu").click(function() {
+        var manage_series_menu = $(this).parent().find(".manage_series_menu");
+        var is_shown = (manage_series_menu.css("display") != "none");
+        // disable any other series menus
+        $(".manage_series_menu").css("display", "none");
+	$(document).off("click.seriesmenu");
+        if(!is_shown) {
+           manage_series_menu.css("display", "block");
+           e.stopPropagation();
+	   $(document).on("click.seriesmenu", function() {
+	       $(document).off("click.seriesmenu");
+	       $(".manage_series_menu").css("display", "none");
+	   });
+        }
+    });
+
+    $(".book_listing .manage_book_menu").click(function() {
+        var manage_book_menu = $(this).parent().find(".manage_book_menu");
+        var is_shown = (manage_book_menu.css("display") != "none");
+        // disable any other book menus
+        $(".manage_book_menu").css("display", "none");
+	$(document).off("click.bookmenu");
+        if(!is_shown) {
+           manage_book_menu.css("display", "block");
+           e.stopPropagation();
+	   $(document).on("click.bookmenu", function() {
+	       $(document).off("click.bookmenu");
+	       $(".manage_book_menu").css("display", "none");
+	   });
+        }
+    });
+
+    $(".series_listing .manage_menu, .book_listing .manage_menu").each(function(index, menu) {
+	ddsmoothmenu.init({
+	    mainmenuid: $(this).attr("id"),
+            rightalign: true,
+	    orientation: 'h',
+	    classname: 'manage_menu',
+	    contentsource: "markup"
+	});
+    });
+
+    $(".series_listing li.edit_series a").click(function() {
+       $(this).parents(".series_listing").trigger("context_menu", "edit_series");
+    });
+
+    $(".series_listing li.delete_series a").click(function() {
+       $(this).parents(".series_listing").trigger("context_menu", "delete_series");
+    });
+
+    $(".book_listing li.edit_book a").click(function() {
+       $(this).parents(".book_listing").trigger("context_menu", "edit_book");
+    });
+
+    $(".book_listing li.delete_book a").click(function() {
+       $(this).parents(".book_listing").trigger("context_menu", "delete_book");
+    });
+
+
     $(".series_listing").on("context_menu", function(event, menu_item) {
        var series_link=$(this).attr("rel");
        switch (menu_item) {
 	  case "edit_series":
-	    settingsForm(series_link+"/edit", "Add Book");
+	    settingsForm(series_link+"/edit", "Edit Series");
 	    break;
           case "delete_series":
             if(confirm("Remove Series\nAre you sure?")) {

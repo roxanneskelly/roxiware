@@ -182,8 +182,8 @@ module Roxiware
 	     end
 	     params = layout_node.find("params/param")
 	     params.each do |param|
-               widget_param = self.params.build
-               widget_param.import(param, true)
+               layout_param = self.params.build
+               layout_param.import(param, true)
 	     end
 	     page_layout_nodes = nil
 	  end
@@ -206,7 +206,7 @@ module Roxiware
                end
 	       xml_layout.style {|s| s.cdata!(self.style.strip) }
 	       xml_layout.params do |xml_params|
-	          self.params.each do |param|
+	          self.get_param_objs.values.each do |param|
 		     param.export(xml_params, true)
 		  end
 	       end
@@ -384,7 +384,7 @@ module Roxiware
 	       xml_page_layout.render_layout self.render_layout
 	       xml_page_layout.style {|s| s.cdata!(self.style.strip)}
 	       xml_page_layout.params do |xml_params|
-	          self.params.each do |param|
+	          self.get_param_objs.values.each do |param|
 		     param.export(xml_params, true)
 		  end
 	       end
@@ -414,7 +414,7 @@ module Roxiware
 		   puts e.message
 		   puts self.inspect
 		   sass_style = evaled_layout_style.split("\n")
-		   sass_style[e.sass_line] = "--> " + sass_style[e.sass_line]  
+		   sass_style[e.sass_line] = "--> " + sass_style[e.sass_line].to_s
 		   puts sass_style.join("\n")
 		   @compiled_style_cache = ""
 		end
@@ -526,7 +526,7 @@ module Roxiware
 	     xml_layout_sections.section(:name=>self.name) do |xml_layout_section|
 	       xml_layout_section.style {|s| s.cdata!(self.style.strip)}
 	       xml_layout_section.params do |xml_params|
-	          self.params.each do |param|
+	          self.get_param_objs.values.each do |param|
 		     param.export(xml_params, true)
 		  end
 	       end
@@ -630,7 +630,7 @@ module Roxiware
 	        xml_widget.render_view {|s| s.cdata!(self.render_view.strip)}
 	        xml_widget.style {|s| s.cdata!(self.style.strip)}
 		xml_widget.params do |xml_params|
-		    self.params.each do |param|
+		    self.get_param_objs.values.each do |param|
 		       param.export(xml_params, true)
 		    end
 		end

@@ -36,7 +36,7 @@
     </preload>
     <render_view>
       <![CDATA[
-    <div class="calendar_nav_title">Archive</div>
+    <div class="calendar_nav_title"></div>
     <nav class="calendar_nav">
     <ul class="calendar_nav_years">
       <% calendar_posts.keys.sort.reverse.each do |year| %>

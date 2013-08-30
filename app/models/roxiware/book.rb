@@ -1,5 +1,7 @@
+
 class Roxiware::Book < ActiveRecord::Base
   include Roxiware::BaseModel
+  include ActionView::Helpers::TextHelper
   self.table_name= "books"
 
   has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
@@ -31,6 +33,10 @@ class Roxiware::Book < ActiveRecord::Base
 
 
   }
+
+  def description_excerpt(description_length, &block)
+      Sanitize.clean(truncate(description || "", :length => description_length, :omission=>""), Sanitize::Config::RELAXED) + block.call
+  end
 
   def goodreads_id
       self.goodreads_id_join.goodreads_id if self.goodreads_id_join.present?

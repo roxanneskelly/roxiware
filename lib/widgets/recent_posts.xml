@@ -12,7 +12,7 @@
       <![CDATA[if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
 	 globals[:recent_posts] = []
 	 Roxiware::Blog::Post.published().select("post_title, post_link, post_date, person_id, post_exerpt").order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
-	   globals[:recent_posts] << {:post=>post, :snippet=>truncate(Sanitize.clean(post.post_exerpt), :separator=>' ', :length=>50, :omission=>'')}
+	   globals[:recent_posts] << {:post=>post, :snippet=>raw(post.snippet(locals[:excerpt_length]){link_to("", post.post_link, :class=>"post_more")})}
 	 end
          globals[:recent_posts_last_update] = Roxiware::Blog.last_update
        end
@@ -20,20 +20,16 @@
        locals[:recent_posts].present?]]>
     </preload>
     <render_view>
-      <![CDATA[<nav class="recent_post">
-	<div class="recent_post_title"></div>
+      <![CDATA[<nav class="recent_posts">
+	<div class="recent_posts_title"></div>
 	<% recent_posts.each do |post_data| 
 	   post = post_data[:post] %>
-	   <div class="recent_post_entry"><%= link_to post.post_title, post.post_link %>
-	     <div class="post_date"><%= post.post_date.localtime.strftime("%D") %>,&nbsp;
-		<div class="post_author">
-		    <a href="<%= people_url %>/<%= post.person.seo_index %>">
-		      <%= post.person.full_name %>
-		    </a>
-		</div>
-	     </div>
-	     <div class="post_snippet"><%= post_data[:snippet] %><%= link_to " ...", post.post_link %></div>
-	   </div>
+	   <%= content_tag(:div, :class=>"recent_post_entry") do
+                   link_to(post.post_title, post.post_link, :class=>"post_title") +
+	           content_tag(:div, post.post_date.localtime.strftime("%D"), :class=>"post_date") +
+                   link_to(post.person.full_name, people_url + post.person.seo_index, :class=>"post_author") +
+	           content_tag(:div, post_data[:snippet], :class=>"post_snippet")
+                end %>
 	<% end %>
       </nav>]]>
     </render_view>
@@ -65,6 +61,7 @@ div.recent_post_entry .post_snippet
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
       <param class="local" description="5AD23478-C90D-4BA8-81DF-7112B0762257" name="recent_posts_count">5</param>
+      <param class="local" description="F4AF8F08-955D-4800-992A-3E2912CA8740" name="excerpt_length">100</param>
     </params>
   </widget>
 </widgets>

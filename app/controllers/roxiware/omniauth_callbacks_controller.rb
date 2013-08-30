@@ -51,7 +51,8 @@ module Roxiware
 	           return render :nothing => true, :status=>:unauthorized
 		end
             end
-	    if env['omniauth.error.type'] == :invalid_credentials
+	    puts "ERROR : #{(env['omniauth.error.type'].inspect)}"
+	    if (env['omniauth.error.type'] == :invalid_credentials) || (env['omniauth.error.type'] == :not_found)
 	        render :nothing => true, :status=>:unauthorized
             else
 	       render :nothing => true, :status=>:internal_server_error

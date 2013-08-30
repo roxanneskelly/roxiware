@@ -7,6 +7,45 @@
 
     $("article.person_listing").context_menu("#person_context_menu");
 
+    $(".person_listing .manage_person_menu").click(function() {
+        var manage_person_menu = $(this).parent().find(".manage_person_menu");
+        var is_shown = (manage_person_menu.css("display") != "none");
+        // disable any other person menus
+        $(".manage_person_menu").css("display", "none");
+	$(document).off("click.personmenu");
+        if(!is_shown) {
+           manage_person_menu.css("display", "block");
+           e.stopPropagation();
+	   $(document).on("click.personmenu", function() {
+	       $(document).off("click.personmenu");
+	       $(".manage_person_menu").css("display", "none");
+	   });
+        }
+    });
+
+    $(".person_listing .manage_menu").each(function(index, menu) {
+	ddsmoothmenu.init({
+	    mainmenuid: $(this).attr("id"),
+            rightalign: true,
+	    orientation: 'h',
+	    classname: 'manage_menu',
+	    contentsource: "markup"
+	});
+    });
+
+    $(".person_listing li.edit_person a").click(function() {
+       $(this).parents(".person_listing").trigger("context_menu", "edit_person");
+    });
+
+    $(".person_listing li.delete_person a").click(function() {
+       $(this).parents(".person_listing").trigger("context_menu", "delete_person");
+    });
+
+
+
+
+
+
     $(".person_listing").on("context_menu", function(event, menu_item) {
        var person_link=$(this).attr("rel");
        switch (menu_item) {

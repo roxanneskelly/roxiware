@@ -1,5 +1,13 @@
-<div class="series">
+<div class="series"  rel="<%= book_series_path(@series.id) %>">
   <div class="series_info">
+     <% if (can? :edit, @series) %>
+         <div class="manage_series_menu manage_menu" id="manage_<%= @series.id %>"><ul>
+             <li><div class="manage_button icon-arrow-down-9"></div><ul>
+		<li class="edit_series"><a>Edit</a></li>
+		<li class="delete_series"><a>Delete</a></li>
+	    </ul></li></ul></div>
+     <% end %>
+
     <div class="series_title"><%= @series.title %></div>
     <div class="series_description"><%= raw @series.description %></div>
   </div>
@@ -25,8 +33,8 @@
        });
        $("#mainBody").on("context_menu", function(event, menu_item) {
 	  switch (menu_item) {
-	     case "edit_series":
-	       settingsForm("<%= new_book_path %>");
+	     case "new_series":
+	       settingsForm("<%= new_book_path %>", "New Series");
 	       break;
 	     case "delete_series":
 	       if(confirm("Remove Series\nAre you sure?")) {

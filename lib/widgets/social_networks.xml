@@ -34,7 +34,7 @@ or they can be entered directly into the widget.
 
 		<%= fields_for :params do |params| %>
 		  <% bio_param = widget_instance.get_param("biography_id") %>
-		   <div style='display:inline' class='param-field param-field-<%= bio_param.param_description.field_type %>'><%= params.label :biography_id, "Default Biography", :title=>bio_param.param_description.description %><%= params.collection_select :biography_id, Roxiware::Person.all, :id, :full_name, {:title=>bio_param.param_description.description, :selected=>bio_param.conv_value}%></div><br/>
+		   <div style='display:inline' class='param-field param-field-<%= bio_param.param_description.field_type %>'><%= params.label :biography_id, "Default Biography", :title=>bio_param.param_description.description %><%= params.collection_select :biography_id, Roxiware::Person.all, :id, :full_name, {:title=>bio_param.param_description.description, :selected=>bio_param.conv_value, :include_blank=>true}%></div><br/>
 		   <%= param_field(params, @widget_instance.get_param("rss_feed_source")) %>
 
 		<% end %>
@@ -73,6 +73,7 @@ $(function() {
     </editform>
     <preload>
       <![CDATA[
+        locals[:biography_id] = Roxiware::Param::Param.application_param_val("people", "default_biography") unless (locals[:person_id].to_i > 0)
         biography = Roxiware::Person.where(:id=>locals[:biography_id]).first
         locals[:networks] = {}
         locals[:social_networks].each do |network, param|

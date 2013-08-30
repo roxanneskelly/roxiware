@@ -5,24 +5,29 @@
      <% if (can? :edit, event) %>
          <div class="manage_event_menu manage_menu" id="manage_<%= event.id %>"><ul>
              <li><div class="manage_button icon-arrow-down-9"></div><ul>
-		<li class="edit_event"><a><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
+		<li class="edit_event"><a><span aria-hidden="true"></span>&nbsp;Edit</a></li>
 		<li class="delete_event"><a>Delete</a></li>
 	    </ul></li></ul></div>
      <% end %>
 
-      <div class="event_title"><%= event.title %></div>
-      <div class="event_date_range"><%= 
-	   # generate the date range string
-	    show_date = event.start.strftime(@event_date_format)
-	    end_time = event.end_time
+     <%= # generate the date range string
+	 show_date = event.start.strftime(@event_date_format)
+	 end_time = event.end_time
 
-	    if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
-	      show_date += " - " + end_time.strftime(@event_date_format)
-	    end
-	    raw show_date %></div><% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %>
-          <div class="event_start_time"><%= event.start.strftime("%l:%M %p") %></div>
-      <% end %><%= content_tag(:div, event.location_url.present? ? link_to(event.location, event.location_url, :target=>"_blank") : event.location, :class=>"event_location")%><%= content_tag(:div, event.city, :class=>"event_city")  unless event.city.blank? %><%= content_tag(:div, event.state, :class=>"event_state")  unless event.state.blank? %>
-      <div class="event_description"><%= raw event.description %></div>
+	 if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
+	     show_date += " - " + end_time.strftime(@event_date_format)
+	 end
+         result = raw("")
+         result = content_tag(:div, event.start.strftime("%l:%M %p"), :class=>"event_start_time") if (event.duration_units != "days") || (event.start_time != "12:00 AM")
+	 result += content_tag(:div, raw(show_date), :class=>"event_date_range")
+         result = content_tag(:div, result, :class=>"event_time") +
+         content_tag(:div, event.title, :class=>"event_title")
+         location_str = content_tag(:div, event.location_url.present? ? link_to(event.location, event.location_url, :target=>"_blank") : event.location, :class=>"event_location")
+         location_str += content_tag(:div, event.city, :class=>"event_city")  unless event.city.blank?
+         location_str += content_tag(:div, event.state, :class=>"event_state")  unless event.state.blank?
+         result += content_tag(:div, location_str, :class=>"event_full_location")
+         result += content_tag(:div, raw(event.description), :class=>"event_description")
+         result %>
     </div>
   <% end %>
 </section>

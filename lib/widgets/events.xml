@@ -9,7 +9,7 @@
       <![CDATA[]]>
     </editform>
     <preload>
-      <![CDATA[ time_check = Time.now.utc.midnight - 1.month
+      <![CDATA[ time_check = Time.now.utc.midnight - 2.days
         locals[:events] = Roxiware::Event.order("start ASC").select{|event| event.end_time > time_check}
 Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight).order("start ASC").limit(locals[:events_count])
        locals[:events].present?]]>
@@ -19,25 +19,26 @@ Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight
 <% if events.present? %>
 <nav class="events_widget">
   <%= link_to("", events_path, :class=>"events_widget_title") %>
-  <% events.each do |event|  %>
-      <%= link_to (events_path, :anchor => "event-#{ event.id }", :id=> "event-#{event.id}", :class=>"event_widget_event") do %>
-          <div class="event_widget_title"><%= event.title %></div>
-          <div class="event_widget_date">
-	      <%= # generate the date range string
-	          show_date = event.start.strftime(@event_date_format)
-	          end_time = event.end_time
+  <%= event_item = events.collect do |event| 
+      # generate the date range string
+      show_date = event.start.strftime(@event_date_format)
+      end_time = event.end_time
 
-	          if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
-	              show_date += " - " + end_time.strftime(@event_date_format)
-	          end
-	       raw show_date %>
-          </div><% if (event.duration_units != "days") || (event.start_time != "12:00 AM") %><span class="event_widget_start"><%= event.start.strftime("%l:%M %p") %></span><% end %>
-          <% if !(event.city.blank? && event.state.blank?) %>
-	      <div class="event_widget_city"><%= event.city unless event.city.blank? %><%= ", " + event.state unless event.state.blank? %></div>
-          <% end %>
-          <div class="event_widget_location"><%= event.location %></div>
-      <% end %>
-  <% end %>
+      if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
+          show_date += " - " + end_time.strftime(@event_date_format)
+      end
+      result = raw("")
+      result = content_tag(:div, event.start.strftime("%l:%M %p"), :class=>"event_start_time") if (event.duration_units != "days") || (event.start_time != "12:00 AM")
+      result += content_tag(:div, raw(show_date), :class=>"event_date_range")
+      result = content_tag(:div, result, :class=>"event_time") + content_tag(:div, event.title, :class=>"event_title")
+      location_str = content_tag(:div, event.location, :class=>"event_location")
+      location_str += content_tag(:div, event.city, :class=>"event_city")  unless event.city.blank?
+      location_str += content_tag(:div, event.state, :class=>"event_state")  unless event.state.blank?
+      result += content_tag(:div, location_str, :class=>"event_full_location") 
+      link_to (result, events_path, :anchor => "event-#{ event.id }", :id=> "event-#{event.id}", :class=>"event_widget_event")
+  end.join("")
+  puts event_item
+  raw(event_item) %>
   <%= link_to("", events_path, :class=>"events_widget_all_events") %>
 </nav>
 <% end %>      ]]>

@@ -9,7 +9,7 @@
   </param_description>
   <param_description guid="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">
     <name>Book Excerpt Length</name>
-    <description>Length of a book excerpt on the book index page</description>
+    <description>Length of the book excerpt</description>
     <field_type>integer</field_type>
     <permissions>super</permissions>
     <meta/>
@@ -237,6 +237,13 @@
   <param_description guid="0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415">
     <name>Website Title</name>
     <description>Title of your website.</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
+  <param_description guid="95AA8E34-E2F3-4537-AFF2-C305F8F69671">
+    <name>Website Subtitle</name>
+    <description>Subtitle of your website.</description>
     <field_type>string</field_type>
     <permissions>admin</permissions>
     <meta/>
@@ -809,6 +816,13 @@
     <field_type>integer</field_type>
     <permissions>super</permissions>
     <meta></meta>
+  </param_description>
+  <param_description guid="B3155EA7-F1AD-481C-93B2-FC7DE542D5E4">
+    <name>Description</name>
+    <description>Show book description</description>
+    <field_type>select</field_type>
+    <permissions>super</permissions>
+    <meta>None:none,Excerpt:excerpt,All:all</meta>
   </param_description>
   <param_description guid="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0">
     <name>Path</name>

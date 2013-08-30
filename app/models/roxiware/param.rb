@@ -98,7 +98,6 @@ module Roxiware
 	  include ParamClientBase
           self.table_name= "params"
 
-	  
 	  has_many   :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  belongs_to :param_object, :polymorphic=>true
 
@@ -109,10 +108,10 @@ module Roxiware
 	  attr_accessible :widget_instance_id # parent widget instance
 	  belongs_to :param_description, :autosave=>true, :foreign_key=>:description_guid, :primary_key=>:guid
 
-          edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[nil]
+          edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :param_object_id, :as=>[nil]
 	  edit_attr_accessible :value, :as=>[:super, :admin, nil]
 	  edit_attr_accessible :textvalue, :as=>[:super, :admin, nil]
-	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :object_id, :as=>[:super, :admin]
+	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :param_object_id, :as=>[:super, :admin]
 
 
 	  def deep_dup

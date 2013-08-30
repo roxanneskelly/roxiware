@@ -1,5 +1,12 @@
 <% if @person.present? %>
   <section><article class="person_listing" rel="<%= person_path(@person.id) %>">
+     <% if (can? :edit, @person) %>
+         <div class="manage_person_menu manage_menu" id="manage_<%= @person.id %>"><ul>
+             <li><div class="manage_button icon-arrow-down-9"></div><ul>
+		<li class="edit_person"><a>Edit</a></li>
+	    </ul></li></ul></div>
+     <% end %>
+
     <div class="social_network_icons">
       <% website = nil
        if @person.get_param("social_networks").present?

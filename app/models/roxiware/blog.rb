@@ -109,10 +109,14 @@ module Roxiware
        self.category_ids = Roxiware::Terms::Term.get_or_create([set_name], Roxiware::Terms::TermTaxonomy::CATEGORY_NAME).map{|term| term.id}
     end
 
+    def snippet(post_content_length, &block)
+	Sanitize.clean(truncate(self.post_exerpt, :length => post_content_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER) + block.call
+    end
+
     before_validation() do
        seo_index = self.post_title.downcase.gsub(/[^a-z0-9]+/i, '-')
        self.guid = self.post_link = "/"+self.blog_class+"/" + self.post_date.strftime("%Y/%-m/%-d/") + seo_index
-       self.post_exerpt = Sanitize.clean(truncate(Sanitize.clean(self.post_content, Roxiware::Sanitizer::BASIC_SANITIZER), :length => Roxiware.blog_exerpt_length, :omission=>""),Roxiware::Sanitizer::BASIC_SANITIZER)
+       self.post_exerpt = Sanitize.clean(truncate(self.post_content, :length => Roxiware.blog_exerpt_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER)
     end
   end
 

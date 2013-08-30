@@ -8,8 +8,6 @@ module Roxiware::CommentHelper
 	allow_edit = params[:allow_edit] || false
 	comment_id = params[:comment_id] || 0
         comment_date_format = params[:comment_date_format] || "%A, %B %e, %Y %I:%M %p"
-	puts comment_map.inspect
-	puts "comment_map #{comment_id}"
 	root=comment_map[comment_id] 
 	result = ""
 
@@ -30,13 +28,13 @@ module Roxiware::CommentHelper
 		  HTML
 		end
 		result += "<div class='comment_header'><img src='#{child.comment_author.thumbnail_url}' class='comment_author_image'/>"
-		date = child.comment_date.localtime
-		result += "<div class='comment_author_date'>" + date.strftime(comment_date_format)+"</div>"
 		if child.comment_author.url.blank?
 		    result += "<div class='comment_author_name'>#{child.comment_author.name}</div>"
 		else
 		    result += "<a href='#{child.comment_author.url}' class='comment_author_name'>#{child.comment_author.name}</a>"
 		end
+		date = child.comment_date.localtime
+		result += "<div class='comment_author_date'>" + date.strftime(comment_date_format)+"</div>"
                 if allow_edit 
 		        result += "<div class='comment_moderate_indicator comment_status_#{child.comment_status}'>Hidden</div>"
 		end

@@ -7,7 +7,7 @@
    endpoint = account_index_path
    method = :post
 else
-   endpoint = account_path(@user.id)
+   endpoint = account_path + "/#{@user.id}"
    method = :put
 end %>
   <%= form_for(@user, :url=>endpoint) do |user| %>

@@ -179,7 +179,7 @@ namespace :templates do
 	    template_obj = Roxiware::Layout::Layout.find_by_guid(template)
 	    scheme_data = template_obj.get_param("schemes").h[scheme].h
 
-	    pages = {:home=>"/",:posts=>"/blog",:calendar=>"/events",:contact=>"/contact",:biography=>"/biography"}
+	    pages = {:home=>"/",:posts=>"/blog",:calendar=>"/events",:books=>"/books",:biography=>"/biography"}
 	    dir_path = File.expand_path(File.join("~", "template_images", template_obj.name.to_seo, scheme_data["name"].to_s.to_seo)).to_s
 	    FileUtils.mkdir_p(dir_path)
 	    scheme_data["large_images"].params.delete if scheme_data["large_images"].present?

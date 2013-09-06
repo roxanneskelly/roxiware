@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails"
   s.add_dependency "rmagick"
-  s.add_dependency "devise"
+  s.add_dependency "devise", "3.0.1"
   s.add_dependency "omniauth"
   s.add_dependency "omniauth-facebook", '1.4.0'
   s.add_dependency "omniauth-twitter"

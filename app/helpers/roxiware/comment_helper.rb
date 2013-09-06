@@ -1,54 +1,59 @@
 include Roxiware::Helpers
+include ActionView::Helpers::TagHelper
+include ActionView::Context
 module Roxiware::CommentHelper
-    include ActionView::Helpers::UrlHelper
     include Roxiware::Helpers
-  
     def self.display_comments(comment_map, params = {})
 	allow_reply = params[:allow_reply] || false
 	allow_edit = params[:allow_edit] || false
 	comment_id = params[:comment_id] || 0
         comment_date_format = params[:comment_date_format] || "%A, %B %e, %Y %I:%M %p"
+	comment_header_format = params[:comment_header_format] || "%{author_image}%{date}%{author_name}%{moderate_indicator}" 
 	root=comment_map[comment_id] 
-	result = ""
+	
 
-	root[:children].each do |child_id|
+	root[:children].collect do |child_id|
+            result = "".html_safe
 	    child = comment_map[child_id][:comment]
-	    if (allow_edit) || (child.comment_status == "publish")
-		result += "<div class='comment' comment_id=#{child.id}>"
-		if allow_edit
-		  result += <<-HTML
-		  <div class="manage_menu manage_comment" id="manage_comment_#{child.id}">
-		    <ul><li><div class="manage_button icon-arrow-down-9"></div><ul>
-		      <li class="#{ "selected_item" if child.comment_status == "publish" }" ><a class="publish_comment"><div class="checkbox"></div>Publish</a></li>
-		      <li class="#{ "selected_item" unless child.comment_status == "publish" }" ><a class="hide_comment"><div class="checkbox"></div>Hide</a></li>
-		      <hr/>
-		      <li><a class="delete_comment">Delete</a></li>
-		    </ul></li></ul>
-		  </div>
-		  HTML
-		end
-		result += "<div class='comment_header'><img src='#{child.comment_author.thumbnail_url}' class='comment_author_image'/>"
-		if child.comment_author.url.blank?
-		    result += "<div class='comment_author_name'>#{child.comment_author.name}</div>"
-		else
-		    result += "<a href='#{child.comment_author.url}' class='comment_author_name'>#{child.comment_author.name}</a>"
-		end
-		date = child.comment_date.localtime
-		result += "<div class='comment_author_date'>" + date.strftime(comment_date_format)+"</div>"
-                if allow_edit 
-		        result += "<div class='comment_moderate_indicator comment_status_#{child.comment_status}'>Hidden</div>"
-		end
-		result += "</div>"
-	    result += "<div class='comment_content'>"+child.comment_content+"</div>"
-	    result += "<div class='comment_footer'>"
-            if allow_reply
-	       result += "<a id='reply-to-#{child_id}' class='comment_reply'>Reply</a>" 
+	    next unless (allow_edit) || (child.comment_status == "publish")
+	    comment_result = "".html_safe
+            comment_result +=  content_tag(:div, :class=>"manage_menu manage_comment", :id=>"manage_comment_#{child.id}") do 
+                content_tag(:ul) do 
+		    content_tag(:li) do 
+		        content_tag(:div, "", :class=>"manage_button icon-arrow-down-9") +  
+			content_tag(:ul) do 
+			    content_tag(:li, :class=>((child.comment_status == "publish") ? "selected_item" : "")) do 
+				content_tag(:a, content_tag(:div, "", :class=>"checkbox") + "Publish", :class=>"publish_comment")
+			    end + 
+			    content_tag(:li, :class=>((child.comment_status != "publish") ? "selected_item" : "")) do 
+				content_tag(:a, content_tag(:div, "", :class=>"checkbox") + "Hide", :class=>"hide_comment")
+			    end + 
+			    tag(:hr) + 
+			    content_tag(:li) do
+				content_tag(:a, "Delete", :class=>"delete_comment")
+			    end
+			end
+                    end
+                end
+            end if allow_edit
+	    header_content = {}
+	    header_content[:author_image] = tag(:img, :src=>child.comment_author.thumbnail_url, :class=>"comment_author_image")
+	    if child.comment_author.url.present?
+	        header_content[:author_name] = link_to(child.comment_author.name, child.comment_author.url, :class=>"comment_author_name")
+	    else
+	        header_content[:author_name] = content_tag(:div, child.comment_author.name, :class=>"comment_author_name")
 	    end
-	    result += "</div>"
-	    result +=  display_comments(comment_map, :allow_reply=>allow_reply, :allow_edit=>allow_edit, :comment_id=>child_id)
-	    result += "</div>"
-	    end
-       end
-       result
-   end
+	    header_content[:date] = content_tag(:div, child.comment_date.localtime.strftime(comment_date_format), :class=>"comment_date")
+	    header_content[:moderate_indicator] = allow_edit ? content_tag(:div, "Hidden", :class=>"comment_moderate_indicator comment_status_#{child.comment_status}") : ""
+
+            comment_result += content_tag(:div, (comment_header_format % header_content).html_safe, :class=>"comment_header")
+	    comment_result += content_tag(:div, child.comment_content, :class=>"comment_content")
+	    comment_result += content_tag(:div, :class=>"comment_footer") do 
+	        allow_reply ? content_tag(:a, "", :class=>"comment_reply", :id=>"reply-to-#{child_id}") : ""
+            end
+	    result += content_tag(:div, comment_result, :class=>"comment_content_wrapper")
+           result +=  display_comments(comment_map, params.merge({:comment_id=>child_id}))
+           content_tag(:div, result, :class=>"comment", :comment_id=>child.id)
+        end.join("").html_safe
+    end
 end

@@ -30,7 +30,7 @@ module Roxiware
                else
                  result += label + field_group.text_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
              end
-	     result += "</div><br/>"
+	     result += "</div>"
 	     raw result
       end
 

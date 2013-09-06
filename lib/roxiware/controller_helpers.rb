@@ -46,6 +46,7 @@ module Roxiware
     def run_layout_setup(setup_script = nil)
        return unless @current_layout.present?
        run_setup_script = setup_script || @current_layout.setup
+       @current_layout.clear_globals
        if (run_setup_script.present?)
           begin
               eval(run_setup_script, binding(), @current_layout.name, 1) 

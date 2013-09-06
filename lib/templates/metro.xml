@@ -38,8 +38,8 @@ books_menu_permission.save!]]>
     <category>General</category>
   </categories>
   <packages>
-    <package>premium_author</package>
-    <package>basic_author</package>
+    <package>basic_author_dev</package>
+    <package>premium_author_dev</package>
   </packages>
   <style>
     <![CDATA[/* Document layout */
@@ -258,13 +258,14 @@ div#mainBody{
 
     button {
         border:none;
-        background:<%= text_color %>;
-        color:<%= background %>;
+        font-family:$metro_font_family;
+        background:<%= metro_background_3 %>;
+        color:<%= text_color%>;
         border-radius:0px;
         padding:0.2em 3em 0.2em 3em;
     }
     button:hover {
-        background:<%= link_color %>;
+        background:<%= metro_background_3_hover %>;
     }
 }
 
@@ -340,29 +341,13 @@ div#mainBody .post {
     position:relative;
     margin: 0;
     width:100%;
+    border-top:solid 1px <%= text_color %>;
+    margin-bottom:3em;
+    padding-top:1em;
 
-    div.share_bar {
-
-        > div {
-            display:inline-block;
-            vertical-align:middle;
-            width:90px;
-            height:30px;
-        }
-    }
-
-    hr.post_separator {
-         display:none;
-    }
 
     .post_categories {
         display:none;
-    }
-
-    .post_title {
-        font-size:3em;
-        font-family:'Open Sans', Geneva, sans-serif;
-        font-weight:300;
     }
 
     .post_header {
@@ -372,28 +357,36 @@ div#mainBody .post {
         }
         width:100%;
   
+        .post_title {
+            font-size:3em;
+            font-family:'Open Sans', Geneva, sans-serif;
+            font-weight:300;
+            display:block;
+            clear:both;
+         }
         .post_date {
-               float:right;
                font-family:'Open Sans', Geneva, sans-serif;
                font-size:1.5em;
                font-weight:300;
                margin-left:1em;
+               width:80%;
+               text-align:right;
               display:inline-block;
          }
 
          .post_author {
-            display:inline-block;
-         }
-         .post_author:before {
-             content:"by ";
+            display:none;
          }
 
          .comments_link {
             display:inline-block;
-         }
-         .comments_link:before {
-             content: "\00a0\00a0|\00a0\00a0";
-         }
+            font-size:1.5em;
+             width:10%;
+             padding-left:4%;
+             box-sizing:inline-block;
+             -moz-box-sizing:inline-block;
+             white-space:nowrap;
+          }
     }
 
     .content {
@@ -406,19 +399,29 @@ div#mainBody .post {
         img {
             margin:0.5em;
         }
+    }
 
-        .more_link {
-            display:inline-block;
-            text-align:right;
-            float:right;
-            padding:0.2em 4em 0em 0em;
-        }
+    .more_link {
+        display:inline-block;
+        text-align:right;
+        float:right;
+        font-family:$metro_font_family;
+        background:<%= metro_background_3 %>;
+        color:<%= text_color%>;
+        padding:0.2em 3em 0.2em 3em;
+        font-size:1.3em;
+     }
 
-        .more_link:before {
-            content: "More ";
-            font-size:2em;
-        }
-        .more_link:after {
+    .more_link:hover {
+        background: <%= metro_background_3_hover %>;
+    }
+
+     .more_link:before {
+         content: "More ";
+      }
+      .more_link:after {
+             position:relative;
+             bottom:-0.15em;
              font-family: 'Metro Icons';
              speak: none;
              font-style: normal;
@@ -427,24 +430,64 @@ div#mainBody .post {
              text-transform: none;
              line-height: 1;
              -webkit-font-smoothing: antialiased;
-            font-size:2em;
+            font-size:1.1em;
+           
             content:"\e087";
         }
-    }
+        .post_tags {
+            clear:both;
+        }
+}
 
+.comments_count, .pending_comments_count {
+    display:inline !important;
+    margin-left:0.1em;
+    margin-right:0.1em;
+    padding-left:0.1em;
+    padding-right:0.1em;
+}
+.pending_comments_count, .pending_comments_count:after {
+    color: <%= text_alert_color %>;
+}
+
+ .comments_count:after, .pending_comments_count:after {
+     font-family: 'Metro Icons';
+     speak: none;
+     font-weight: normal;
+     font-variant: normal;
+     text-transform: none;
+     line-height: 1;
+     -webkit-font-smoothing: antialiased;
+     content: "\0000a0\e032";
+     display:inline !important;
 }
 
 .comments {
     margin-top:2em;
+    clear:both;
+
+    .comment > .comment_content_wrapper {
+        margin-left:2em;
+    }
+
+    .comment > .comment > .comment_content_wrapper {
+        margin-left:4em;
+    }
+
+    .comment > .comment > .comment > .comment_content_wrapper {
+        margin-left:6em;
+    }
+
+    .comment > .comment > .comment > .comment > .comment_content_wrapper {
+        margin-left:8em;
+    }
+
     .comment {
 
         border-top:solid 1px <%= text_color %>;
-        position:relative;
+        padding-top:1em;
         clear:both;
-        margin-bottom:3em;
-        .comment {
-            margin-left:3em;
-         }
+        position:relative;
 
         .comment_status_moderate {
             float:right;
@@ -454,39 +497,77 @@ div#mainBody .post {
         .comment_status_publish {
               display:none;
         }
+        .comment_content {
+            clear:both;
+            padding-left:6em;
+        }
 
         .comment_header {
             vertical-align:top;
             color: <%= link_color %>;
+            display:block;
            
-
             .comment_author_image {
-               display:none;
+               float:left;
+               margin-right:1em;
+               width:5em;
+               height:auto;
             }
 
             .comment_author_name {
-                display:inline-block;
+                display:block;
                 margin-right:0.5em;
-                float:left;
+                font-weight:500;
+                font-size:1.3em;
             }
-            .comment_author_date:before {
-                content:"on ";
-            }
+
             .comment_author_date {
-                display:inline-block;
+                display:block;
                 margin-right:1em;
+                font-style:italic;
+                font-size:0.8em;
             }
         }
         .comment_footer {
             clear:both;
-            text-align:center;
+            margin-bottom:2em;
+            width:100%;
+            text-align:right;
             .comment_reply {
                 cursor:pointer;
-                
-            }
+                 position:relative;
+                font-size:1.3em;
+                display:inline-block;
+                margin:0 2em 0 0;
+                 background:<%= metro_background_3 %>;
+                 padding:0.2em 3em 0.2em 3em;
+             }
+
+             .comment_reply:hover {
+                 background:<%= metro_background_3_hover %>;
+                 color:<%= text_color %>;
+             }
+
+             .comment_reply:before {
+                 content: "Reply";
+             }
+             .comment_reply:after {
+                 position:relative;
+                 bottom:-0.15em;
+                 font-family: 'Metro Icons';
+                 speak: none;
+                 font-weight: normal;
+                 font-variant: normal;
+                 text-transform: none;
+                 line-height: 1;
+                 -webkit-font-smoothing: antialiased;
+                 cursor:pointer;
+                 content: "\0000a0\0000a0\e043";
+                 padding-right:0.5em;
+             }
         }
     }
-    .comment:hover {
+    .comment_content_wrapper:hover {
         .manage_button {
             cursor:pointer;
             opacity:0.5;
@@ -494,8 +575,163 @@ div#mainBody .post {
     }
 }
 
-/* Various mobile portrait guesses */
 
+.comment_form {
+    position:relative;
+    width:100%;
+    margin:2em 0 4em 0;
+    clear:both;
+    text-align:left;
+
+    div.comment_form_header {
+        position:relative;
+        width:100%;
+
+        > div {
+            width:100%;
+            label {
+                width:10%;
+                display:inline-block;
+            }
+            input {
+                display:inline-block;
+                width:85%;
+            }
+        }
+        div.comment_author {
+            display:none;
+        }
+        .comment_author_image {
+            display:none;
+        }
+    }
+    textarea.comment_form_content {
+        resize:vertical;
+        position:relative;
+        width:100%;
+        height:8em;
+    }
+    button.post_comment_button {
+        float:right;
+        clear:both;
+        font-size:1.3em;
+        margin:0 2em 0 0;
+        display:block;
+    }
+
+    button.post_comment_button span:after {
+        font-family: 'Metro Icons';
+        speak: none;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        color: <%= link_color %>;
+        position:relative;
+        bottom:-0.15em;
+        font-size:1.1em;
+        content:"\0000a0\0000a0\e087";
+    }
+
+    #comment_auth {
+        position:relative;
+        width:100%;
+        #social_network_login {
+            position:absolute;
+            left:325px;
+            right:0px;
+            top:0px;
+            display:inline-block;
+            #twitter_login,#facebook_login {
+                width:130px;
+                margin-bottom:0.5em;
+                margin-left:20px;
+                display:block;
+             }
+        }
+    }
+
+    .comment_recaptcha {
+        position:relative;
+        width:325px;
+        display:inline-block;
+        input {
+            width:300px;
+        }
+
+        .recaptcha_image {
+            width:300px;
+            height:57px;
+            border:solid 1px black;
+            margin-bottom:0.5em;
+        }
+        .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+            font-size:17px;
+            font-family: 'Metro Icons';
+            speak: none;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            color: <%= link_color %>;
+            position:absolute;
+            left:305px;
+            width:19px;
+            height:19px;
+            cursor:pointer;
+        }
+        .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+            color: <%= link_hover_color %>;
+        }
+        .captcha_reload {
+            top:0px;
+        }
+        .captcha_reload:before {
+            content: "\e070";
+        }
+        .captcha_audio {
+            top:20px;
+        }
+        .captcha_audio:before {
+            content: "\e067";
+        }
+        .captcha_image {
+            top:20px;
+        }
+        .captcha_image:before {
+            content: "\e0b5";
+        }
+
+        .captcha_help {
+            top:40px;
+        }
+        .captcha_help:before {
+            content: "\e056";
+        }
+    }
+}
+
+@media all and (max-width: 540px)  {
+    .comment_form {
+        #comment_auth {
+            #social_network_login {
+                position:static;
+                width:300px;
+                margin-top:0.5em;
+                #twitter_login,#facebook_login {
+                    margin-left:0px;
+                    display:inline-block;
+                }
+                #twitter_login {
+                    margin-left:10px;
+                }
+            }
+        }
+    }
+}
+/* Various mobile portrait guesses */
 
 .post:hover {
     .manage_button {
@@ -716,43 +952,44 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
 }]]>
   </style>
   <params>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%A, %B %e, %Y</param>
-    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
-    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">first_blog_post</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">slideshow</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">content</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%A, %B %e, %Y</param>
+    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{date}%{comments}%{title}</param>
     <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%A, %B %e, %Y</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">slideshow</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="c2397527-ee0d-d7e9-98a5-1470c67839f4">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="twitter_background_hover">rgba(174,218,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,0.5)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(49,86,120,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_text_color">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_5_hover">#ffff44</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="google_background_hover">rgb(235,85,67)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_3_hover">#4444ff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_1_hover">rgba(255,222,129,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,0.5)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_5">#ffff22</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_4">#ff22ff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_3">#2222ff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_2_hover">#44ff44</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_2">rgba(33,227,33,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_1">rgba(243,188,32,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(255,255,255,0.7)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="feed_background">#ff6600</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(49,86,120,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="google_background">rgb(221,75,57)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="facebook_background">rgb(59,89,152)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_4_hover">#ff44ff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="facebook_background_hover">rgb(109,132,180)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="twitter_background">rgb(0,172,237)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="feed_background_hover">#ff7711</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_text_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_5">#ffff22</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_4">#ff22ff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_3_hover">#4444ff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_3">#2222ff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_2">rgba(33,227,33,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_1">rgba(243,188,32,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="facebook_background_hover">rgb(109,132,180)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(255,255,255,0.95)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="metro_background_1_hover">rgba(255,222,129,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(255,255,255,0.7)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="feed_background">#ff6600</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="google_background_hover">rgb(235,85,67)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
@@ -921,7 +1158,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">-1px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-12px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Kim Harrison</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">'Open Sans'</param>
                     <param description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" class="local" name="weight">300</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
@@ -1185,11 +1422,21 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                   
                   
                   
+                  
+                  
+                  
+                  
+                  
 <p>Join my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>
     
+                
+                
+                
+                
+                
                 
                 
                 
@@ -1220,8 +1467,18 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                       
                       
                       
+                      
+                      
+                      
+                      
+                      
       
 Thank you for signing up for my mailing list.
+                    
+                    
+                    
+                    
+                    
                     
                     
                     
@@ -1252,10 +1509,20 @@ Thank you for signing up for my mailing list.
                       
                       
                       
+                      
+                      
+                      
+                      
+                      
       
 A mailing-list request Has Been Received from: $email
 
     
+                    
+                    
+                    
+                    
+                    
                     
                     
                     
@@ -1292,8 +1559,7 @@ A mailing-list request Has Been Received from: $email
         bottom:0px;
         top:61%;
         right:130px;
-        background:<%= metro_background_2 %>;
-        box-shadow:1px 1px 2px rgba(0,0,0,0.5);
+        left:0px;
         color:<%= metro_text_color %>;
        a:link, a:visited {
             color:<%= metro_text_color %>;
@@ -1322,37 +1588,96 @@ A mailing-list request Has Been Received from: $email
             }
         }
     }
+}
 
-    .post {
-        position:relative;
-        .content {
-            position:static;
+
+
+
+/* Post*/
+.post {
+    position:relative;
+    margin: 0;
+    width:100%;
+    .post_categories {
+        display:none;
+    }
+
+    .post_header {
+        .post_author_img {
+            display:none;
+        }
+        width:100%;
+  
+        .post_date {
+               float:right;
+               font-family:'Open Sans', Geneva, sans-serif;
+               font-size:1.5em;
+               font-weight:300;
+               margin-left:1em;
+              display:inline-block;
+         }
+
+         .post_author {
+            display:inline-block;
+         }
+         .post_author:before {
+             content:"by ";
+         }
+
+         .comments_link {
+            display:inline-block;
+         }
+         .comments_link:before {
+             content: "\00a0\00a0|\00a0\00a0";
+         }
+    }
+    .post_title {
+        font-size:3em;
+        font-family:'Open Sans', Geneva, sans-serif;
+        font-weight:300;
+    }
+    .content {
+        position:static;
+        padding-top:0.4em;
+        padding-left:2em;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        overflow:hidden;
+        width:100%;
+        img {
+            margin:0.5em;
         }
     }
-    .post .content .more_link {
+    
+    .more_link:before {
+        content: "More ";
+        font-size:2em;
+    }
+    .more_link:after {
+        font-family: 'Metro Icons';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        font-size:2em;
+        content:"\e087";
+    }
+    .more_link {
+        display:inline-block;
+        text-align:right;
+        float:right;
+        padding:0.2em 4em 0em 0em;
         position:absolute;
         bottom:0.5em;
         right:0.5em;
         padding-left:1em;
         background:<%= metro_background_3 %>;
     }
-    .post .content .more_link:hover {
+    .more_link:hover {
         background:<%= metro_background_3_hover %>;
-    }
-    .post .post_header {
- 
-        .post_author_img {
-            display:none;
-        }
-  
-
-         .post_author {
-            display:none;
-         }
-
-         .comments_link {
-            display:none;
-         }
     }
 }
 
@@ -1420,11 +1745,78 @@ A mailing-list request Has Been Received from: $email
       <sections>
         <section name="bottom_bar">
           <style>
-            <![CDATA[]]>
+            <![CDATA[div#mainBody div#content_section div#center_bar div#bottom_bar_section {
+    position:relative;
+    height:40%;
+    width:100%;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    padding-top:10px;
+
+    .widget#recent_posts {
+         position:absolute;
+         width:auto;
+         height:auto;
+         top:0px;
+         left:-10px;
+         right:-10px;
+         bottom:-10px;
+
+        .recent_posts_title { display:none; }
+        .widget_content {
+             display:table;
+             height:100%;
+             table-layout:fixed;
+             border-collapse: separate;
+             border-spacing: 10px;
+             box-sizing:border-box;
+        }
+        .recent_posts {
+            height:100%;
+            display:table-row;
+
+            .recent_post_entry {
+                height:100%;
+                overflow:hidden;
+                background:<%= metro_background_2 %>;
+                box-shadow:1px 1px 2px rgba(0,0,0,0.5);
+                display:table-cell;
+
+                .post_header {
+                    .post_title {
+                        font-family:'Open Sans';
+                        font-size: 1.5em;
+                        display:block;
+                        text-align:center;
+                        margin-bottom:0.7em;
+                    }
+                }
+                .post_more {
+                    padding-right:2em;
+                    margin-left:1em;
+                }
+                .post_more:before {
+                    content:"More...";
+                    padding-left:2em;
+                }
+	    }
+        }
+    }
+}]]>
           </style>
           <params>
           </params>
           <widget_instances>
+            <instance order="1" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+              <params>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">200</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{date}%{author_name}%{comments}%{title}</param>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%A, %B %e, %Y</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">4</param>
+              </params>
+            </instance>
           </widget_instances>
         </section>
         <section name="top_bar">
@@ -1445,7 +1837,7 @@ A mailing-list request Has Been Received from: $email
        background:<%= metro_background_1 %>;
        color:<%= metro_text_color %>;
        box-sizing:border-box;
-            -moz-box-sizing:border-box;
+       -moz-box-sizing:border-box;
        overflow:hidden;
 
 
@@ -1454,7 +1846,7 @@ A mailing-list request Has Been Received from: $email
            color:<%= metro_text_color %>;
            display:block;
 
-           .event_widget_title {
+           .event_title {
               font-size:1.5em;
               line-height:1em;
               font-family:'Open Sans',sans-serif;
@@ -1464,27 +1856,35 @@ A mailing-list request Has Been Received from: $email
               box-sizing:border-box;
             -moz-box-sizing:border-box;
            }
-           .event_widget_city {
-               display:inline-block;
-               font-size:0.9em;
-               float:right;
-           }
 
-           .event_widget_location {
-               font-size:0.8em;
-               display:inline-block;
-               margin-left:1em;
-           }
-           .event_widget_start {
-               display:inline-block;
-           }
+            .event_full_location {
+                font-size:0.8em;
+                font-style:italic;
+                .event_location {
+                    font-size:0.8em;
+                    display:inline-block;
+                    margin-left:1em;
+                }
+                .event_location:after {
+                    content:",\0000a0\0000a0";
+                }
+                .event_city, .event_state {
+                    display:inline-block;
+                }
+                .event_state:before {
+                    content:",\0000a0";
+                }
+            }
 
-           .event_widget_date, .event_widget_start {
-               font-family:'Open Sans', Geneva, sans-serif;
-               font-size:1.0em;
-               font-weight:300;
-               margin-left:1em;
-          } 
+           .event_time {
+               .event_date_range, .event_start_time {
+                   font-family:'Open Sans', Geneva, sans-serif;
+                   font-size:0.8em;
+                   font-weight:300;
+                   margin-left:1em;
+                   display:inline-block;
+               }
+           } 
        }
     }
 
@@ -1590,6 +1990,95 @@ A mailing-list request Has Been Received from: $email
            display:none;
        }
     }
+
+/* Post*/
+.post {
+    position:relative;
+    margin: 0;
+    width:100%;
+    .post_categories {
+        display:none;
+    }
+
+    .post_header {
+        .post_author_img {
+            display:none;
+        }
+        width:100%;
+  
+        .post_date {
+               float:right;
+               font-family:'Open Sans', Geneva, sans-serif;
+               font-size:1.5em;
+               font-weight:300;
+               margin-left:1em;
+              display:inline-block;
+         }
+
+         .post_author {
+            display:inline-block;
+         }
+         .post_author:before {
+             content:"by ";
+         }
+
+         .comments_link {
+            display:inline-block;
+         }
+         .comments_link:before {
+             content: "\00a0\00a0|\00a0\00a0";
+         }
+    }
+    .post_title {
+        font-size:3em;
+        font-family:'Open Sans', Geneva, sans-serif;
+        font-weight:300;
+    }
+    .content {
+        position:static;
+        padding-top:0.4em;
+        padding-left:2em;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        overflow:hidden;
+        width:100%;
+        img {
+            margin:0.5em;
+        }
+    }
+    
+    .more_link:before {
+        content: "More ";
+        font-size:2em;
+    }
+    .more_link:after {
+        font-family: 'Metro Icons';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        font-size:2em;
+        content:"\e087";
+    }
+    .more_link {
+        display:inline-block;
+        text-align:right;
+        float:right;
+        padding:0.2em 4em 0em 0em;
+        position:absolute;
+        bottom:0.5em;
+        right:0.5em;
+        padding-left:1em;
+        background:<%= metro_background_3 %>;
+    }
+    .more_link:hover {
+        background:<%= metro_background_3_hover %>;
+    }
+}
+
 }
 
 @media all and (orientation:portrait) {
@@ -1643,28 +2132,27 @@ A mailing-list request Has Been Received from: $email
 }
 
 @media all and (orientation:landscape) {
-          #calendar {
-              .event_widget_event {
-                  padding-top:0.5em;
-              }
-              nav { padding-top:6em; }
-              .events_widget_title:after {
-                   content:" Calendar";
-                   position:absolute;
-                   top:0px;
-                   left:0px;
-                   bottom:0px;
-                   right:0px;
-                   width:100%;
-                   height:100%;
-                   padding:0.5em 0 0 1.0em;
-                   box-sizing:border-box;
-            -moz-box-sizing:border-box;
-                   vertical-align:top;
-                   text-align:left;
-              }
-          }
-
+    #calendar {
+	.event_widget_event {
+	    padding-top:0.5em;
+	}
+	nav { padding-top:6em; }
+	.events_widget_title:after {
+	    content:" Calendar";
+	    position:absolute;
+	    top:0px;
+	    left:0px;
+	    bottom:0px;
+	    right:0px;
+	    width:100%;
+	    height:100%;
+	    padding:0.5em 0 0 1.0em;
+	    box-sizing:border-box;
+	    -moz-box-sizing:border-box;
+	    vertical-align:top;
+	    text-align:left;
+	}
+    }
 }
 
 @media all and (max-device-width:640px) {
@@ -1738,7 +2226,7 @@ A mailing-list request Has Been Received from: $email
                  height:100%;
                  padding:5em 0em 2em 0em;
                  box-sizing:border-box;
-            -moz-box-sizing:border-box;
+                 -moz-box-sizing:border-box;
 
                  #center_content {
                      width:100%;
@@ -2012,9 +2500,6 @@ A mailing-list request Has Been Received from: $email
                      height:100%;
                      overflow-y:scroll;
                      -webkit-overflow-scrolling: touch;
-                     hr.post_separator {
-                         display:block;
-                     }
 
                      .posts  .post_list_item .post img { max-height:150px; width:auto; }
                  }
@@ -2026,229 +2511,12 @@ A mailing-list request Has Been Received from: $email
     z-index:2;
 }
 
-/* Full post display with comments */
-.post_listing {
-    .post_footer {
-        hr.post_separator {
-            margin:0 10% 0 10%;
-            width:80%;
-        }
-        .comment_count {
-            font-size:1.3em;
-            display:inline-block;
-        }
-        .pending_comment_count {
-            display:inline-block;
-            color: <%= text_alert_color %>;
-            font-size:1.3em;
-            margin-left:2em;
-        }
-
-        .comment_form {
-            position:relative;
-             width:100%;
-            margin:2em 0 3em 0;
-
-            label {
-                width:5em;
-            }
-            div.comment_form_header {
-                position:relative;
-                width:100%;
-                height:10em;
-                input.comment_author, div.comment_author {
-                    position:absolute;
-                    top:0px;
-                    left:80px;
-                    right:20%;
-                }
-                div.comment_author {
-                   font-size:1.5em;
-                }
-                label.comment_author {
-                    position:absolute;
-                    left:2em;
-                    top:0px;
-                }
-                .comment_author_image {
-                    display:none;
-                } 
-                textarea.comment_form_content {
-                    resize:none;
-                    position:absolute;
-                    right:0px;
-                    left:80px;
-                    top:2em;
-                    height:6em;   
-                }
-             }
-             button.post_comment_button {
-                    float:right;
-             }
-            .comment_form_footer {
-                position:relative;
-                width:100%;
-                .comment_auth_info {
-                    position:relative;
-                    height:80px;
-                }
-                label {
-                   width:5em !important;
-                }
-                label.comment_form_author_url {
-                    position:absolute;
-                    left:0px;
-                    top:0px;
-                } 
-                input.comment_form_author_url {
-                    position:absolute;
-                    top:0px;
-                    left:80px;
-                    right:330px;
-                }
-                label.comment_form_author_email {
-                    position:absolute;
-                    top:2em;
-                    left:0px;
-                }
-                input.comment_form_author_email {
-                    position:absolute;
-                    top:2em;
-                    left:80px;
-                    right:330px;
-                }
-                 .recaptcha_response_field {
-                      position:absolute;
-                      top:4em;
-                      left:80px;
-                      right:330px;
-                  }
-
-                .recaptcha_image {
-                    width:300px;
-                    height:57px;
-                    position:absolute;
-                    top:0px;
-                    right:20px;
-                    border:solid 1px black;
-                }
-                .recaptcha_only_if_incorrect_sol {
-                     position:absolute;
-                     top:60px;
-                     right:1em;
-                 }
-
-                  .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
-                      font-size:17px;
-                      font-family: 'Metro Icons';
-                      speak: none;
-                      font-weight: normal;
-                      font-variant: normal;
-                      text-transform: none;
-                      line-height: 1;
-                       -webkit-font-smoothing: antialiased;
-                      color: <%= link_color %>;
-                      position:absolute;
-                      right:0px;            
-                      width:19px;
-                      height:19px;
-                      cursor:pointer;
-                  }
-                  .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
-                      color: <%= link_hover_color %>;
-                  }
-                  .captcha_reload {
-                        top:0px;
-                   }
-                   .captcha_reload:before {
-                       content: "\e070";
-                   }
-                   .captcha_audio {
-                        top:20px;
-                    }
-                   .captcha_audio:before {
-                        content: "\e067";
-                    }
-
-                    .captcha_image {
-                        top:20px;
-                    }
-                    .captcha_image:before {
-                        content: "\e0b5";
-                    }
-
-                    .captcha_help {
-                        top:40px;
-                    }
-                    .captcha_help:before {
-                        content: "\e056";
-                    }
-                
-            }
-        }
+.post_footer {
+    .comments_count, .pending_comments_count {
+        font-size:1.5em;
     }
 }
 
-
-.comments {
-    margin-top:2em;
-    .comment {
-
-        border-top:solid 1px <%= text_color %>;
-        position:relative;
-        clear:both;
-        margin-bottom:3em;
-        .comment {
-            margin-left:3em;
-         }
-
-        .comment_status_moderate {
-            float:right;
-            color: <%= text_alert_color %>;
-            margin-right:4em;
-        }
-        .comment_status_publish {
-              display:none;
-        }
-
-        .comment_header {
-            vertical-align:top;
-            color: <%= link_color %>;
-           
-
-            .comment_author_image {
-               display:none;
-            }
-
-            .comment_author_name {
-                display:inline-block;
-                margin-right:0.5em;
-                float:left;
-            }
-            .comment_author_date:before {
-                content:"on ";
-            }
-            .comment_author_date {
-                display:inline-block;
-                margin-right:1em;
-            }
-        }
-        .comment_footer {
-            clear:both;
-            text-align:center;
-            .comment_reply {
-                cursor:pointer;
-                
-            }
-        }
-    }
-    .comment:hover {
-        .manage_button {
-            cursor:pointer;
-            opacity:0.5;
-        }
-    }
-}
 @media all and (max-width: 767px) {
       div#mainBody #content_section #center_bar {
            padding-left:2em;

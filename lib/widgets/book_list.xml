@@ -42,7 +42,7 @@ Displays images of books in the authors book list
             content_tag(:div, raw(book.description), :class=>"book_list_book_description")
           else ""
         end
-    end.join("<br id='foo' style='clear:both;display:block;'/>"))
+    end.join(""))
  end
 %>]]>
     </render_view>

@@ -139,7 +139,7 @@ module Roxiware
 	   conditions = {}
 	   person_id = ((current_user && current_user.person)?current_user.person.id : -1)
 
-           comments = @post.comments.visible(current_user)
+           comments = @post.comments.visible(current_user).order("comment_date DESC")
 
            # create comment hierarchy
 	   @comments = {}
@@ -150,8 +150,6 @@ module Roxiware
 	       @comments[comment.id][:comment] = comment
 	   end
 	   
-	   puts "COMMENTS: " + @comments.inspect
-
 	   @title = @title + " : Blog : " + @post.post_title
 	   @meta_keywords = @meta_keywords + ", " + @post.post_title
 

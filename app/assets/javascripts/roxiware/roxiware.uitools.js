@@ -919,6 +919,7 @@ function settingsForm(source, title)
 		  $("input[watermark]").watermark();
 		  $("div.settings_wysiwyg textarea").wysiwyg({ css: $.roxiware.main_css,
                                        iFrameClass:"wysiwyg_iframe",
+			               initialContent:"",
                                        controls: {
                                           undo: { visible: false },
                                           redo: { visible: false},

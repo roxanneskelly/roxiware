@@ -44,10 +44,10 @@ class Roxiware::PageController < ApplicationController
       raise ActiveRecord::RecordNotFound if @page.nil?
       respond_to do |format|
         if @page.update_attributes(params[:page], :as=>@role)
-          format.html { redirect_to page_path(@page.page_type), :notice => 'Page was successfully updated.' }
+          format.html { render :action=>:show, :notice => 'Page was successfully updated.' }
           format.json { render :json => @page.ajax_attrs(@role) }
         else
-          format.html { redirect_to page_path(@page.page_type), :notice => 'Failure updating Page.' }
+          format.html { render :action=>:show, :notice => 'Failure updating Page.' }
           format.json { render :json=>report_error(@page)}
         end
       end

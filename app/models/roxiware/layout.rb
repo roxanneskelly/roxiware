@@ -105,6 +105,22 @@ module Roxiware
 	     new_layout
 	  end
 
+	  def instance_globals(instance_id)
+	      @@globals ||= {}
+	      @@globals[instance_id] ||= {}
+	      @@globals[instance_id]
+	  end
+
+	  def clear_instance_globals(instance_id)
+	      @@globals ||= {}
+	      @@globals[instance_id] = {}
+	  end
+	  
+	  def clear_globals
+	      @@globals = {}
+	  end
+
+
 	  def category_ids
 	    self.categories.collect{|term| term.id}
 	  end
@@ -146,7 +162,6 @@ module Roxiware
 	  def packages
 	    self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME))
 	  end
-
 
 	  def import(layout_node)
 	     self.guid = layout_node["guid"]
@@ -663,12 +678,11 @@ module Roxiware
 
 
 	  def globals
-	    @@globals ||= {}
-	    @@globals
+	    layout_section.page_layout.layout.instance_globals(self.id)
 	  end
 
 	  def clear_globals
-	    @@globals = {}
+	      layout_section.page_layout.layout.clear_instance_globals(self.id)
 	  end
 
 	  def widget

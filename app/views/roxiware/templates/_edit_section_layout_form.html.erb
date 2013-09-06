@@ -20,11 +20,21 @@
        </div>
      </div>
    </div>      
-    <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"submit" %>
+    <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
    <% end %>
 </div>
 <script>
    $(function() {
       $("#section_layout_form").find("ul.tabs").tabs($("div.panes > div"));
+      $("button#save_button").click(function(e) {
+          e.preventDefault();
+          $.ajaxSetParamsJSON("<%= (layout_page_section_path(@layout.guid, url_encode(@page.get_url_identifier), @section.name)) %>.json", 
+                              $("#section_layout_form form").serializeArray(), 
+                              {form:$("#section_layout_form form"),
+                               method:"put",
+                               success: function() {
+                                   window.location.reload();
+                               }}); 
+      });
    });
 </script>

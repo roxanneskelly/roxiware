@@ -775,6 +775,13 @@
     <permissions>super</permissions>
     <meta></meta>
   </param_description>
+  <param_description guid="D009D4B0-5428-4A04-82AC-5A846EC12379">
+    <name>Blog Header Format</name>
+    <description>Format for a blog header</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta></meta>
+  </param_description>
   <param_description guid="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
     <name>Social Networks</name>
     <description>List of social networks</description>

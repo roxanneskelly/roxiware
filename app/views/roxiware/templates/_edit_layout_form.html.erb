@@ -244,27 +244,14 @@ end %>
 
 
        $("#save_button,#save_and_close_button").click(function() {
+           var button = $(this);
            $("input.template_large_image").remove();
-	   $.ajax({
-	       url:"<%= endpoint %>",
-	       type:"<%= method %>",
-               dataType: "json",
-               processData:true,
-	       data:jQuery.param($("form").serializeArray()),
-               error: function (jqxhr, errorText, errorThrown) {
-                 $.error(errorText + " " + errorThrown)
-               },
-	       success:function(data, textStatus, jqxhr) {
-                  if(data["error"]) {
-                      $(data["error"]).each(function(index, value) {
-                         $.error(value[0]+":"+value[1])
-                      })
-                  }
-                  else if($(this).is("#save_and_close_button")) {
-		      window.location.reload();
-                  }
-	       }
-	   });         
+           $.ajaxSetParamsJSON("<%= endpoint %>", $("form").serializeArray(), {
+                                method:"<%= method %>",
+                                success: function() {
+                                   if(button.is("#save_and_close_button")) {
+                                       window.location.reload();
+                                   }}});
        });
 
        initSchemes();

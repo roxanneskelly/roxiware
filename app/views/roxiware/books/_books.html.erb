@@ -4,7 +4,7 @@
             <% if book.class == Roxiware::Book %>
                 <%= render :partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image_url, :book_description_length=>@book_description_length}  %>
             <% elsif book.class == Roxiware::BookSeries %>
-                <%= render :partial=>"roxiware/books/series", :locals=>{:series=>book, :book_description_length=>@book_description_length, :display_type=>"slide"}  %>
+                <%= render :partial=>"roxiware/books/series", :locals=>{:series=>book, :book_description_length=>@book_description_length, :display_type=>display_type}  %>
             <% end %>
     <% end %>
 <% elsif display_type == "accordion" %>

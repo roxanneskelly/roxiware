@@ -1,6 +1,5 @@
 <% hidden_post = "hidden_post" if post.post_status != "publish" %>
   <article class="<%= hidden_post %> post" id="post-<%= post.id %>" rel="<%= blog_post_path(post.id) %>">
-     <hr class="post_separator"/>
      <% if (can? :edit, post) %>
          <div class="manage_post_menu manage_menu" id="manage_<%= post.id %>"><ul>
              <li><div class="manage_button icon-arrow-down-9"></div><ul>
@@ -16,43 +15,11 @@
 		<li class="delete_post"><a>Delete</a></li>
 	    </ul></li></ul></div>
      <% end %>
-
-     <% if  !post.category_ids.nil? %>
-          <div class="post_categories">
-	   <%  post.category_ids.each do |category_id| %>
-	     <%= link_to Roxiware::Terms::Term.categories()[category_id].name, send("#{@blog_class}_path", :category=>Roxiware::Terms::Term.categories()[category_id].seo_index), :class=>"post_category"  %>
-	   <% end %>
-          </div>
-     <% end %>
-     <div class="post_header">
-         <% if show_full_header && post.person.present? %><img class="post_author_img" src="<%= post.person.thumbnail_url %>" class="person_thumbnail"/><% end %>
-	 <div class="post_date" data="<%= post.post_date %>"><%= raw post.post_date.localtime.strftime(@post_date_format || "") %></div>
-         <% if show_full_header %>
-	     <% if post.person.present? %><div class="post_author"><a href="<%= people_url %>/<%= post.person.seo_index %>"><%= post.person.full_name %></a></div><% end %>
-             <div class="comments_link">
-	         <%= link_to post.comment_count, post.post_link, :class=>((post.comment_count == 1) ? "comments_singular" : "comments_plural") %>
-	         <% if can?(:edit, post) && (post.pending_comment_count > 0) %>
-	             <span class="pending_comments">(<%= post.pending_comment_count %>)</span>
-	         <% end %>
-             </div>
-         <% end %>
-     </div>
-     <%= link_to post.post_title, post.post_link, :class=>"post_title" %>
-     <div class="content">
-	 <% if show_full_content %>
-	     <%= raw post.post_content %>
-	 <% else %>
-	     <%= raw post.post_exerpt %>
-	     <%= link_to "", post.post_link, :class=>"more_link"%>
-	 <% end %>
-     </div>
-     <% if show_full_content %>
-         <% if !post.tag_ids.blank? %>
-	     <div class="post_tags">
-	         Tags: <% post.tags.each do |tag| %>
-	           <%= link_to tag.name, send("#{@blog_class}_path", :tag=>tag.seo_index), :class=>"post_tag"  %>
-	         <% end %>
-	      </div>
-         <% end %>
-    <% end %>
+     <%= 
+         Roxiware::Blog::PostHelper.post_header(post, :header_format=>@post_header_format, :blog_path=>send("#{@blog_class}_path"), :date_format=>@post_date_format, :show_pending_comments=>can?(:edit, post)) +
+         content_tag(:div, raw(show_full_content ? post.post_content : post.post_exerpt), :class=>"content") + 
+         (show_full_content ? "".html_safe : link_to("", post.post_link, :class=>"more_link")) + 
+         content_tag(:div, :class=>"post_tags") do
+             post.tags.collect{|tag| link_to(tag.name, send("#{@blog_class}_path", :tag=>tag.seo_index), :class=>"post_tag") }.join("")
+         end %>
 </article>

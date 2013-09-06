@@ -16,7 +16,7 @@
 	   <div class="series_book_tab"><div class="series_book_title"><%= book.title %></div></div><div class="series_book_info"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>series_book_description_length}  %></div>
 	<% end %>
       <% elsif display_type == "simple" %>
-        <div class= "series_book_titles"><%= series.books.order(:series_order).collect{|book| link_to(book.title, book_path(book.seo_index), :class=>"series_book_title") }.join ("").html_safe %></div>
+        <%= series.books.order(:series_order).collect{|book| link_to(tag(:img, :src=>book.image_url, :class=>"series_book_cover") + content_tag(:div, book.title, :class=>"series_book_title"), book_path(book.seo_index), :class=>"series_book") }.join ("").html_safe %>
       <% elsif display_type == "slide" %>
           <% series.books[0..11].each do |book| %> <img src="<%= book.image_url %>" class="book_cover"/><% end %>
       <% elsif display_type == "slideshow" %>

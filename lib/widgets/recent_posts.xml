@@ -11,8 +11,8 @@
     <preload>
       <![CDATA[if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
 	 globals[:recent_posts] = []
-	 Roxiware::Blog::Post.published().select("post_title, post_link, post_date, person_id, post_exerpt").order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
-	   globals[:recent_posts] << {:post=>post, :snippet=>raw(post.snippet(locals[:excerpt_length]){link_to("", post.post_link, :class=>"post_more")})}
+	 Roxiware::Blog::Post.published().order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
+	   globals[:recent_posts] << {:post=>post, :snippet=>raw(post.snippet(locals[:excerpt_length]){""})}
 	 end
          globals[:recent_posts_last_update] = Roxiware::Blog.last_update
        end
@@ -20,48 +20,27 @@
        locals[:recent_posts].present?]]>
     </preload>
     <render_view>
-      <![CDATA[<nav class="recent_posts">
-	<div class="recent_posts_title"></div>
+      <![CDATA[<div class="recent_posts_title"></div><nav class="recent_posts">
 	<% recent_posts.each do |post_data| 
 	   post = post_data[:post] %>
 	   <%= content_tag(:div, :class=>"recent_post_entry") do
-                   link_to(post.post_title, post.post_link, :class=>"post_title") +
-	           content_tag(:div, post.post_date.localtime.strftime("%D"), :class=>"post_date") +
-                   link_to(post.person.full_name, people_url + post.person.seo_index, :class=>"post_author") +
-	           content_tag(:div, post_data[:snippet], :class=>"post_snippet")
-                end %>
+	       Roxiware::Blog::PostHelper.post_header(post, :header_format=>header_format, :date_format=>date_format) + 
+	       content_tag(:div, post_data[:snippet], :class=>"post_snippet") +
+               link_to("", post.post_link, :class=>"post_more")
+           end %>
 	<% end %>
       </nav>]]>
     </render_view>
     <style>
-      <![CDATA[div.recent_post_entry
-{
-   font-size:0.8em;
-   margin-top:10px;
-}
-
-div.recent_post_entry .post_date
-{
-   margin-left:10px;
-   font-size:0.8em;
-}
-
-div.recent_post_entry .post_author
-{
-   display:inline-block;
-}
-
-div.recent_post_entry .post_snippet
-{
-   margin-left:10px;
-   font-size:0.9em;
-}]]>
+      <![CDATA[]]>
     </style>
     <params>
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
       <param class="local" description="5AD23478-C90D-4BA8-81DF-7112B0762257" name="recent_posts_count">5</param>
       <param class="local" description="F4AF8F08-955D-4800-992A-3E2912CA8740" name="excerpt_length">100</param>
+      <param class="local" description="D009D4B0-5428-4A04-82AC-5A846EC12379" name="header_format">%{author_image}%{date}%{author_name}%{comments}%{title}</param>
+      <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="date_format">%D</param>
     </params>
   </widget>
 </widgets>

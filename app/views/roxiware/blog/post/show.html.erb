@@ -1,24 +1,18 @@
-<section class="post_listing">
-   <%= render :partial=>"roxiware/blog/post/post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header=>true} %>
-   <div class="post_footer">
-       <hr class="post_separator"/>
-        <% if can?(:read_comments, @post) %>
-	   <%= content_tag(:div, @post.comment_count, :class=>((@post.comment_count == 1) ? "comment_count comments_singular" : "comment_count comments_plural")) %>
-	   <%= content_tag(:div, @post.pending_comment_count, :class=>((@post.pending_comment_count == 1) ? "pending_comment_count comments_singular" : "pending_comment_count comments_plural")) if can?(:edit, @post) %>
-	   <% if @comments.present?
-                  can_reply = can? :comment, @post 
-	          can_manage = can? :edit, @post %>
-	       <div class="comments">
-	         <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>can_reply, :allow_edit=>can_manage, :comment_date_format=>@post_date_format) %>
-	       </div>
-           <% end %>
-	   <% if can? :comment, @post %>
-	       <%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""} %>
-	   <% end %>
-	 <% end %>
-    </div>
-</section>
-
+<%= content_tag(:article, :class=>"post_listing") do 
+   render(:partial=>"roxiware/blog/post/post", :locals=>{:post=>@post, :index=>false, :show_full_content=>true, :show_full_header=>true}) + 
+   content_tag(:div, :class=>"post_footer") do
+       result = "".html_safe
+       if can?(:read_comments, @post) 
+	   result += content_tag(:div, :class=>"comments_link") do 
+               content_tag(:div, @post.comment_count, :class=>((@post.comment_count == 1) ? "comments_count comments_singular" : "comments_count comments_plural")) +
+	       (can?(:edit, @post) ? content_tag(:div, @post.pending_comment_count, :class=>((@post.pending_comment_count == 1) ? "pending_comments_count comments_singular" : "pending_comments_count comments_plural")) : "")
+           end
+	   result += render(:partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""}) if can? :comment, @post
+	   result += content_tag(:div, raw(Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>can?(:comment, @post), :allow_edit=>can?(:edit, @post), :comment_header_format=>@comment_header_format, :comment_date_format=>@comment_date_format)), :class=>"comments") if @comments.present?
+       end
+       result
+    end
+end %>
 <% if can? :edit, @post %>
 <ul id="blog_show_application_menu" class="application_menu"><li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit Post"><span aria-hidden="true" class="icon-file"></span>&nbsp;Post</a><ul>
 <li><a rel="<%= edit_blog_post_path(@post) %>" form="Edit Post"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
@@ -74,13 +68,13 @@ $(document).ready(function() {
         }
         var manage_comment = $(this).parents("[comment_id]").first();
         var self = $(this);
-        var blog_comment_id = manage_comment.attr("comment_id");
+        var comment_id = manage_comment.attr("comment_id");
         var upload_params = {comment_status:$(this).is(".publish_comment")?"publish":"moderate"};
         if (csrf_param !== undefined && csrf_token !== undefined) {
             upload_params[csrf_param] = csrf_token;
         };
 
-	$.ajax("<%= blog_post_comment_path(@post.id) %>/"+blog_comment_id+".json", {
+	$.ajax("/comment/"+comment_id+".json", {
 		type:"PUT",
                 data: upload_params,
 	       error: function(xhr, textStatus, errorThrown) {
@@ -104,8 +98,6 @@ $(document).ready(function() {
         });
     });
 
-
-
     /* Handle delete */
     $(".manage_comment .delete_comment").click(function() {
         var blog_comment_id = $(this).parents("[comment_id]").attr("comment_id");
@@ -113,7 +105,7 @@ $(document).ready(function() {
         if (csrf_param !== undefined && csrf_token !== undefined) {
             delete_params[csrf_param] = csrf_token;
         };
-	$.ajax("<%= blog_post_comment_path(@post.id) %>/"+blog_comment_id+".json", {
+	$.ajax("<%= comment_path(@post.id) %>/"+blog_comment_id+".json", {
 	       type:"DELETE",
                data: delete_params,
 	       error: function(xhr, textStatus, errorThrown) {

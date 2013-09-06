@@ -25,18 +25,19 @@
        <% if user_signed_in? %>
             <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button" %>
        <% else %>
-	   <div id="comment_recaptcha" class="comment_recaptcha">
-	       <div id="recaptcha_image" class="recaptcha_image"></div>
-	       <div class="recaptcha_only_if_incorrect_sol">Incorrect please try again</div>
-	       <div class="captcha_reload" onclick="Recaptcha.reload()"></div>
-	       <div class="captcha_audio recaptcha_only_if_image" onclick="Recaptcha.switch_type('audio')"></div>
-	       <div class="captcha_image recaptcha_only_if_audio" onclick="Recaptcha.switch_type('image')"></div>
-	       <div class="captcha_help" onclick="Recaptcha.showhelp()"></div>
-	       <input type="text" class="recaptcha_response_field" id="recaptcha_response_field" name="recaptcha_response_field" watermark="Type the two verification words." />
-               
-	   </div>
-           <a id="facebook_login" href="/account/auth/facebook">Sign In with Facebook</a>
-           <a id="twitter_login" href="/account/auth/twitter">Sign In with Twitter</a>
+           <div id="comment_auth">
+	       <div id="comment_recaptcha" class="comment_recaptcha">
+		   <div id="recaptcha_image" class="recaptcha_image"></div>
+		   <div class="recaptcha_only_if_incorrect_sol">Incorrect please try again</div>
+		   <div class="captcha_reload" onclick="Recaptcha.reload()"></div>
+		   <div class="captcha_audio recaptcha_only_if_image" onclick="Recaptcha.switch_type('audio')"></div>
+		   <div class="captcha_image recaptcha_only_if_audio" onclick="Recaptcha.switch_type('image')"></div>
+		   <div class="captcha_help" onclick="Recaptcha.showhelp()"></div>
+		   <input type="text" class="recaptcha_response_field" id="recaptcha_response_field" name="recaptcha_response_field" watermark="Type the two verification words." />
+
+	       </div>
+	       <div id="social_network_login"><a id="facebook_login" href="/account/auth/facebook">Sign In with Facebook</a><a id="twitter_login" href="/account/auth/twitter">Sign In with Twitter</a></div>
+           </div>
 	   <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button", :disabled=>"disabled" %>
         <% end %>
     </form>

@@ -26,8 +26,15 @@
 <script>
    $(function() {
       $("#page_layout_edit_form").find("ul.tabs").tabs($("div.panes > div"));
-      $("#page_layout_edit_form").find("button").button().click(function() {
-         
+      $("button#save_button").click(function(e) {
+          e.preventDefault();
+          $.ajaxSetParamsJSON("<%= layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)) %>.json", 
+                              $("#page_layout_edit_form form").serializeArray(), 
+                              {form:$("#page_layout_edit_form form"),
+                               method:"put",
+                               success: function() {
+                                   window.location.reload();
+                               }}); 
       });
    });
 </script>

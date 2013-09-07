@@ -813,7 +813,6 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
         background:red;
     }
     div#mainBody article.post {
-        background:red;
         .post_title {
             font-size:12px;
             margin: 1em 0em 0.5em 0em;
@@ -823,7 +822,6 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
             font-size:8px;
             .post_date {
                 width:20% !important;
-                background:red !important;
             }
         }
     }
@@ -865,67 +863,67 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
 }]]>
   </style>
   <params>
+    <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="post_date_format">%e %b %Y</param>
+    <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_description_length">500</param>
     <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_description_length">200</param>
     <param class="template" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</param>
     <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="event_date_format">%b %e</param>
     <param class="local" description="D009D4B0-5428-4A04-82AC-5A846EC12379" name="post_header_format">%{title}%{date}%{comments}</param>
     <param class="local" description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" name="books_display_type">simple</param>
     <param class="local" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" name="home_page_type">content</param>
-    <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
-    <param class="local" description="0ADB2780-3D21-409F-A7B4-670395F99CD5" name="series_display_type">simple</param>
     <param class="scheme" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="schemes">
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="635ed896-79dc-4cd7-aec4-b0e2db83214b">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(145,140,73,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">#222222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#3B3738</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(200,192,101,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">rgba(237,221,43,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(145,140,73,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">#222222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#222222</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#DFE2DB</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#222222</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#3B3738</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(145,140,73,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">rgba(237,221,43,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">#222222</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(200,192,101,1)</param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Bumblebee</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
       </param>
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="bd0d9a49-8030-4470-b64f-86587ec475db">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(200,200,200,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(200,200,200,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#222222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(227,103,103,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">#eeeeee</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">#7e7e7e</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(200,200,200,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#777777</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#ffffff</param>
-        </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White/Red</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-      </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(200,200,200,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(200,200,200,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">rgba(255,107,0,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#222222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(255,107,0,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">#eeeeee</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">#7e7e7e</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(200,200,200,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#777777</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#ffffff</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#777777</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#222222</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(200,200,200,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">rgba(255,107,0,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">#eeeeee</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(200,200,200,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(255,107,0,1)</param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White/Orange</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
       </param>
+      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="bd0d9a49-8030-4470-b64f-86587ec475db">
+        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">#7e7e7e</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(200,200,200,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#ffffff</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#777777</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#222222</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(200,200,200,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">#eeeeee</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(200,200,200,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(227,103,103,1)</param>
+        </param>
+        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White/Red</param>
+        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
+      </param>
     </param>
+    <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
+    <param class="local" description="0ADB2780-3D21-409F-A7B4-670395F99CD5" name="series_display_type">simple</param>
     <param class="local" description="67BFE233-F4D1-400B-855F-393BF53B05A4" name="asset_theme">clear</param>
-    <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="post_date_format">%e %b %Y</param>
-    <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_description_length">500</param>
   </params>
   <pages>
     <page action="" application="">
@@ -1114,7 +1112,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                   <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-0">
                     <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">0px</param>
                     <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">-6px</param>
-                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Kim Harrison</param>
+                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Jane Scribe</param>
                     <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">Geneva</param>
                     <param class="local" description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" name="weight">300</param>
                     <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">28</param>
@@ -1366,11 +1364,13 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                   
                   
                   
+                  
 <p>Sign up for my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>
 
+                
                 
                 
                 ]]>
@@ -1391,9 +1391,11 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                       
                       
                       
+                      
       
 Thank you for your interest.  We'll get right back to you.
     
+                    
                     
                     
                     
@@ -1420,10 +1422,12 @@ Thank you for your interest.  We'll get right back to you.
                       
                       
                       
+                      
       
 A Contact Request Has Been Received from: $email %>
 
     
+                    
                     
                     
                     
@@ -2233,6 +2237,12 @@ A Contact Request Has Been Received from: $email %>
     .person_name {
         font-size:2em;
     }
+    .person_bio {
+        img {
+            max-width:100%;
+            padding:1em;
+        }
+    }
 }]]>
       </style>
       <params>
@@ -2792,64 +2802,60 @@ div#mainBody {
       <style>
         <![CDATA[.events {
 
-.event {
-    position:relative;
-     border-top:solid 1px <%= graphic_element_color %>;
-    .event_title {
-       border-left:solid 1px <%= graphic_element_color %>;
-       font-size:1.0em;
-       font: Verdana;
-       display:inline-block;
-       box-sizing:border-box;
-       -moz-box-sizing:border-box;
-       padding:0.1em 1em 0.1em 1em;
-       display:inline-block;
-       line-height:2.2em;
-       vertical-align:middle;
-       width:78%;
-       margin:0.2em 0 0.2em 0;
-    }
-   .event_time {
-       display:inline-block;
-        width:20%;
-        vertical-align:middle;
-        padding: 0.2em 0 0.2em 0;
-       .event_date_range, .event_start_time {
-           font-size:1em;
-           line-height:1.5em;
+    .event {
+        position:relative;
+        .event_title {
+           font-size:2.0em;
            font: Verdana;
-           display:block;
-           color: <%= secondary_text_color %>;
+           display:inline-block;
+           box-sizing:border-box;
+           -moz-box-sizing:border-box;
+           padding:0.1em 1em 0.1em 1em;
+           display:inline-block;
+           line-height:2em;
+           vertical-align:middle;
+           width:78%;
+           color:<%= secondary_text_color  %>;
+        }
+       .event_time {
+           display:inline-block;
+           width:20%;
+           vertical-align:middle;
+           padding: 0.2em 0 0.2em 0;
+           .event_date_range, .event_start_time {
+               font-size:1em;
+               line-height:1.5em;
+               font: Verdana;
+               display:block;
+               color: <%= secondary_text_color %>;
+           }
+       }
+       .event_full_location {
+	border-top:solid 3px <%= graphic_element_color  %>;
+           padding:0.5em 0em 1em 0em;
+       }
+       .event_location, .event_city, .event_state {
+           clear:both;
+           display:inline-block;
+           font-style:italic;
+      }
+       .event_state:before {
+           content:",  ";
+       }
+       .event_city:before {
+           content:",  ";
+       }
+
+       .event_description {
+           margin:0em 0em 3em 0em;
        }
     }
-   .event_full_location {
-        border-top:solid 1px <%= graphic_element_color %>;
-        padding:0.5em 0em 1em 0em;
-   }
-   .event_location, .event_city, .event_state {
-        clear:both;
-        display:inline-block;
-        font-style:italic;
-   }
-   .event_state:before {
-       content:",  ";
-   }
-   .event_city:before {
-       content:",  ";
-   }
-
-   .event_description {
-       margin:0em 0em 3em 0em;
-   }
-}
-      
-
-.event:hover {
-    .manage_button {
-        cursor:pointer;
-        opacity:0.5;
+    .event:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
     }
-}
 }]]>
       </style>
       <params>

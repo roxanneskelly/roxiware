@@ -824,7 +824,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">#e3ae57</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Orange Gray</param>
+        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Orange Grey</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="f0fa162b-0e6c-46cc-b67e-c02dd1e71520">

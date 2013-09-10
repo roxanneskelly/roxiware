@@ -8,6 +8,7 @@ module Roxiware
        end
     end
 
+    @@current_layout = nil
 
     def self.included(base)
        base.extend(BaseControllerClassMethods)
@@ -44,6 +45,7 @@ module Roxiware
     end
 
     def run_layout_setup(setup_script = nil)
+       puts "RUNNING SETUP"
        return unless @current_layout.present?
        run_setup_script = setup_script || @current_layout.setup
        @current_layout.clear_globals
@@ -60,8 +62,10 @@ module Roxiware
     def load_layout
        puts "CURRENT TEMPLATE #{@current_template}"
        puts "CURRENT SCHEME #{@layout_scheme}"
+       run_setup = @@current_layout.nil?
        @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
        @current_layout = @@current_layout
+       run_layout_setup if run_setup
        @page_layout = @@current_layout.find_page_layout(params)
        @page_identifier = @page_layout.get_url_identifier
        if(request.format == :html)

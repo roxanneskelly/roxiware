@@ -91,6 +91,9 @@ module Roxiware
 	       end
 	       @param_objs
 	    end
+	    def get_param_obj_list
+	        get_param_objs.keys.sort{|x, y| x.to_s <=> y.to_s}.collect{|key| @param_objs[key]}
+	    end
       end
 
       class Param < ActiveRecord::Base
@@ -305,7 +308,7 @@ module Roxiware
 		     params << new_param
 		  end
 		when "text"
-	          self.textvalue = param_value.content
+	          self.textvalue = param_value.children.select{|child| child.cdata?}.collect{|child| child.content}.join("")
 		else
 	          self.value = param_value.content
 	     end
@@ -319,7 +322,7 @@ module Roxiware
 		    end
                  end
              elsif self.param_description.field_type == "text"
-	         xml_params.param(:class=>self.param_class, :name=>self.name, :description=>self.description_guid) { |s| s.cdata! self.textvalue || "" }
+	         xml_params.param(:class=>self.param_class, :name=>self.name, :description=>self.description_guid) { xml_params.cdata!(self.textvalue || "") }
              else
 	         xml_params.param(self.value, :class=>self.param_class, :name=>self.name, :description=>self.description_guid)
 	     end

@@ -1,6 +1,15 @@
 require 'uri'
 require 'sass'
 require 'securerandom'
+
+def child_cdata_content(element)
+    if element.present? && element.children.present?
+        (element.children.select{|child| child.cdata?} || []).collect{|child| child.content}.join("")
+    else
+        ""
+    end
+end
+
 module Roxiware
    module Layout
      module LayoutBase
@@ -167,8 +176,8 @@ module Roxiware
 	     self.guid = layout_node["guid"]
              # import layout chooser information
 	     self.name = layout_node.find_first("name").content
-	     self.description = layout_node.find_first("description").content.strip
-	     self.settings_form = layout_node.find_first("settings_form").content.strip if layout_node.find_first("settings_form")
+	     self.description = child_cdata_content(layout_node.find_first("description"))
+	     self.settings_form = child_cdata_content(layout_node.find_first("settings_form"))
              layout_category_nodes = layout_node.find("categories/category")
 
 	     # generate a list of categories, cleaning them up and splitting them into sub categories
@@ -188,8 +197,8 @@ module Roxiware
 	     packages = layout_package_nodes.collect{|layout_package_node| layout_package_node.content}
 	     self.term_ids = (Roxiware::Terms::Term.get_or_create(packages, Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME).map{|term| term.id} + Roxiware::Terms::Term.get_or_create(categories, Roxiware::Terms::TermTaxonomy::LAYOUT_CATEGORY_NAME).map{|term| term.id})
 
-	     self.style = layout_node.find_first("style").content.strip
-	     self.setup = layout_node.find_first("setup").content.strip
+	     self.style = child_cdata_content(layout_node.find_first("style"))
+	     self.setup = child_cdata_content(layout_node.find_first("setup"))
 	     page_layout_nodes = layout_node.find("pages/page")
 	     page_layout_nodes.each do |page_layout_node|
                 page_layout = self.page_layouts.build
@@ -205,28 +214,29 @@ module Roxiware
 
 	  def export(xml_layouts)
 	    xml_layouts.layout(:version=>"1.0", :guid=>self.guid) do |xml_layout|
+	       xml_layout.comment!("Roxiware Web Engine Template: #{self.name}")
 	       xml_layout.name self.name
-	       xml_layout.description {|s| s.cdata!(self.description.strip)}
-	       xml_layout.setup {|s| s.cdata!((self.setup || "").strip)}
-	       xml_layout.setup {|s| s.cdata!((self.settings_form || "").strip)}
+	       xml_layout.description {xml_layout.cdata!(self.description)}
+	       xml_layout.setup {xml_layout.cdata!(self.setup || "")}
+	       xml_layout.settings_form {xml_layout.cdata!(self.settings_form || "")}
 	       xml_layout.categories do |xml_categories|
-                  self.categories.each do |term|
+                  self.categories.sort{|x, y| x.name <=> y.name}.each do |term|
                      xml_categories.category term.name
                   end
                end
 	       xml_layout.packages do |xml_packages|
-                  self.packages.each do |term|
+                  self.packages.sort{|x,y| x.name <=> y.name}.each do |term|
                      xml_packages.package term.name
                   end
                end
-	       xml_layout.style {|s| s.cdata!(self.style.strip) }
+	       xml_layout.style {xml_layout.cdata!(self.style) }
 	       xml_layout.params do |xml_params|
-	          self.get_param_objs.values.each do |param|
+	          self.get_param_obj_list.each do |param|
 		     param.export(xml_params, true)
 		  end
 	       end
 	       xml_layout.pages do |xml_page_layouts|
-	         self.page_layouts.each do |page_layout|
+	         self.page_layouts.sort{|x, y| x.get_url_identifier <=> y.get_url_identifier}.each do |page_layout|
 		    page_layout.export(xml_page_layouts)
 		 end
 	       end
@@ -380,7 +390,7 @@ module Roxiware
 	     self.application    = page_layout_node["application"] || page_layout_node["controller"]
 	     self.action        = page_layout_node["action"]
 	     self.render_layout = page_layout_node.find_first("render_layout").content
-	     self.style = page_layout_node.find_first("style").content
+	     self.style = child_cdata_content(page_layout_node.find_first("style"))
 	     layout_section_nodes = page_layout_node.find("sections/section")
 	     layout_section_nodes.each do |layout_section_node|
                 layout_section = self.layout_sections.build
@@ -397,14 +407,14 @@ module Roxiware
           def export(xml_page_layouts)
 	     xml_page_layouts.page(:application=>self.application, :action=>self.action) do |xml_page_layout|
 	       xml_page_layout.render_layout self.render_layout
-	       xml_page_layout.style {|s| s.cdata!(self.style.strip)}
+	       xml_page_layout.style {xml_page_layout.cdata!(self.style)}
 	       xml_page_layout.params do |xml_params|
-	          self.get_param_objs.values.each do |param|
+	          self.get_param_obj_list.each do |param|
 		     param.export(xml_params, true)
 		  end
 	       end
 	       xml_page_layout.sections do |xml_layout_sections|
-	          self.layout_sections.each do |layout_section|
+	          self.layout_sections.sort{|x,y| x.name <=> y.name}.each do |layout_section|
 		     layout_section.export(xml_layout_sections)
 		  end
 	       end
@@ -522,7 +532,7 @@ module Roxiware
 
 	  def import(layout_section_node)
 	     self.name = layout_section_node["name"]
-	     self.style = layout_section_node.find_first("style").content.strip
+	     self.style = child_cdata_content(layout_section_node.find_first("style"))
 	     widget_instance_nodes = layout_section_node.find("widget_instances/instance")
 	     widget_instance_nodes.each do |widget_instance_node|
                 widget_instance = self.widget_instances.build
@@ -539,14 +549,14 @@ module Roxiware
 
           def export(xml_layout_sections)
 	     xml_layout_sections.section(:name=>self.name) do |xml_layout_section|
-	       xml_layout_section.style {|s| s.cdata!(self.style.strip)}
+	       xml_layout_section.style {xml_layout_section.cdata!(self.style)}
 	       xml_layout_section.params do |xml_params|
-	          self.get_param_objs.values.each do |param|
+	          self.get_param_obj_list.each do |param|
 		     param.export(xml_params, true)
 		  end
 	       end
 	       xml_layout_section.widget_instances do |xml_widget_instances|
-	          self.widget_instances.each do |widget_instance|
+	          self.widget_instances.sort{|x,y| x.section_order <=> y.section_order}.each do |widget_instance|
 		     widget_instance.export(xml_widget_instances)
 		  end
 	       end
@@ -624,11 +634,11 @@ module Roxiware
 	     self.version = widget_node["version"]
 	     self.guid = widget_node["guid"]
 	     self.name = widget_node.find_first("name").content
-	     self.description = widget_node.find_first("description").content    
-	     self.editform = widget_node.find_first("editform").content    
-	     self.preload     = widget_node.find_first("preload").content    
-	     self.render_view = widget_node.find_first("render_view").content    
-	     self.style = widget_node.find_first("style").content    
+	     self.description = child_cdata_content(widget_node.find_first("description"))
+	     self.editform = child_cdata_content(widget_node.find_first("editform"))
+	     self.preload  = child_cdata_content(widget_node.find_first("preload"))
+	     self.render_view = child_cdata_content(widget_node.find_first("render_view"))
+	     self.style = child_cdata_content(widget_node.find_first("style"))
 	     params = widget_node.find("params/param")
 	     params.each do |param|
                widget_param = self.params.build
@@ -639,13 +649,13 @@ module Roxiware
           def export(xml_widgets)
 	     xml_widgets.widget(:version=>self.version, :guid=>self.guid) do |xml_widget|
 	        xml_widget.name        self.name
-	        xml_widget.description {|s| s.cdata!(self.description.strip)}
-	        xml_widget.editform {|s| s.cdata!(self.editform.strip)}
-	        xml_widget.preload {|s| s.cdata!(self.preload.strip)}
-	        xml_widget.render_view {|s| s.cdata!(self.render_view.strip)}
-	        xml_widget.style {|s| s.cdata!(self.style.strip)}
+	        xml_widget.description {xml_widget.cdata!(self.description)}
+	        xml_widget.editform {xml_widget.cdata!(self.editform)}
+	        xml_widget.preload {xml_widget.cdata!(self.preload)}
+	        xml_widget.render_view {xml_widget.cdata!(self.render_view)}
+	        xml_widget.style {xml_widget.cdata!(self.style)}
 		xml_widget.params do |xml_params|
-		    self.get_param_objs.values.each do |param|
+		    self.get_param_obj_list.each do |param|
 		       param.export(xml_params, true)
 		    end
 		end

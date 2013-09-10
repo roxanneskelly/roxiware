@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout version="1.0" guid="73035df7-0397-444d-26bd-6e9e5757cd39">
+  <!-- Roxiware Web Engine Template: Contempo -->
   <name>Contempo</name>
   <description>
     <![CDATA[<b>Clean.  Modern.  Professional.</b> <br>  Contempo's streamlined design features your latest book on the front page, ready for your readers to find.  Your it's subtle graphics and color schemes, your content come first.  Also included are a blog, a calendar, a biography, and a contact link.    <br>   ]]>
@@ -31,9 +32,9 @@ books_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu
  books_menu_permission.value=(Roxiware::Book.all.count > 0) ? "guest" : "admin"
 books_menu_permission.save!]]>
   </setup>
-  <setup>
+  <settings_form>
     <![CDATA[]]>
-  </setup>
+  </settings_form>
   <categories>
     <category>General</category>
   </categories>
@@ -886,16 +887,15 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
 }]]>
   </style>
   <params>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
     <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
-    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">content</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
-    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
-    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{title}%{date}%{comments}</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
+    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">content</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{title}%{date}%{comments}</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
@@ -1010,7 +1010,8 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
     </param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
   </params>
   <pages>
     <page application="" action="">
@@ -1021,6 +1022,45 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
       <params>
       </params>
       <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="content">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="footer_bar">
+          <style>
+            <![CDATA[#copyright.widget {
+    text-align:right;
+    div {
+        display:inline-block;
+    }
+    .scribaroo_site {
+         padding-left:2em;
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
         <section name="header_bar">
           <style>
             <![CDATA[/* Header layout */
@@ -1192,7 +1232,33 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="5">
+            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+              <params>
+                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
+                <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
+                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
+                </param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+              <params>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_greeting">true</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_links">true</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
+              </params>
+            </instance>
+            <instance order="3" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
                 <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
@@ -1217,7 +1283,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                 </param>
               </params>
             </instance>
-            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="6">
+            <instance order="4" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
@@ -1255,305 +1321,6 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                     <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Biography</param>
                   </param>
                 </param>
-              </params>
-            </instance>
-            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="4">
-              <params>
-                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_greeting">true</param>
-                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
-                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_links">true</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
-              </params>
-            </instance>
-            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="3">
-              <params>
-                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
-                <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
-                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
-                </param>
-              </params>
-            </instance>
-          </widget_instances>
-        </section>
-        <section name="footer_bar">
-          <style>
-            <![CDATA[#copyright.widget {
-    text-align:right;
-    div {
-        display:inline-block;
-    }
-    .scribaroo_site {
-         padding-left:2em;
-    }
-}]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-            <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="0">
-              <params>
-              </params>
-            </instance>
-          </widget_instances>
-        </section>
-        <section name="top_bar">
-          <style>
-            <![CDATA[div#mainBody {
-    #top_bar_section {
-        box-sizing:border-box;
-        -moz-box-sizing:border-box;
-        padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
-    }
-}
-
-@media all and (max-width: 640px)  {
-    div#mainBody  #top_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-          </widget_instances>
-        </section>
-        <section name="bottom_bar">
-          <style>
-            <![CDATA[]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-          </widget_instances>
-        </section>
-        <section name="content">
-          <style>
-            <![CDATA[]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-          </widget_instances>
-        </section>
-        <section name="right_bar">
-          <style>
-            <![CDATA[#right_bar_section {
-    position:absolute;
-    width:180px;
-    top:0px;
-    bottom:0px;
-    right:0px;
-    padding:5px;
-    overflow:hidden;
-    .widget#events_widget {
-	margin-bottom:1em;
-	padding-bottom:1em;
-	width:100%;
-	.widget_content {
-	    padding:1em;
-	    box-sizing:border-box;
-	    -moz-box-sizing:border-box;
-	}
-	.events_widget {
-	    width:100%;
-	}
-        .events_widget_title:before {
-	    content: "Calendar";
-	}
-	.events_widget_title {
-	    font-size:1.3em;
-	}
-	.events_widget_all_events {
-            margin-left:0.1em;
-            padding-right:0.1em;
-            vertical-align:top;
-	}
-	.events_widget_all_events:before {
-	    border-top:solid 3px <%= graphic_element_color %>;
-            width:100%;
-            display:inline-block;
-	    content: "More...";
-	 }
-
-	.event_widget_event {
-	    width:100%;
-	    display:block;
-	    border-top:solid 3px <%= graphic_element_color  %>;
-	    margin-top:0em;
-	    padding-top:1em;
-	    padding-bottom:2em;
-            .event_time {
-                font-size:0.7em;
-                .event_start_time {
-                    display:inline-block;
-                    margin-right:1em;
-                }
-                .event_start_time:after {
-                    content:",  ";
-                }
-                .event_date_range {
-                    display:inline-block;
-                }
-            }
-            .event_title {
-                font-weight:900;
-            }
-            .event_full_location {
-                font-size:0.7em;
-                font-style:italic;
-                .event_city, .event_state {
-                    display:inline-block;
-                }
-                .event_state:before {
-                    content:",  ";
-                }
-            }
-	}
-	.event_widget_event:hover {
-	    border-top:solid 3px <%= graphic_element_color  %>;
-	}
-    }
-}]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-            <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="2">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
-                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
-                  <![CDATA[
-                  
-                  
-                  
-                  
-                  
-                  
-<p>Sign up for my mailing list!</p>
-<p>
-<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
-</p>
-
-                
-                
-                
-                
-                
-                ]]>
-                </param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
-                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
-                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
-                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
-                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
-                      <![CDATA[
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-      
-Thank you for your interest.  We'll get right back to you.
-    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    ]]>
-                    </param>
-                  </param>
-                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
-                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
-                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
-                      <![CDATA[
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-                      
-      
-A Contact Request Has Been Received from: $email %>
-
-    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    ]]>
-                    </param>
-                  </param>
-                </param>
-              </params>
-            </instance>
-            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="1">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
-                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-              </params>
-            </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
-              <params>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
           </widget_instances>
@@ -1656,7 +1423,7 @@ A Contact Request Has Been Received from: $email %>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
@@ -1665,6 +1432,257 @@ A Contact Request Has Been Received from: $email %>
             </instance>
           </widget_instances>
         </section>
+        <section name="right_bar">
+          <style>
+            <![CDATA[#right_bar_section {
+    position:absolute;
+    width:180px;
+    top:0px;
+    bottom:0px;
+    right:0px;
+    padding:5px;
+    overflow:hidden;
+    .widget#events_widget {
+	margin-bottom:1em;
+	padding-bottom:1em;
+	width:100%;
+	.widget_content {
+	    padding:1em;
+	    box-sizing:border-box;
+	    -moz-box-sizing:border-box;
+	}
+	.events_widget {
+	    width:100%;
+	}
+        .events_widget_title:before {
+	    content: "Calendar";
+	}
+	.events_widget_title {
+	    font-size:1.3em;
+	}
+	.events_widget_all_events {
+            margin-left:0.1em;
+            padding-right:0.1em;
+            vertical-align:top;
+	}
+	.events_widget_all_events:before {
+	    border-top:solid 3px <%= graphic_element_color %>;
+            width:100%;
+            display:inline-block;
+	    content: "More...";
+	 }
+
+	.event_widget_event {
+	    width:100%;
+	    display:block;
+	    border-top:solid 3px <%= graphic_element_color  %>;
+	    margin-top:0em;
+	    padding-top:1em;
+	    padding-bottom:2em;
+            .event_time {
+                font-size:0.7em;
+                .event_start_time {
+                    display:inline-block;
+                    margin-right:1em;
+                }
+                .event_start_time:after {
+                    content:",  ";
+                }
+                .event_date_range {
+                    display:inline-block;
+                }
+            }
+            .event_title {
+                font-weight:900;
+            }
+            .event_full_location {
+                font-size:0.7em;
+                font-style:italic;
+                .event_city, .event_state {
+                    display:inline-block;
+                }
+                .event_state:before {
+                    content:",  ";
+                }
+            }
+	}
+	.event_widget_event:hover {
+	    border-top:solid 3px <%= graphic_element_color  %>;
+	}
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
+              <params>
+              </params>
+            </instance>
+            <instance order="3" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
+                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="4" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
+                  <![CDATA[<p>Sign up for my mailing list!</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>]]>
+                </param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[Thank you for your interest, and Welcome! ]]>
+                    </param>
+                  </param>
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[A Contact Request Has Been Received from: $email]]>
+                    </param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+              > div:nth-child(1) {
+                  padding-left:0em;
+              }
+          }
+    }
+}
+
+@media all and (max-width: 640px)  {
+    div#mainBody  #top_bar_section {
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:0em;
+              }
+          }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.events {
+
+    .event {
+        position:relative;
+        .event_title {
+           font-size:2.0em;
+           font: Verdana;
+           display:inline-block;
+           box-sizing:border-box;
+           -moz-box-sizing:border-box;
+           padding:0.1em 1em 0.1em 1em;
+           display:inline-block;
+           line-height:2em;
+           vertical-align:middle;
+           width:78%;
+           color:<%= secondary_text_color  %>;
+        }
+       .event_time {
+           display:inline-block;
+           width:20%;
+           vertical-align:middle;
+           padding: 0.2em 0 0.2em 0;
+           .event_date_range, .event_start_time {
+               font-size:1em;
+               line-height:1.5em;
+               font: Verdana;
+               display:block;
+               color: <%= secondary_text_color %>;
+           }
+       }
+       .event_full_location {
+	border-top:solid 3px <%= graphic_element_color  %>;
+           padding:0.5em 0em 1em 0em;
+       }
+       .event_location, .event_city, .event_state {
+           clear:both;
+           display:inline-block;
+           font-style:italic;
+      }
+       .event_state:before {
+           content:",  ";
+       }
+       .event_city:before {
+           content:",  ";
+       }
+
+       .event_description {
+           margin:0em 0em 3em 0em;
+       }
+    }
+    .event:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
       </sections>
     </page>
     <page application="blog" action="">
@@ -1681,6 +1699,37 @@ A Contact Request Has Been Received from: $email %>
       <params>
       </params>
       <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #bottom_bar_section {
+        box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        padding-top:1em;
+
+
+          .blog_page_nav_prev {
+             padding-left:1em;
+             margin-right:1em;
+         }
+         .blog_page_nav_prev span:before {
+             content:"<<";
+         }
+          .blog_page_nav_next {
+             padding-right:1em;
+             margin-left:1em;
+         }
+         .blog_page_nav_next span:after {
+             content:">>";
+         }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
         <section name="left_bar">
           <style>
             <![CDATA[#mainBody #content_section {
@@ -1821,7 +1870,14 @@ A Contact Request Has Been Received from: $email %>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">100</param>
@@ -1831,44 +1887,34 @@ A Contact Request Has Been Received from: $email %>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="3" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
+                  <![CDATA[
+<p>Sign up for my mailing list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
               </params>
             </instance>
-          </widget_instances>
-        </section>
-        <section name="bottom_bar">
-          <style>
-            <![CDATA[div#mainBody {
-    #bottom_bar_section {
-        box-sizing:border-box;
-            -moz-box-sizing:border-box;
-        padding-top:1em;
-
-
-          .blog_page_nav_prev {
-             padding-left:1em;
-             margin-right:1em;
-         }
-         .blog_page_nav_prev span:before {
-             content:"<<";
-         }
-          .blog_page_nav_next {
-             padding-right:1em;
-             margin-left:1em;
-         }
-         .blog_page_nav_next span:after {
-             content:">>";
-         }
-    }
-}]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
           </widget_instances>
         </section>
         <section name="right_bar">
@@ -1882,7 +1928,9 @@ A Contact Request Has Been Received from: $email %>
     padding:5px;
 
     overflow:hidden;
-
+    .widget {
+        margin-bottom:2em;
+    }
     .widget#archive_widget {
             .calendar_nav_title {
                 font-size:1.3em;
@@ -1960,17 +2008,17 @@ A Contact Request Has Been Received from: $email %>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B" order="2">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">archive_widget</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
-              </params>
-            </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">archive_widget</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
               </params>
             </instance>
           </widget_instances>
@@ -2011,8 +2059,95 @@ A Contact Request Has Been Received from: $email %>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="0">
+            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
               <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="index_by_date">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+            #center_bar {
+                  padding:0px 175px 0px 195px;
+            }
+     }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+        margin-bottom:1em;
+
+        .widget#blog_num_nav {
+            font-size:1.3em;
+
+	    .blog_num_nav {
+	       vertical-align:top;
+	       line-height:1em;
+	    }
+	    .blog_num_nav span {
+	       font-weight:bold;
+	    }
+	    .blog_page_nav_prev {
+	       padding-left:1em;
+	       margin-right:0.1em;
+	       line-height:1em;
+	    }
+	    .blog_page_nav_prev span:before {
+		content:"\e06a";
+	    }
+	     .blog_page_nav_next {
+		padding-right:1em;
+		margin-left:0.1em;
+		line-height:1em;
+	    }
+	    .blog_page_nav_next span:after {
+		content:"\e06b";
+	    }
+	    .blog_page_nav_next span:after, .blog_page_nav_prev span:before {
+		font-family: 'Metro Icons';
+		speak: none;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		cursor:pointer;
+		font-size:1.05em;
+		line-height:1em;
+		vertical-align:top;
+	    }
+        }
+    }
+}
+
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar #top_bar_section {
+           left:2em;
+           right:60px;
+      }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" class="local" name="nav_width">6</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">blog_num_nav</param>
               </params>
             </instance>
           </widget_instances>
@@ -2068,7 +2203,7 @@ A Contact Request Has Been Received from: $email %>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>
@@ -2076,297 +2211,172 @@ A Contact Request Has Been Received from: $email %>
         </section>
       </sections>
     </page>
-    <page application="home" action="">
-      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+    <page application="books" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
-        <![CDATA[div#mainBody {
-    #content_section {
-            #center_bar {
-                  padding:0px 20px 0px 175px;
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="books" action="index">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.books_listing {
+    position:relative;
+    .books { 
+        height:100%; 
+        width:100%; 
+        display:inline-block;
+
+        > div {
+            clear:both;
+        }
+
+
+         div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:25%;
+                 height:auto;
+                 padding:5px;
+                 background: <%= link_color %>;
+             }
+         }
+        .series_listing:hover, .book_listing:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
             }
-     }
+        }
+        .series_listing {
+            position:relative;
+             margin-bottom:3em;
+            .more_link:after {
+                content:" More...";
+            }
+
+            div.series_description {
+                position:relative;
+                display:inline-block;
+                max-width:45%;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                padding-left:1em;
+                margin-bottom:4em;
+            }
+            div.series_books {
+                display:inline-block;
+                float:left;
+                position:relative;
+                max-width:50%;
+                text-align:justify;
+                margin:0 0 4em 0;
+                padding:5px;
+
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                .series_book {
+                    display:inline-block;
+                    width:23%;
+                    padding:1%;
+                    img.series_book_cover {
+                        width:100%;
+                        height:auto;
+                        display:block;
+                    }
+                    .series_book_title {
+                        display:none;
+                    }
+               }
+           }
+       }
+   }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="books" action="show">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+             .book_title_link:before {
+                 content:'\e00a';
+             }
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:50%;
+                 height:auto;
+                 padding:5px;
+                 background: <%= link_color %>;
+             }
+         }
+
+
+
+       .book_listing:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[#bottom_bar_section {
+    clear:both;
+}
+
+div#mainBody {
+    #bottom_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+              > div:nth-child(1) {
+                  padding-left:0em;
+              }
+          }
+    }
 }
 
 @media all and (max-width: 640px)  {
-    div#mainBody {
-        width:100%;
-        #left_bar_section {
-            display:none;
-        }
-        #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 20px 0px 0px !important;
-        }
-    }
-}]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-        <section name="bottom_bar">
-          <style>
-            <![CDATA[#mainBody #bottom_bar_section {
-    .widget#recent_posts {
-        text-align:justify;
-        .recent_posts {
-            text-align:justify;
-            .recent_post_entry {
-                vertical-align:top;
-                display:inline-block;
-                width:32%;
-                margin-bottom:3em;
-
-                .post_snippet {
-                    img {
-                        max-width:60px;
-                        max-height:60px;
-                        padding:3px;
-                    }
-                }
-                .post_header {
-                    .margin-bottom:0.5em;
-
-                    .post_date {
-                        color:<%= secondary_text_color %>;
-                        display:inline-block;
-                    }
-                    .comments_link {
-                        float:right;
-                        display:inline-block;
-                    }
-
-                    .post_title {
-                        clear:both;
-                        font-size: 1.5em;
-                        display:block;
-                        text-align:center;
-                        border-bottom:solid 3px <%= graphic_element_color %>;
-                        margin-bottom:0.3em;
-                    }
-                    .post_title:hover {
-                        border-bottom:solid 3px <%= link_hover_color %>;
-                    }
-                }
-                .post_more {
-                    padding-right:2em;
-                    margin-left:1em;
-                }
-                .post_more:before {
-                    content:"More...";
-                    padding-left:2em;
-                }
-            }
-        }
-        .recent_posts:after {
-            width:100%;
-            content:" ";
-            display:inline-block;
-        }
-    }
-}
-
-.share_bar {
+    div#mainBody  #bottom_bar_section {
+         .share_bar {
               > div {
                   display:inline-block;
-                  padding-left:2em;
+                  padding-left:0em;
               }
-          }]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="1">
-              <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">200</param>
-                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
-                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">6</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
-              </params>
-            </instance>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="2">
-              <params>
-              </params>
-            </instance>
-          </widget_instances>
-        </section>
-        <section name="top_bar">
-          <style>
-            <![CDATA[div#mainBody {
-    #top_bar_section {
-        position:relative;
-        box-sizing:border-box;
-         -moz-box-sizing:border-box;
-        padding:1em;
-        background: <%= background_highlight_color %>;
-        clear:both;
-
-        .widget#home_page_clear {
-
-           clear:both;
-           width:100%;
-           height:0px;
-        }
-        .widget#front_page_book {
-            display:inline;
-            padding:2em;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
-            .widget_content {
-                display:inline !important;
-            }
-            .book_list {
-                display:inline;
-                .book_list_book {
-                    display:inline;
-                    .book_list_cover_link {
-                        display:inline;
-                        .book_list_book_cover {
-                            margin:1em;
-                            padding:5px;
-                            display:inline-block;
-                            float:left;
-                            max-width:30%;
-                            height:auto;
-                            background: <%= link_color %>;
-                        }
-                    }
-                    .book_list_book_title {
-                        display:block;
-                        font-size:2em;
-                        max-width:65%;
-                    }
-                    .book_list_book_title:after {
-                        content:"\A\A"; white-space:pre;
-                    }
-                    .book_list_book:hover .book_list_book_cover {
-                        background: <%= link_hover_color %>
-                    }
-                    .book_list_book_description {
-                       display:inline;
-                       clear:both;
-                       .book_more_link {
-                           text-align:right;
-                       }
-                       .book_more_link:before { content: "More..."; padding-left:2em;}
-                       .book_more_link:after { width:100%; display:block; clear:both;}
-                   }
-                }
-            }
-        }
-        .widget#front_page_bio {
-             max-width:25%;
-             display:inline-block;
-             position:relative;
-             float:right;
-             width:auto;
-             top:-2em;
-             right:-1em;
-             z-index:3;
-             .bio_name, .bio_title {
-                 display:none;
-             }
-             .bio_portrait {
-                 padding:5px;
-                 max-width:100%;
-                 height:auto;
-                 background: <%= link_color %>;
-             }
-             .bio_portrait:hover {
-                background: <%= link_hover_color %>;
-             }
-        }
+          }
     }
-}
-
-@media all and (max-width: 767px) {
-      div#mainBody #content_section #center_bar #top_bar_section {
-           left:2em;
-           right:60px;
-      }
 }]]>
           </style>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="2">
-              <params>
-                <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="excerpt_length">500</param>
-                <param description="BEDD0F51-5E0A-489F-9495-195CDC090877" class="local" name="book_count">1</param>
-                <param description="F247867F-5D91-4D9F-A73B-B0022130FD88" class="local" name="selection_order">newest</param>
-                <param description="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0" class="local" name="link_path"></param>
-                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="cover_size">large_image</param>
-                <param description="B3155EA7-F1AD-481C-93B2-FC7DE542D5E4" class="local" name="show_description">excerpt</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">front_page_book</param>
-                <param description="26F42447-4148-4F5F-AAE3-FE3744618E3F" class="local" name="refresh_period">86400</param>
-              </params>
-            </instance>
-            <instance widget_guid="BED8AFA4-4853-4FF8-B53E-1841147A9E4F" order="1">
-              <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="portrait_size">large_image</param>
-                <param description="C94F5738-AEDF-46B1-99F1-8A526393DD54" class="local" name="person_id"></param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">front_page_bio</param>
-              </params>
-            </instance>
-            <instance widget_guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D" order="3">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">home_page_clear</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-              </params>
-            </instance>
-          </widget_instances>
-        </section>
-      </sections>
-    </page>
-    <page application="people" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[.person_listing {
-     background: <%= background_highlight_color %>;
-     padding:1em;
-     margin-right:1em;
-    .social_network_icons {
-        display:none;
-    }
-    .person_portrait {
-        position:relative;
-        top:-20px;
-        right:-20px;
-        padding:5px;
-        background: <%= link_color %>;
-        float:right;
-        max-width:35%;
-    }
-    .person_name {
-        font-size:2em;
-    }
-    .person_bio {
-        img {
-            max-width:100%;
-            padding:1em;
-        }
-    }
-}]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-        <section name="bottom_bar">
-          <style>
-            <![CDATA[.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>
@@ -2415,30 +2425,6 @@ A Contact Request Has Been Received from: $email %>
         }
         .forum_board_last_post {
              width:20%;
-        }
-    }
-}]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-      </sections>
-    </page>
-    <page application="forum" action="show_topic">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[.forum_topic {
-    width:100%;
-    .forum_topic_header {
-        width:100%;
-        .forum_topic_new_posts, .forum_topic_no_new_posts {
-            display:none;
-        }
-        .forum_topic_title {
-            font-size:2em;
-        }
-        .forum_topic_post_date {
-            display:none;
         }
     }
 }]]>
@@ -2548,156 +2534,297 @@ A Contact Request Has Been Received from: $email %>
       <sections>
       </sections>
     </page>
-    <page application="books" action="">
+    <page application="forum" action="show_topic">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
-        <![CDATA[]]>
+        <![CDATA[.forum_topic {
+    width:100%;
+    .forum_topic_header {
+        width:100%;
+        .forum_topic_new_posts, .forum_topic_no_new_posts {
+            display:none;
+        }
+        .forum_topic_title {
+            font-size:2em;
+        }
+        .forum_topic_post_date {
+            display:none;
+        }
+    }
+}]]>
       </style>
       <params>
       </params>
       <sections>
       </sections>
     </page>
-    <page application="books" action="show">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+    <page application="home" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
-        <![CDATA[div.book_listing {
-             clear:both;
-             position:relative;
-             margin-bottom:3em;
-             .book_title_link:before {
-                 content:'\e00a';
-             }
-             img {
-                 float:left;
-                 margin:1em 2em 4em 0;
-                 max-width:50%;
-                 height:auto;
-                 padding:5px;
-                 background: <%= link_color %>;
-             }
-         }
-
-
-
-       .book_listing:hover {
-            .manage_button {
-                cursor:pointer;
-                opacity:0.5;
+        <![CDATA[div#mainBody {
+    #content_section {
+            #center_bar {
+                  padding:0px 20px 0px 175px;
             }
-        }]]>
+     }
+}
+#left_bar_section
+{
+    min-height:40px;
+}
+@media all and (max-width: 640px)  {
+    div#mainBody {
+        width:100%;
+        #left_bar_section {
+            display:none;
+        }
+        #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px 20px 0px 0px !important;
+        }
+    }
+}]]>
       </style>
       <params>
       </params>
       <sections>
         <section name="bottom_bar">
           <style>
-            <![CDATA[#bottom_bar_section {
-    clear:both;
+            <![CDATA[#mainBody #bottom_bar_section {
+    .widget#recent_posts {
+        text-align:justify;
+        .recent_posts {
+            text-align:justify;
+            .recent_post_entry {
+                vertical-align:top;
+                display:inline-block;
+                width:32%;
+                margin-bottom:3em;
+
+                .post_snippet {
+                    img {
+                        max-width:60px;
+                        max-height:60px;
+                        padding:3px;
+                    }
+                }
+                .post_header {
+                    .margin-bottom:0.5em;
+
+                    .post_date {
+                        color:<%= secondary_text_color %>;
+                        display:inline-block;
+                    }
+                    .comments_link {
+                        float:right;
+                        display:inline-block;
+                    }
+
+                    .post_title {
+                        clear:both;
+                        font-size: 1.5em;
+                        display:block;
+                        text-align:center;
+                        border-bottom:solid 3px <%= graphic_element_color %>;
+                        margin-bottom:0.3em;
+                    }
+                    .post_title:hover {
+                        border-bottom:solid 3px <%= link_hover_color %>;
+                    }
+                }
+                .post_more {
+                    padding-right:2em;
+                    margin-left:1em;
+                }
+                .post_more:before {
+                    content:"More...";
+                    padding-left:2em;
+                }
+            }
+        }
+        .recent_posts:after {
+            width:100%;
+            content:" ";
+            display:inline-block;
+        }
+    }
 }
 
-div#mainBody {
-    #bottom_bar_section {
-        box-sizing:border-box;
-        -moz-box-sizing:border-box;
-        padding-top:1em;
-
-         .share_bar {
+.share_bar {
               > div {
                   display:inline-block;
                   padding-left:2em;
               }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
-    }
-}
-
-@media all and (max-width: 640px)  {
-    div#mainBody  #bottom_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+          }]]>
           </style>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">200</param>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">6</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>
           </widget_instances>
         </section>
-      </sections>
-    </page>
-    <page application="blog" action="index_by_date">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[div#mainBody {
-    #content_section {
-            #center_bar {
-                  padding:0px 175px 0px 195px;
-            }
+        <section name="left_bar">
+          <style>
+            <![CDATA[#mainBody #content_section {
+    #left_bar_section {
+        position:absolute;
+        left: 0px;
+        z-index:2;
+        top:0px;
+        float:left;
+        width:160px;
+        overflow:hidden;
+        .widget {
+            margin-bottom:2em;
+        }
+
+    }
+}
+
+@media all and (max-width: 640px)  {
+    #mainBody #content_section #left_bar_section  {
+        width:0px;
      }
 }]]>
-      </style>
-      <params>
-      </params>
-      <sections>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_adsense</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
+                  <![CDATA[
+<p>Join my e-mail list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
         <section name="top_bar">
           <style>
             <![CDATA[div#mainBody {
     #top_bar_section {
+        position:relative;
         box-sizing:border-box;
-        -moz-box-sizing:border-box;
-        padding-top:1em;
-        margin-bottom:1em;
+         -moz-box-sizing:border-box;
+        padding:1em;
+        background: <%= background_highlight_color %>;
+        clear:both;
 
-        .widget#blog_num_nav {
-            font-size:1.3em;
+        .widget#home_page_clear {
 
-	    .blog_num_nav {
-	       vertical-align:top;
-	       line-height:1em;
-	    }
-	    .blog_num_nav span {
-	       font-weight:bold;
-	    }
-	    .blog_page_nav_prev {
-	       padding-left:1em;
-	       margin-right:0.1em;
-	       line-height:1em;
-	    }
-	    .blog_page_nav_prev span:before {
-		content:"\e06a";
-	    }
-	     .blog_page_nav_next {
-		padding-right:1em;
-		margin-left:0.1em;
-		line-height:1em;
-	    }
-	    .blog_page_nav_next span:after {
-		content:"\e06b";
-	    }
-	    .blog_page_nav_next span:after, .blog_page_nav_prev span:before {
-		font-family: 'Metro Icons';
-		speak: none;
-		font-weight: normal;
-		font-variant: normal;
-		text-transform: none;
-		line-height: 1;
-		-webkit-font-smoothing: antialiased;
-		cursor:pointer;
-		font-size:1.05em;
-		line-height:1em;
-		vertical-align:top;
-	    }
+           clear:both;
+           width:100%;
+           height:0px;
+        }
+        .widget#front_page_book {
+            display:inline;
+            padding:2em;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            .widget_content {
+                display:inline !important;
+            }
+            .book_list {
+                display:inline;
+                .book_list_book {
+                    display:inline;
+                    .book_list_cover_link {
+                        display:inline;
+                        .book_list_book_cover {
+                            margin:1em;
+                            padding:5px;
+                            display:inline-block;
+                            float:left;
+                            max-width:30%;
+                            height:auto;
+                            background: <%= link_color %>;
+                        }
+                    }
+                    .book_list_book_title {
+                        display:block;
+                        font-size:2em;
+                        max-width:65%;
+                    }
+                    .book_list_book_title:after {
+                        content:"\A\A"; white-space:pre;
+                    }
+                    .book_list_book:hover .book_list_book_cover {
+                        background: <%= link_hover_color %>
+                    }
+                    .book_list_book_description {
+                       display:inline;
+                       clear:both;
+                       .book_more_link {
+                           text-align:right;
+                       }
+                       .book_more_link:before { content: "More..."; padding-left:2em;}
+                       .book_more_link:after { width:100%; display:block; clear:both;}
+                   }
+                }
+            }
+        }
+        .widget#front_page_bio {
+             max-width:25%;
+             display:inline-block;
+             position:relative;
+             float:right;
+             width:auto;
+             top:-2em;
+             right:-1em;
+             z-index:3;
+             .bio_name, .bio_title {
+                 display:none;
+             }
+             .bio_portrait {
+                 padding:5px;
+                 max-width:100%;
+                 height:auto;
+                 background: <%= link_color %>;
+             }
+             .bio_portrait:hover {
+                background: <%= link_hover_color %>;
+             }
         }
     }
 }
@@ -2712,100 +2839,88 @@ div#mainBody {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="1">
+            <instance order="1" widget_guid="BED8AFA4-4853-4FF8-B53E-1841147A9E4F">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" class="local" name="nav_width">6</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">blog_num_nav</param>
+                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="portrait_size">large_image</param>
+                <param description="C94F5738-AEDF-46B1-99F1-8A526393DD54" class="local" name="person_id"></param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">front_page_bio</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+              <params>
+                <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="excerpt_length">500</param>
+                <param description="BEDD0F51-5E0A-489F-9495-195CDC090877" class="local" name="book_count">1</param>
+                <param description="F247867F-5D91-4D9F-A73B-B0022130FD88" class="local" name="selection_order">newest</param>
+                <param description="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0" class="local" name="link_path"></param>
+                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="cover_size">large_image</param>
+                <param description="B3155EA7-F1AD-481C-93B2-FC7DE542D5E4" class="local" name="show_description">excerpt</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">front_page_book</param>
+                <param description="26F42447-4148-4F5F-AAE3-FE3744618E3F" class="local" name="refresh_period">86400</param>
+              </params>
+            </instance>
+            <instance order="3" widget_guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">home_page_clear</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
           </widget_instances>
         </section>
       </sections>
     </page>
-    <page application="books" action="index">
+    <page application="people" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
-        <![CDATA[.books_listing {
-    position:relative;
-    .books { 
-        height:100%; 
-        width:100%; 
-        display:inline-block;
-
-        > div {
-            clear:both;
+        <![CDATA[.person_listing {
+     background: <%= background_highlight_color %>;
+     padding:1em;
+     margin-right:1em;
+    .social_network_icons {
+        display:none;
+    }
+    .person_portrait {
+        position:relative;
+        top:-20px;
+        right:-20px;
+        padding:5px;
+        background: <%= link_color %>;
+        float:right;
+        max-width:35%;
+    }
+    .person_name {
+        font-size:2em;
+    }
+    .person_bio {
+        img {
+            max-width:100%;
+            padding:1em;
         }
-
-
-         div.book_listing {
-             clear:both;
-             position:relative;
-             margin-bottom:3em;
-
-             img {
-                 float:left;
-                 margin:1em 2em 4em 0;
-                 max-width:25%;
-                 height:auto;
-                 padding:5px;
-                 background: <%= link_color %>;
-             }
-         }
-        .series_listing:hover, .book_listing:hover {
-            .manage_button {
-                cursor:pointer;
-                opacity:0.5;
-            }
-        }
-        .series_listing {
-            position:relative;
-             margin-bottom:3em;
-            .more_link:after {
-                content:" More...";
-            }
-
-            div.series_description {
-                position:relative;
-                display:inline-block;
-                max-width:45%;
-                box-sizing:border-box;
-                -moz-box-sizing:border-box;
-                padding-left:1em;
-                margin-bottom:4em;
-            }
-            div.series_books {
-                display:inline-block;
-                float:left;
-                position:relative;
-                max-width:50%;
-                text-align:justify;
-                margin:0 0 4em 0;
-                padding:5px;
-
-                box-sizing:border-box;
-                -moz-box-sizing:border-box;
-                .series_book {
-                    display:inline-block;
-                    width:23%;
-                    padding:1%;
-                    img.series_book_cover {
-                        width:100%;
-                        height:auto;
-                        display:block;
-                    }
-                    .series_book_title {
-                        display:none;
-                    }
-               }
-           }
-       }
-   }
+    }
 }]]>
       </style>
       <params>
       </params>
       <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[.share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+          }]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
       </sections>
     </page>
     <page application="series" action="">
@@ -2875,92 +2990,6 @@ div#mainBody {
                  background: <%= link_color %>;
              }
          
-    }
-}]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-      </sections>
-    </page>
-    <page application="" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-      </sections>
-    </page>
-    <page application="" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[]]>
-      </style>
-      <params>
-      </params>
-      <sections>
-      </sections>
-    </page>
-    <page application="" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[.events {
-
-    .event {
-        position:relative;
-        .event_title {
-           font-size:2.0em;
-           font: Verdana;
-           display:inline-block;
-           box-sizing:border-box;
-           -moz-box-sizing:border-box;
-           padding:0.1em 1em 0.1em 1em;
-           display:inline-block;
-           line-height:2em;
-           vertical-align:middle;
-           width:78%;
-           color:<%= secondary_text_color  %>;
-        }
-       .event_time {
-           display:inline-block;
-           width:20%;
-           vertical-align:middle;
-           padding: 0.2em 0 0.2em 0;
-           .event_date_range, .event_start_time {
-               font-size:1em;
-               line-height:1.5em;
-               font: Verdana;
-               display:block;
-               color: <%= secondary_text_color %>;
-           }
-       }
-       .event_full_location {
-	border-top:solid 3px <%= graphic_element_color  %>;
-           padding:0.5em 0em 1em 0em;
-       }
-       .event_location, .event_city, .event_state {
-           clear:both;
-           display:inline-block;
-           font-style:italic;
-      }
-       .event_state:before {
-           content:",  ";
-       }
-       .event_city:before {
-           content:",  ";
-       }
-
-       .event_description {
-           margin:0em 0em 3em 0em;
-       }
-    }
-    .event:hover {
-        .manage_button {
-            cursor:pointer;
-            opacity:0.5;
-        }
     }
 }]]>
       </style>

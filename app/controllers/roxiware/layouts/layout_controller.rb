@@ -74,7 +74,7 @@ module Roxiware
 				  :params=>scheme.h["params"].h}
 	     end
            respond_to do |format|
-             format.xml { render :template=>"roxiware/templates/export" }
+             format.xml { render :template=>"roxiware/templates/export", :content_type => "application/xml" }
 	   end
        end
 

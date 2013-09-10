@@ -30,19 +30,21 @@ Displays images of books in the authors book list
     </preload>
     <render_view>
       <![CDATA[<%= content_tag(:div, :class=>"book_list") do 
-    raw(books.collect do |book| 
-        link_to(link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_book") do
-            tag(:img, :class=>"book_list_book_cover", :src=>book[cover_size+'_url']) + 
-            content_tag(:div, book.title, :class=>"book_list_book_title")
-        end +
-        case show_description
-          when "excerpt"
-            content_tag(:div, raw(book.description_excerpt(excerpt_length) {link_to("", book_path(book.seo_index), :class=>"book_more_link")}), :class=>"book_list_book_description")
-          when "all"
-            content_tag(:div, raw(book.description), :class=>"book_list_book_description")
-          else ""
+        books.collect do |book| 
+        content_tag(:div, :class=>"book_list_book") do 
+            link_to(book.title, link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_book_title") +
+            link_to(link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_cover_link") do
+                tag(:img, :class=>"book_list_book_cover", :src=>book[cover_size+'_url']) 
+            end +
+            case show_description
+                when "excerpt"
+                  content_tag(:div, raw(book.description_excerpt(excerpt_length) {link_to("", book_path(book.seo_index), :class=>"book_more_link")}), :class=>"book_list_book_description")
+               when "all"
+                   content_tag(:div, raw(book.description), :class=>"book_list_book_description")
+               else ""
+            end
         end
-    end.join(""))
+    end.join("").html_safe
  end
 %>]]>
     </render_view>

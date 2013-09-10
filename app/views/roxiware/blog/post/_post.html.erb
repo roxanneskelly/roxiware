@@ -20,6 +20,6 @@
          content_tag(:div, raw(show_full_content ? post.post_content : post.post_exerpt), :class=>"content") + 
          (show_full_content ? "".html_safe : link_to("", post.post_link, :class=>"more_link")) + 
          content_tag(:div, :class=>"post_tags") do
-             post.tags.collect{|tag| link_to(tag.name, send("#{@blog_class}_path", :tag=>tag.seo_index), :class=>"post_tag") }.join("")
+             post.tags.collect{|tag| link_to(tag.name, send("#{@blog_class}_path", :tag=>tag.seo_index), :class=>"post_tag") }.join("").html_safe
          end %>
 </article>

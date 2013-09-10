@@ -894,16 +894,16 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
 }]]>
   </style>
   <params>
-    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{author_image}%{title}%{date}%{author_name}%{comments}</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_posts</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
     <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
+    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{author_image}%{title}%{date}%{author_name}%{comments}</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1A79C1DE-4E30-4A09-A36D-C70B983C1DE2">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
@@ -997,7 +997,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
     </param>
-    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
   </params>
   <pages>
     <page application="" action="">
@@ -1053,6 +1053,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                 vertical-align:top;
                 line-height:auto;
                 margin:0 0.5em 0 0.5em;
+                display:inline-block;
                 .book_list_book_title {
                     line-height:auto;
                     display:none;
@@ -1170,14 +1171,14 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
+            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="0">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
                 <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
                   <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
                     <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">21px</param>
                     <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">12px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Kim Harrison</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Thomas Alexander</param>
                     <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
                     <param description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" class="local" name="weight">300</param>
                     <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">48</param>
@@ -1195,13 +1196,13 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                 </param>
               </params>
             </instance>
-            <instance order="6" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="6">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance order="2" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">
               <params>
                 <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1241,7 +1242,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                 </param>
               </params>
             </instance>
-            <instance order="5" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="5">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1268,7 +1269,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
+            <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="0">
               <params>
               </params>
             </instance>
@@ -1310,7 +1311,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="367F87CF-2B37-481A-B02E-9918E989BBB7">
+            <instance widget_guid="367F87CF-2B37-481A-B02E-9918E989BBB7" order="0">
               <params>
               </params>
             </instance>
@@ -1418,21 +1419,21 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
+            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="1">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
               </params>
             </instance>
-            <instance order="0" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
               <params>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
               </params>
             </instance>
-            <instance order="2" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+            <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="2">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
@@ -1451,10 +1452,12 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                   
                   
                   
+                  
 <p>Join my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>
+                
                 
                 
                 
@@ -1487,7 +1490,9 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
                       
                       
                       
+                      
 Thank you for signing up for my mailing list.
+                    
                     
                     
                     
@@ -1518,8 +1523,10 @@ Thank you for signing up for my mailing list.
                       
                       
                       
+                      
       
 A mailing-list request Has Been Received from: $email
+                    
                     
                     
                     
@@ -1600,7 +1607,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="0">
               <params>
                 <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
                 <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
@@ -1617,7 +1624,7 @@ A mailing-list request Has Been Received from: $email
                 </param>
               </params>
             </instance>
-            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">150</param>
@@ -1627,7 +1634,7 @@ A mailing-list request Has Been Received from: $email
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
-            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
@@ -1745,7 +1752,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="0">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
@@ -1762,7 +1769,7 @@ A mailing-list request Has Been Received from: $email
                 </param>
               </params>
             </instance>
-            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">100</param>
@@ -1772,13 +1779,13 @@ A mailing-list request Has Been Received from: $email
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
-            <instance order="3" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
+            <instance widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B" order="3">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">calendar_nav</param>
               </params>
             </instance>
-            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
@@ -1816,7 +1823,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="0">
               <params>
               </params>
             </instance>
@@ -1867,7 +1874,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
               <params>
                 <param description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB" class="local" name="share_link"></param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1898,7 +1905,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="1">
               <params>
               </params>
             </instance>
@@ -1965,7 +1972,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="0" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="0">
               <params>
                 <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
                 <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
@@ -1982,14 +1989,14 @@ A mailing-list request Has Been Received from: $email
                 </param>
               </params>
             </instance>
-            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
               </params>
             </instance>
-            <instance order="2" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
+            <instance widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B" order="2">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">calendar_nav</param>
@@ -2019,7 +2026,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
               <params>
               </params>
             </instance>
@@ -2251,7 +2258,7 @@ A mailing-list request Has Been Received from: $email
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
               <params>
                 <param description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB" class="local" name="share_link"></param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>

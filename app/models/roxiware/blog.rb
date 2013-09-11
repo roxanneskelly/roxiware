@@ -18,7 +18,7 @@ module Roxiware
     ALLOWED_STATUS = %w(new publish draft trash)
     ALLOWED_COMMENT_PERMISSIONS = %w(default open moderate closed hide)
     belongs_to :person
-    has_many :comments, :dependent=>:destroy
+    has_many :comments, :class_name=>"Roxiware::Comment", :dependent=>:destroy, :as=>:post
     has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
     has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
 

@@ -1,5 +1,6 @@
 include Roxiware::Helpers
 include ActionView::Helpers::TagHelper
+include ActionView::Helpers::UrlHelper
 include ActionView::Context
 module Roxiware::CommentHelper
     include Roxiware::Helpers
@@ -9,7 +10,7 @@ module Roxiware::CommentHelper
 	comment_id = params[:comment_id] || 0
         comment_date_format = params[:comment_date_format] || "%A, %B %e, %Y %I:%M %p"
 	comment_header_format = params[:comment_header_format] || "%{author_image}%{date}%{author_name}%{moderate_indicator}" 
-	root=comment_map[comment_id] 
+	root=comment_map[comment_id]
 	
 
 	root[:children].collect do |child_id|
@@ -37,7 +38,8 @@ module Roxiware::CommentHelper
                 end
             end if allow_edit
 	    header_content = {}
-	    header_content[:author_image] = tag(:img, :src=>child.comment_author.thumbnail_url, :class=>"comment_author_image")
+	    header_content[:author_image] = ""
+	    header_content[:author_image] = tag(:img, :src=>child.comment_author.thumbnail_url, :class=>"comment_author_image") if child.comment_author.thumbnail_url.present?
 	    if child.comment_author.url.present?
 	        header_content[:author_name] = link_to(child.comment_author.name, child.comment_author.url, :class=>"comment_author_name")
 	    else

@@ -31,6 +31,7 @@ module Roxiware
 
 		    @proxy = auth_state_or_options[:proxy] || false
 		    @host_with_port = auth_state_or_options[:host_with_port] || ""
+		    puts "HOST_WITH_PORT #{@host_with_port}"
 		    @auth_kind = (auth_state_or_options[:auth_kind] || "facebook").to_s
 		end
 	    end

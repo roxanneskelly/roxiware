@@ -1,3 +1,25 @@
+<script>
+  window.fbAsyncInit = function() {
+    // init the FB JS SDK
+    FB.init({
+      appId      : '260843684057424',                        // App ID from the app dashboard
+      channelUrl : '//www.scribaroo.com/channel.html', // Channel file for x-domain comms
+      status     : true,                                 // Check Facebook Login status
+      xfbml      : true                                  // Look for social plugins on the page
+    });
+
+    // Additional initialization code such as adding Event Listeners goes here
+  };
+
+  // Load the SDK asynchronously
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/all.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
 <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
 <script type="text/javascript">
     var RecaptchaOptions = {
@@ -12,21 +34,21 @@
        <%= hidden_field_tag :root_id, 0 %>
        <%= hidden_field_tag :root_type, "" %>
        <%= raw additional_fields if additional_fields.present? %>
-       <div><%= text_area_tag :comment_content, nil, :class=>"comment_form_content" %></div>
-       <div class="comment_form_header">
+       <div id="comment_form_core"><img id="comment_author_image" src="<%= user_signed_in? ? current_user.person.thumbnail_url : default_image_path(:person, :thumbnail) %>"/> <%= text_area_tag :comment_content, nil, :class=>"comment_form_content" %></div>
+       <div id="comment_form_header" class="comment_form_header">
            <% if user_signed_in? %>
 	       <div class="comment_author"><%= current_user.person.full_name %></div>
 	   <% else %>
-	      <div><%= label_tag :comment_author, "Name", :class=>"comment_author" %><%= text_field_tag :comment_author, "", :class=>"comment_author", :watermark=>"Required" %></div>
-	      <div><%= label_tag :comment_author_url, "URL", :class=>"comment_form_author_url" %><%= text_field_tag :comment_author_url, nil, :class=>"comment_form_author_url", :watermark=>"Optional" %></div>
-	      <div><%= label_tag :comment_author_email, "Email", :class=>"comment_form_author_email" %><%= text_field_tag :comment_author_email, nil, :class=>"comment_form_author_email", :watermark=>"Required.  Not visible." %></div>
-	   <% end %>
+	      <%= label_tag :comment_author, "Name", :class=>"comment_author" %> <%= text_field_tag :comment_author, "", :class=>"comment_author", :watermark=>"Required" %>
+	      <%= label_tag :comment_author_url, "URL", :class=>"comment_form_author_url" %> <%= text_field_tag :comment_author_url, nil, :class=>"comment_form_author_url", :watermark=>"Optional" %>
+	      <%= label_tag :comment_author_email, "Email", :class=>"comment_form_author_email" %> <%= text_field_tag :comment_author_email, nil, :class=>"comment_form_author_email", :watermark=>"Required.  Not visible." %>
+           <% end %>
        </div>
        <% if user_signed_in? %>
             <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button" %>
        <% else %>
            <div id="comment_auth">
-	       <div id="comment_recaptcha" class="comment_recaptcha">
+	       <div id="comment_recaptcha" class="comment_recaptcha" style="display:none;">
 		   <div id="recaptcha_image" class="recaptcha_image"></div>
 		   <div class="recaptcha_only_if_incorrect_sol">Incorrect please try again</div>
 		   <div class="captcha_reload" onclick="Recaptcha.reload()"></div>
@@ -34,14 +56,16 @@
 		   <div class="captcha_image recaptcha_only_if_audio" onclick="Recaptcha.switch_type('image')"></div>
 		   <div class="captcha_help" onclick="Recaptcha.showhelp()"></div>
 		   <input type="text" class="recaptcha_response_field" id="recaptcha_response_field" name="recaptcha_response_field" watermark="Type the two verification words." />
-
 	       </div>
-	       <div id="social_network_login"><a id="facebook_login" href="/account/auth/facebook">Sign In with Facebook</a><a id="twitter_login" href="/account/auth/twitter">Sign In with Twitter</a></div>
+	       <div id="social_network_login"><a id="facebook_login" provider="facebook">Sign In with Facebook</a><a id="twitter_login" provider="twitter">Sign In with Twitter</a></div>
            </div>
 	   <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button", :disabled=>"disabled" %>
         <% end %>
     </form>
 </div>
+<script type="text/template" id="social_networks_info">
+<div id="social_network_login"><div id="comment_author_name"></div><input type="hidden" id="comment_author_provider" name="provider"/><input type="hidden" id="comment_author_auth_info" name="comment_author_auth_info"/></div>
+</script>
 <script>
     var initCommentForm = function(comment_path, comment_root_id, comment_root_type) {
        var comment_form=$(".comment_form");
@@ -50,19 +74,46 @@
        comment_form.find("button").button();
 
        <% if !user_signed_in? %>
-         Recaptcha.destroy();
-	 Recaptcha.create("<%= AppConfig.recaptcha_public_key %>",
-			  "comment_recaptcha",
-			  {
-			      theme: "custom",
-			      callback: function() {$(comment_form).find("#recaptcha_response_field").blur(); }
-			  }
-	 );
+           var recaptcha_init = false;
+           comment_form.find("input#comment_author, input#comment_author_email, input#comment_author_url").bind("input propertychange", function() {
+                 if(!recaptcha_init) {
+                     recaptcha_init=true;
+	             Recaptcha.destroy();
+	             Recaptcha.create("<%= AppConfig.recaptcha_public_key %>",
+			      "comment_recaptcha",
+			      {
+				  theme: "custom",
+				  callback: function() {$(comment_form).find("#recaptcha_response_field").blur(); }
+			      }
+	             );
+                 }
+           });
+           $("a#facebook_login, a#twitter_login").click(function() {
+             var oauth_state = "<%= Roxiware::AuthHelpers::AuthState.new({:proxy=>true, :host_with_port=>request.host_with_port}).get_state %>";
+
+	     var data = {provider:$(this).attr("provider"), 
+                         oauth_state:oauth_state,
+                         onSuccess: function(response) {
+                             if(response) {
+                                 var social_networks_info = $($("#social_networks_info").text());
+                                 console.log($(social_networks_info));
+                                 comment_form.find("#comment_author_image").attr("src", response.thumbnail_url);
+                                 social_networks_info.find("#comment_author_name").text(response.full_name);
+                                 social_networks_info.find("#comment_author_provider").attr("value", response.provider);
+                                 social_networks_info.find("#comment_author_auth_info").attr("value", response.auth_info);
+                                 comment_form.find("#comment_form_header").html(social_networks_info);
+                                 comment_form.find("#comment_auth").remove();
+                                 comment_form.find("button.post_comment_button").button("enable");
+                             }
+                          }};
+		// do a direct facebook login to gather the auth token
+	     do_login(data);
+	});
        <% end %>
 
        $(comment_form).find("input[watermark]").watermark();
-       comment_form.find("button.post_comment_button").require_fields("input.comment_author, input.comment_form_author_email, input.recaptcha_response_field");
-       comment_form.find("input.comment_author").focus();
+       comment_form.find("button.post_comment_button").require_fields("input.comment_author, input.comment_author_email, input.recaptcha_response_field");
+       comment_form.find("textarea#comment_content").focus();
 
        comment_form.find("button.post_comment_button").click(function() {
            comment_form.find("input.watermark").val("");

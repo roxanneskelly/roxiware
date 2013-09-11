@@ -35,7 +35,6 @@ module Roxiware
        self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))
     end
 
-
     # handle count caching.  We don't use the built in count_cache on the belongs_to as we have
     # multiple counters depending on comment_status
     before_create do

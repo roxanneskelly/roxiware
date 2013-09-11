@@ -40,6 +40,7 @@ class Roxiware::ForumController < ApplicationController
     def show_topic
       @title = @title + " : Forum"
 
+      puts "REQUEST PATH #{request.path}"
       @topic = Roxiware::Forum::Topic.find_by_topic_link(request.path)
       raise ActiveRecord::RecordNotFound if @topic.nil?
       authorize! :read, @topic

@@ -8,7 +8,9 @@ Displays a copyright entry based on the website copyright settings.
 ]]>
     </description>
     <editform/>
-    <preload>true</preload>
+    <preload>
+      <![CDATA[true]]>
+    </preload>
     <render_view>
       <![CDATA[
 <div class="site_copyright">Copyright &copy;<%= @site_copyright_first_year+"-" if @site_copyright_first_year != Date.today.strftime("%Y") %><%= Date.today.strftime("%Y") %> <%= @site_copyright %>.  <%= additional_text %></div><div class="scribaroo_site">A <a href="http://www.scribaroo.com">Scribaroo</a> site</a></div>

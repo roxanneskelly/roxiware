@@ -15,7 +15,9 @@
 	 <% locals[:page_layout]=@page_layout %>
 	 <% locals[:layout]=@current_layout %>
          <% globals = widget_instance.globals %>
+          <% puts "PRELOAD #{widget_instance.widget.preload}" %>
 	 <% show_widget = eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1) %>
+	 <% puts "WIDGET SHOW #{widget_instance.widget.guid} #{widget_instance.widget.name} #{show_widget.inspect}" %>
 	 <% if show_widget || can?( :edit, widget_instance) %>
 	   <% if can? :move, widget_instance %>
 	      <div class="widget_drop_target"><div id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"><div>&nbsp;</div></div></div>

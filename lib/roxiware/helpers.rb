@@ -60,11 +60,11 @@ module Roxiware
       def default_image_path(resource_type, image_size)
          case resource_type
          when :person
-             ActionController::Base.helpers.image_path("unknown_person_#{image_size}.png")
+             ActionController::Base.helpers.image_path("unknown_person_#{image_size.to_s}.png")
          when :book
-             ActionController::Base.helpers.image_path("unknown_book_#{image_size}.png")
+             ActionController::Base.helpers.image_path("unknown_book_#{image_size.to_s}.png")
          else
-             ActionController::Base.helpers.image_path("unknown_image_#{image_size}.png")
+             ActionController::Base.helpers.image_path("unknown_image_#{image_size.to_s}.png")
          end
       end
 

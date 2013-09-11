@@ -108,7 +108,7 @@ module Roxiware
       scope :visible, lambda{|user| where((user.present? && user.is_admin?) ? "" : "permissions != 'hide'")}
 
       def root_post
-	  self.posts.first
+	  self.posts.published().last
       end
 
       def new_post_count

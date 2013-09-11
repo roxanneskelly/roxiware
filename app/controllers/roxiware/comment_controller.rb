@@ -81,7 +81,6 @@ module Roxiware
 	 # PUT /posts/1
 	 # PUT /posts/1.json
 	 def update
-	   params[:comment_date] = DateTime.now
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
 	   respond_to do |format|
 	       if @comment.update_attributes(params, :as=>@role)

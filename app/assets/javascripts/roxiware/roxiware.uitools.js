@@ -1179,13 +1179,35 @@ $.fn.require_fields = function(fields) {
 
 function do_login(data) {
     // Bring up a 3rd party login window
+    console.log("do login");
     var login_url = "/account/auth/authproxy?"+$.param(data);
     var width=500;
     var height=300;
     var left = $(window).width()/2-width/2;
     var top=$(window).height()/2-height/2;
-    window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+    
+    if(data.provider == "facebook") {
+        FB.getLoginStatus(function(response) {
+            console.log(response);
+	    if(response.status != "connected") {
+		FB.Event.subscribe('auth.authResponseChange', function(response) {
+			alert('The status of the session is: ' + response.status);
+		    });
+
+                window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+            }
+            else {
+		FB.api('/me', function(response) {
+		    if(data.onSuccess) {
+			data.onSuccess({uid:response.username, authtype:"facebook", full_name:response.name, url:response.link, email:response.email, thumbnail_url:"http://graph.facebook.com/"+response.username+"/picture"});
+                    }
+		});
+            }
+        });
+    }
+
 };
+
 function get_login_form_template(oauth_state) {
     var template = $(login_form_template);
     template.find("a#forgot_password").click(function() {

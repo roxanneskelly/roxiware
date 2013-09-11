@@ -5,7 +5,7 @@
         <%= content_tag(:div, @topic.root_post.comment_date.strftime("%c"), :class=>"forum_topic_post_date") %>
     <% end %>
     <%= content_tag(:div, :class=>"comments") do %>
-        <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>true, :allow_edit=>false, :comment_date_format=>"%c") %>
+        <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>true, :allow_edit=>(current_user.present? && current_user.is_admin?), :comment_date_format=>"%c") %>
     <% end %>
 <% end %>
 <% if can? :post, @topic %>
@@ -45,7 +45,79 @@ $(function() {
         $(this).after(form_div);
      });
 <% end %>
+<% if can? :edit, @topic %>
+    $(".manage_comment").each(function(index, menu) {
+	ddsmoothmenu.init({
+	    mainmenuid: $(this).attr("id"),
+            rightalign: true,
+	    orientation: 'h',
+	    classname: 'manage_menu',
+	    contentsource: "markup"
+	});
+    });
+    /* Handle publish/hide */
+    $(".manage_comment .publish_comment, .manage_comment .hide_comment").click(function() {
+        console.log("MANAGING");
+        if($(this).parent().is(".selected_item")) {
+            return;
+        }
+        var manage_comment = $(this).parents("[comment_id]").first();
+        var self = $(this);
+        var comment_id = manage_comment.attr("comment_id");
+        var upload_params = {comment_status:$(this).is(".publish_comment")?"publish":"moderate"};
+
+	$.ajax("/comment/"+comment_id+".json", {
+		type:"PUT",
+                data: upload_params,
+	       error: function(xhr, textStatus, errorThrown) {
+	                  $.error(errorThrown);
+		      },
+	       complete: function() {
+		       },
+	       success: function(data) {
+			    if(data["error"]) {
+			        $(data["error"]).each(function(index, value) {
+				    $.error(value[1])
+				    comment_form.find("input#"+value[0]).css("background", "#ffcccc");
+			        });
+			    }
+			    else {
+                                manage_comment.find(".manage_menu .publish_comment, .manage_menu .hide_comment").parent().toggleClass("selected_item");
+                                manage_comment.find(".comment_moderate_indicator").first().toggleClass("comment_status_publish").toggleClass("comment_status_moderate");
+		            }
+                        }
+
+        });
+    });
+
+    /* Handle delete */
+    $(".manage_comment .delete_comment").click(function() {
+        var manage_comment = $(this).parents("[comment_id]").first();
+        var self = $(this);
+        var comment_id = manage_comment.attr("comment_id");
+        var delete_params = {}
+	$.ajax("/comment/"+comment_id+".json", {
+	       type:"DELETE",
+               data: delete_params,
+	       error: function(xhr, textStatus, errorThrown) {
+	                  $.error(errorThrown);
+		      },
+	       complete: function() {
+		       },
+	       success: function(data) {
+			    if(data["error"]) {
+			        $(data["error"]).each(function(index, value) {
+				    $.error(value[1])
+				    comment_form.find("input#"+value[0]).css("background", "#ffcccc");
+			        });
+			    }
+			    else {
+			        window.location.reload();
+		            }
+                        }
+        });
+    });
+<% end %>
 
 });
 </script>
-

@@ -571,108 +571,151 @@ div#mainBody .post {
     div.comment_form_header {
         position:relative;
         width:100%;
-
-        > div {
-            width:100%;
-            label {
+        text-align:justify;
+        line-height:1.5em;
+        overflow:hidden;
+        height:7em;
+ 
+        label {
+                margin:0.0em 0 0 0;
+                display:inline-block;
                 width:10%;
-                display:inline-block;
-            }
-            input {
-                display:inline-block;
-                width:85%;
-            }
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
         }
-        div.comment_author {
-            display:none;
+        input {
+                display:inline-block;
+                width:82%;
+                margin:0px;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
         }
+    }
+    div.comment_form_header:after {
 
-        .comment_author_image {
-            display:none;
-        } 
-    }
-    textarea.comment_form_content {
-        resize:vertical;
-        position:relative;
+            display:inline-block;
+            content:"";
+            width:100%;
+            overflow:hidden;
+            margin:0px;
+            padding:0px;
+            line-height:0px;
+            height:0px;
+        }
+    #comment_form_core {
+        text-align:justify;
         width:100%;
-        height:8em;   
+        textarea.comment_form_content {
+            resize:vertical;
+            vertical-align:top;
+            position:relative;
+            width:80%;
+            min-height:64px;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            display:inline-block;
+        }
+        img#comment_author_image {
+            vertical-align:top;
+            max-width:64px;
+            display:inline;
+            width:15%;
+            height:auto;
+            margin:0.5em 0 0 0;
+            background:<%= text_color %>;
+            display:inline-block;
+        }
     }
-        
+    #comment_form_core:after {
+        width:100%;
+        display:inline-block;
+        content:"";
+        height:0px;
+    }
+
     button.post_comment_button {
         float:right;
             clear:both;
      }
      #twitter_login,#facebook_login {
-         float:right;
-         margin-bottom:0.3em;
+         float:none;
+         margin-top:0.3em;
+         margin-left:1em;
+         display:inline-block;
+         width:15em;
+         display:none;
      }
 
-     .comment_recaptcha {
-         position:relative;
-         width:325px;
-         display:inline-block;
-         float:left;
-         label {
-             width:5em !important;
-         }
-         input {
-             width:300px;
-         }
+     #comment_auth { 
+         text-align:right;
+         width:100%;
+         margin-bottom:1em;
+	 .comment_recaptcha {
+             text-align:left;
+	     position:relative;
+	     width:325px;
+	     display:inline-block;
+	     label {
+		 width:5em !important;
+	     }
+	     input {
+		 width:300px;
+	     }
 
-         .recaptcha_image {
-             width:300px;
-             height:57px;
-             border:solid 1px black;
-             margin-bottom:0.5em;
-         }
-         .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
-             font-size:17px;
-             font-family: 'Metro Icons';
-             speak: none;
-             font-weight: normal;
-             font-variant: normal;
-             text-transform: none;
-             line-height: 1;
-             -webkit-font-smoothing: antialiased;
-             color: <%= link_color %>;
-             position:absolute;
-             left:305px;            
-             width:19px;
-             height:19px;
-             cursor:pointer;
-         }
-         .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
-             color: <%= link_hover_color %>;
-         }
-         .captcha_reload {
-             top:0px;
-         }
-         .captcha_reload:before {
-             content: "\e070";
-         }
-         .captcha_audio {
-             top:20px;
-         }
-         .captcha_audio:before {
-             content: "\e067";
-         }
+	     .recaptcha_image {
+		 width:300px;
+		 height:57px;
+		 border:solid 1px black;
+		 margin-bottom:0.5em;
+	     }
+	     .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+		 font-size:17px;
+		 font-family: 'Metro Icons';
+		 speak: none;
+		 font-weight: normal;
+		 font-variant: normal;
+		 text-transform: none;
+		 line-height: 1;
+		 -webkit-font-smoothing: antialiased;
+		 color: <%= link_color %>;
+		 position:absolute;
+		 left:305px;            
+		 width:19px;
+		 height:19px;
+		 cursor:pointer;
+	     }
+	     .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+		 color: <%= link_hover_color %>;
+	     }
+	     .captcha_reload {
+		 top:0px;
+	     }
+	     .captcha_reload:before {
+		 content: "\e070";
+	     }
+	     .captcha_audio {
+		 top:20px;
+	     }
+	     .captcha_audio:before {
+		 content: "\e067";
+	     }
 
-         .captcha_image {
-             top:20px;
-         }
-         .captcha_image:before {
-            content: "\e0b5";
-         }
+	     .captcha_image {
+		 top:20px;
+	     }
+	     .captcha_image:before {
+		content: "\e0b5";
+	     }
 
-         .captcha_help {
-             top:40px;
-         }
-         .captcha_help:before {
-             content: "\e056";
-         }
+	     .captcha_help {
+		 top:40px;
+	     }
+	     .captcha_help:before {
+		 content: "\e056";
+	     }
+        }
      }
 }
-
 
 .page_content, .person_listing {
     .manage_button {

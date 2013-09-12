@@ -27,9 +27,7 @@ class Roxiware::ForumController < ApplicationController
       @title = @title + " : Forum"
       @board = Roxiware::Forum::Board.find_by_seo_index(params[:id])
       raise ActiveRecord::RecordNotFound if @board.nil?
-      puts "BOARD PERMS #{@board.resolve_permissions}"
       authorize! :read, @board
-
       respond_to do |format|
           format.html 
       end
@@ -40,7 +38,6 @@ class Roxiware::ForumController < ApplicationController
     def show_topic
       @title = @title + " : Forum"
 
-      puts "REQUEST PATH #{request.path}"
       @topic = Roxiware::Forum::Topic.find_by_topic_link(request.path)
       raise ActiveRecord::RecordNotFound if @topic.nil?
       authorize! :read, @topic
@@ -116,7 +113,6 @@ class Roxiware::ForumController < ApplicationController
 				          :comment_status=>comment_status,
 					  :comment_content=>params[:comment_content],
 					  :comment_date=>DateTime.now.utc}, :as=>"")
-					  puts "POST IS #{@post.inspect}"
 
 					  
 	      if user_signed_in?
@@ -137,7 +133,6 @@ class Roxiware::ForumController < ApplicationController
 	      @post.comment_author = @post_author
 	      if(!@post.save) 
 	          @post.errors.each do |attr,msg|
-		      puts "ERROR #{attr} #{msg}"
 		      @topic.errors.add(attr, msg)
 		  end
               else

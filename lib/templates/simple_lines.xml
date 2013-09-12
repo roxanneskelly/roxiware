@@ -1535,6 +1535,13 @@ font-size:16px;
                 <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">events_widget</param>
               </params>
             </instance>
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
           </widget_instances>
         </section>
         <section name="top_bar">

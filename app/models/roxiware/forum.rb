@@ -68,7 +68,8 @@ module Roxiware
         before_validation do
             self.comment_count = self.topics.sum(:comment_count)
             self.pending_comment_count = self.topics.sum(:pending_comment_count)
-            self.last_post = self.topics.select{|topic| topic.last_post.present?}.sort{|x, y| x.last_post.comment_date <=> y.last_post.comment_date}.last.last_post
+	    last_topic = self.topics.select{|topic| topic.last_post.present?}.sort{|x, y| x.last_post.comment_date <=> y.last_post.comment_date}.last
+            self.last_post = last_topic.last_post if last_topic.present?
 	    self.seo_index = self.name.to_seo
         end
      end
@@ -169,6 +170,7 @@ module Roxiware
       end
 
       before_validation() do
+         puts self.inspect
          seo_index = self.title.downcase.gsub(/[^a-z0-9]+/i, '-')
          self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{self.root_post.comment_date.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.root_post
 	 self.last_post = self.posts.published().last

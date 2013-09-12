@@ -107,7 +107,7 @@ class Roxiware::ForumController < ApplicationController
       ActiveRecord::Base.transaction do
           begin
               # first, create the 
-	      @topic = @board.topics.create({:title=>params[:title], :permissions=>"board"}, :as=>@role)
+	      @topic = @board.topics.create({:title=>params[:title], :permissions=>"board"}, :as=>"")
 	      params[:comment_date] = DateTime.now
 	      person_id = (current_user && current_user.person)?current_user.person.id : -1
 	      comment_status = "moderate"
@@ -135,8 +135,14 @@ class Roxiware::ForumController < ApplicationController
 	      end
               @post_author.save!
 	      @post.comment_author = @post_author
-	      @post.save!
-	      @topic.save!
+	      if(!@post.save) 
+	          @post.errors.each do |attr,msg|
+		      puts "ERROR #{attr} #{msg}"
+		      @topic.errors.add(attr, msg)
+		  end
+              else
+	          @topic.save
+              end
            rescue Exception=>e
 	       puts e.message
                puts e.backtrace.join("\n")
@@ -145,7 +151,7 @@ class Roxiware::ForumController < ApplicationController
            end
        end
        respond_to do |format|
-	   if (user_signed_in? || verify_recaptcha(:model=>@topic, :attribute=>:recaptcha_response_field)) && @topic.update_attributes(params, :as=>"") && @topic.errors.empty?
+	   if (user_signed_in? || verify_recaptcha(:model=>@topic, :attribute=>:recaptcha_response_field)) && @topic.errors.empty?
 	       if(@post.comment_status == "publish")
 		   notice = "Your topic has been published."
 	       else

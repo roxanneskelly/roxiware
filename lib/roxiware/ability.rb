@@ -65,10 +65,10 @@ module Roxiware
       can :read, Roxiware::Blog::Post, :post_status=>"publish"
       can :read, Roxiware::Comment, :comment_status=>"publish"
       can :comment, Roxiware::Blog::Post do |post|
-         (self.person_id==user.person_id) || ["open", "moderate"].include?(post.resolve_comment_permissions)
+         (post.person_id==user.person_id) || ["open", "moderate"].include?(post.resolve_comment_permissions)
       end
       can :read_comments, Roxiware::Blog::Post do |post|
-        (self.person_id==user.person_id || ["open", "moderate", "closed"].include?(post.resolve_comment_permissions))
+        (post.person_id==user.person_id || ["open", "moderate", "closed"].include?(post.resolve_comment_permissions))
       end
       can :manage, Roxiware::Comment, :person_id=>user.person_id
       can :manage, Roxiware::User do |resource|

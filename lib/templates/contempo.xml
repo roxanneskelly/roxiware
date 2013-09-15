@@ -357,13 +357,13 @@ div#mainBody .post {
             box-sizing:border-box;
             -moz-box-sizing:border-box;
         }
-        .more_link {
-            margin-left:1em;
-            padding-right:3em;
-        }
-        .more_link:before {
-            content:"More...";
-        }
+    }
+    .more_link {
+        margin-left:1em;
+        padding-right:3em;
+    }
+    .more_link:before {
+        content:"More...";
     }
     .post_tags {
         .post_tag {

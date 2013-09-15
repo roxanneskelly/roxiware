@@ -38,8 +38,8 @@ books_menu_permission.save!]]>
     <category>General</category>
   </categories>
   <packages>
-    <package>basic_author_dev</package>
-    <package>premium_author_dev</package>
+    <package>basic_author</package>
+    <package>premium_author</package>
   </packages>
   <style>
     <![CDATA[/* Document layout */

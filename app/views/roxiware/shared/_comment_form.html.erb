@@ -36,7 +36,7 @@
        <%= raw additional_fields if additional_fields.present? %>
        <%= content_tag("div",  :id=>"comment_form_core") do 
                tag(:img, :id=>"comment_author_image", :class=>"comment_author_image", :src=>(user_signed_in? ? current_user.person.thumbnail_url : default_image_path(:person, :thumbnail))) +  " " +
-               text_area_tag(:comment_content, nil, :class=>"comment_form_content") +
+               content_tag(:div, text_area_tag(:comment_content, nil, :class=>"settings_wysiwyg"), :id=>"comment_form_content", :class=>"settings_wysiwyg&#19;") +
                hidden_field_tag(:comment_author_authtype, "generic") +
                hidden_field_tag(:comment_author_auth_token, nil)
           end %>
@@ -125,6 +125,20 @@
        <% end %>
 
        $(comment_form).find("input[watermark]").watermark();
+
+       $(comment_form).find("textarea").wysiwyg({ css: $.roxiware.main_css,
+                                                    iFrameClass:"wysiwyg_iframe",
+			                            initialContent:"",
+                                                    controls: {
+                                                        insertImage: { visible: false},
+                                                        undo: { visible: false },
+                                                        redo: { visible: false},
+                                                        unLink: { visible: false},
+                                                        code: { visible: false},
+                                                        insertHorizontalRule: { visible: false},
+                                                        html: { visible: true},
+                                                        fileManager: { visible:false }
+                                                    }});
        comment_form.find("button.post_comment_button").require_fields("input.comment_author, input.comment_author_email, input.recaptcha_response_field");
        comment_form.find("textarea#comment_content").focus();
 

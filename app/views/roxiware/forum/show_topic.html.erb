@@ -1,6 +1,8 @@
-<%= content_tag(:div, :id=>@topic.id, :class=>"forum_topic") do %>
-    <%= content_tag(:div, :class=>"forum_topic_header") do %>
+<%= content_tag(:div, :id=>@topic.id, :class=>"forum_topic", :rel=>forum_update_topic_path(@topic.board.seo_index, @topic.id)) do %>
+    <%= content_tag(:div, :class=>"forum_topic_header forum_topic_menu_target", :topic_permission=>@topic.permissions) do %>
         <%= content_tag(:div, @topic.new_post_count, :class=>(@topic.new_post_count > 0) ? "forum_topic_new_posts" : "forum_topic_no_new_posts") %>
+        <%= link_to("", forum_index_path, :class=>"forum_home_title") %>
+        <%= link_to(@topic.board.name, forum_path(@topic.board.seo_index), :class=>"forum_board_title") %>
         <%= content_tag(:div, @topic.title, :class=>"forum_topic_title") %>
         <%= content_tag(:div, @topic.root_post.comment_date.strftime("%c"), :class=>"forum_topic_post_date") %>
     <% end %>
@@ -47,13 +49,13 @@ $(function() {
 <% end %>
 <% if can? :edit, @topic %>
     $(".manage_comment").each(function(index, menu) {
-	ddsmoothmenu.init({
-	    mainmenuid: $(this).attr("id"),
-            rightalign: true,
-	    orientation: 'h',
-	    classname: 'manage_menu',
-	    contentsource: "markup"
-	});
+	    ddsmoothmenu.init({
+		mainmenuid: $(this).attr("id"),
+		rightalign: true,
+		orientation: 'h',
+		classname: 'manage_menu',
+		contentsource: "markup"
+	    });
     });
     /* Handle publish/hide */
     $(".manage_comment .publish_comment, .manage_comment .hide_comment").click(function() {
@@ -121,3 +123,6 @@ $(function() {
 
 });
 </script>
+<% if can? :edit, @topic %>
+<%= render :partial=>"roxiware/forum/topic_manage_control" %>
+<% end %>

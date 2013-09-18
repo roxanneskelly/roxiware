@@ -1,0 +1,18 @@
+<div id="board_edit_form" class="small_form">
+   <%= form_for(@board, :url=>forum_path(@board.id)+".json") do |board| %>
+      <%= content_tag(:div, board.label(:name) + board.text_field(:name, :watermark=>"Name"), :id=>"board_name_entry") %>
+      <%= content_tag(:div, board.label(:permissions) + board.select(:permissions, Roxiware::Forum::Board::ALLOWED_TOPIC_PERMISSIONS), :id=>"topic_permissions_entry") %>
+      <%= button_tag "Save", :id=>"save_button", :value=>"save", :type=>"button", :class=>"save_button" %></div>
+   <% end %>
+</div>
+<script>
+$(function() {
+      $("#board_edit_form button#save_button").click(function() {
+	 $("form input.watermark").val("");
+         $.ajaxSetParamsJSON("<%= forum_path(@board.id)%>.json", $("#board_edit_form form").serializeArray(), {form:$("#board_edit_form form"), success:function(data) {
+             console.log(data.seo_index);
+             window.location = "/forum/"+data.seo_index;
+         }});
+    });
+});
+</script>

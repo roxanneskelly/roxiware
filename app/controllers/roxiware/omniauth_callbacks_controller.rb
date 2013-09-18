@@ -7,7 +7,7 @@ module Roxiware
 
         def facebook
 	    puts "OATH FACEBOOK"
-            oauthorize :facebook
+	    (params['is_proxy'] == "true") ? auth_results(:facebook) : oauthorize(:facebook)
         end
 
         def twitter
@@ -24,15 +24,9 @@ module Roxiware
 
 	# if it's a login, and not a proxy, redirect to the callback provider
 	def authproxy
-            @auth_info = env["omniauth.auth"]['info']
+            @auth_info = env["omniauth.auth"]["info"]
 	    @login_url = @auth_info['login_url']
-	    @provider = @auth_info['auth_kind']
-	    if @login_url.present?
-	        redirect_to @login_url
-            else
-	        # not logging into roxiware site, so simply close the window
-		render :inline=>"<script>window.close()</script>"
-	    end
+	    redirect_to @login_url
 	end
 
         def failure
@@ -60,6 +54,28 @@ module Roxiware
         end
 
     private
+
+	def auth_results(kind)
+	    access_token = env["omniauth.auth"]
+	    
+	    auth_info = {}
+	    case kind
+	        when :facebook
+		    raw_info = access_token["extra"]["raw_info"]
+                    auth_info = {:uid => raw_info["username"],
+                                 :authtype => 'facebook',
+                                 :email => raw_info['email'],
+                                 :full_name => raw_info['name'],
+                                 :thumbnail_url => "http://graph.facebook.com/#{raw_info['username']}/picture?type=square",
+                                 :url => raw_info['link']}
+		    auth_token = Roxiware::AuthHelpers::AuthUserToken.new(auth_info)
+		    auth_info[:auth_token] = auth_token.get_state
+		    auth_info[:expires] = auth_token.expires.to_i
+            end
+	    render :inline=>"<script>localStorage.roxiwareAuthInfo='#{auth_info.to_json}'; window.close();</script>"
+	end
+
+
         def oauthorize(kind)
 	    if signed_in?
                 flash[:notice] = "Already signed in as #{current_user.username}"
@@ -74,7 +90,7 @@ module Roxiware
 		       # on 3rd party omniauth servers, render the code that 
 		       # reloads the parent window
 		       sign_in(@user)
-	               render :inline=>"<script>window.opener.location.reload();window.close()</script>"
+	               auth_results(kind)
 		   end
                else
                    flash[:error] = "Unable to sign in with #{kind.to_s.titleize}"

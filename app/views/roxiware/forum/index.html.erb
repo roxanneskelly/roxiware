@@ -11,13 +11,16 @@
              <% end %>
              <%= content_tag(:div, :class=>"forum_board_counters") do %>
                  <%= content_tag(:div, board.topic_count, :class=>"forum_board_topic_count") %>
-                 <%= content_tag(:div, board.post_count, :class=>"forum_board_post_count") %>
+                 <%= content_tag(:div, :class=>"forum_board_post_count") do 
+		         content_tag(:span, board.post_count) + 
+		         (content_tag(:span, board.pending_post_count, :class=>"forum_board_pending_post_count") if can?(:edit, board))
+                     end %>
              <% end %>
-	     <%= content_tag(:div, :class=>"forum_board_last_post") do %>
-	         <% if board.last_post.present? %>
-		     <%= link_to(board.last_post.post.title, board.last_post.post.topic_link, :class=>"forum_board_last_post_title") %>
-		     <%= link_to(board.last_post.comment_author.name, board.last_post.comment_author.url, :class=>"forum_board_last_post_author") %>
-		     <%= content_tag(:div, board.last_post.comment_date.localtime.strftime("%c"), :class=>"forum_board_last_post_date") %>
+	     <%= content_tag(:div, :class=>"forum_board_last_post forum_board_menu_target", :rel=>forum_path(board.id), :board_permission=>board.permissions) do %>
+	         <% if board.last_post.present? && board.last_post.post.present? %>
+		     <%= link_to(board.last_post.post.title, board.last_post.post.topic_link, :class=>"forum_board_last_post_title") + 
+		         (board.last_post.comment_author.present? ? link_to(board.last_post.comment_author.name, board.last_post.comment_author.url, :class=>"forum_board_last_post_author") : content_tag(:div, "Unknown", :class=>"forum_board_last_post_author")) +
+		        content_tag(:div, board.last_post.comment_date.localtime.strftime("%c"), :class=>"forum_board_last_post_date") %>
 		 <% end %>
              <% end %>
           <% end %>
@@ -25,3 +28,6 @@
     <% end %>
 <% end %>
 </div>
+<% if can? :edit, Roxiware::Forum::Board %>
+<%= render :partial=>"roxiware/forum/board_manage_control" %>
+<% end %>

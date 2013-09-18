@@ -52,7 +52,7 @@ module Roxiware
       end
 
       can :read, Roxiware::Forum::Board do |board|
-          ["open", "moderate", "close"].include?(board.resolve_permissions)
+          ["open", "moderate", "closed"].include?(board.resolve_permissions)
       end
 
       can :read, Roxiware::Forum::Topic do |topic|
@@ -91,7 +91,7 @@ module Roxiware
       can :read, Roxiware::Person
 
       can :read, Roxiware::Forum::Board do |board|
-          ["open", "moderate", "close"].include?(board.resolve_permissions)
+          ["open", "moderate", "closed"].include?(board.resolve_permissions)
       end
 
       can :create_topic, Roxiware::Forum::Board do |board|

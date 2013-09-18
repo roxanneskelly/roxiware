@@ -1,10 +1,45 @@
+
+<script id="topic_manage_menu_template" type="text/template">
+<%= content_tag(:div, :class=>"manage_topic_menu manage_menu") do
+        content_tag(:ul) do
+            content_tag(:li) do
+	        content_tag(:div, "", :class=>"manage_button icon-arrow-down-9") +
+	        content_tag(:ul) do
+		    content_tag(:li, content_tag(:a, "Edit"), :class=>"edit_forum_topic") +
+		    tag(:hr) +
+		    content_tag(:li, content_tag(:span, "Topic"), :class=>"topic_permissions") +
+		    Roxiware::Forum::Topic::ALLOWED_TOPIC_PERMISSIONS.collect do |permission| 
+                         content_tag(:li, content_tag(:a, content_tag(:div, "", :class=>"checkbox")+permission.titleize), :permission=>permission, :class=>"topic_permission permission#{permission}") 
+                    end.join("").html_safe + 
+		    tag(:hr) +
+		    content_tag(:li, content_tag(:a, "Delete"), :class=>"delete_forum_topic")
+                end
+	    end
+	end
+    end
+%>
+</script>
 <script>
 $(function() {
+    $(".forum_topic_menu_target").each(function(index, item) {
+        var manage_menu = $($("#topic_manage_menu_template").text());
+        manage_menu.attr("id", "manage_"+$(item).attr("topic_id"));
+        manage_menu.find("[permission="+$(item).attr("topic_permission")+"]").addClass("selected_item");
+	ddsmoothmenu.init({
+	    mainmenuid: manage_menu.attr("id"),
+            rightalign: true,
+	    orientation: 'h',
+	    classname: 'manage_menu',
+	    contentsource: "markup"
+	});
+        $(item).append(manage_menu);
+    });
+
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
 
     /* Manage topic menu is toggled by this button */
-    $(".forum_topic .manage_button").click(function(e) {
+    $(".forum_topic_menu_target .manage_button").click(function(e) {
         var manage_topic_menu = $(this).parent().find(".manage_topic_menu");
         var is_shown = (manage_topic_menu.css("display") != "none");
         $(".manage_topic_menu").css("display", "none");
@@ -19,22 +54,12 @@ $(function() {
         }
     });
 
-    $(".forum_topic .manage_menu").each(function(index, menu) {
-	ddsmoothmenu.init({
-	    mainmenuid: $(this).attr("id"),
-            rightalign: true,
-	    orientation: 'h',
-	    classname: 'manage_menu',
-	    contentsource: "markup"
-	});
-    });
-
-    $(".forum_topic li.edit_forum_topic a").click(function() {
+    $(".forum_topic_menu_target li.edit_forum_topic a").click(function() {
        var topic_link = $(this).parents(".forum_topic").attr("rel");
         settingsForm(topic_link+"/edit", "Edit Topic");
     });
 
-    $(".forum_topic li.delete_forum_topic a").click(function() {
+    $(".forum_topic_menu_target li.delete_forum_topic a").click(function() {
        var topic_link = $(this).parents(".forum_topic").attr("rel");
        if(confirm("Remove Topic\nAre you sure?")) {
            $.ajax({url:topic_link,
@@ -47,7 +72,7 @@ $(function() {
         }
     });
 
-    $(".forum_topic .topic_permission a").click(function(e) {
+    $(".forum_topic_menu_target .topic_permission a").click(function(e) {
         e.stopPropagation();
         var self = $(this).parent();
         if(self.is(".selected_item")) { return; }

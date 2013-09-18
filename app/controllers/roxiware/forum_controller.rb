@@ -34,6 +34,33 @@ class Roxiware::ForumController < ApplicationController
     end
 
 
+    # Edit board settings
+    # GET /forum/:id/edit
+    def edit
+      @board = Roxiware::Forum::Board.find(params[:id])
+      raise ActiveRecord::RecordNotFound if @board.nil?
+      authorize! :update, @board
+      respond_to do |format|
+	format.html { render :partial =>"roxiware/forum/edit_board" }
+      end
+    end
+
+    # Update board settings
+    # PUT /forum/:id
+    def update
+      @board = Roxiware::Forum::Board.find(params[:id])
+      raise ActiveRecord::RecordNotFound if @board.nil?
+      authorize! :update, @board
+      respond_to do |format|
+          if @board.update_attributes(params[:forum_board], :as=>@role)
+	      format.json { render :json => @board.ajax_attrs(@role) }
+	  else
+	      format.json { render :json=>report_error(@board)}
+	  end
+      end
+    end
+
+
     # Show a topic and posts
     def show_topic
       @title = @title + " : Forum"
@@ -104,33 +131,38 @@ class Roxiware::ForumController < ApplicationController
       ActiveRecord::Base.transaction do
           begin
               # first, create the 
+              permissions = "board"
+	      if(@board.permissions == "moderate") 
+	          permissions = "hide"
+	      end
 	      @topic = @board.topics.create({:title=>params[:title], :permissions=>"board"}, :as=>"")
 	      params[:comment_date] = DateTime.now
 	      person_id = (current_user && current_user.person)?current_user.person.id : -1
-	      comment_status = "moderate"
-	      comment_status= "publish" if (@topic.resolve_comment_permissions=="open") || (@role="super" || @role="admin")
+	      # always publish the first comment.  Whether it's shown or hidden is determined
+	      # by whether the topic is hidden
 	      @post = @topic.posts.build({:parent_id=>0,
-				          :comment_status=>comment_status,
+				          :comment_status=> ((@topic.resolve_comment_permissions == "open") ? "publish" : "moderate"),
 					  :comment_content=>params[:comment_content],
 					  :comment_date=>DateTime.now.utc}, :as=>"")
 
 					  
 	      if user_signed_in?
-	          @post_author = @post.create_comment_author({:name=>current_user.person.full_name,
-								    :email=>current_user.email,
-								    :person_id=>person_id,
-								    :url=>"/people/#{current_user.person.seo_index}",
-								    :comment_object=>@post,
-								    :authtype=>"roxiware"}, :as=>"");
+	          @post_author = Roxiware::CommentAuthor.comment_author_from_params(:current_user=>current_user)
 	      else 
-	          @post_author = @post.create_comment_author({:name=>params[:comment_author],
-								    :email=>params[:comment_author_email],
-								    :url=>params[:comment_author_url],
-								    :comment_object=>@post,
-								    :authtype=>"generic"}, :as=>"");
+	          @post_author = Roxiware::CommentAuthor.comment_author_from_params(params)
 	      end
-              @post_author.save!
-	      @post.comment_author = @post_author
+	      if(@post_author.authtype == "generic")
+                  verify_recaptcha(:model=>@post_author, :attribute=>:recaptcha_response_field)
+	      end
+
+	      @post_author.comments << @post
+	      @post_author.save
+	      if (@post_author.errors.present?)
+		  @post_author.errors.each do |key, error|
+		      @post.errors.add(key, error)
+		  end
+	      end
+
 	      if(!@post.save) 
 	          @post.errors.each do |attr,msg|
 		      @topic.errors.add(attr, msg)
@@ -146,15 +178,17 @@ class Roxiware::ForumController < ApplicationController
            end
        end
        respond_to do |format|
-	   if (user_signed_in? || verify_recaptcha(:model=>@topic, :attribute=>:recaptcha_response_field)) && @topic.errors.empty?
+	   if (@topic.errors.blank?)
 	       if(@post.comment_status == "publish")
-		   notice = "Your topic has been published."
-	       else
-	           notice = "Your topic will be added once it is moderated."
+		   flash[:notice] = "Your topic has been published."
 	       end		  
 	       @topic.save
-	       format.html { redirect_to @topic.topic_link, :notice => notice }
-	       format.json { render :json => @topic.ajax_attrs(@role) }
+	       format.html { redirect_to @topic.topic_link }
+	       format.json do
+	           ajax_results = @topic.ajax_attrs(@role)
+		   ajax_results[:comment_status] = @post.comment_status
+	           render :json => ajax_results
+	       end
 	   else
 	       error_str = "Failure in creating topic comment:"
 	       @topic.errors.each do |error|

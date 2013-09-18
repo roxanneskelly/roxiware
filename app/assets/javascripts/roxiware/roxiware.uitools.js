@@ -1179,34 +1179,50 @@ $.fn.require_fields = function(fields) {
 
 function do_login(data) {
     // Bring up a 3rd party login window
-    console.log("do login");
-    var login_url = "/account/auth/authproxy?"+$.param(data);
+    var login_url = "/account/auth/authproxy?"+$.param(data.params);
     var width=500;
     var height=300;
     var left = $(window).width()/2-width/2;
     var top=$(window).height()/2-height/2;
     
-    if(data.provider == "facebook") {
-        FB.getLoginStatus(function(response) {
-            console.log(response);
-	    if(response.status != "connected") {
-		FB.Event.subscribe('auth.authResponseChange', function(response) {
-			alert('The status of the session is: ' + response.status);
-		    });
-
-                window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+    var auth_info = {};
+    if (localStorage.roxiwareAuthInfo) {
+        if(localStorage.roxiwareAuthInfo) {
+	    try{
+                auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
             }
-            else {
-		FB.api('/me', function(response) {
-		    if(data.onSuccess) {
-			data.onSuccess({uid:response.username, authtype:"facebook", full_name:response.name, url:response.link, email:response.email, thumbnail_url:"http://graph.facebook.com/"+response.username+"/picture"});
-                    }
-		});
+            catch(e) {
+                auth_info = {}
             }
-        });
+	}
+	if (auth_info['auth_token'] == undefined) {
+	    auth_info = {}
+	}
     }
+    if(auth_info.authtype == data.params.provider) {
+        if(new Date(auth_info.expires*1000) > new Date()) {
+            data.onSuccess(auth_info);
+	    return;
+        }
+    }
+    localStorage.roxiwareAuthInfo = undefined;
 
+    if(data.params.provider == "facebook") {
+        var login_popup = window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+	var timer = setInterval(function() {
+		if(login_popup.closed) {
+		    if(localStorage) {
+                        data.onSuccess(JSON.parse(localStorage.roxiwareAuthInfo));
+                    }
+                    clearInterval(timer);
+                }
+	    }, 250);
+    }
 };
+
+function reset_login() {
+    localStorage.removeItem("roxiwareAuthInfo");
+}
 
 function get_login_form_template(oauth_state) {
     var template = $(login_form_template);
@@ -1214,10 +1230,10 @@ function get_login_form_template(oauth_state) {
 	forgotPassword();
     });
     template.find("a#facebook_login, a#twitter_login").click(function() {
-	    var data = {provider:$(this).attr("provider"), oauth_state:oauth_state};
-		// do a direct facebook login to gather the auth token
-	    do_login(data);
-	});
+	var data = {params:{provider:$(this).attr("provider"), oauth_state:oauth_state}};
+	// do a direct facebook login to gather the auth token
+	do_login(data);
+    });
     template.find("button#login_button").require_fields(template.find("#user_username, #user_password"));
     template.submit(function(e) {
 	e.preventDefault();

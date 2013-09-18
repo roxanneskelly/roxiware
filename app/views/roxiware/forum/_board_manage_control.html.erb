@@ -1,0 +1,99 @@
+
+<script id="board_manage_menu_template" type="text/template">
+<%= content_tag(:div, :class=>"manage_board_menu manage_menu") do
+        content_tag(:ul) do
+            content_tag(:li) do
+	        content_tag(:div, "", :class=>"manage_button icon-arrow-down-9") +
+	        content_tag(:ul) do
+		    content_tag(:li, content_tag(:a, "Edit"), :class=>"edit_forum_board") +
+		    tag(:hr) +
+		    content_tag(:li, content_tag(:span, "Board"), :class=>"board_permissions") +
+		    Roxiware::Forum::Board::ALLOWED_TOPIC_PERMISSIONS.collect do |permission| 
+                         content_tag(:li, content_tag(:a, content_tag(:div, "", :class=>"checkbox")+permission.titleize), :permission=>permission, :class=>"board_permission permission#{permission}") 
+                    end.join("").html_safe + 
+		    tag(:hr) +
+		    content_tag(:li, content_tag(:a, "Delete"), :class=>"delete_forum_board")
+                end
+	    end
+	end
+    end
+%>
+</script>
+<script>
+$(function() {
+    $(".forum_board_menu_target").each(function(index, item) {
+        var manage_menu = $($("#board_manage_menu_template").text());
+        manage_menu.attr("id", "manage_board_"+$(item).attr("board_id"));
+        manage_menu.find("[permission="+$(item).attr("board_permission")+"]").addClass("selected_item");
+	ddsmoothmenu.init({
+	    mainmenuid: manage_menu.attr("id"),
+            rightalign: true,
+	    orientation: 'h',
+	    classname: 'manage_menu',
+	    contentsource: "markup"
+	});
+        $(item).append(manage_menu);
+    });
+
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    var csrf_param = $('meta[name="csrf-param"]').attr('content');
+
+    /* Manage board menu is toggled by this button */
+    $(".forum_board_menu_target .manage_button").click(function(e) {
+        var manage_board_menu = $(this).parent().find(".manage_board_menu");
+        var is_shown = (manage_board_menu.css("display") != "none");
+        $(".manage_board_menu").css("display", "none");
+	$(document).off("click.boardmenu");
+        if (!is_shown) {
+           manage_board_menu.css("display", "block");
+           e.stopPropagation();
+	   $(document).on("click.boardmenu", function() {
+	       $(document).off("click.boardmenu");
+	       $(".manage_board_menu").css("display", "none");
+	   });
+        }
+    });
+
+    $(".forum_board_menu_target li.edit_forum_board a").click(function() {
+       var board_link = $(this).parents(".forum_board_menu_target").attr("rel");
+        settingsForm(board_link+"/edit", "Edit Board");
+    });
+
+    $(".forum_board_menu_target li.delete_forum_board a").click(function() {
+       var board_link = $(this).parents(".forum_board_menu_target").attr("rel");
+       if(confirm("Remove Board\nAre you sure?")) {
+           $.ajax({url:board_link,
+                   type:"DELETE",
+                   dataType: "json",
+                   success: function(json_data, textStatus, jqXHR) {
+                      window.location.reload();
+                   }
+            });
+        }
+    });
+
+    $(".forum_board_menu_target .board_permission a").click(function(e) {
+        e.stopPropagation();
+        var self = $(this).parent();
+        if(self.is(".selected_item")) { return; }
+        var board = self.parents(".forum_board_menu_target");
+        var upload_params = {forum_board:{permissions:self.attr("permission")}};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
+       $.ajax($(board).attr("rel")+".json", {
+           type:"PUT",
+	   data: upload_params,
+           dataType: "json",
+	   error: function (jqXHR, textStatus, errorThrown) {
+	       $.alert(errorThrown);
+           },
+           success: function() {
+             self.parent().find("li.board_permission").removeClass("selected_item");
+             self.addClass("selected_item");
+           }
+	});
+    });
+});
+</script>
+

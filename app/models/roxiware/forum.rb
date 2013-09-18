@@ -22,7 +22,8 @@ module Roxiware
     class Board < ActiveRecord::Base
         include Roxiware::BaseModel
         self.table_name="forum_boards"
-	has_many :topics, :dependent=>:destroy
+	has_many :topics, :dependent=>:destroy, :autosave=>true
+        belongs_to :board_group
         belongs_to :last_post, :class_name=>"Roxiware::Comment"
         default_scope order(:display_order)
         ALLOWED_TOPIC_PERMISSIONS = %w(open moderate closed hide)
@@ -35,15 +36,11 @@ module Roxiware
 				      :too_long => "The name can be no larger than ${count} characters."
 				      }
 	validates_presence_of :display_order
-	edit_attr_accessible :name, :permissions, :description, :display_order, :forum_board_group_id, :as=>[nil, :super, :admin]
-	ajax_attr_accessible :name, :permissions, :seo_index, :description, :display_order, :forum_board_group_id
+	edit_attr_accessible :name, :permissions, :description, :display_order, :board_group_id, :as=>[nil, :super, :admin]
+	ajax_attr_accessible :name, :permissions, :seo_index, :description, :display_order, :board_group_id
 
-        scope :visible, lambda{|user| where((user.present? && user.is_admin?) ? "" : "")}
+        scope :visible, lambda{|user| where((user.present? && user.is_admin?) ? "" : 'permissions != "hide"')}
 
-
-	def permissions
-	    "open"
-	end
 
 	def resolve_permissions
 	    if permissions != "default"
@@ -69,8 +66,13 @@ module Roxiware
             self.comment_count = self.topics.sum(:comment_count)
             self.pending_comment_count = self.topics.sum(:pending_comment_count)
 	    last_topic = self.topics.select{|topic| topic.last_post.present?}.sort{|x, y| x.last_post.comment_date <=> y.last_post.comment_date}.last
+
             self.last_post = last_topic.last_post if last_topic.present?
 	    self.seo_index = self.name.to_seo
+	    if self.name_changed?
+	        # if we changed the name, then we need to update the links and guids for the topics
+	        self.topics.each{|topic| topic.guid = ""; topic.topic_link = ""}
+	    end
         end
      end
 
@@ -104,16 +106,24 @@ module Roxiware
       validates_presence_of :permissions, :inclusion=> {:in => ALLOWED_TOPIC_PERMISSIONS}, :message=>"Invalid post permissions."
 
       edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :as=>[:super, :admin, :user, nil]
-      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :posts
+      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :posts, :topic_link, :guid
 
-      scope :visible, lambda{|user| where((user.present? && user.is_admin?) ? "" : "permissions != 'hide'")}
+      scope :visible, lambda{ |user| joins(:comments).where('forum_topics.permissions != "hide" AND comments.comment_status="publish"').group(:id) unless (user.present? && user.is_admin?) }
 
       def root_post
-	  self.posts.published().last
+	  self.posts.first
       end
 
       def new_post_count
           0
+      end
+
+      def post_count
+          comment_count
+      end
+
+      def pending_post_count
+          pending_comment_count
       end
 
       def resolve_comment_permissions
@@ -170,7 +180,6 @@ module Roxiware
       end
 
       before_validation() do
-         puts self.inspect
          seo_index = self.title.downcase.gsub(/[^a-z0-9]+/i, '-')
          self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{self.root_post.comment_date.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.root_post
 	 self.last_post = self.posts.published().last

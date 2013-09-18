@@ -19,7 +19,8 @@ class Roxiware::Event < ActiveRecord::Base
        parsed_uri = URI::parse(self.location_url)
        parsed_uri.scheme = 'http' if parsed_uri.scheme.nil?
        if parsed_uri.host.nil?
-         split_path = parsed_uri.path.split
+         split_path = parsed_uri.path.split("/")
+	 split_path.shift if split_path[0].blank?
          parsed_uri.host = split_path[0]
          parsed_uri.path = "/"+split_path[1..-1].join("/")
        end

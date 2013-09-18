@@ -14,7 +14,6 @@ module Roxiware
 	 def create
           ActiveRecord::Base.transaction do
                begin
-                   
                    @post_class = params[:root_type].split('::').inject(Object) do |mod, class_name|
                        mod.const_get(class_name)
                    end
@@ -26,43 +25,46 @@ module Roxiware
 		   params[:comment_date] = DateTime.now
 		   person_id = (current_user && current_user.person)?current_user.person.id : -1
 		   comment_status = "moderate"
-		   comment_status= "publish" if (@post.resolve_comment_permissions=="open") || (@role="super" || @role="admin")
+		   comment_status= "publish" if ((@post.resolve_comment_permissions=="open") || (@role=="super" || @role=="admin"))
 
+		   params[:comment_content] = Sanitize.clean(params[:comment_content], Roxiware::Sanitizer::BASIC_SANITIZER)
 
-		   @comment = @post.comments.build({:parent_id=>0,
-						    :comment_status=>comment_status,
-						    :comment_date=>DateTime.now.utc}, :as=>"")
+		   @comment = @post.comments.new(params.merge({:parent_id=>0,
+						  :comment_status=>comment_status,
+						  :comment_date=>DateTime.now.utc}), :as=>"")
+
 
 		   if user_signed_in?
-		     @comment_author = @comment.create_comment_author({:name=>current_user.person.full_name,
-									    :email=>current_user.email,
-									    :person_id=>person_id,
-									    :url=>"/people/#{current_user.person.seo_index}",
-									    :comment_object=>@comment,
-									    :authtype=>"roxiware"}, :as=>"");
+		       @comment_author = Roxiware::CommentAuthor.comment_author_from_params(:current_user=>current_user)
 		   else 
-		     @comment_author = @comment.create_comment_author({:name=>params[:comment_author],
-									    :email=>params[:comment_author_email],
-									    :url=>params[:comment_author_url],
-									    :comment_object=>@comment,
-									    :authtype=>"generic"}, :as=>"");
+		       @comment_author = Roxiware::CommentAuthor.comment_author_from_params(params)
 		   end
-                   @comment_author.save!
-		   @comment.comment_author = @comment_author
+
+		   if(@comment_author.authtype == "generic")
+		       verify_recaptcha(:model=>@comment_author, :attribute=>:recaptcha_response_field)
+		   end
+
+		   @comment_author.comments << @comment
+		   @comment_author.save
+		   if (@comment_author.errors.present?)
+		       @comment_author.errors.each do |key, error|
+		           @comment.errors.add(key, error)
+		       end
+		   end
 
                rescue Exception=>e
 	           puts e.message
                    puts e.backtrace.join("\n")
+		   @comment.errors.add("exception", e.message()) if @comment.present?
                end
+
 	       respond_to do |format|
-		   if (user_signed_in? || verify_recaptcha(:model=>@comment, :attribute=>:recaptcha_response_field)) && @comment.update_attributes(params, :as=>"")
+		   if (@comment.errors.blank?)
 		      if(@comment.comment_status == "publish")
-			 notice = "Your comment has been published."
-		      else
-			 notice = "Your comment will be added once it is moderated."
-		      end		  
+			 flash[:notice] = "Your comment has been published."
+		      end	  
 		      @post.save
-		      format.html { redirect_to @post.post_link, :notice => notice }
+		      format.html { redirect_to @post.post_link }
 		      format.json { render :json => @comment.ajax_attrs(@role) }
 		   else
 		      puts @comment.errors.inspect

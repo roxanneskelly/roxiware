@@ -9,8 +9,9 @@
 $(function() {
       $("#topic_edit_form button#save_button").click(function() {
 	 $("form input.watermark").val("");
-         $.ajaxSetParamsJSON("<%= forum_update_topic_path(@topic.board, @topic.id)%>.json", $("#topic_edit_form form").serializeArray(), {form:$("#topic_edit_form form"), success:function() {window.location.reload()}});
-
+         $.ajaxSetParamsJSON("<%= forum_update_topic_path(@topic.board, @topic.id)%>.json", $("#topic_edit_form form").serializeArray(), {form:$("#topic_edit_form form"), success:function(data) {
+             window.location = data.topic_link;
+         }});
 
     });
 });

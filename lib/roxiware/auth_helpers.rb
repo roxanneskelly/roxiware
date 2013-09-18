@@ -1,6 +1,71 @@
 module Roxiware
     module AuthHelpers
 
+        # AuthUserToken identifies a pre-authorized user
+        class AuthUserToken
+	    def initialize(auth_user_info_or_options={})
+                @verifier = ActiveSupport::MessageVerifier.new(AppConfig.auth_state_verify_key)
+	        if auth_user_info_or_options.class == String
+		    # unpack and validate the auth state
+		    verified_params = @verifier.verify(auth_user_info_or_options)
+		    raise Exception.new("Auth User Info unpacking was unverified") if verified_params.nil?
+		    
+		    @expires,@authtype,@uid,@full_name,@thumbnail_url,@email,@url = verified_params
+		else
+		    # generate an auth state from params
+		    @expires = nil
+		    @authtype = auth_user_info_or_options[:authtype] || ""
+		    @uid = auth_user_info_or_options[:uid] || ""
+		    @full_name = auth_user_info_or_options[:full_name] || @uid
+		    @thumbnail_url = auth_user_info_or_options[:thumbnail_url] || ""
+		    @email = auth_user_info_or_options[:email] || ""
+		    @url = auth_user_info_or_options[:url] || ""
+		    @auth_kind = (auth_user_info_or_options[:auth_kind] || "facebook").to_s
+		end
+	    end
+
+	    def token_attributes
+	        {:email=>email, :name=>full_name, :thumbnail_url=>thumbnail_url, :url=>url, :uid=>uid, :authtype=>authtype}
+	    end
+
+	    def expires
+	        @expires || 1.hour.from_now
+	    end
+
+	    def expired?
+	        (expires < Time.now)
+	    end
+
+	    def email
+	        @email
+	    end
+
+	    def full_name
+	        @full_name
+	    end
+
+	    def thumbnail_url
+	        @full_name
+	    end
+
+	    def url
+	        @url
+	    end
+
+	    def uid
+	        @uid
+	    end
+
+	    def authtype
+	        @authtype
+	    end
+
+	    def get_state
+	       @expires=1.hour.from_now
+               @verifier.generate([@expires, @authtype, @uid, @full_name, @thumbnail_url, @email, @url])
+	    end
+	end
+
         # code to deal with an auth state object, which is used
 	# to store the host redirect, validate the auth request properly came
         # from a Roxiware site, etc.

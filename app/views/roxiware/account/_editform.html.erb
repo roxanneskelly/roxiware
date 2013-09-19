@@ -19,7 +19,7 @@ end %>
           <%= user.select :role, options_for_select(role_options, @user.role), {:disabled=>"disabled"}%></div>
       <% end %>
           <div id="username_entry"><%= user.label :username, "Username" %>
-              <% username_edit_enabled = %w(super admin).include?(current_user.role) && current_user.auth_services.find_by_provider('roxiware').blank? %>
+              <% username_edit_enabled = %w(super admin).include?(current_user.role) && @user.auth_services.find_by_provider('roxiware').blank? %>
               <%= user.text_field :username, :watermark=>"username", :disabled=>!username_edit_enabled %>
           </div>
 

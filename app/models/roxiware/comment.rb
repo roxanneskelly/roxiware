@@ -9,7 +9,7 @@ module Roxiware
     ALLOWED_STATUS = %w(moderate publish)
     belongs_to :parent, :polymorphic=>true, :autosave=>true
     belongs_to :post, :polymorphic=>true, :autosave=>true
-    belongs_to :comment_author, :autosave=>true
+    belongs_to :comment_author, :counter_cache=>true, :autosave=>true
     acts_as_tree :foreign_key => "parent_id"
 
     validates_presence_of :comment_date, :message=>"The comment date is missing."

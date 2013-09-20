@@ -28,8 +28,8 @@ module Roxiware
 
 
     edit_attr_accessible :person_id, :comment_object_type, :as=>[:super, :admin, nil]
-    edit_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :as=>[:super, :admin, :user, :guest, nil]
-    ajax_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :as=>[:super, :admin, :user, :guest, nil]
+    edit_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :likes, :blocked, :comments_count, :as=>[:super, :admin, :user, :guest, nil]
+    ajax_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :likes, :blocked, :comments_count, :as=>[:super, :admin, :user, :guest, nil]
 
     before_validation() do
 	 if !(self.url.nil? || self.url.empty?)
@@ -63,7 +63,7 @@ module Roxiware
 	if current_user.present?
 	    comment_author = Roxiware::CommentAuthor.find_or_initialize_by_authtype_and_person_id({:name=>current_user.person.full_name,
 						                                               :email=>current_user.email,
-								                               :person_id=>current_user.person_id,
+								                               :person_id=>current_user.person.id,
 								                               :url=>"/people/#{current_user.person.seo_index}",
 								                               :comment_object=>@comment,
 								                               :authtype=>"roxiware",

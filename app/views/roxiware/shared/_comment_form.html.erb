@@ -99,7 +99,6 @@
            $("a#facebook_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'facebook', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
            $("a#twitter_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'twitter', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
            $("a#facebook_login, a#twitter_login").click(function() {
-
              var auth_type = $(this).attr("provider");
 	     var data = {proxy:true,
                          params:{provider:auth_type,
@@ -120,15 +119,13 @@
 
 
 
-	      if ($(this).attr("provider") == "facebook") {
-		  FB.getLoginStatus(function(response) {
-		      if (response.status != 'connected') {
-			  // if facebook has disconnect, reset login so we throw up the UI
-			  reset_login();
-		      }
-		      do_login(data);
-		  });
-	      }
+	      if (($(this).attr("provider") == "facebook") && FB.getLoginStatus(function(response) {
+                  if (response.status != 'connected') {
+                      // if facebook has disconnect, reset login so we throw up the UI
+                      reset_login();
+		  }
+		  do_login(data);
+              })) {} 
 	      else {
 		  // do a direct facebook/twitter login to gather the auth token
 		  do_login(data);

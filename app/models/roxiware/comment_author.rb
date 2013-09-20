@@ -28,8 +28,8 @@ module Roxiware
 
 
     edit_attr_accessible :person_id, :comment_object_type, :as=>[:super, :admin, nil]
-    edit_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :as=>[:super, :admin, :user, :guest, nil]
-    ajax_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :as=>[:super, :admin, :user, :guest, nil]
+    edit_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :as=>[:super, :admin, :user, :guest, nil]
+    ajax_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :as=>[:super, :admin, :user, :guest, nil]
 
     before_validation() do
 	 if !(self.url.nil? || self.url.empty?)
@@ -45,12 +45,14 @@ module Roxiware
 	end
     end
 
-    def thumbnail_url
+    def get_thumbnail_url
         case authtype
         when "roxiware"
-           person.thumbnail_url
+           person.thumbnail_url || default_image_path(:person, "thumbnail")
         when "facebook"
            "http://graph.facebook.com/#{uid}/picture?type=square"
+        when "twitter"
+	   self.thumbnail_url || default_image_path(:person, "thumbnail")
         else
             default_image_path(:person, "thumbnail")
         end
@@ -64,7 +66,8 @@ module Roxiware
 								                               :person_id=>current_user.person_id,
 								                               :url=>"/people/#{current_user.person.seo_index}",
 								                               :comment_object=>@comment,
-								                               :authtype=>"roxiware"}, :as=>"");
+								                               :authtype=>"roxiware",
+											       :thumbnail_url=>current_user.person.thumbnail_url}, :as=>"");
 	    comment_author.person = current_user.person
 	else
 	    case params[:comment_author_authtype]
@@ -73,13 +76,15 @@ module Roxiware
 						                    :email=>params[:comment_author_email],
 								    :url=>params[:comment_author_url],
 								    :comment_object=>@comment,
-								    :authtype=>"generic"}, :as=>"");
-	        when "facebook"
+								    :authtype=>"generic",
+								    :thumbnail_url=>default_image_path(:person, "thumbnail")}, :as=>"");
+	        when "facebook","twitter"
 	           begin
 		       auth_user_token = Roxiware::AuthHelpers::AuthUserToken.new(params[:comment_author_auth_token])
 		       token_attributes = auth_user_token.token_attributes
 		       token_attributes[:comment_object]=@comment
 		       comment_author = Roxiware::CommentAuthor.find_or_initialize_by_authtype_and_uid(token_attributes, :as=>"")
+		       comment_author.update_attributes(token_attributes, :as=>"")
 		   rescue Exception => e
 		       comment_author = Roxiware::CommentAuthor.new()
 		       comment_author.errors.add("exception", e.message())

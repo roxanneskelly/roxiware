@@ -1184,9 +1184,9 @@ function do_login(data) {
     var height=300;
     var left = $(window).width()/2-width/2;
     var top=$(window).height()/2-height/2;
-    
     var auth_info = {};
-    if (localStorage.roxiwareAuthInfo) {
+
+    if (data.proxy && localStorage.roxiwareAuthInfo) {
         if(localStorage.roxiwareAuthInfo) {
 	    try{
                 auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
@@ -1199,7 +1199,7 @@ function do_login(data) {
 	    auth_info = {}
 	}
     }
-    if(auth_info.authtype == data.params.provider) {
+    if(auth_info.auth_kind == data.params.provider) {
         if(new Date(auth_info.expires*1000) > new Date()) {
             data.onSuccess(auth_info);
 	    return;
@@ -1207,32 +1207,39 @@ function do_login(data) {
     }
     localStorage.roxiwareAuthInfo = undefined;
 
-    if(data.params.provider == "facebook") {
-        var login_popup = window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
-	var timer = setInterval(function() {
-		if(login_popup.closed) {
-		    if(localStorage) {
-                        data.onSuccess(JSON.parse(localStorage.roxiwareAuthInfo));
-                    }
-                    clearInterval(timer);
-                }
-	    }, 250);
-    }
+    var login_popup = window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+    var timer = setInterval(function() {
+        if(login_popup.closed) {
+	    if(localStorage.roxiwareAuthInfo) {
+	        try{
+                    data.onSuccess(JSON.parse(localStorage.roxiwareAuthInfo));
+	        }
+		catch(e) {
+		}
+            }
+            clearInterval(timer);
+        }
+    }, 250);
 };
 
 function reset_login() {
     localStorage.removeItem("roxiwareAuthInfo");
 }
 
-function get_login_form_template(oauth_state) {
+function get_login_form_template(options) {
     var template = $(login_form_template);
     template.find("a#forgot_password").click(function() {
 	forgotPassword();
     });
-    template.find("a#facebook_login, a#twitter_login").click(function() {
-	var data = {params:{provider:$(this).attr("provider"), oauth_state:oauth_state}};
+    template.find("a#facebook_login").click(function() {
+	    var data = {proxy:false,params:{provider:$(this).attr("provider"), oauth_state:options.facebook_oauth_state}, onSuccess:function() { window.location.reload(); }};
 	// do a direct facebook login to gather the auth token
-	do_login(data);
+	do_login($.extend(data, options));
+    });
+    template.find("a#twitter_login").click(function() {
+	    var data = {proxy:false,params:{provider:$(this).attr("provider"), oauth_state:options.twitter_oauth_state}, onSuccess:function() { window.location.reload()}};
+	// do a direct facebook login to gather the auth token
+	do_login($.extend(data, options));
     });
     template.find("button#login_button").require_fields(template.find("#user_username, #user_password"));
     template.submit(function(e) {
@@ -1262,8 +1269,8 @@ function get_login_form_template(oauth_state) {
         return template;
 }
 
-function loginForm(oauth_state) {
-    settingsForm($("<div class='small_form' id='login_form'/>").append(get_login_form_template(oauth_state)), "Sign In");
+function loginForm(options) {
+    settingsForm($("<div class='small_form' id='login_form'/>").append(get_login_form_template(options)), "Sign In");
 }
 
 function forgotPassword() {

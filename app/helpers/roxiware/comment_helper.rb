@@ -39,20 +39,22 @@ module Roxiware::CommentHelper
             end if allow_edit
 	    header_content = {}
 	    header_content[:author_image] = ""
-	    if child.comment_author.present? 
+	    if child.comment_author.present?
 	        if child.comment_author.url.present?
-		    header_content[:author_image] = link_to(tag(:img, :src=>child.comment_author.thumbnail_url, :class=>"comment_author_image"), child.comment_author.url, :target=>"_blank") if child.comment_author.thumbnail_url.present?
+		    header_content[:author_image] = link_to(tag(:img, :src=>child.comment_author.get_thumbnail_url, :class=>"comment_author_image"), child.comment_author.url, :target=>"_blank") 
 		    header_content[:author_name] = link_to(child.comment_author.name, child.comment_author.url, :class=>"comment_author_name", :target=>"_blank")
 		else
-		    header_content[:author_image] = tag(:img, :src=>child.comment_author.thumbnail_url, :class=>"comment_author_image") if child.comment_author.thumbnail_url.present?
+		    header_content[:author_image] = tag(:img, :src=>child.comment_author.get_thumbnail_url, :class=>"comment_author_image")
 		    header_content[:author_name] = content_tag(:div, child.comment_author.name, :class=>"comment_author_name")
 		end
             else
-                    header_content[:author_image] = ""
-		    header_content[:author_name] = "Unknown"
+                header_content[:author_image] = ""
+	        header_content[:author_name] = "Unknown"
             end
 	    header_content[:date] = content_tag(:div, child.comment_date.localtime.strftime(comment_date_format), :class=>"comment_date")
 	    header_content[:moderate_indicator] = allow_edit ? content_tag(:div, "Hidden", :class=>"comment_moderate_indicator comment_status_#{child.comment_status}") : ""
+
+	    puts "HEADER: " + (comment_header_format % header_content)
 
             comment_result += content_tag(:div, 
 	         (comment_header_format % header_content).html_safe, 

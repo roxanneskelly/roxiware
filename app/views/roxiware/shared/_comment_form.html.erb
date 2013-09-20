@@ -95,17 +95,15 @@
 	             );
                  }
            });
+
+           $("a#facebook_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'facebook', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
+           $("a#twitter_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'twitter', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
            $("a#facebook_login, a#twitter_login").click(function() {
-             var oauth_state = "<%= Roxiware::AuthHelpers::AuthState.new({:proxy=>true, :host_with_port=>request.host_with_port}).get_state %>";
-             if (($(this).attr("provider") == "facebook") && FB.getLoginStatus(function(response) {
-                 if (response.status != 'connected') {
-                     reset_login();
-                 }
-             }));
 
              var auth_type = $(this).attr("provider");
-	     var data = {params:{provider:auth_type,
-                                 oauth_state:oauth_state},
+	     var data = {proxy:true,
+                         params:{provider:auth_type,
+                         oauth_state:$(this).data("oauth_state")},
                          onSuccess: function(response) {
                              if(response) {
                                  var social_networks_info = $($("#social_networks_info").text());
@@ -113,14 +111,28 @@
                                  comment_form.find("#comment_author_image").attr("src", response.thumbnail_url);
                                  social_networks_info.find("#comment_author_name").text(response.full_name);
                                  comment_form.find("#comment_form_header").html(social_networks_info);
-                                 comment_form.find("#comment_author_authtype").attr("value", response.authtype);
+                                 comment_form.find("#comment_author_authtype").attr("value", response.auth_kind);
                                  comment_form.find("#comment_author_auth_token").attr("value", response.auth_token);
                                  comment_form.find("#comment_auth").remove();
                                  comment_form.find("button.post_comment_button").button("enable");
                              }
                           }};
-		// do a direct facebook login to gather the auth token
-	     do_login(data);
+
+
+
+	      if ($(this).attr("provider") == "facebook") {
+		  FB.getLoginStatus(function(response) {
+		      if (response.status != 'connected') {
+			  // if facebook has disconnect, reset login so we throw up the UI
+			  reset_login();
+		      }
+		      do_login(data);
+		  });
+	      }
+	      else {
+		  // do a direct facebook/twitter login to gather the auth token
+		  do_login(data);
+	      }
 	});
        <% end %>
 
@@ -146,7 +158,6 @@
            comment_form.find("input.watermark").val("");
            $.ajaxSetParamsJSON(comment_path, jQuery.param($(this).parents("form").serializeArray()), {method:"POST",
                success:function(data) {
-                   console.log(data);
                    if(data["comment_status"] == "publish") {
                        window.location.reload();
                    }

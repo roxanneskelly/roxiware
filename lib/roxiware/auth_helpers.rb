@@ -10,11 +10,10 @@ module Roxiware
 		    verified_params = @verifier.verify(auth_user_info_or_options)
 		    raise Exception.new("Auth User Info unpacking was unverified") if verified_params.nil?
 		    
-		    @expires,@authtype,@uid,@full_name,@thumbnail_url,@email,@url = verified_params
+		    @expires,@auth_kind,@uid,@full_name,@thumbnail_url,@email,@url = verified_params
 		else
 		    # generate an auth state from params
 		    @expires = nil
-		    @authtype = auth_user_info_or_options[:authtype] || ""
 		    @uid = auth_user_info_or_options[:uid] || ""
 		    @full_name = auth_user_info_or_options[:full_name] || @uid
 		    @thumbnail_url = auth_user_info_or_options[:thumbnail_url] || ""
@@ -25,7 +24,7 @@ module Roxiware
 	    end
 
 	    def token_attributes
-	        {:email=>email, :name=>full_name, :thumbnail_url=>thumbnail_url, :url=>url, :uid=>uid, :authtype=>authtype}
+	        {:email=>email, :name=>full_name, :thumbnail_url=>thumbnail_url, :url=>url, :uid=>uid, :authtype=>auth_kind}
 	    end
 
 	    def expires
@@ -45,7 +44,7 @@ module Roxiware
 	    end
 
 	    def thumbnail_url
-	        @full_name
+	        @thumbnail_url
 	    end
 
 	    def url
@@ -56,13 +55,13 @@ module Roxiware
 	        @uid
 	    end
 
-	    def authtype
-	        @authtype
+	    def auth_kind
+	        @auth_kind
 	    end
 
 	    def get_state
 	       @expires=1.hour.from_now
-               @verifier.generate([@expires, @authtype, @uid, @full_name, @thumbnail_url, @email, @url])
+               @verifier.generate([@expires, @auth_kind, @uid, @full_name, @thumbnail_url, @email, @url])
 	    end
 	end
 
@@ -75,7 +74,6 @@ module Roxiware
                 @verifier = ActiveSupport::MessageVerifier.new(AppConfig.auth_state_verify_key)
 	        if auth_state_or_options.class == String
 		    # unpack and validate the auth state
-		    puts "unpacking " + auth_state_or_options
 
 		    verified_params = @verifier.verify(auth_state_or_options)
 		    expires = verified_params.shift if verified_params.present?
@@ -96,7 +94,6 @@ module Roxiware
 
 		    @proxy = auth_state_or_options[:proxy] || false
 		    @host_with_port = auth_state_or_options[:host_with_port] || ""
-		    puts "HOST_WITH_PORT #{@host_with_port}"
 		    @auth_kind = (auth_state_or_options[:auth_kind] || "facebook").to_s
 		end
 	    end

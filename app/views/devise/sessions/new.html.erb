@@ -1,11 +1,13 @@
-
-<section class="account_login">
+<%
+    facebook_oauth_state = Roxiware::AuthHelpers::AuthState.new({:auth_kind=>"facebook", :proxy=>false, :host_with_port=>request.host_with_port}).get_state
+    twitter_oauth_state = Roxiware::AuthHelpers::AuthState.new({:auth_kind=>"twitter", :proxy=>false, :host_with_port=>request.host_with_port}).get_state 
+%><section class="account_login">
 <h2>Log In</h2>
 <div id="form_section">
 </div>
 </section>
 <script>
 $(function() {
-    loginForm('<%= Roxiware::AuthHelpers::AuthState.new().get_state%>');
+    loginForm({twitter_oauth_state: '<%= twitter_oauth_state %>', facebook_oauth_state: '<%= facebook_oauth_state %>'});
 });
 </script>

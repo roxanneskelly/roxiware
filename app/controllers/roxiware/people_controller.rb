@@ -124,7 +124,7 @@ class Roxiware::PeopleController < ApplicationController
 		     if(person.user.present? && can?(:edit, person.user))
 		         social_network.set_param("allow_login", value[:allow_login], "CCD842C8-F516-49DD-A8C3-FF32750124D2", "local")
 			 if value[:allow_login]
-			     person.user.auth_services.create({:provider=>name, :uid=>value[:uid]});
+			     person.user.auth_services.create({:provider=>name, :uid=>value[:uid]}, :as=>@role);
 			 end
 		     end
 		 end

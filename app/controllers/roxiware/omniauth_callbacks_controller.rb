@@ -6,12 +6,11 @@ module Roxiware
     class OmniauthCallbacksController < ApplicationController
 
         def facebook
-	    puts "OATH FACEBOOK"
 	    (params['is_proxy'] == "true") ? auth_results(:facebook) : oauthorize(:facebook)
         end
 
         def twitter
-            oauthorize :twitter
+	    (params['is_proxy'] == "true") ? auth_results(:twitter) : oauthorize(:twitter)
         end
 
         def google
@@ -32,7 +31,6 @@ module Roxiware
         def failure
             # Fall back and try native roxiware auth if the provider is roxiware
 	    if env['omniauth.error.strategy'].name == "roxiware" && env['omniauth.error.type'] == :service_unavailable
-	        puts "auth failure while looking up user with roxiware omniauth strategy, attempting local auth with " + request.params['user']['username']
 		@user = Roxiware::User.find_for_authentication(:username => request.params['user']['username'])
 
 		# return unauthorized if user can't be found so we don't leak the fact that the
@@ -45,7 +43,6 @@ module Roxiware
 	           return render :nothing => true, :status=>:unauthorized
 		end
             end
-	    puts "ERROR : #{(env['omniauth.error.type'].inspect)}"
 	    if (env['omniauth.error.type'] == :invalid_credentials) || (env['omniauth.error.type'] == :not_found)
 	        render :nothing => true, :status=>:unauthorized
             else
@@ -63,11 +60,23 @@ module Roxiware
 	        when :facebook
 		    raw_info = access_token["extra"]["raw_info"]
                     auth_info = {:uid => raw_info["username"],
-                                 :authtype => 'facebook',
+                                 :auth_kind => 'facebook',
                                  :email => raw_info['email'],
                                  :full_name => raw_info['name'],
                                  :thumbnail_url => "http://graph.facebook.com/#{raw_info['username']}/picture?type=square",
                                  :url => raw_info['link']}
+		    auth_token = Roxiware::AuthHelpers::AuthUserToken.new(auth_info)
+		    auth_info[:auth_token] = auth_token.get_state
+		    auth_info[:expires] = auth_token.expires.to_i
+	        when :twitter
+		    raw_info = access_token["extra"]["raw_info"]
+		    info = access_token["info"]
+                    auth_info = {:uid => info["nickname"],
+                                 :auth_kind => 'twitter',
+                                 :email => '',
+                                 :full_name => info['name'],
+                                 :thumbnail_url => info['image'],
+                                 :url => info['urls']['Twitter']}
 		    auth_token = Roxiware::AuthHelpers::AuthUserToken.new(auth_info)
 		    auth_info[:auth_token] = auth_token.get_state
 		    auth_info[:expires] = auth_token.expires.to_i
@@ -107,8 +116,7 @@ module Roxiware
 	        username = access_token['extra']['raw_info']['username']
 	        email = access_token['extra']['raw_info']['email']
 	    when :twitter
-	        uid = access_token['extra']['user_hash']['id']
-	        name = access_token['user_info']['name']
+	        uid = access_token['info']['nickname']
             when :roxiware
                 username = access_token['uid']
 	    else

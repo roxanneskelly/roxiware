@@ -46,6 +46,7 @@ $(document).ready(function() {
         form_div.attr("id", "reply_to_"+parent_id);
         form_div.find("input[name=parent_id]").val(parent_id);
         $(this).after(form_div);
+        resetCommentForm();
      });
 
 <% end %>

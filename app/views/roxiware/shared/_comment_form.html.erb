@@ -74,6 +74,28 @@
 <div id="social_network_login"><div id="comment_author_name"></div></div>
 </script>
 <script>
+
+
+    var resetCommentForm = function() {
+       var comment_form=$(".comment_form");
+       var wysiwyg_api = $(comment_form).find("textarea").data("wysiwyg");
+       if (wysiwyg_api) {
+           wysiwyg_api.destroy();
+       }
+       $(comment_form).find("textarea").wysiwyg({ css: $.roxiware.main_css,
+                                                    iFrameClass:"wysiwyg_iframe",
+			                            initialContent:"",
+                                                    controls: {
+                                                        insertImage: { visible: false},
+                                                        undo: { visible: false },
+                                                        redo: { visible: false},
+                                                        unLink: { visible: false},
+                                                        code: { visible: false},
+                                                        insertHorizontalRule: { visible: false},
+                                                        html: { visible: true},
+                                                        fileManager: { visible:false }
+                                                    }});
+    }
     var initCommentForm = function(comment_path, comment_root_id, comment_root_type) {
        var comment_form=$(".comment_form");
        comment_form.find("input[name=root_type]").val(comment_root_type);
@@ -151,6 +173,7 @@
        comment_form.find("button.post_comment_button").require_fields("input.comment_author, input.comment_author_email, input.recaptcha_response_field");
        comment_form.find("textarea#comment_content").focus();
 
+       comment_form.find("button.post_comment_button").unbind("click");
        comment_form.find("button.post_comment_button").click(function() {
            comment_form.find("input.watermark").val("");
            $.ajaxSetParamsJSON(comment_path, jQuery.param($(this).parents("form").serializeArray()), {method:"POST",

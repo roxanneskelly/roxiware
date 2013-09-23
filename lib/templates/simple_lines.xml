@@ -440,60 +440,79 @@ div#mainBody .post {
 
 .comments {
     margin-top:2em;
+    clear:both;
+    .comment > .comment_content_wrapper {
+        margin-left:2em;
+    }
+    .comment > .comment > .comment_content_wrapper {
+        margin-left:4em;
+    }
+
+    .comment > .comment > .comment > .comment_content_wrapper {
+        margin-left:6em;
+    }
+
+    .comment > .comment > .comment > .comment .comment_content_wrapper {
+        margin-left:8em;
+    }
+
     .comment {
 
         position:relative;
         clear:both;
-        margin-bottom:3em;
-        .comment {
-            margin-left:3em;
-         }
 
-        .comment_status_moderate {
-            float:right;
-            color: <%= text_alert_color %>;
-            margin-right:4em;
-        }
-        .comment_status_publish {
-              display:none;
-        }
+        .comment_content_wrapper {
+             margin-bottom:3em;
 
-        .comment_header {
-            vertical-align:top;
-            color: <%= link_color %>;
-           
+	    .comment_status_moderate {
+		float:right;
+		color: <%= text_alert_color %>;
+		margin-right:4em;
+	    }
+	    .comment_status_publish {
+		  display:none;
+	    }
 
-            .comment_author_image {
-               display:none;
-            }
+	    .comment_header {
+		vertical-align:top;
+		color: <%= link_color %>;
 
-            .comment_author_name {
-                display:inline-block;
-                margin-right:0.5em;
-                float:left;
+
+		.comment_author_image {
+		   display:none;
+		}
+
+		.comment_author_name {
+		    display:inline;
+		}
+		.comment_date {
+		    display:inline;
+		}
+	    }
+            .comment_content {
+               clear:both;
             }
-            .comment_author_date:before {
-                content:"on ";
-            }
-            .comment_author_date {
-                display:inline-block;
-                margin-right:1em;
-            }
-        }
-        .comment_footer {
-            clear:both;
-            text-align:center;
-            .comment_reply {
-                cursor:pointer;
-                
-            }
-        }
-    }
-    .comment_content_wrapper:hover {
-        .manage_button {
-            cursor:pointer;
-            opacity:0.5;
-        }
+	    .comment_footer {
+		clear:both;
+		text-align:center;
+		.comment_reply {
+		    cursor:pointer;
+                    display:block;
+                    text-align:right;
+                    margin-left:1em;
+                    padding-right:1em;
+		}
+                .comment_reply:after {
+                    content:"Reply";
+                }
+	    }
+	}
+	.comment_content_wrapper:hover {
+	    .manage_button {
+		cursor:pointer;
+		opacity:0.5;
+	    }
+	}
     }
 }
 
@@ -524,64 +543,33 @@ div#mainBody .post {
     position:relative;
     width:100%;
     margin:2em 0 3em 0;
-
-    div.comment_form_header {
-        position:relative;
-        width:100%;
-        text-align:justify;
-        line-height:1.5em;
-        overflow:hidden;
-        height:7em;
- 
-        label {
-                margin:0.0em 0 0 0;
-                display:inline-block;
-                width:10%;
-                box-sizing:border-box;
-                -moz-box-sizing:border-box;
-        }
-        input {
-                display:inline-block;
-                width:82%;
-                margin:0px;
-                box-sizing:border-box;
-                -moz-box-sizing:border-box;
-        }
-    }
-    div.comment_form_header:after {
-
-            display:inline-block;
-            content:"";
-            width:100%;
-            overflow:hidden;
-            margin:0px;
-            padding:0px;
-            line-height:0px;
-            height:0px;
-        }
     #comment_form_core {
         text-align:justify;
         width:100%;
-        textarea.comment_form_content {
+        #comment_form_content {
             resize:vertical;
             vertical-align:top;
             position:relative;
-            width:80%;
-            min-height:64px;
+            width:82%;
+            min-height:150px;
             box-sizing:border-box;
             -moz-box-sizing:border-box;
             display:inline-block;
         }
+
         img#comment_author_image {
             vertical-align:top;
             max-width:64px;
             display:inline;
             width:15%;
             height:auto;
-            margin:0.5em 0 0 0;
+            margin:0.5em 1% 0 0;
             background:<%= text_color %>;
             display:inline-block;
+	     box-sizing:border-box;
+	     -moz-box-sizing:border-box;
         }
+
     }
     #comment_form_core:after {
         width:100%;
@@ -593,103 +581,14 @@ div#mainBody .post {
     button.post_comment_button {
         float:right;
             clear:both;
-     }
-     #twitter_login,#facebook_login {
-         float:none;
-         margin-top:0.3em;
-         margin-left:1em;
-         display:inline-block;
-         width:15em;
-         display:none;
-     }
-
-     #comment_auth { 
-         text-align:right;
-         margin-bottom:1em;
-         width:100%;
-	 .comment_recaptcha {
-             text-align:left;
-	     position:relative;
-	     width:325px;
-	     display:inline-block;
-	     label {
-		 width:5em !important;
-	     }
-	     input {
-		 width:300px;
-	     }
-
-	     .recaptcha_image {
-		 width:300px;
-		 height:57px;
-		 border:solid 1px black;
-		 margin-bottom:0.5em;
-	     }
-	     .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
-		 font-size:17px;
-		 font-family: 'Metro Icons';
-		 speak: none;
-		 font-weight: normal;
-		 font-variant: normal;
-		 text-transform: none;
-		 line-height: 1;
-		 -webkit-font-smoothing: antialiased;
-		 color: <%= link_color %>;
-		 position:absolute;
-		 left:305px;            
-		 width:19px;
-		 height:19px;
-		 cursor:pointer;
-	     }
-	     .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
-		 color: <%= link_hover_color %>;
-	     }
-	     .captcha_reload {
-		 top:0px;
-	     }
-	     .captcha_reload:before {
-		 content: "\e070";
-	     }
-	     .captcha_audio {
-		 top:20px;
-	     }
-	     .captcha_audio:before {
-		 content: "\e067";
-	     }
-
-	     .captcha_image {
-		 top:20px;
-	     }
-	     .captcha_image:before {
-		content: "\e0b5";
-	     }
-
-	     .captcha_help {
-		 top:40px;
-	     }
-	     .captcha_help:before {
-		 content: "\e056";
-	     }
-        }
-     }
-}
-
-@media all and (max-width: 540px)  {
-    .comment_form {
-        #comment_auth {
-            #social_network_login {
-                position:static;
-                width:300px;
-                margin-top:0.5em;
-                #twitter_login,#facebook_login {
-                    margin-left:0px;
-                    display:inline-block;
-                }
-                #twitter_login {
-                    margin-left:10px;
-                }
-            }
-        }
+    }
+    .comment_recaptcha {
+         .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+             color: <%= link_color %>;
+         }
+         .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+             color: <%= link_hover_color %>;
+         }
     }
 }
 
@@ -845,6 +744,7 @@ span#vimeo.social_network_icon:before { content:'\e0aa'; }
     <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="event_date_format">%b %e</param>
     <param class="local" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" name="home_page_type">blog_posts</param>
     <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="post_date_format">%e %b %Y</param>
+    <param description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE" class="local" name="comment_header_format">%{author_name} on %{date}%{moderate_indicator}</param>
     <param class="local" description="D009D4B0-5428-4A04-82AC-5A846EC12379" name="post_header_format">%{title}%{date}%{author_name}%{comments}</param>
     <param class="scheme" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="schemes">
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">

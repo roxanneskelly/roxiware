@@ -29,7 +29,7 @@ module Roxiware
 
 		   params[:comment_content] = Sanitize.clean(params[:comment_content], Roxiware::Sanitizer::BASIC_SANITIZER)
 
-		   @comment = @post.comments.new(params.merge({:parent_id=>0,
+		   @comment = @post.comments.new(params.merge({
 						  :comment_status=>comment_status,
 						  :comment_date=>DateTime.now.utc}), :as=>"")
 

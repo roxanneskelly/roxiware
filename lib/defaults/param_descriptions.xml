@@ -782,6 +782,13 @@
     <permissions>super</permissions>
     <meta></meta>
   </param_description>
+  <param_description guid="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE">
+    <name>Comment Header Format</name>
+    <description>Format for a comment header</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta></meta>
+  </param_description>
   <param_description guid="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
     <name>Social Networks</name>
     <description>List of social networks</description>

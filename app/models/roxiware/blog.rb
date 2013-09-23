@@ -114,9 +114,13 @@ module Roxiware
     end
 
     before_validation() do
-       seo_index = self.post_title.downcase.gsub(/[^a-z0-9]+/i, '-')
-       self.guid = self.post_link = "/"+self.blog_class+"/" + self.post_date.strftime("%Y/%-m/%-d/") + seo_index
-       self.post_exerpt = Sanitize.clean(truncate(self.post_content, :length => Roxiware.blog_exerpt_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER)
+        if self.post_title_changed?
+            seo_index = self.post_title.to_seo
+            self.guid = self.post_link = "/"+self.blog_class+"/" + self.post_date.strftime("%Y/%-m/%-d/") + seo_index
+        end
+	if self.post_content_changed?
+            self.post_exerpt = Sanitize.clean(truncate(self.post_content, :length => Roxiware.blog_exerpt_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER)
+        end
     end
   end
 

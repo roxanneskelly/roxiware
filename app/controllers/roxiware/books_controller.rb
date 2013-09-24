@@ -42,7 +42,7 @@ class Roxiware::BooksController < ApplicationController
     raise ActiveRecord::RecordNotFound if @book.nil?
     authorize! :read, @book
 
-    @title = @title + " : Books : " + @book.title
+    @title = @book.title
     @meta_keywords = @meta_keywords + ", " + @book.title
 
     respond_to do |format|

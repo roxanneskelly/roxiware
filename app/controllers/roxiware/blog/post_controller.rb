@@ -150,7 +150,7 @@ module Roxiware
 	       @comments[comment.id][:comment] = comment
 	   end
 	   
-	   @title = @title + " : Blog : " + @post.post_title
+	   @title = @post.post_title
 	   @meta_keywords = @meta_keywords + ", " + @post.post_title
 
 	   respond_to do |format|

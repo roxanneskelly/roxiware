@@ -28,7 +28,7 @@ class Roxiware::PeopleController < ApplicationController
             format.html 
         end
     else
-        @title = @title + " : " + @person.full_name
+        @title = @person.full_name
         respond_to do |format|
             format.html { render :action=>"show" }
         end
@@ -39,7 +39,7 @@ class Roxiware::PeopleController < ApplicationController
     people = Roxiware::Person.all
     # iterate each person to see if user can read them
     @people = people.select { |person| can? :read, person }
-    @title = @title + ": People : " + @person.full_name
+    @title = @person.full_name
 
     respond_to do |format|
        format.html # show.html.erb

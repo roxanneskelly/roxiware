@@ -15,27 +15,10 @@
 <script>
 $(function() {
     $("#post_edit_form button#save_button").click(function() {
-        $.ajax({type:"<%= method %>",
-                 processData: false, 
-                 dataType:"json",
-                 url: "<%= endpoint %>.json",
-                 data:jQuery.param($("#post_edit_form form").serializeArray()),
-		 error: function(xhr, textStatus, errorThrown) {
-		       $.error(errorThrown);
-		 },
-		 complete: function() {
-		 },
-		 success: function(data) {
-		     if(data["error"]) {
-			 $(data["error"]).each(function(index, value) {
-			     $.error(value[0]+": "+value[1])
-			     $("form input#"+value[0]).css("background", "#ffcccc");
-			 })
-		     }
-		     else {
-			 window.location.reload();
-		     }
-                 }}); 
+
+         $.ajaxSetParamsJSON("<%= endpoint %>.json", $("#post_edit_form form").serializeArray(), {method:"<%= method %>", form:$("#post_edit_form form"), success:function(data) {
+             window.location = data.post_link;
+         }});
     });
 });
 </script>

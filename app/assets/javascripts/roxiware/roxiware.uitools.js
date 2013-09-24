@@ -1175,6 +1175,7 @@ $.fn.require_fields = function(fields) {
 		});
 	    button.button(button_enable);
 	});
+    $(fields).trigger("propertychange");
 }
 
 function do_login(data) {
@@ -1275,7 +1276,7 @@ function loginForm(options) {
 
 function forgotPassword() {
     var template = $(forgot_password_template);
-    template.find("button").require_fields($("#user_email"));
+    template.find("button").require_fields(template.find("input#user_email"));
     template.submit(function(e) {
 	e.preventDefault();
         $.ajax({

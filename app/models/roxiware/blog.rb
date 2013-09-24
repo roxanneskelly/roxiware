@@ -20,7 +20,7 @@ module Roxiware
     belongs_to :person
     has_many :comments, :class_name=>"Roxiware::Comment", :dependent=>:destroy, :as=>:post
     has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
-    has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
+    has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term", :autosave=>true
 
     validates_presence_of :person_id, :message=>"The person id is missing."
     validates_presence_of :guid, :message=>"The guid is missing."

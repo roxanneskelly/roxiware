@@ -100,7 +100,7 @@ module Roxiware
 	   respond_to do |format|
 	     if !@comment.destroy
 	       format.json { render :json=>report_error(@comment)}
-	       format.html { redirect_to @comment, :alert => 'Failure deleting blog post.' }
+	       format.html { redirect_to @comment, :alert => 'Failure deleting comment.' }
 	     else
 	       format.json { render :json=>{}}
 	     end

@@ -106,7 +106,7 @@ $(document).ready(function() {
         if (csrf_param !== undefined && csrf_token !== undefined) {
             delete_params[csrf_param] = csrf_token;
         };
-	$.ajax("<%= comment_path(@post.id) %>/"+blog_comment_id+".json", {
+	$.ajax("<%= comment_index_path %>/"+blog_comment_id+".json", {
 	       type:"DELETE",
                data: delete_params,
 	       error: function(xhr, textStatus, errorThrown) {

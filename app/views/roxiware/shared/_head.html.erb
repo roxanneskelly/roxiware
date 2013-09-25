@@ -1,4 +1,4 @@
-<meta content="text/html" charset="UTF-8" http-equiv="Content-Type">
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2, user-scalable = yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="generator" content="roxiware">
@@ -21,30 +21,3 @@
 <%= csrf_meta_tags %>
 <%= favicon_link_tag "/assets/icons/favicon.ico"%>
 <%= render :partial=>'roxiware/layouts/ga' %>
-
-<% if can? :edit, Roxiware::Layout::WidgetInstance %>
-   <ul id="widget_context_menu" class="context_menu">
-     <li id="widget_settings"><a menu_item="widget_settings" class="settings_link">Widget Settings</a></li>
-     <% if can? :delete, Roxiware::Layout::WidgetInstance %>
-        <li id="delete_widget"><a menu_item="widget_delete" class="widget_instance_delete">Delete Widget</a></li>
-     <% end %>
-   </ul>
-<% end %>
-<% if can? :edit, Roxiware::Layout::LayoutSection %>
-   <ul id="section_context_menu" class="context_menu">
-         <li id="section_settings"><a id="section_settings" menu_item="section_settings" class="settings_link">Section Settings</a></li>
-     </ul>
-<% end %>
-<% if can? :edit, @page_layout %>
-   <ul id="page_context_menu" class="context_menu">
-       <li id="page_settings"><a id="page_settings" menu_item="page_settings" class="settings_link">Page Settings</a></li>
-    </ul>
-<% end %>
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) return;
-  js = d.createElement(s); js.id = id;
-  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=260843684057424";
-  fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>

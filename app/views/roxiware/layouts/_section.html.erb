@@ -3,31 +3,37 @@
 <% if layout_section.present?  %>
   <% edit_section_class = "edit_section" if can? :edit, Roxiware::Layout::LayoutSection %>
   <% style = "" %>
+   <% if can? :edit, Roxiware::Layout::Layout %>
   <div id="<%= section %>_section" section_name="<%= layout_section.get_text_name %>" section="<%= section %>" section_id="<%= u layout_section.id %>" class="<%= section %>_class <%= edit_section_class %>" style="<%= style %>" rel="<%= layout_page_section_path(@current_layout.guid, layout_section.page_layout.get_url_identifier, layout_section.name) %>">
-    <% layout_section.get_widget_instances.each do |widget_instance| %>
-       <% show_widget = true %>
-       <% widget_path  =  layout_page_section_widget_path(@current_layout.guid, layout_section.page_layout.get_url_identifier, layout_section.name, widget_instance.id) %>
-       <% begin %>
-         <% locals = widget_instance.get_params %>
-	 <% locals[:widget_instance]=widget_instance %>
-	 <% locals[:widget_instance_id] =  "widget-#{widget_instance.id}" if locals[:widget_instance_id].blank? %>
-	 <% locals[:layout_section]=layout_section %>
-	 <% locals[:page_layout]=@page_layout %>
-	 <% locals[:layout]=@current_layout %>
-         <% globals = widget_instance.globals %>
-          <% puts "PRELOAD #{widget_instance.widget.preload}" %>
-	 <% show_widget = eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1) %>
-	 <% puts "WIDGET SHOW #{widget_instance.widget.guid} #{widget_instance.widget.name} #{show_widget.inspect}" %>
-	 <% if show_widget || can?( :edit, widget_instance) %>
-	   <% if can? :move, widget_instance %>
-	      <div class="widget_drop_target"><div id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"><div>&nbsp;</div></div></div>
-	   <% end %>
-	   <% widget_edit_class = ""
-	      widget_edit_class = "widget_edit" if can? :edit, widget_instance %>
-	   <% widget_rendering = render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
-	   <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
-                   name="<%=widget_instance.widget.name.titleize %>"
-                   rel="<%= widget_path %>">
+   <% else %>
+  <div id="<%= section %>_section" class="<%= section %>_class <%= edit_section_class %>" style="<%= style %>">
+   <% end %>
+    <% layout_section.get_widget_instances.each do |widget_instance| 
+         show_widget = true
+         widget_path  =  layout_page_section_widget_path(@current_layout.guid, layout_section.page_layout.get_url_identifier, layout_section.name, widget_instance.id)
+         begin 
+           locals = widget_instance.get_params 
+	   locals[:widget_instance]=widget_instance 
+	   locals[:widget_instance_id] =  "widget-#{widget_instance.id}" if locals[:widget_instance_id].blank? 
+	   locals[:layout_section]=layout_section 
+	   locals[:page_layout]=@page_layout 
+	   locals[:layout]=@current_layout 
+           globals = widget_instance.globals
+	   show_widget = eval(widget_instance.widget.preload, binding(), widget_instance.widget.name, 1) 
+	   if show_widget || can?( :edit, widget_instance) 
+	       if can? :move, widget_instance %>
+	          <div class="widget_drop_target"><div id="widget-<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"><div>&nbsp;</div></div></div>
+	      <% end
+	      widget_edit_class = ""
+	      widget_edit_class = "widget_edit" if can? :edit, widget_instance 
+	      widget_rendering = render(:inline => widget_instance.widget.render_view, :locals=>locals ) %>
+	   <% if can?(:edit, widget_instance) %>
+	       <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>" widget_id="<%= widget_instance.id %>" section="<%= section %>" order="<%= widget_instance.section_order %>"
+                       name="<%=widget_instance.widget.name.titleize %>"
+                       rel="<%= widget_path %>">
+           <% else %>
+	       <div class="widget <%= widget_edit_class %>" id="<%= locals[:widget_instance_id] %>">
+           <% end %>
 	     <% if widget_instance.get_param("show_background").present? && widget_instance.get_param("show_background").conv_value %>
 	        <div class="widget_background"></div>
              <% end %>

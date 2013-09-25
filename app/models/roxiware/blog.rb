@@ -109,8 +109,8 @@ module Roxiware
        self.category_ids = Roxiware::Terms::Term.get_or_create([set_name], Roxiware::Terms::TermTaxonomy::CATEGORY_NAME).map{|term| term.id}
     end
 
-    def snippet(post_content_length, &block)
-	Sanitize.clean(truncate(self.post_exerpt, :length => post_content_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER) + block.call
+    def snippet(post_content_length, options={}, &block)
+	Sanitize.clean(truncate(self.post_exerpt, :length => post_content_length, :omission=>"", :separator=>" "), options[:sanitizer] || Roxiware::Sanitizer::BASIC_SANITIZER) + block.call
     end
 
     def post_image

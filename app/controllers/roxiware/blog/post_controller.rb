@@ -120,6 +120,7 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.where(:guid=>request.path).first
 	   @page_images = [@post.post_image]
 	   @blog_class = params[:blog_class] || "blog"
+	   @meta_description = @post.snippet(200, :sanitizer=>Sanitize::Config::DEFAULT){"..."}
 	   raise ActiveRecord::RecordNotFound if @post.nil?
 	   authorize! :read, @post
 

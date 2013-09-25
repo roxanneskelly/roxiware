@@ -4,11 +4,18 @@
 <meta name="generator" content="roxiware">
 <meta name="description" content="<%= @meta_description %>"/>
 <meta name="keywords" content="<%= @meta_keywords %>"/>
+<meta property="og:type" content="<%= @og_type || 'website' %>" />
+<meta property="og:title" content="<%= @page_title || @title %>" />
+<meta property="og:url" content="<%= @og_url || request.url %>" />
+<meta property="og:description" content="<%= @meta_description %>" />
+<meta property="og:site_name" content="<%= @title %>" />
+<%= (@page_images || []).collect{|image| tag(:meta, :property=>"og:image", :content=>image) }.join("").html_safe %>
+<%= tag(:meta, :property=>"og:updated_time", :content=>@last_updated.strftime('%F')) if @last_updated %>
 <% if @robots.present? %>
   <meta name="robots" content="<%= @robots %>" />
 <% end %>
 <meta name="google-site-verification" content="<%= @google_site_verification_key %>" />
-<title><%= @title %></title>
+<title><%= @page_title || @title %></title>
 <%= stylesheet_link_tag    "application" %>
 <style type="text/css" id="template-css"><%= raw @layout_styles %></style>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>

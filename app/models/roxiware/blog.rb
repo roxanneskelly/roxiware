@@ -113,6 +113,10 @@ module Roxiware
 	Sanitize.clean(truncate(self.post_exerpt, :length => post_content_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER) + block.call
     end
 
+    def post_image
+        self.post_content[/img.*?src="(.*?)"/i,1]
+    end
+
     before_validation() do
         if self.post_title_changed?
             seo_index = self.post_title.to_seo

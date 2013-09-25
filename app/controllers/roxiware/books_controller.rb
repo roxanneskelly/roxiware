@@ -14,7 +14,7 @@ class Roxiware::BooksController < ApplicationController
   # GET /books.json
   def index
 
-    @title = @title + " : Books"
+    @page_title = @title + " : Books"
 
     series_ids = []
     authorize! :read, Roxiware::Book
@@ -42,7 +42,8 @@ class Roxiware::BooksController < ApplicationController
     raise ActiveRecord::RecordNotFound if @book.nil?
     authorize! :read, @book
 
-    @title = @book.title
+    @page_title = @book.title
+    @page_images = [@book.large_image_url, @book.image_url, @book.thumbnail_url]
     @meta_keywords = @meta_keywords + ", " + @book.title
 
     respond_to do |format|

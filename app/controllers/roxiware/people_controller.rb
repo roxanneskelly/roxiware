@@ -13,7 +13,7 @@ class Roxiware::PeopleController < ApplicationController
 
   # GET /people
   def index
-    @title = @title + " : People"
+    @page_title = @title + " : People"
     people = Roxiware::Person.all
     @person = Roxiware::Person.where(:id=>@default_biography).first if @default_biography.present?
     @person = nil if cannot? :read, @person
@@ -28,7 +28,7 @@ class Roxiware::PeopleController < ApplicationController
             format.html 
         end
     else
-        @title = @person.full_name
+        @page_title = @person.full_name
         respond_to do |format|
             format.html { render :action=>"show" }
         end
@@ -39,8 +39,8 @@ class Roxiware::PeopleController < ApplicationController
     people = Roxiware::Person.all
     # iterate each person to see if user can read them
     @people = people.select { |person| can? :read, person }
-    @title = @person.full_name
-
+    @page_title = @person.full_name
+    @page_images = [@person.large_image_url, @person.image_url, @person.thumbnail_url]
     respond_to do |format|
        format.html # show.html.erb
        format.json { render :json => @person.ajax_attrs(@role) }

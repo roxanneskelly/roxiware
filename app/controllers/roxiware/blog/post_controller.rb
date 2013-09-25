@@ -96,7 +96,7 @@ module Roxiware
 
 	   respond_to do |format|
 	     format.html do 
-               @title = @title + " : Blog"
+               @page_title = @title 
 	       @posts.each do |post| 
 	         @meta_keywords = @meta_keywords + ", " + post.post_title
 	       end 
@@ -118,6 +118,7 @@ module Roxiware
 	 def show_by_title
 	   @enable_blog_edit = true
 	   @post = Roxiware::Blog::Post.where(:guid=>request.path).first
+	   @page_images = [@post.post_image]
 	   @blog_class = params[:blog_class] || "blog"
 	   raise ActiveRecord::RecordNotFound if @post.nil?
 	   authorize! :read, @post
@@ -150,7 +151,7 @@ module Roxiware
 	       @comments[comment.id][:comment] = comment
 	   end
 	   
-	   @title = @post.post_title
+	   @page_title = @post.post_title
 	   @meta_keywords = @meta_keywords + ", " + @post.post_title
 
 	   respond_to do |format|

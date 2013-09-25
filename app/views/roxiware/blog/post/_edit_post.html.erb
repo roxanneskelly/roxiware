@@ -1,6 +1,6 @@
   <div id="category_entry"><%= post_fields.label :category_name, "Category" %>
   <%= post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category) %></div>
-  <% if ((@setup_type != "author") || (current_user.role == "super")) %>
+  <% if (current_user.role == "super") %>
       <div id="author_entry"><%= post_fields.label :person_id, "Author" %>
       <%= post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]}) %> </div>
    <% end %>

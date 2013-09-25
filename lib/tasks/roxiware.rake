@@ -404,7 +404,7 @@ namespace :roxiware do
        Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:drop"].invoke
        Rake::Task["roxiware:base_init"].invoke
-       Rake::Task["roxiware:package_init"].invoke
+       Rake::Task["roxiware:package_init"].invoke(args[:instance_type] || :basic_author)
     end
 
     desc "update a roxiware instance"

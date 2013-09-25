@@ -3,7 +3,7 @@
   <!-- Roxiware Web Engine Template: Simple Lines -->
   <name>Simple Lines</name>
   <description>
-    <![CDATA[<b>Minimalist.  Clean.  Zero Distractions.</b> Simple Lines has very few graphic elements to distract your readers from your writing, so remember...write.  <br>  The template makes a great blog too, if you've not yet published, or don't intend to publish.]]>
+    <![CDATA[<b>Minimalist.  Clean.  Zero Distractions.</b> Simple Lines has very few graphic elements to distract your readers.]]>
   </description>
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -29,8 +29,14 @@ Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9
 Roxiware::Page.find_or_create_by_page_identifier("contact").save!
 
 books_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_2/permission")
- books_menu_permission.value=(Roxiware::Book.all.count > 0) ? "guest" : "admin"
-books_menu_permission.save!]]>
+books_menu_permission.value = Roxiware::Param::Param.application_param_val("books", "enable_books") ? ((Roxiware::Book.all.count > 0) ? "guest" : "admin") : "super"
+books_menu_permission.save!
+
+calendar_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_3/permission")
+calendar_menu_permission.value = Roxiware::Param::Param.application_param_val("events", "enable_events") ? "guest" : "super"
+calendar_menu_permission.save!
+
+]]>
   </setup>
   <settings_form>
     <![CDATA[]]>
@@ -41,6 +47,10 @@ books_menu_permission.save!]]>
   <packages>
     <package>basic_author</package>
     <package>premium_author</package>
+    <package>basic_blog</package>
+    <package>premium_blog</package>
+    <package>basic_forum</package>
+    <package>premium_forum</package>
   </packages>
   <style>
     <![CDATA[/* Document layout */

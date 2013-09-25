@@ -1,0 +1,36 @@
+<%= form_for current_user.person, :url=>setup_path do |person| %>
+<div class="wizard_instructions">Make changes to your biography if needed.</div>
+<div id="biography_edit">
+   <%= render :partial=>'roxiware/people/edit_biography', :locals=>{:person_form=>person, :person=>current_user.person} %>
+    <%= hidden_field_tag :setup_step, @setup_step %>
+    <%= hidden_field_tag :setup_action, "none" %>
+</div>
+<% end %>
+<div class="setup_buttons">
+<%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
+<%= button_tag :id=>"save", :value=>"back", :type=>"button" do %>Next&nbsp;<span class="icon-arrow-right-2"></span><% end %>
+</div>
+<script>
+  $(function() {
+    $("textarea.settings_wysiwyg").wysiwyg({ css: "<%= stylesheet_path('application') %>",
+                                       iFrameClass:"wysiwyg_iframe",
+                                       controls: {
+                                          undo: { visible: false },
+                                          redo: { visible: false},
+                                          insertHorizontalRule: { visible: true},
+                                          html: { visible: true},
+                                          insertTable: {visible: true},
+                                          'fileManager': {
+                                              visible: true,
+                                              tooltip: "File Manager"
+                                                  }
+                                           }});
+
+    $("button#back_button,button#save").click(function() {
+        $(".watermark").val("");
+        $("input#setup_action").val($(this).attr("id"));
+        $.ajaxSetParamsJSON("<%= setup_path %>.json", $("form").serializeArray(), {form:$("form"), success:function() {window.location.reload()}});
+     });
+
+  });
+</script>

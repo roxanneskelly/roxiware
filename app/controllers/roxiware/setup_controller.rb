@@ -27,12 +27,22 @@ class Roxiware::SetupController < ApplicationController
 	  case app_type
 	     when "basic_author"
 	        @setup_type = "author"
+                _set_setup_step("import_biography")
 	     when "premium_author"
 	        @setup_type = "author"
+                _set_setup_step("import_biography")
 	     when "basic_blog"
 	        @setup_type = "blog"
+                _set_setup_step("edit_biography")
 	     when "premium_blog"
 	        @setup_type = "blog"
+                _set_setup_step("edit_biography")
+	     when "basic_forum"
+	        @setup_type = "forum"
+                _set_setup_step("edit_biography")
+	     when "premium_forum"
+	        @setup_type = "forum"
+                _set_setup_step("edit_biography")
 	     else
 	        @setup_type = "custom"
 	  end
@@ -43,7 +53,6 @@ class Roxiware::SetupController < ApplicationController
           Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", hostname)
           @user.create_person({:first_name=>first_name, :last_name=>last_name, :middle_name=>middle_name, :role=>"", :bio=>"", :email=>email}, :as=>"")
 	  @user.auth_services.create({:provider=>"roxiware", :uid=>username}, :as=>"")
-          _set_setup_step("import_biography")
       end
 
       template = [@setup_type, @setup_step].compact.join("_")
@@ -233,7 +242,7 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
-    def _author_edit_biography
+    def _edit_biography
 	result = nil
 	ActiveRecord::Base.transaction do
 	    begin
@@ -267,8 +276,24 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
-    def _show_author_social_networks
+    def _author_edit_biography
+        _edit_biography
+    end
+
+    def _blog_edit_biography
+        _edit_biography
+    end
+
+    def _show_social_networks
         @person = current_user.person
+    end
+
+    def _show_author_social_networks
+        _show_social_networks
+    end
+
+    def _show_blog_social_networks
+        _show_social_networks
     end
 
     def _author_social_networks
@@ -290,6 +315,44 @@ class Roxiware::SetupController < ApplicationController
 			   result = _set_setup_step("manage_books")
 			   # preload the list of books
 			   _show_author_manage_books
+		       rescue Exception => e
+			   print e.message
+			   puts e.backtrace.join("\n")
+			   raise e
+		       end
+		    end
+                end
+	    rescue Exception => e
+		result ||= {}
+		result[:error] ||= []
+		result[:error] << ["exception", e.message]
+		puts "FAILURE setting social networks: #{e.message}"
+		puts e.backtrace.join("\n")
+		raise ActiveRecord::Rollback
+	    end
+	end
+        result
+    end
+
+
+    def _blog_social_networks
+	result = nil
+	ActiveRecord::Base.transaction do
+	    begin
+		if params[:setup_action] == "back_button"
+                    result = _set_setup_step("edit_biography")
+		elsif params[:setup_action] == "save"
+		    ActiveRecord::Base.transaction do
+		       begin
+			   if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
+			       social_networks = current_user.person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
+			       params[:person][:params][:social_networks].each do |name, value|
+				   social_networks.set_param(name, value, "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
+			       end
+			   end
+			   result = _set_setup_step("choose_template")
+			   # preload the list of books
+			   _show_blog_choose_template
 		       rescue Exception => e
 			   print e.message
 			   puts e.backtrace.join("\n")
@@ -482,7 +545,7 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
-    def _show_author_choose_template
+    def _show_choose_template
 	  @layouts = []
 	  category_ids = Set.new([])
 	  package_name = Roxiware::Param::Param.application_param_val("system", "hosting_package")
@@ -534,6 +597,14 @@ class Roxiware::SetupController < ApplicationController
 	  @categories = dfs.call("")
     end
 
+    def _show_author_choose_template
+        _show_choose_template
+    end
+
+    def _show_blog_choose_template
+        _show_choose_template
+    end
+
     def _author_choose_template
 	result = nil
 	ActiveRecord::Base.transaction do
@@ -559,7 +630,7 @@ class Roxiware::SetupController < ApplicationController
 		    result = _set_setup_step("complete")
 
 		    # generate initial blog post
-		    _gen_initial_blog_post
+		    _author_gen_initial_blog_post
 
 		end
 	    rescue Exception => e
@@ -571,6 +642,40 @@ class Roxiware::SetupController < ApplicationController
         end
 	result
     end
+
+
+    def _blog_choose_template
+	result = nil
+	ActiveRecord::Base.transaction do
+	    begin
+	        if params[:setup_action] == "back_button"
+                    result = _set_setup_step("social_networks")
+		elsif params[:setup_action] == "save_template"
+		    # we've chosen the template, so set it, do the setup, and go to completion page
+		    Roxiware::Param::Param.refresh_application_params
+		    Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:template_guid])
+		    Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", params[:template_scheme])
+		    refresh_layout
+		    @current_template = params[:template_guid]
+		    @layout_scheme = params[:template_scheme]
+		    load_layout
+		    run_layout_setup
+		    result = _set_setup_step("complete")
+
+		    # generate initial blog post
+		    _blog_gen_initial_blog_post
+
+		end
+	    rescue Exception => e
+		result = {:error=>[["exception", e.message]]}
+                puts "FAILURE picking setup template: #{e.message}"
+		puts e.backtrace.join("\n")
+		raise ActiveRecord::Rollback
+	    end
+        end
+	result
+    end
+
 
     def _author_complete
 	result = nil
@@ -595,6 +700,14 @@ class Roxiware::SetupController < ApplicationController
 	end
         result
     end
+
+    def _author_complete
+        _complete
+    end
+
+    def _blog_complete
+        _complete
+    end
     
     def _get_goodreads_author_books
        goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)
@@ -618,7 +731,7 @@ class Roxiware::SetupController < ApplicationController
        goodreads.search_series({:goodreads_author_id=>current_user.person.goodreads_id})
     end
 
-    def _gen_initial_blog_post
+    def _author_gen_initial_blog_post
         latest_book = Roxiware::Book.where(:publish_date=>(DateTime.new()..DateTime.now())).order("publish_date DESC").limit(1).first
 	if latest_book.present?
             book_post = <<EOF
@@ -639,6 +752,25 @@ EOF
                                              :post_title=>"Welcome!",
                                              :comment_permissions=>"default",
                                              :post_status=>"publish"}, :as=>"")
+	else
+	    _blog_gen_initial_post
 	end
+    end
+
+
+    def _blog_gen_initial_blog_post
+        blog_post = <<EOF
+<p>You can find out a bit about me <a href="/biography">here</a>!</p>
+- #{current_user.person.full_name}
+</p>
+EOF
+
+           @post = Roxiware::Blog::Post.create({:person_id=>current_user.person.id,
+                                             :post_date=>DateTime.now.utc,
+                                             :blog_class=>(params[:blog_class] || "blog"),
+                                             :post_content=>blog_post,
+                                             :post_title=>"Welcome!",
+                                             :comment_permissions=>"default",
+                                             :post_status=>"publish"}, :as=>"")
     end
 end

@@ -57,7 +57,7 @@ module Roxiware
 
 
 	      # look up the param description
-              param_description = Roxiware::Param::ParamDescription.where(:guid=>description_guid).first
+              param_description = Roxiware::Param::ParamDescription.find_description(description_guid)
 	      raise Exception.new("Couldn't find param description #{description_guid}") if param_description.blank?
 	      
 	      # create an object
@@ -109,12 +109,16 @@ module Roxiware
 	  attr_accessible :value              # value of the param
 	  attr_accessible :textvalue              # large value of the param
 	  attr_accessible :widget_instance_id # parent widget instance
-	  belongs_to :param_description, :autosave=>true, :foreign_key=>:description_guid, :primary_key=>:guid
 
           edit_attr_accessible :param_class, :name, :param_object_type, :description_guid, :param_object_id, :as=>[nil]
 	  edit_attr_accessible :value, :as=>[:super, :admin, nil]
 	  edit_attr_accessible :textvalue, :as=>[:super, :admin, nil]
 	  ajax_attr_accessible :param_class, :name, :param_object_type, :description_guid, :param_object_id, :as=>[:super, :admin]
+
+
+          def param_description
+	      Roxiware::Param::ParamDescription.find_description(description_guid)
+	  end
 
 
 	  def deep_dup
@@ -133,6 +137,11 @@ module Roxiware
 	     @application_params[application].values
 	  end
 
+          def self.application_param_hash(application)
+	      self.application_params(application)
+              @application_params[application]
+	  end
+
 	  def self.application_param_val(application, name)
 	     self.application_params(application)
 	     result = @application_params[application][name].conv_value if  @application_params[application][name].present?
@@ -145,29 +154,24 @@ module Roxiware
 	     # refresh application param cache
 	     self.application_params(application)
 
-	     if @application_params[application][name].present?
-	         @application_params[application][name].destroy
-		 @application_params[application].delete(name)
-	     end
-
              raise Exception.new("Missing param description for #{name}") if description_guid.blank?
 
-             param_description = Roxiware::Param::ParamDescription.where(:guid=>description_guid).first
+             param_description = Roxiware::Param::ParamDescription.find_description(description_guid)
 	     raise Exception.new("Couldn't find param description #{description_guid} for #{name}") if param_description.blank?
 
 	      if(value.class == Roxiware::Param::Param)
 	         # if the value is a param just add it
+	         @application_params[application][name].destroy
                  @application_params[application][name] = value
 		 return value
               end
 
-
-	     @application_params[application][name] = Param.create(
-	               {:param_class=>application, 
-	                :name=>name,
-			:param_object_type=>nil, 
-			:description_guid=>description_guid, 
-			:param_object_id=>nil}, :as=>"")
+	     @application_params[application][name] ||= Param.new()
+	     @application_params[application][name].update_attributes({:param_class=>application, 
+	                                                               :name=>name,
+			                                               :param_object_type=>nil, 
+			                                               :description_guid=>description_guid, 
+			                                               :param_object_id=>nil}, :as=>"")
 	   
 	      # set the value
 	      case param_description.field_type
@@ -191,8 +195,7 @@ module Roxiware
 	  end
 
 	  def description
-	     @description ||= param_description || create_param_description({:guid=>self.description_guid})
-	     @description
+	      Roxiware::Param::ParamDescription.find_description(self.description_guid)
 	  end
 
 	  def hash_params
@@ -285,8 +288,6 @@ module Roxiware
                 end
 	     end
 
-             self.param_description = Roxiware::Param::ParamDescription.where(:guid=>self.description_guid).first
-
 	     if(self.param_description.blank?)
 	        puts "param description #{self.description_guid} for #{self.name} not found"
 	     end
@@ -330,15 +331,22 @@ module Roxiware
       end
 
       class ParamDescription < ActiveRecord::Base
-        include Roxiware::BaseModel
-        self.table_name= "param_descriptions"
+	  include Roxiware::BaseModel
+	  self.table_name= "param_descriptions"
 
-        attr_accessible :name         # human readable name of parameter
-	attr_accessible :guid         # unique id of parameter
-	attr_accessible :description  # description of parameter
-	attr_accessible :field_type   # type of field
-	attr_accessible :meta         # Meta information for controls (select values, etc.)
-	attr_accessible :permissions  # permissions for parameter
+	  attr_accessible :name         # human readable name of parameter
+	  attr_accessible :guid         # unique id of parameter
+	  attr_accessible :description  # description of parameter
+	  attr_accessible :field_type   # type of field
+	  attr_accessible :meta         # Meta information for controls (select values, etc.)
+	  attr_accessible :permissions  # permissions for parameter
+
+	  def self.find_description(description_guid)
+	      @param_descriptions ||= {}
+	      @param_descriptions[description_guid] ||= self.find_by_guid(description_guid)
+	      @param_descriptions[description_guid]
+	  end
+
 
 	  def import(xml_param_description)
 	     self.guid = xml_param_description["guid"]

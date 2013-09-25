@@ -1,0 +1,35 @@
+<div class="wizard_step">Done!</div>
+<div class="wizard_instructions">
+Congratulations, you've finished setting up your website.  Now it's time to start using it.
+<br/>
+<br/>
+<b>Things you should know:</b><br/>
+<ul>
+<li><b>Sign In:</b> You need to sign in to your website in order to manage it.  To do this, you click the 'Log In' link in the upper right corner
+of your website.</li>
+<li><b>Left Click:</b> To manage features of your website, you can bring up a menu using the left-click button on your mouse
+(on Mac, hold down the 'control' button on your keyboard and click the mouse).  You can left-click on blog posts, 
+events, and other items to manage them.</li>
+<li><b>Top Bar:</b> The top menu bar will show common options, such as creating blog posts.</li>
+<li><b>Help:</b> You can click on any '?' icon for more documentation on that feature.</li>
+</ul>
+</div>
+
+<%= form_tag(setup_path, :method=>"put", :style=>"display:inline") do %>
+  <div class="setup_buttons">
+      <%= button_tag :id=>"done", :value=>"done", :type=>"button" do %>Take Me To My Website&nbsp;<span class="icon-arrow-right-2"></span><% end %>
+  </div>
+
+  <%= hidden_field_tag :setup_step, @setup_step %>
+  <%= hidden_field_tag :setup_action, "import" %>
+<% end %>
+<script>
+$(function() {
+   $("button#done").click(function() {
+<% site_url = Roxiware::Param::Param.application_param_val('system', 'hostname') 
+   site_url = "http://#{site_url}" if site_url.present?
+   site_url = "/" if site_url.blank? %>
+       window.open("<%= site_url %>");
+   });
+});
+</script>

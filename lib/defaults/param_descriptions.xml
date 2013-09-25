@@ -203,7 +203,7 @@
     <name>Template</name>
     <description>Website template.</description>
     <field_type>string</field_type>
-    <permissions>super</permissions>
+    <permissions>admin</permissions>
     <meta/>
   </param_description>
   <param_description guid="9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270">

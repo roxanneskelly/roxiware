@@ -3,14 +3,16 @@
        <div id="settings_controls">
        <div id="help_bar"><div id="help_bar_items"></div></div>
        <div id="settings_menu" class="ddsmoothmenu"><ul><li id="account"><span aria-hidden="true" class="icon-user"></span>&nbsp;Account<ul>
-	       <li><a href="<%= destroy_session_path('user') %>">Log Out</a></li>
-	       <li><a rel="<%= edit_account_path(current_user.id) %>" form="Edit Account">Edit</a></li>
+	       <li><a rel="<%= edit_account_path(current_user.id) %>" form="Edit Account">Edit Account</a></li>
+               <li><a rel="<%= edit_person_path(current_user.person.id) %>" form="Edit Biography">Edit Biography</a></li>
 	       <li><a rel="<%= account_update_password_path %>" form="Change Password">Change Password</a></li>
-	       <% if (((@setup_type != "author") || (current_user.role == "super")) && can?(:create, Roxiware::User)) %>
+	       <% if ((["custom","forum"].include?(@setup_type) || (current_user.role == "super")) && can?(:create, Roxiware::User)) %>
 	           <hr/>
 	           <li id="account_settings"><a rel="<%= setting_path('accounts') %>" form="Manage Accounts">Manage Accounts</a></li>
 	       <% end %>
-	   </ul></li><% if ((@setup_type != "author") || (current_user.role == "super")) && (can? :create, Roxiware::Person) %>
+               <hr/>
+	       <li><a href="<%= destroy_session_path('user') %>">Log Out</a></li>
+	   </ul></li><% if (["custom","forum"].include?(@setup_type) || (current_user.role == "super")) && (can? :create, Roxiware::Person) %>
 	        <li id="people_settings"><a rel="<%= setting_path('people') %>" form="Manage People"><span aria-hidden="true" class="icon-users"></span>&nbsp;People</a></li>
 	    <% end %><li id="settings_menu"><span aria-hidden="true" class="icon-cog-2"></span><ul>
 		  <li id="layout_picker"><a rel="<%= layout_index_path %>" form="Choose Template">Template</a></li>

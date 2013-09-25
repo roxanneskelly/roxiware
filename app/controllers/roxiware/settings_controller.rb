@@ -15,13 +15,11 @@ module Roxiware
        end
 
        def update
-         setting_params = Roxiware::Param::Param.application_params(params[:id])
-         setting_params.each do |setting_param|
-	    next if(cannot? :edit, setting_param)
-	    
-            if params[params[:id]][setting_param.name].present?
-	       Roxiware::Param::Param.set_application_param(params[:id], setting_param.name, setting_param.description_guid, params[params[:id]][setting_param.name])
-	    end
+         setting_params = Roxiware::Param::Param.application_param_hash(params[:id])
+         params[params[:id]].each do |key, value|
+	     if setting_params[key] && can?(:edit, setting_params[key])
+	          Roxiware::Param::Param.set_application_param(params[:id], key, setting_params[key].description_guid, value)
+             end
          end
 	 refresh_layout	
 	 run_layout_setup

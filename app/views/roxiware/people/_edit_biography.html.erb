@@ -4,12 +4,12 @@
 	<%= person_form.text_field :first_name, :size=>25, :watermark=>"First"  %>
 	<%= person_form.text_field :middle_name, :size=>25, :watermark=>"Middle" %>
 	<%= person_form.text_field :last_name, :size=>25, :watermark=>"Last" %></div>
-	<% if @setup_type != "author" %>
+	<% if ["forum","custom"].include?(@setup_type) %>
 	    <div id="role_entry"><%= person_form.label :role, "Role"%><%= person_form.text_field :role, :size=>50 %></div>
 	<% end %>
 	<div id="email_entry"><%= person_form.label :email, "Email" %>
 	<%= person_form.email_field :email, :size=>255 %></div>
-	<% if @setup_step == "complete" && @setup_type != "author" %> 
+	<% if @setup_step == "complete" && ["forum","custom"].include?(@setup_type) %> 
 	   <%  website = nil
 	       if @person.get_param("social_networks").present? && @person.get_param("social_networks").h["website"].present?
 	           website = @person.get_param("social_networks").h["website"].to_s

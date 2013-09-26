@@ -761,12 +761,12 @@ span.social_network_icon {
         -webkit-font-smoothing: antialiased;
 }
 
-span#twitter.social_network_icon:before { content:'\e0a2'; }
-span#google.social_network_icon:before { content:'\e09c'; }
-span#facebook.social_network_icon:before { content:'\e09f'; }
-span#rss.social_network_icon:before { content:'\e0a5'; }
-span#youtube.social_network_icon:before { content:'\e0a9'; }
-span#vimeo.social_network_icon:before { content:'\e0aa'; }
+span#twitter.social_network_icon:before,span.twitter_icon:before { content:'\e0a2'; }
+span#google.social_network_icon:before,span.google_icon:before { content:'\e09c'; }
+span#facebook.social_network_icon:before,span.facebook_icon:before { content:'\e09f'; }
+span#rss.social_network_icon:before,span.rss_icon:before { content:'\e0a5'; }
+span#youtube.social_network_icon:before,span.youtube_icon:before { content:'\e0a9'; }
+span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; }
 
 
 /* Prev/Next post */

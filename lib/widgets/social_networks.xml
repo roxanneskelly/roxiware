@@ -92,7 +92,7 @@ $(function() {
     <render_view>
       <![CDATA[
 <div class="social_networks">
-  <% networks.each do |network, network_id| %><% if network_id.present? %><div class="social_networks_item"><%= link_to social_network_url(network.to_s, network_id), {:target=>"_blank", :class=>"social_network_link", :id=>network} do %><span class="social_network_icon" id="<%=network %>_icon"></span><% end %></div><% end %><% end %><% if rss_feed_source != "none" %><div class="social_networks_item"><a href="<%= send(rss_feed_source+'_path') %>.rss" class="social_network_link" id="rss" target="_blank"><span class="social_network_icon" id="rss_icon"></span></a></div><% end %>
+  <% networks.each do |network, network_id| %><% if network_id.present? %><div class="social_networks_item"><%= link_to social_network_url(network.to_s, network_id), {:target=>"_blank", :class=>"social_network_link", :id=>network} do %><span class="social_network_icon <%= network %>_icon"></span><% end %></div><% end %><% end %><% if rss_feed_source != "none" %><div class="social_networks_item"><a href="<%= send(rss_feed_source+'_path') %>.rss" class="social_network_link" id="rss" target="_blank"><span class="social_network_icon rss_icon"></span></a></div><% end %>
 </div>
 ]]>
     </render_view>

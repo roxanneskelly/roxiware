@@ -923,6 +923,7 @@ function settingsForm(source, title)
                                        controls: {
                                           undo: { visible: false },
                                           redo: { visible: false},
+				          paragraph: { visible: true},
                                           insertHorizontalRule: { visible: true},
                                           html: { visible: true},
                                           insertTable: {visible: true},

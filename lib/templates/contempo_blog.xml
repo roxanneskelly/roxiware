@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layout guid="73035df7-0397-444d-26bd-6e9e5757cd39" version="1.0">
-  <!-- Roxiware Web Engine Template: Contempo -->
-  <name>Contempo</name>
+<layout version="1.0" guid="E4241D24-7C99-44F1-809B-715FA7C34DA3">
+  <!-- Roxiware Web Engine Template: Contempo Blog -->
+  <name>Contempo Blog</name>
   <description>
-    <![CDATA[<b>Clean.  Modern.  Professional.</b> <br>  Contempo's streamlined design features your latest book on the front page, ready for your readers to find.  With it's subtle graphics and color schemes, your content come first.  Also included are a blog, a calendar, and a biography.]]>
+    <![CDATA[<b>Clean.  Modern.  Professional.</b> <br>  Contempo's streamlined design features your latest post on the front page.  Subtle colors and minimal graphics put your words front-and-center.<br>   ]]>
   </description>
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -39,8 +39,8 @@ books_menu_permission.save!]]>
     <category>General</category>
   </categories>
   <packages>
-    <package>basic_author</package>
-    <package>premium_author</package>
+    <package>basic_blog</package>
+    <package>premium_blog</package>
   </packages>
   <style>
     <![CDATA[/* Document layout */
@@ -831,289 +831,135 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }]]>
   </style>
   <params>
-    <param class="local" description="67BFE233-F4D1-400B-855F-393BF53B05A4" name="asset_theme">clear</param>
-    <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_description_length">500</param>
-    <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="book_excerpt_length">1000</param>
-    <param class="local" description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" name="books_display_type">simple</param>
-    <param class="template" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">http://cdn.roxiware.com/templates/contempo/thumbnail.jpg</param>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
+    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/contempo/thumbnail.jpg</param>
     <param description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE" class="local" name="comment_header_format">%{author_image}%{author_name}%{date}%{moderate_indicator}</param>
-    <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="event_date_format">%b %e</param>
-    <param class="local" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" name="home_page_type">content</param>
-    <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="post_date_format">%e %b %Y</param>
-    <param class="local" description="D009D4B0-5428-4A04-82AC-5A846EC12379" name="post_header_format">%{title}%{date}%{comments}</param>
-    <param class="scheme" description="62275C2A-29F9-4BAA-9893-BB0417917807" name="schemes">
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#f75f77</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">rgba(52,74,94,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#dcddd8</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(250,28,42,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(108,140,170,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(250,28,42,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(193,212,230,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(193,212,230,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(108,140,170,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(29,41,52,1)</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">first_blog_post</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
+    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{title}%{date}%{comments}</param>
+    <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="43A9E526-7466-4F68-93AA-2621F4A7A741">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(108,108,108,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(199,199,199,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_highlight_color">rgba(161,161,161,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(77,77,77,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(114,114,114,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(225,225,225,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(17,17,17,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">#777777</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Navy</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/home_l.jpg</param>
-          </param>
-        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Greys</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="A0E723E5-739B-41CA-BEFD-C3DB0EA392A2">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">rgba(161,161,161,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">rgba(17,17,17,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(77,77,77,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">#aaaaaa</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(199,199,199,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(114,114,114,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">#777777</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(0,0,0,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(225,225,225,1)</param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="6D166CC5-5404-4BD2-8643-791C09E17F13">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(69,81,62,0.7)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#893667</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">#434e3c</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_highlight_color">rgba(190,189,181,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(92,131,73,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#893667</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(92,131,73,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#f5f4eb</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#434e3c</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(92,131,73,1)</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Greys</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/home_l.jpg</param>
-          </param>
-        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Garden</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="7BE741C6-CEE3-486F-BFE1-832A7341E0FE">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">#333b3b</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#ffffff</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(239,168,86,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(244,192,111,0.7)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(255,201,116,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(239,168,86,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(239,168,86,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(127,100,58,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#232b2b</param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="37F5D41C-AADD-4364-8D95-7403188F6B9C">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(255,156,156,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,186,186,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(169,45,45,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_highlight_color">rgba(223,219,219,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(227,61,61,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(227,61,61,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#222222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(227,61,61,1)</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Orange Grey</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/home_l.jpg</param>
-          </param>
-        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White Red</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="40EEB8DD-70BA-40DD-94FC-7EAE80CDFDD0">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#893667</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">rgba(190,189,181,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#434e3c</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(92,131,73,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(69,81,62,0.7)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">#893667</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(92,131,73,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(92,131,73,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#434e3c</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#f5f4eb</param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="F75B5C68-D70E-4396-A53E-F48C238B514E">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(244,192,111,0.7)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,201,116,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(127,100,58,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_highlight_color">#333b3b</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(239,168,86,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(239,168,86,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#232b2b</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(239,168,86,1)</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Garden</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/home_l.jpg</param>
-          </param>
-        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Grey</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="58A3C0BA-CBC5-4581-9C3B-DB4CAAA1448B">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">#ffffff</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">rgba(50,50,72,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(102,144,199,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(143,179,227,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(60,84,116,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(102,144,199,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(102,144,199,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(60,84,116,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(215,234,255,1)</param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="C63F8FBF-06E0-48D1-8064-AB4125B039D2">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(108,140,170,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(250,28,42,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(108,140,170,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_highlight_color">rgba(52,74,94,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(250,28,42,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#f75f77</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(193,212,230,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(29,41,52,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#dcddd8</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(193,212,230,1)</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Sky</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/home_l.jpg</param>
-          </param>
-        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Navy</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="bd0d9a49-8030-4470-b64f-86587ec475db">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">rgba(223,219,219,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#222222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(227,61,61,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(255,156,156,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">rgba(255,186,186,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(227,61,61,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(227,61,61,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(169,45,45,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#ffffff</param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="CBF16A81-6F5F-40D1-8740-46F09B6C8683">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(143,179,227,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(60,84,116,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(60,84,116,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_highlight_color">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(102,144,199,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(102,144,199,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(215,234,255,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(50,50,72,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(102,144,199,1)</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White Red</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/home_l.jpg</param>
-          </param>
-        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Sky</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
-      <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="9D48B589-B703-4D0E-906F-C55E972F75C5">
-        <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_alert_color">#cc2222</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_highlight_color">#dcdad0</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_color">#221e1d</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="graphic_element_color">rgba(226,120,16,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="secondary_text_color">rgba(227,160,95,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_hover_color">#e3ae57</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(226,120,16,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(226,120,16,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(109,65,22,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(244,243,234,1)</param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EB346E36-24BD-450D-B22A-3F5D4E0A14DA">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(227,160,95,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#e3ae57</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(109,65,22,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_highlight_color">#dcdad0</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(226,120,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(226,120,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(244,243,234,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#221e1d</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(226,120,16,1)</param>
         </param>
-        <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Orange Creme</param>
-        <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/home_l.jpg</param>
-          </param>
-        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Creme</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
       </param>
     </param>
-    <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_description_length">200</param>
-    <param class="local" description="0ADB2780-3D21-409F-A7B4-670395F99CD5" name="series_display_type">simple</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
   </params>
   <pages>
-    <page action="" application="">
+    <page application="" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[]]>
@@ -1333,91 +1179,91 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <widget_instances>
             <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
-                <param class="local" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" name="biography_id"></param>
-                <param class="local" description="D52AAF6A-0228-427B-8529-348282E4C771" name="rss_feed_source">blog</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">social_networks_header</param>
-                <param class="local" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" name="social_networks">
-                  <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="goodreads"></param>
-                  <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="foursquare"></param>
-                  <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="google"></param>
-                  <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="tumblr"></param>
-                  <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="facebook"></param>
-                  <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="youtube"></param>
-                  <param class="local" description="FB528C00-8510-4876-BD82-EF694FEAC06D" name="twitter"></param>
+                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
+                <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
+                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
                 </param>
               </params>
             </instance>
             <instance order="2" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
               <params>
-                <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_greeting">true</param>
-                <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">false</param>
-                <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_links">true</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">login_bar</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_greeting">true</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_links">true</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
             <instance order="3" widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">logo_bar</param>
-                <param class="local" description="AE42CE08-7AEA-49D0-90A0-6714CE599788" name="display_items">
-                  <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-0">
-                    <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">0px</param>
-                    <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">-6px</param>
-                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Jane Scribe</param>
-                    <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">Geneva</param>
-                    <param class="local" description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" name="weight">300</param>
-                    <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">28</param>
-                    <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color"></param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
+                <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
+                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">0px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">-6px</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Scrib Test</param>
+                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
+                    <param description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" class="local" name="weight">300</param>
+                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">28</param>
+                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
                   </param>
-                  <param class="local" description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" name="item-1">
-                    <param class="local" description="DED6595E-7ABE-47F7-B536-328472C14990" name="left">9px</param>
-                    <param class="local" description="06E72987-55E7-4C36-9620-776931B9B2F9" name="top">28px</param>
-                    <param class="local" description="97643629-6F5C-4121-9141-BAC6731F1B04" name="text">Author</param>
-                    <param class="local" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" name="font">Geneva</param>
-                    <param class="local" description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" name="weight">100</param>
-                    <param class="local" description="63275631-EEB0-43E3-A2D9-407B6423CDC9" name="size">18</param>
-                    <param class="local" description="DA84EE57-3D89-489E-8B81-08DA7A560550" name="color"></param>
+                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-1">
+                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">9px</param>
+                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">28px</param>
+                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text"></param>
+                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
+                    <param description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" class="local" name="weight">100</param>
+                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">18</param>
+                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
                   </param>
                 </param>
               </params>
             </instance>
             <instance order="4" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
-                <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">false</param>
-                <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="show_arrow">false</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">main_menu</param>
-                <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_0">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Home</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
+                <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
+                <param description="45A433ED-7183-4A28-890B-08F585A0E41A" class="local" name="menu_root">
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_0">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Home</param>
                   </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_1">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/blog</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Blog</param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_1">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/blog</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Blog</param>
                   </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_2">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/books</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier">main_menu_books</param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Books</param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_2">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">admin</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/books</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
                   </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_3">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/events</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Calendar</param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_3">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/events</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Calendar</param>
                   </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_4">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/biography</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Biography</param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_4">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/biography</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Biography</param>
                   </param>
                 </param>
               </params>
@@ -1524,9 +1370,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <widget_instances>
             <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">2452453078</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
               </params>
             </instance>
           </widget_instances>
@@ -1616,38 +1462,38 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <widget_instances>
             <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">1892219873</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
             <instance order="2" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">events_widget</param>
-                <param class="local" description="6CD4546A-E350-46AC-BAF5-A788047DCD08" name="events_count">3</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
+                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
             <instance order="3" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-                <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="mailer_form">
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
                   <![CDATA[<p>Sign up for my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>]]>
                 </param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-                <param class="local" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" name="mailers">
-                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="response">
-                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Thank you for your interest.</param>
-                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                       <![CDATA[Thank you for your interest, and Welcome! ]]>
                     </param>
                   </param>
-                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="notification">
-                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Contact Request</param>
-                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                       <![CDATA[A Contact Request Has Been Received from: $email]]>
                     </param>
                   </param>
@@ -1694,7 +1540,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
       </sections>
     </page>
-    <page action="" application="">
+    <page application="" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[]]>
@@ -1704,7 +1550,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
       </sections>
     </page>
-    <page action="" application="">
+    <page application="" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[]]>
@@ -1714,7 +1560,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
       </sections>
     </page>
-    <page action="" application="">
+    <page application="" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[.events {
@@ -1780,7 +1626,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
       </sections>
     </page>
-    <page action="" application="blog">
+    <page application="blog" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[div#mainBody {
@@ -1967,26 +1813,26 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <widget_instances>
             <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">google_widget</param>
-                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">1892219873</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">1892219873</param>
               </params>
             </instance>
             <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="F4AF8F08-955D-4800-992A-3E2912CA8740" name="excerpt_length">100</param>
-                <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="date_format">%e %b %Y</param>
-                <param class="local" description="5AD23478-C90D-4BA8-81DF-7112B0762257" name="recent_posts_count">5</param>
-                <param class="local" description="D009D4B0-5428-4A04-82AC-5A846EC12379" name="header_format">%{title}%{date}%{comments}</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">recent_posts</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">100</param>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">5</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
             <instance order="3" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-                <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="mailer_form">
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
                   <![CDATA[
 <p>Sign up for my mailing list.</p>
 <p>
@@ -1994,16 +1840,16 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 </p>
     ]]>
                 </param>
-                <param class="local" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" name="mailers">
-                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="response">
-                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Thank you for your interest.</param>
-                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                       <![CDATA[]]>
                     </param>
                   </param>
-                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="notification">
-                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Contact Request</param>
-                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                       <![CDATA[]]>
                     </param>
                   </param>
@@ -2105,15 +1951,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <widget_instances>
             <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">2452453078</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
               </params>
             </instance>
             <instance order="2" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">archive_widget</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">archive_widget</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
               </params>
             </instance>
           </widget_instances>
@@ -2162,7 +2008,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
       </sections>
     </page>
-    <page action="index_by_date" application="blog">
+    <page application="blog" action="index_by_date">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[div#mainBody {
@@ -2240,16 +2086,16 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <widget_instances>
             <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
               <params>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" name="nav_width">6</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">blog_num_nav</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" class="local" name="nav_width">6</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">blog_num_nav</param>
               </params>
             </instance>
           </widget_instances>
         </section>
       </sections>
     </page>
-    <page action="show_by_title" application="blog">
+    <page application="blog" action="show_by_title">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[div#mainBody {
@@ -2306,7 +2152,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
       </sections>
     </page>
-    <page action="" application="books">
+    <page application="books" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[]]>
@@ -2316,7 +2162,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
       </sections>
     </page>
-    <page action="index" application="books">
+    <page application="books" action="index">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[.books_listing {
@@ -2401,7 +2247,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
       </sections>
     </page>
-    <page action="show" application="books">
+    <page application="books" action="show">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[div.book_listing {
@@ -2479,7 +2325,7 @@ div#mainBody {
         </section>
       </sections>
     </page>
-    <page action="" application="forum">
+    <page application="forum" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[.forum_board_group_name {
@@ -2529,7 +2375,7 @@ div#mainBody {
       <sections>
       </sections>
     </page>
-    <page action="show" application="forum">
+    <page application="forum" action="show">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[.forum_board {
@@ -2629,7 +2475,7 @@ div#mainBody {
       <sections>
       </sections>
     </page>
-    <page action="show_topic" application="forum">
+    <page application="forum" action="show_topic">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[.forum_topic {
@@ -2653,13 +2499,26 @@ div#mainBody {
       <sections>
       </sections>
     </page>
-    <page action="" application="home">
+    <page application="home" action="">
       <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[div#mainBody {
     #content_section {
             #center_bar {
                   padding:0px 20px 0px 175px;
+                  .content_background_container {
+                      padding:1em;
+                      box-sizing:border-box;
+                      -moz-box-sizing:border-box;
+                      background: <%= background_highlight_color %>;
+                      #center_content .posts .post_list_item .post {
+                          .post_header {
+                               width:70%;
+                               .post_title { clear:none;}
+                           }
+                          .content { display:inline;}
+                      }
+                  }
             }
      }
 }
@@ -2757,12 +2616,12 @@ div#mainBody {
           <widget_instances>
             <instance order="1" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="F4AF8F08-955D-4800-992A-3E2912CA8740" name="excerpt_length">200</param>
-                <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="date_format">%e %b %Y</param>
-                <param class="local" description="5AD23478-C90D-4BA8-81DF-7112B0762257" name="recent_posts_count">6</param>
-                <param class="local" description="D009D4B0-5428-4A04-82AC-5A846EC12379" name="header_format">%{title}%{date}%{comments}</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">recent_posts</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">200</param>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">6</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
             <instance order="2" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
@@ -2800,16 +2659,16 @@ div#mainBody {
           <widget_instances>
             <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">google_adsense</param>
-                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">2452453078</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_adsense</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
             <instance order="2" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
-                <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="mailer_form">
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
                   <![CDATA[
 <p>Join my e-mail list.</p>
 <p>
@@ -2817,16 +2676,16 @@ div#mainBody {
 </p>
     ]]>
                 </param>
-                <param class="local" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" name="mailers">
-                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="response">
-                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Thank you for your interest.</param>
-                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                       <![CDATA[]]>
                     </param>
                   </param>
-                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="notification">
-                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Contact Request</param>
-                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                       <![CDATA[]]>
                     </param>
                   </param>
@@ -2852,53 +2711,6 @@ div#mainBody {
            width:100%;
            height:0px;
         }
-        .widget#front_page_book {
-            display:inline;
-            padding:2em;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
-            .widget_content {
-                display:inline !important;
-            }
-            .book_list {
-                display:inline;
-                .book_list_book {
-                    display:inline;
-                    .book_list_cover_link {
-                        display:inline;
-                        .book_list_book_cover {
-                            margin:1em;
-                            padding:5px;
-                            display:inline-block;
-                            float:left;
-                            max-width:30%;
-                            height:auto;
-                            background: <%= link_color %>;
-                        }
-                    }
-                    .book_list_book_title {
-                        display:block;
-                        font-size:2em;
-                        max-width:65%;
-                    }
-                    .book_list_book_title:after {
-                        content:"\A\A"; white-space:pre;
-                    }
-                    .book_list_book:hover .book_list_book_cover {
-                        background: <%= link_hover_color %>
-                    }
-                    .book_list_book_description {
-                       display:inline;
-                       clear:both;
-                       .book_more_link {
-                           text-align:right;
-                       }
-                       .book_more_link:before { content: "More..."; padding-left:2em;}
-                       .book_more_link:after { width:100%; display:block; clear:both;}
-                   }
-                }
-            }
-        }
         .widget#front_page_bio {
              max-width:25%;
              display:inline-block;
@@ -2912,7 +2724,8 @@ div#mainBody {
                  display:none;
              }
              .bio_portrait {
-                 padding:5px;
+                 padding:0.5em;
+                 margin:0.5em;
                  max-width:100%;
                  height:auto;
                  background: <%= link_color %>;
@@ -2936,36 +2749,17 @@ div#mainBody {
           <widget_instances>
             <instance order="1" widget_guid="BED8AFA4-4853-4FF8-B53E-1841147A9E4F">
               <params>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="portrait_size">large_image</param>
-                <param class="local" description="C94F5738-AEDF-46B1-99F1-8A526393DD54" name="person_id"></param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">front_page_bio</param>
-              </params>
-            </instance>
-            <instance order="2" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
-              <params>
-                <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="excerpt_length">500</param>
-                <param class="local" description="BEDD0F51-5E0A-489F-9495-195CDC090877" name="book_count">1</param>
-                <param class="local" description="F247867F-5D91-4D9F-A73B-B0022130FD88" name="selection_order">newest</param>
-                <param class="local" description="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0" name="link_path"></param>
-                <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="cover_size">large_image</param>
-                <param class="local" description="B3155EA7-F1AD-481C-93B2-FC7DE542D5E4" name="show_description">excerpt</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">front_page_book</param>
-                <param class="local" description="26F42447-4148-4F5F-AAE3-FE3744618E3F" name="refresh_period">86400</param>
-              </params>
-            </instance>
-            <instance order="3" widget_guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D">
-              <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">home_page_clear</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="C94F5738-AEDF-46B1-99F1-8A526393DD54" class="local" name="person_id"></param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">front_page_bio</param>
+                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="portrait_size">large_image</param>
               </params>
             </instance>
           </widget_instances>
         </section>
       </sections>
     </page>
-    <page action="" application="people">
+    <page application="people" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[.person_listing {
@@ -3018,7 +2812,7 @@ div#mainBody {
         </section>
       </sections>
     </page>
-    <page action="" application="series">
+    <page application="series" action="">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[]]>
@@ -3028,7 +2822,7 @@ div#mainBody {
       <sections>
       </sections>
     </page>
-    <page action="show" application="series">
+    <page application="series" action="show">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[.series {

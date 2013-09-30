@@ -8,7 +8,6 @@ class Roxiware::SetupController < ApplicationController
       @role = "guest"
       @role = current_user.role unless current_user.nil?
       @setup_step ||= "welcome"
-      authenticate_user! if @setup_step != "welcome"
       @setup_type = nil if @setup_step == "welcome"
 
       @verifier ||= ActiveSupport::MessageVerifier.new(AppConfig.host_setup_verify_key)
@@ -21,40 +20,45 @@ class Roxiware::SetupController < ApplicationController
        Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", "basic_author") if @setup_step == "welcome"
        Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", request.host) if @setup_step == "welcome"
 
-      if @verified_params.present? && @setup_step == "welcome"
-          app_type, hostname, username, email, first_name, middle_name, last_name = @verified_params
-
-	  case app_type
-	     when "basic_author"
-	        @setup_type = "author"
-                _set_setup_step("import_biography")
-	     when "premium_author"
-	        @setup_type = "author"
-                _set_setup_step("import_biography")
-	     when "basic_blog"
-	        @setup_type = "blog"
-                _set_setup_step("edit_biography")
-	     when "premium_blog"
-	        @setup_type = "blog"
-                _set_setup_step("edit_biography")
-	     when "basic_forum"
-	        @setup_type = "forum"
-                _set_setup_step("edit_biography")
-	     when "premium_forum"
-	        @setup_type = "forum"
-                _set_setup_step("edit_biography")
-	     else
-	        @setup_type = "custom"
+      if @verified_params.present? 
+	  app_type, hostname, username, email, first_name, middle_name, last_name = @verified_params
+	  if @setup_step == "welcome"
+	      case app_type
+		 when "basic_author"
+		    @setup_type = "author"
+		    _set_setup_step("import_biography")
+		 when "premium_author"
+		    @setup_type = "author"
+		    _set_setup_step("import_biography")
+		 when "basic_blog"
+		    @setup_type = "blog"
+		    _set_setup_step("edit_biography")
+		 when "premium_blog"
+		    @setup_type = "blog"
+		    _set_setup_step("edit_biography")
+		 when "basic_forum"
+		    @setup_type = "forum"
+		    _set_setup_step("edit_biography")
+		 when "premium_forum"
+		    @setup_type = "forum"
+		    _set_setup_step("edit_biography")
+		 else
+		    @setup_type = "custom"
+	      end
+	      @user = Roxiware::User.create({:username=>username, :email=>email, :password=>"Password", :password_confirmation=>"Password", :role=>"admin"}, :as=>"")
+	      sign_in(:user, @user)
+	      Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", @setup_type)
+	      Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", app_type)
+	      Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", hostname)
+	      @user.create_person({:first_name=>first_name, :last_name=>last_name, :middle_name=>middle_name, :role=>"", :bio=>"", :email=>email}, :as=>"")
+	      @user.auth_services.create({:provider=>"roxiware", :uid=>username}, :as=>"")
+	  else
+              @user = Roxiware::User.find_by_username(username)
+	      sign_in(:user, @user)
 	  end
-	  @user = Roxiware::User.create({:username=>username, :email=>email, :password=>"Password", :password_confirmation=>"Password", :role=>"admin"}, :as=>"")
-          sign_in(:user, @user)
-          Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", @setup_type)
-          Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", app_type)
-          Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", hostname)
-          @user.create_person({:first_name=>first_name, :last_name=>last_name, :middle_name=>middle_name, :role=>"", :bio=>"", :email=>email}, :as=>"")
-	  @user.auth_services.create({:provider=>"roxiware", :uid=>username}, :as=>"")
+      elsif @setup_step != "welcome"
+          authenticate_user!          
       end
-
       template = [@setup_type, @setup_step].compact.join("_")
       setup_function = "_show_"+[@setup_type, @setup_step].compact.join("_")
       send("_show_"+[@setup_type, @setup_step].compact.join("_")) if respond_to?(setup_function, true)
@@ -753,7 +757,7 @@ EOF
                                              :comment_permissions=>"default",
                                              :post_status=>"publish"}, :as=>"")
 	else
-	    _blog_gen_initial_post
+	    _blog_gen_initial_blog_post
 	end
     end
 

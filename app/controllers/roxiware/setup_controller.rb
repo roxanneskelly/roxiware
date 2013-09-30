@@ -4,6 +4,11 @@ class Roxiware::SetupController < ApplicationController
    
    layout "roxiware/layouts/setup_layout"
 
+    skip_before_filter :verify_authenticity_token, :if => :check_verify_key
+    def check_verify_key
+        params[:key].present?
+    end
+
    before_filter do
       @role = "guest"
       @role = current_user.role unless current_user.nil?
@@ -13,6 +18,9 @@ class Roxiware::SetupController < ApplicationController
       @verifier ||= ActiveSupport::MessageVerifier.new(AppConfig.host_setup_verify_key)
       @verified_params = @verifier.verify(params[:key]) if params[:key].present?
       @verified_params = nil if @verified_params.present? && (@verified_params.shift < Time.now)
+      if(@verified_params.nil? && params[:key].present?)
+          raise ActiveResource::UnauthorizedAccess        
+      end
    end
 
    # GET /setup

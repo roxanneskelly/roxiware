@@ -8,7 +8,7 @@ module Roxiware
        end
     end
 
-    @@current_layout = nil
+    @@loaded_layouts = {}
 
     def self.included(base)
        base.extend(BaseControllerClassMethods)
@@ -45,7 +45,6 @@ module Roxiware
     end
 
     def run_layout_setup(setup_script = nil)
-       puts "RUNNING SETUP"
        return unless @current_layout.present?
        run_setup_script = setup_script || @current_layout.setup
        @current_layout.clear_globals
@@ -62,19 +61,20 @@ module Roxiware
     def load_layout
        puts "CURRENT TEMPLATE #{@current_template}"
        puts "CURRENT SCHEME #{@layout_scheme}"
-       run_setup = @@current_layout.nil?
-       @@current_layout ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
-       @current_layout = @@current_layout
+       run_setup = @@loaded_layouts[@current_template].nil?
+       @@loaded_layouts[@current_template] ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
+       raise Exception.new("Invalid Layout #{@current_template}") if @@loaded_layouts[@current_template].nil?
+       @current_layout = @@loaded_layouts[@current_template]
        run_layout_setup if run_setup
-       @page_layout = @@current_layout.find_page_layout(params)
+       @page_layout = @@loaded_layouts[@current_template].find_page_layout(params)
        @page_identifier = @page_layout.get_url_identifier
        if(request.format == :html)
-         @layout_styles = @@current_layout.get_styles(@layout_scheme, params)
+         @layout_styles = @@loaded_layouts[@current_template].get_styles(@layout_scheme, params)
        end
     end
 
     def refresh_layout
-       @@current_layout = nil
+       @@loaded_layouts[@current_template] = nil
     end
 
     def resolve_layout
@@ -87,9 +87,8 @@ module Roxiware
     end
 
     def populate_layout_params
-      return if @@current_layout.nil?
-      @@current_layout.resolve_layout_params(@layout_scheme, params).each do |key, value|
-        puts "POP PARAM #{key} #{value}"
+      return if @@loaded_layouts[@current_template].nil?
+      @@loaded_layouts[@current_template].resolve_layout_params(@layout_scheme, params).each do |key, value|
         self.instance_variable_set("@#{key}".to_sym, value)
       end
     end
@@ -102,6 +101,15 @@ module Roxiware
 	Roxiware::Param::Param.application_params(controller.application_name).each do |param|
 	  controller.instance_variable_set("@#{param.name}".to_sym, param.conv_value)
 	end
+      end
+      params.each do |key, value|
+          puts "PARAMS : #{key} #{value}"
+          controller.instance_variable_set("@#{key}".to_sym, value)
+          if(key.to_s == "preview") 
+              preview_settings = value.split(',')
+              controller.instance_variable_set("@current_template".to_sym, preview_settings[0])
+              controller.instance_variable_set("@layout_scheme".to_sym, preview_settings[1])
+          end
       end
     end
 

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+    <name>Template Content Widget</name>
+    <description>
+      <![CDATA[Shows generic content associated with the template]]>
+    </description>
+    <editform>
+      <![CDATA[
+<style>
+#template_content_widget_instance_edit {
+   padding-top:10px;
+}
+#template_content_widget_instance_edit .panes > div {
+   padding:2em;
+}  
+#template_content_widget_instance_edit label {
+   width:30%;
+}
+
+#template_content_widget_instance_edit input {
+   width:40%;
+}
+
+#template_content_widget_instance_edit div#template_content_pane {
+    position:absolute;
+    left:0;
+    right:0;
+    top:0;
+    bottom:2em;
+
+}
+#params_content {
+    width:100%;
+    height:100%;
+}
+
+</style>
+<div class="medium_form" id="template_content_widget_instance_edit">
+    <%= form_tag(layout_page_section_widget_path(layout.guid, url_encode(page_layout.get_url_identifier()), layout_section.name, widget_instance.id), :method=>:put) do %>
+	<div class="tab_form">
+	    <ul class="tabs">
+		<li><a>Content</a></li>
+		<li><a>Settings</a></li>
+	    </ul>
+	    <div class="panes">
+		<div id="template_content_pane">
+		   <%= fields_for :params do |params_fields| %>
+		      <%= params_fields.text_area(:content, {:class=>"content_field", :value=>@widget_instance.get_param("content").to_s }) %>
+		   <% end %>
+		</div>
+		<div id="settings_pane">
+		   <%= render :partial=>"roxiware/shared/common_widget_layout_settings" %>
+		</div>
+	    </div>
+	</div>
+	<%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
+    <% end %>
+</div>
+<script>
+  $(function() {
+    var sendParams = function(onSuccess) {
+        $.ajaxSetParamsJSON("<%= layout_page_section_widget_path(@layout.guid, url_encode(@page_layout.get_url_identifier()), @layout_section.name, @widget_instance.id) %>.json",
+                            $("form").serializeArray(),
+                            {success:onSuccess});
+    }
+
+    $("#template_content_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));
+    $("#template_content_widget_instance_edit  button#save_button").click(function() {
+         sendParams(function() {
+                   window.location.reload();
+         });
+    });
+});
+</script>
+      ]]>
+    </editform>
+    <preload><![CDATA[
+        true]]>
+    </preload>
+    <render_view>
+      <![CDATA[<%= render :inline=>raw(content.to_s), :locals=>locals %>]]>
+    </render_view>
+    <style>
+      <![CDATA[]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">Template Content</param>
+    </params>
+  </widget>
+</widgets>

@@ -13,14 +13,15 @@ module Roxiware::Blog::PostHelper
 	        blog_uri = URI.parse(options[:blog_path] || "/blog")
 		blog_uri.query = [blog_uri.query, "category=#{Roxiware::Terms::Term.categories()[category_id].seo_index}"].compact.join("&")
                 link_to Roxiware::Terms::Term.categories()[category_id].name, blog_uri.to_s, :class=>"post_category"
-            end.join("")
+            end.join("").html_safe
         end
 
+        header_content[:post_image] = tag(:img, :src=>post.post_image, :class=>"post_image")
         header_content[:author_image] = (post.person.present? ? tag(:img, :src=>post.person.thumbnail_url, :class=>"post_author_img person_thumbnail") : "")
         header_content[:title] = link_to(post.post_title, post.post_link, :class=>"post_title")
         header_content[:author_name] = (post.person.present? ? link_to(post.person.full_name, "/people/"+post.person.seo_index, :class=>"post_author") : "")
         header_content[:comments] = ""
-        header_content[:comments] = link_to(post.post_link, :class=>"comments_link") do
+        header_content[:comments] = link_to(post.post_link+"#comments", :class=>"comments_link") do
             content_tag(:div, post.comment_count, :class=>((post.comment_count == 1) ? "comments_singular comments_count" : "comments_plural comments_count")) +
             (content_tag(:div, post.pending_comment_count, :class=>((post.pending_comment_count == 1) ? "comments_singular pending_comments_count" : "comments_plural pending_comments_count")) if options[:show_pending_comments])
         end if show_comments

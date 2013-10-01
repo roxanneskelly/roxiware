@@ -121,7 +121,7 @@ module Roxiware
 	    end
 
 	    def get_state
-               @verifier.generate([1.hour.from_now, @proxy, @host_with_port, @auth_kind])
+               @verifier.generate([1.day.from_now, @proxy, @host_with_port, @auth_kind])
 	    end
 	end
     end

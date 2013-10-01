@@ -308,17 +308,19 @@ module Roxiware
 	  end
 
 	  def resolve_layout_params(scheme, params)
+	     puts "SCHEME PARAMS #{get_params(scheme).inspect}"
 	     if @layout_params.nil?
 	        @layout_params = {}
 	        self.params.where(:param_class=>:local).each do |param|
 	           @layout_params[param.name] = param.conv_value
 	        end
              end
+	     get_params(scheme)
 
-	     result = @layout_params.clone
 	     page_layout = self.find_page_layout(params)
-	     @layout_params.merge(page_layout.resolve_layout_params)
+	     @layout_params.merge(page_layout.resolve_layout_params).merge(get_params(scheme))
 	  end
+
 	  before_validation do
 	     self.description = Sanitize.clean(self.description, Roxiware::Sanitizer::BASIC_SANITIZER)
 	     self.style = self.style.gsub(/\r\n?/, "\n") if self.style.present?

@@ -102,6 +102,11 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
              <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">200</param>
              <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">200</param>
 	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="9975719875">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">728x90 Leaderboard Image</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">728</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">90</param>
+	 </param>
          <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="2312852271">
              <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">250x250 Square</param>
              <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">250</param>
@@ -117,10 +122,20 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
              <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">160</param>
              <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">600</param>
 	 </param>
-         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="9975719875">
-             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">728x90 Leaderboard Image</param>
-             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">728</param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="5895634678">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">120x600 Skyscraper Image</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">120</param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">600</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="7232767070">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">970x90 Large Leaderboard Image</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width">970</param>
              <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height">90</param>
+	 </param>
+         <param class="local" description="3C04866A-27BD-4CBA-994A-FF3CB44514C4" name="1186233470">
+             <param class="local" description="909A66CB-D847-43D5-B4FB-015081BD90D9" name="name">Responsive</param>
+             <param class="local" description="183E10DE-2D80-4BBF-BA87-6ABB799E7A25" name="width"></param>
+             <param class="local" description="0772A598-D0F6-4DED-B684-0070C9B53FB9" name="height"></param>
 	 </param>
       </param>
     </params>

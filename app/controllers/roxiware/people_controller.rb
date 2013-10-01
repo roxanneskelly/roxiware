@@ -103,7 +103,8 @@ class Roxiware::PeopleController < ApplicationController
 
   # PUT /people/:id
   # PUT /people/:id.json
-  def update 
+  def update
+     @person = Roxiware::Person.find(params[:id])
      _create_or_update(@person)
   end
 

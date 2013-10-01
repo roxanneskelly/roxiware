@@ -2,6 +2,24 @@
    <%= render :partial=>"roxiware/shared/context_menus" %>
    <% end %>
   <script>
+
+   <% if params[:preview].present? %>
+       $("a").click(function(e) {
+           e.preventDefault();
+           if($(this)[0].host == window.location.host) {
+               if($(this).search) {
+                   window.location = $(this).attr("href") + "&preview=<%= params[:preview]%>";
+               }
+               else {
+                   window.location = $(this).attr("href") + "?preview=<%=params[:preview]%>";
+               }
+           }
+           console.log($(this)[0].host);
+           console.log("search: " + window.location.search+"bleah");
+           console.log(window.location.host);
+        });
+   <% end %>
+
    <% if flash[:notice].present? %>
      $.notice("<%= flash[:notice] %>");
    <% end %>

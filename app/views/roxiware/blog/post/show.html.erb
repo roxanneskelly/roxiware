@@ -3,11 +3,12 @@
    content_tag(:div, :class=>"post_footer") do
        result = "".html_safe
        if can?(:read_comments, @post) 
-	   result += content_tag(:div, :class=>"comments_link") do 
+	   result += content_tag(:a, :href=>@post.post_link+"#comments", :class=>"comments_link") do 
                content_tag(:div, @post.comment_count, :class=>((@post.comment_count == 1) ? "comments_count comments_singular" : "comments_count comments_plural")) +
 	       (can?(:edit, @post) ? content_tag(:div, @post.pending_comment_count, :class=>((@post.pending_comment_count == 1) ? "pending_comments_count comments_singular" : "pending_comments_count comments_plural")) : "")
            end
-	   result += render(:partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""}) if can? :comment, @post
+	   result += render(:partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""}) if (can?(:comment, @post) && @comments.present?)
+           result += content_tag(:a, "", :name=>"comments")
 	   result += content_tag(:div, raw(Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>can?(:comment, @post), :allow_edit=>can?(:edit, @post), :comment_header_format=>@comment_header_format, :comment_date_format=>@comment_date_format)), :class=>"comments") if @comments.present?
        end
        result
@@ -23,14 +24,13 @@ end %>
 
 <script>
 $(document).ready(function() {
-
 <% if can? :delete, @post %>
     $("#delete_post_app_menu").click(function() {
         $(".post").trigger("context_menu", "delete_post");
     });
 <% end %>
 
-<% if can? :comment, @post %>
+<% if @comments.present? && can?(:comment, @post) %>
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
 

@@ -1,0 +1,2541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0" guid="65308D3A-33B3-429B-8A17-7CF0D7E08387">
+  <!-- Roxiware Web Engine Template: Catalyst Royal -->
+  <name>Catalyst Royal</name>
+  <description>
+    <![CDATA[<b>Modern Meets Vintage</b> <p>The modern Catalyst template with a touch of class.  Present yourself as a creator of words in this template for bloggers and writers.  </p><p>  Modern typography and striking colors frame your writing in this content-centric template.  It features easy to navigate menus, a columns featuring your recent blog posts, a contact widget for your mailing list, and full threaded comments with Facebook and Twitter login.</p><p></p><p>The Catalyst templates are designed to look great on smartphones, tablets, laptops, and desktops, so your fans can follow your posts no matter where you are.  </p><p>  Be sure to include images in your posts, as the Catalyst templates are designed to feature those images, drawing your users into not only your latest post, but your past posts as well.  </p><p>  The templates come in many appealing color schemes, so pick the one that's right for you and go.  </p><p>  (The typewriter on the front page is in face a Royal typewriter, hence the name)</p>]]>
+  </description>
+  <setup>
+    <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+person = Roxiware::Person.find(person_id)
+
+subtitle = Roxiware::Param::Param.application_param_val("system", "subtitle")
+title = Roxiware::Param::Param.application_param_val("system", "subtitle")
+
+Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
+Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
+Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", person.full_name)
+Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", (title || person.full_name)+", #{subtitle}")
+Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
+Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", person.full_name)
+
+Roxiware::Page.find_or_create_by_page_identifier("contact").save!
+
+books_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_2/permission")
+ books_menu_permission.value=(Roxiware::Book.all.count > 0) ? "guest" : "admin"
+books_menu_permission.save!]]>
+  </setup>
+  <settings_form>
+    <![CDATA[]]>
+  </settings_form>
+  <categories>
+    <category>General</category>
+  </categories>
+  <packages>
+    <package>basic_blog</package>
+    <package>premium_blog</package>
+  </packages>
+  <style>
+    <![CDATA[/* Document layout */
+/* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
+    It's better to apply styles to the #mainBody which only contains client website content */
+
+@mixin widget-title {
+    font-size:1.7em;
+    color:<%= title_color %>;
+    background:<%= highlight_color %>;
+    padding:0.4em 1em 0.2em 1em;
+    text-align:left;
+    width:100%;
+    display:block;
+    margin-bottom:0.7em;
+    text-transform:uppercase;
+    line-height:1.0em;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+body.application_body
+{
+  background: <%= background_color %>;
+}
+
+
+/* General layout */
+div#mainBody {
+    font-size:12px;
+    width:1024px; 
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    #content_section {
+        #center_bar {
+            width:728px;
+            margin-left:20px;
+            padding:0px;
+            display:inline-block;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            position:relative;
+            vertical-align:top;
+        }
+        #left_bar_section {
+            display:inline-block;
+            width:250px;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            .widget {
+                margin-bottom:2em;
+            }
+        }
+    }
+}
+@media all and (max-device-width:1023px) and (orientation:portrait) {
+    div#mainBody {
+        width:748px;
+    }
+    div#mainBody #content_section {
+        width:100%;
+        #center_bar {
+            margin-left:auto;
+            margin-right:auto;
+            width:100%;
+        }
+        #left_bar_section {
+            display:none;
+        }
+    }
+}
+@media all and (max-device-height:768px) and (orientation:landscape) {
+    div#mainBody #content_section {
+        width:100%;
+        #center_bar {
+            margin-left:auto;
+            margin-right:auto;
+            width:100%;
+        }
+        #left_bar_section {
+            display:none;
+        }
+    }
+}
+
+@media all and (max-device-width:747px) and (orientation:portrait) {
+    div#mainBody {
+        width:100%;
+        #center_bar {
+            width:95%;
+            .widget#google_top_bar {
+                display:none;
+            }
+        }
+    }
+}
+@media all and (max-device-height:747px) and (orientation:landscape) {
+    div#mainBody {
+        width:100%;
+        #center_bar {
+            width:95%;
+            .widget#google_top_bar {
+                display:none;
+            }
+        }
+    }
+}
+
+/* Set height and font size for various mobile portrait guesses */
+@media all and (min-device-height: 320px) and (orientation:portrait) {
+      div#mainBody {
+           font-size:8px;
+           #content_section {
+               min-height:220px;
+           }
+      }
+}
+
+@media all and (min-device-height: 480px) and (orientation:portrait) {
+      div#mainBody #content_section {
+           min-height:370px;
+       }
+}
+
+@media all and (min-device-height: 640px) and (orientation:portrait) {
+      div#mainBody {
+          min-height:600px;
+      }
+}
+
+@media all and (device-height: 800px) and (orientation:portrait) {
+      div#mainBody {
+           font-size:10px;
+      }
+      div#mainBody #content_section {
+           min-height:600px;
+       }
+}
+
+@media all and (min-device-height: 1024px) and (orientation:portrait) {
+      div#mainBody {
+           font-size:11px;
+      }
+      div#mainBody #content_section {
+           min-height:740px;
+       }
+}
+
+@media all and (min-device-height: 1280px) and (orientation:portrait) {
+      div#mainBody {
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:1000px;
+       }
+}
+
+/* Landscape */
+@media all and (min-device-width: 320px) and (orientation:landscape) {
+      div#mainBody {
+          font-size:8px;
+      }
+      div#mainBody #content_section {
+           min-height:220px;
+       }
+}
+
+@media all and (min-device-width: 480px) and (orientation:landscape) {
+      div#mainBody #content_section {
+           min-height:370px;
+       }
+}
+
+
+@media all and (min-device-width: 640px) and (orientation:landscape) {
+      div#mainBody {
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:540px;
+       }
+}
+
+@media all and (min-device-width: 768px) and (orientation:landscape) {
+      div#mainBody {
+          min-height:680px;
+      }
+      div#mainBody #content_section {
+           min-height:480px;
+       }
+}
+
+@media all and (min-device-width: 800px) and (orientation:landscape) {
+      div#mainBody {
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:550px;
+       }
+}
+
+@media all and (min-device-width: 1024px) and (orientation:landscape) {
+      div#mainBody {
+          min-height:1120px;
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:740px;
+       }
+}
+
+@media all and (device-width: 1280px) and (device-height:800px) and (orientation:landscape) {
+      div#mainBody {
+          min-height:1200px;
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:1000px;
+       }
+}
+
+
+div#mainBody
+{
+    header {
+       width:100%;
+    }
+
+    #layout_body
+    {
+       margin:0px;
+       width:100%;
+       display:block;
+      
+    }
+
+    #content_section {
+       display:block;
+       position:relative;
+
+        #center_bar {
+
+            .content_background_container {
+                #center_content {
+                    position:relative;
+                    width:100%;
+                }
+            }
+        }
+
+    }
+}
+
+
+
+/* Fonts and text */
+div#mainBody
+{
+    font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+
+    padding-left: 10px;
+    padding-right: 10px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    margin:0px auto 20px auto;
+    background: <%= content_background_color %>;
+    color:<%= text_color %>;
+
+    h1, h2, h3, h4, h5, h6 {
+	font-family:Georgia, serif;
+	color:<%= text_color %>;
+    }
+
+    h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
+    h2 {font-size:1.2em;margin-bottom:0.75em;}
+    h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
+    h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
+    h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+    h6 {font-size:1em;font-weight:bold;}
+
+    hr {
+        color: <%= text_color %>;
+        background: <%= text_color %>;
+    }
+
+    a, a:visited, a:link {
+        color: <%= link_color %>;
+        text-decoration:none;
+        font-style:none;
+        cursor:pointer;
+    }
+
+    a, a:visited, a:link, a:hover {
+        color: <%= link_color %>;
+    }
+    a:hover {
+      color: <%= link_hover_color %>;
+    }
+    
+  .watermark {
+       color:#ccc !important;
+    }
+    input {
+        margin:0px;
+        padding:1px;
+    }
+    label {
+        padding:2px
+    }
+
+    button {
+        border:none;
+        background:<%= link_color %>;
+        color:<%= title_background_color %>;
+        border-radius:0px;
+        padding:0.2em 3em 0.2em 3em;
+    }
+    button:hover {
+        background:<%= link_hover_color %>;
+    }
+}
+
+.manage_button {
+    opacity:0;
+    color: <%= link_color %>
+}
+
+/* Content and widget background boxes */
+/* set the content background to relative so we can position the content background off of it */
+div.content_background_container, .widget
+{
+   position:relative;
+}
+
+/* The backgrounds for the content and widget containers span the entire widget */
+div.widget_background, div.content_background
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+div.widget_background {
+    background:<%= title_background_color %>;
+}
+
+/* Post*/
+div#mainBody .post {
+    position:relative;
+    margin: 0;
+    width:100%;
+    padding:0.5em 0em 3em 0em;
+
+    .post_header {
+        margin-bottom:0.5em;
+        .post_date {
+            color:<%= text_color %>;
+            display:inline-block;
+            font-style:italic;
+            float:right;
+            margin-right:2em;
+         }
+         .comments_link {
+             display:inline-block;
+             float:right;
+         }
+         .post_categories {
+             display:inline-block;
+         }
+         .post_title {
+             clear:both;
+             padding:0.4em 1em 0.2em 1em;
+             font-size: 1.5em;
+             width:70%;
+             display:block;
+             text-align:left;
+             line-height:1em;
+             margin-bottom:0.3em;
+             text-transform:uppercase;
+             color:<%= text_color %>;
+             background:<%= highlight_color %>;
+         }
+         .post_title:visited, .post_title:link {
+             color:<%= text_color %>;
+         }
+  
+         .post_title:first-letter {
+             font-size:1.3em;
+         }
+     }
+    .content {
+        margin-top:1em;
+        font-size:1.1em;
+        display:block;
+        margin-left:0em;
+        overflow:hidden;
+        clear:both;
+        width:100%;
+        img {
+            padding:1em;
+            max-width:100%;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        }
+    }
+    .content:first-letter {
+        font-size:1.5em;
+        margin:0em 0.1em 0.2em 0em;
+        line-height:1em;
+        padding:0em;
+    }
+
+    .more_link {
+        margin-left:1em;
+        padding-right:3em;
+        font-size:1.2em;
+    }
+    .more_link:before {
+        content:"More...";
+    }
+    .post_tags {
+        .post_tag {
+        }
+        .post_tag:after {
+            content:"\0000a0|\0000a0";
+        }
+        .post_tag:last-child:after {
+            content:"";
+        }
+    }
+    .post_tags:before {
+        position:relative;
+        top:0.2em;
+        font-family: 'Metro Icons';
+        speak: none;
+        font-size:1.3em;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	color: <%= link_color %>;
+        content:"\e012\0000a0\0000a0";
+    }
+}
+
+.comments_link {
+    .comments_count, .pending_comments_count {
+        margin-right:1em;
+        padding-left:0.1em;
+        display:inline;
+    }
+
+    .comments_count:after, .pending_comments_count:after {
+        font-family: 'Metro Icons';
+        speak: none;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	color: <%= link_color %>;
+	cursor:pointer;
+	content: "\e032";
+	padding-left:0.5em;
+    }
+    .pending_comments_count, .pending_comments_count:after {
+        color: <%= text_alert_color %>;
+    }
+}
+
+.comments_link:hover div {
+    color:<%= link_hover_color %>;
+}
+
+.comments_link:hover div:after {
+    color:<%= link_hover_color %>;
+}
+
+.comments {
+    margin-top:2em;
+    clear:both;
+    .comment > .comment_content_wrapper {
+        margin-left:2em;
+    }
+    .comment > .comment > .comment_content_wrapper {
+        margin-left:4em;
+    }
+
+    .comment > .comment > .comment > .comment_content_wrapper {
+        margin-left:6em;
+    }
+
+    .comment > .comment > .comment > .comment .comment_content_wrapper {
+        margin-left:8em;
+    }
+
+    .comment {
+        padding-top:1em;
+        clear:both;
+        position:relative;
+
+        .comment_content_wrapper {
+            padding:1em;
+            background: <%= title_background_color %>;
+	    .comment_status_moderate {
+		float:right;
+		color: <%= text_alert_color %>;
+		margin-right:4em;
+	    }
+	    .comment_status_publish {
+		  display:none;
+	    }
+	    .comment_content {
+		clear:both;
+		padding-left:6em;
+	    }
+
+	    .comment_header {
+		vertical-align:top;
+		color: <%= link_color %>;
+		display:block;
+
+		.comment_author_image {
+		   max-width:10%;
+		   float:left;
+		   margin-right:1em;
+		   height:auto;
+		   box-sizing:border-box;
+		   -moz-box-sizing:border-box;
+		}
+
+		.comment_author_name {
+		    display:inline-block;
+		    margin-right:0.5em;
+		    font-weight:500;
+		    font-size:1.3em;
+		}
+
+		.comment_date {
+		    display:block;
+		    float:right;
+		    margin-right:3em;
+		    font-style:italic;
+		    font-size:0.8em;
+		}
+	    }
+	    .comment_footer {
+		clear:both;
+		text-align:center;
+		.comment_reply {
+		    text-align:right;
+		    cursor:pointer;
+		    padding-left:2em;
+		    font-size:1.1em;
+		    display:block;
+		    top:1em;
+		    right:1em;
+		}
+
+		 .comment_reply:before {
+		     font-family: 'Metro Icons';
+		     speak: none;
+		     font-weight: normal;
+		     font-variant: normal;
+		     text-transform: none;
+		     line-height: 1;
+		     -webkit-font-smoothing: antialiased;
+		     cursor:pointer;
+		     content: "\e043";
+		     padding-right:0.5em;
+		     font-size:0.9em;
+		 }
+	    }
+	}
+    }
+    .comment_content_wrapper:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+}
+
+.post:hover {
+    .manage_button {
+        cursor:pointer;
+        opacity:0.5;
+    }
+}
+
+/* Full post display with comments */
+.post_listing {
+    .post_footer {
+        .comments_link {
+            width:100%;
+            text-align:right;
+            display:block;
+	    .comment_count, .pending_comment_count {
+		font-size:1.3em;
+		display:inline-block;
+	    }
+	    .comment_count {
+		color:<%= link_color %>;
+	     }
+	     .pending_comment_count {
+		color:<%= text_alert_color %>;
+	     }
+
+	     .comment_count:after, .pending_comment_count:after {
+		 font-family: 'Metro Icons';
+		 speak: none;
+		 font-weight: normal;
+		 font-variant: normal;
+		 text-transform: none;
+		 line-height: 1;
+		 -webkit-font-smoothing: antialiased;
+		 content: "\e032";
+		 padding-left:0.5em;
+		 padding-right:1.2em;
+	     }
+        }
+    }
+}
+
+.comment_form {
+    position:relative;
+    width:100%;
+    margin:2em 0 3em 0;
+    #comment_form_core {
+        text-align:justify;
+        width:100%;
+        #comment_form_content {
+            resize:vertical;
+            vertical-align:top;
+            position:relative;
+            width:82%;
+            min-height:150px;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            display:inline-block;
+        }
+
+        img#comment_author_image {
+            vertical-align:top;
+            max-width:64px;
+            display:inline;
+            width:15%;
+            height:auto;
+            margin:0.5em 1% 0 0;
+            background:<%= text_color %>;
+            display:inline-block;
+	    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     box-sizing:border-box;
+	     -moz-box-sizing:border-box;
+        }
+
+    }
+    #comment_form_core:after {
+        width:100%;
+        display:inline-block;
+        content:"";
+        height:0px;
+    }
+
+    button.post_comment_button {
+        float:right;
+            clear:both;
+        margin:1em;
+    }
+    .comment_recaptcha {
+         .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+             color: <%= link_color %>;
+         }
+         .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+             color: <%= link_hover_color %>;
+         }
+    }
+}
+
+
+.page_content, .person_listing {
+    .manage_button {
+        position:absolute;
+        top:0px;
+        right:0px;
+        cursor:pointer;
+        opacity:0.5;
+    }
+}
+
+.book_title_link, .series_link {
+    font-face: Verdana;
+    margin-bottom:1em;
+    display:block;
+    font-size:1.5em;
+}
+.book_title_link:before, .series_link:before {
+    font-family: 'Metro Icons';
+    speak: none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    font-size:1.4em;
+    line-height:1em;
+    width:10%;
+    display:inline-block;
+}
+.series_link:before {
+    content:'\e00b';
+}
+.book_title_link:before {
+    content:'\e00a';
+}
+.book_title, .series_title {
+    display:inline-block;
+    max-width:80%;
+    padding:0em 1em 0em 1em;
+    vertical-align:top;
+}
+
+.bookstore_list {
+     float:right;
+         ul {
+          list-style-type:none;
+         li.book_store {
+              display:inline-block;
+              a.store_link {
+                  width:32px;
+                  height:32px;
+                  display:inline-block;
+                  div.store_name {
+                      display:none;
+                  }
+              }
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", "dark") %>') no-repeat center;
+                } 
+            <% end %>   
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>:hover{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", "light") %>') no-repeat center;
+                } 
+            <% end %>   
+       }
+    }
+}
+
+
+/* WIDGETS */
+.widget {
+    width:100%;
+    margin:0px;
+
+    .widget_content {
+        margin:0px;
+        padding:0px;
+        position:relative;
+
+        .widget_content h1 {
+            font-size:1.2em;
+            font-weight:700;
+        }
+    }
+}
+
+/* Individual widget settings */
+#mainBody #content_section {
+    .widget#google_widget{
+        margin:1em 0 1em 0;
+    }
+    .widget#calendar_nav {
+        .widget_content {
+            padding:1em;
+            .calendar_nav_title:before {
+                content:"ARCHIVE";
+            }
+            .calendar_nav_title:before:first-letter {
+                font-size:1.2em;
+            }
+            .calendar_nav_title {
+                @include widget-title;
+            }
+            .calendar_nav_title:first-letter {
+                font-size:1.3em;
+            }
+	    ul {
+	        li a {
+		    margin-left:0.5em;
+                    .post_count:before { content:" (";}
+                    .post_count:after { content:")";}
+		}
+
+		ul.calendar_nav_posts {
+		    list-style-type:none;
+	            > li { 
+                        a {
+		            font-weight:400;
+                            text-transform:uppercase;
+		        }
+                        a:first-letter {
+                            font-size:1.2em;
+                        }
+                    }
+		}
+		ul.calendar_nav_months, ul.calendar_nav_years {
+		    list-style-type:circle;
+		    list-style-position:outside;
+		    > li >a {
+		        font-weight:300;
+	            }
+		}
+		li.calendar_nav_hidden {
+		    list-style-type:hidden;
+		}
+            }
+        }
+    }
+    .widget#recent_posts {
+        posititon:relative;
+        .recent_posts_title:before {
+            content:"RECENT POSTS";
+        }
+        .recent_posts_title:before:first-letter {
+            font-size:1.2em;
+        }
+        .recent_posts_title {
+            @include widget-title;
+        }
+        .recent_posts_title:first-letter {
+            font-size:1.3em;
+        }
+        .widget_content .recent_posts {
+            .recent_post_entry {
+                display:block;
+                width:100%;
+                margin-bottom:1em;
+                position:relative;
+                padding:1em;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                .post_header {
+                    .post_image {
+                        float:left;
+                        width:30%;
+                        margin:0 1em 1em 0;
+                    }
+                    .post_title {
+                        text-align:left;
+                        font-size:1.5em;
+                        display:block;
+                        width:100%;
+                        clear:both;
+                        text-transform:uppercase;
+                    }
+                    .post_title:first-letter {
+                        font-size:1.2em;
+                    }
+                    .post_title, .post_title:link, .post_title:visited {
+                        color:<%= text_color %>;
+                    }
+                }
+                .post_snippet {
+                    img { display:none; }
+                }
+                .post_snippet:first-letter { font-size:1.5em; margin:0 0.1em 0 0;}
+                .post_more {
+                    padding:0 1em 0 1em;
+                    margin:1em 0 0 0;
+                    font-size:1.2em;
+                }
+                .post_more:before{
+                    content:"More...";
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+/* Social networking icons */
+span.social_network_icon {
+     display:inline-block;
+        font-family: 'Metro Icons';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+}
+
+span#twitter.social_network_icon:before,span.twitter_icon:before { content:'\e0a2'; }
+span#google.social_network_icon:before,span.google_icon:before { content:'\e09c'; }
+span#facebook.social_network_icon:before,span.facebook_icon:before { content:'\e09f'; }
+span#rss.social_network_icon:before,span.rss_icon:before { content:'\e0a5'; }
+span#youtube.social_network_icon:before,span.youtube_icon:before { content:'\e0a9'; }
+span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; }
+
+/* Prev/Next post */
+.widget#prev_next_post {
+    text-align:center;
+    margin:2em 0em 1em 0em;
+    .widget_content {
+        width:20em;
+        .prev_post {
+            float:left;
+        }
+        .prev_post:before {
+           content: "<< ";
+        }
+
+        .next_post {
+             float:right;
+        }
+        .next_post:after {
+            content:" >>";
+        }
+    }
+}
+
+
+.share_bar {
+    > div {
+        display:inline-block;
+        padding-left:2em;
+    }
+}
+
+
+]]>
+  </style>
+  <params>
+    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
+    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
+    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/contempo/thumbnail.jpg</param>
+    <param description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE" class="local" name="comment_header_format">%{author_image}%{author_name}%{date}%{moderate_indicator}</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
+    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">first_blog_post</param>
+    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%A, %B %-d, %Y</param>
+    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{title}%{categories}%{comments}%{date}</param>
+    <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="F0CC81E4-74CC-41D3-AA58-21BA3C92A4FC">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(6,35,37,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(16,224,238,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(29,175,185,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(16,224,238,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Lightning</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+      </param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="25DC87D1-F2A9-41B6-9561-9A0B6C166F06">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(32,32,32,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(138,141,147,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(138,141,147,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(138,141,147,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Cloudburst</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+      </param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="39943BC1-8DF7-4837-BAEB-B807A1564740">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(32,32,32,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(200,100,32,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(200,100,32,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(200,100,32,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Halloween</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+      </param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1A6CCF07-2996-4A30-B934-7385C530A0EC">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(62,50,36,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalsepia.jpg</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(171,138,100,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(62,50,36,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(171,138,100,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Old Fashioned</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+      </param>
+      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="E352E31C-4315-485B-A297-B40F4CBBD2CC">
+        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(219,219,219,1)</param>
+          <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(221,200,38,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(40,37,17,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(221,200,38,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(221,200,38,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
+        </param>
+        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Bumblebee</param>
+        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image"></param>
+      </param>
+    </param>
+    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
+    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
+  </params>
+  <pages>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[
+#left_bar_section
+{
+    width:250px;
+}
+@media all and (max-width: 640px)  {
+    div#mainBody {
+        width:100%;
+        #left_bar_section {
+            display:none;
+        }
+        #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px 20px 0px 0px !important;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="content">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="footer_bar">
+          <style>
+            <![CDATA[#copyright.widget {
+    text-align:right;
+    div {
+        display:inline-block;
+    }
+    .scribaroo_site {
+         padding-left:2em;
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="header_bar">
+          <style>
+            <![CDATA[/* Header layout */ 
+#mainBody #header_bar_section {
+    position:relative;
+    margin:0.2em 0 5em 0;
+   text-align:right;
+
+    .widget#logo_bar{
+        display:block;
+        text-align:left;
+        font-size:1.1em;
+        margin:0.2em 0em 0.2em 0em;
+        padding-left:10%;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        .widget_content {
+           text-align:right;
+           display:inline-block;
+           width:auto;
+           .site_title {
+               font-size:2.5em;
+               color:<%= text_color %>;
+               text-transform:uppercase;
+               span:nth-child(1) {
+                   color:<%= link_color %>;
+               }
+               span:nth-child(n+3) {
+                   margin-left:0.5em;
+               }
+           }
+           .site_title:first-letter {
+               font-size:1.2em;
+           }
+           .site_subtitle {
+               font-size:1.5em;
+               color:<%= link_color %>;
+           }
+       }
+    }
+    .widget#login_bar {
+        display:inline-block;
+        font-size:1.1em;
+        width:auto;
+        margin:0.2em 1em 0.2em 1em;
+        line-height:1.5em;
+        .widget_content {
+            text-align:right;
+            color:<%= link_color %>;
+        }
+    }
+
+    .widget#social_networks_header {
+        display:inline-block;
+        font-size:1.3em;
+        margin:0.2em 0.5em 0.2em 0.5em;
+        line-height:1.5em;
+        width:auto;
+        .widget_content {
+            .social_networks{
+                  .social_networks_item {                 
+                         display:inline-block;
+                         padding:0 0.2em 0 0.2em;
+                  }
+              }
+          }
+    }
+
+
+    /* Main Menu layout */
+    .widget#main_menu { 
+        text-align:right;
+        width:100%;
+        display:inline-block;
+        padding-bottom:0.3em;
+        float:right;
+        font-size:1.4em;
+
+        .ddsmoothmenu_widget {
+            font: Verdana;
+            margin-left:auto;
+            margin-right:auto;
+
+            display:inline-block;
+            height:1.3em;
+            ul {
+                list-style-type:none;
+                display:inline-block;
+                li { 
+                   display:inline-block;
+                   vertical-align:middle;
+                   text-align:center;
+                   padding:0px;
+
+                   a {
+	               background: none;
+                       display:inline-block;
+                       padding:0 0.5em 0 0.5em;
+                       text-decoration:none;
+                       width:auto;
+                       font-size:1.2em;
+                       line-height:1.5em;
+                       text-transform:uppercase;
+                   }
+                   a, a:link, a:visited {
+                       color: <%= text_color %>;
+                   }
+                   a:first-letter {
+                       font-size:1.2em;
+                   }
+
+	           a.menu_selected, a.selected
+	           ul li a.menu_selected {
+  	               color: <%= link_active_color %>;
+	           }
+
+                   a:hover, ul li a:hover   {
+	               color: <%= highlight_color %>;
+                   }
+       
+                   ul {
+                      padding-right:0px;
+                      position: absolute;
+                      left:0;
+                      display: none;
+                      visibility: hidden;
+                      width: auto;
+                      li {
+                          width:100%;
+                          padding-bottom:0px;
+                          display: list-item;
+                          margin:0;
+                          height:auto;
+                          border:none;
+                          a {
+                              padding-top:0.5em;
+                              padding-bottom:0.5em;
+                              margin:0em;
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
+}
+
+@media all and (max-width: 640px)  {
+    div#mainBody {
+        #header_bar_section {
+           .widget#main_menu {
+               margin:1em;
+                ul li a {
+                    font-size:10px !important;
+                    padding:0 0.2em 0 0.2em;
+                }
+            }
+            .widget#login_bar {
+                font-size:1.5em;
+                margin:0.5em 0em 0.3em 1em;
+            }
+            .widget#social_networks_header {
+                font-size:1.5em;
+                margin:0.5em 0em 0.3em 1em;
+            }
+            .widget#logo_bar {
+                padding-left:1em;
+                margin:0;
+                display:inline-block;
+                width:auto;
+                float:left;
+                .widget_content {
+                    .site_subtitle {
+                        display:none;
+                    }
+                    .site_title {
+                        font-size:2.0em;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media all and (max-width: 320px)  {
+    div#mainBody {
+        #header_bar_section {
+           .widget#main_menu a {
+                font-size:8px !important;
+            }
+        }
+    }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+              <params>
+                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
+                <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
+                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
+                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
+                </param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+              <params>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_greeting">true</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_links">true</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
+              </params>
+            </instance>
+            <instance order="5" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <![CDATA[<%= 
+                      split_title=Roxiware::Param::Param.application_param_val("system", "title").split(" ").collect{|word| content_tag(:span, word) }.join("").html_safe
+                      content_tag(:div,  split_title, :class=>"site_title") + content_tag(:div, Roxiware::Param::Param.application_param_val("system", "subtitle"), :class=>"site_subtitle") %>]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
+              </params>
+            </instance>
+            <instance order="6" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
+                <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
+                <param description="45A433ED-7183-4A28-890B-08F585A0E41A" class="local" name="menu_root">
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_0">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Home</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                  </param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_1">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Blog</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/blog</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                  </param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_2">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/books</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
+                  </param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_3">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Calendar</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/events</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                  </param>
+                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_4">
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="name">About</param>
+                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/biography</param>
+                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="left_bar">
+          <style>
+            <![CDATA[#mainBody #content_section {
+    #left_bar_section {
+        position:relative;
+        display:inline-block;
+        width:240px;
+        overflow:hidden;
+        .widget {
+            margin-bottom:2em;
+        }
+
+    }
+}
+
+@media all and (max-width: 640px)  {
+    #mainBody #content_section #left_bar_section  {
+        width:0px;
+     }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+              <params>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">3</param>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">300</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_image}</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+              </params>
+            </instance>
+            <instance order="4" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+              </params>
+            </instance>
+            <instance order="5" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
+                  <![CDATA[
+<p>Join my e-mail list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="right_bar">
+          <style>
+            <![CDATA[#right_bar_section {
+    position:absolute;
+    width:120px;
+    top:0px;
+    bottom:0px;
+    right:-140px;
+    padding:5px;
+    overflow:hidden;
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">5895634678</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
+                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+              > div:nth-child(1) {
+                  padding-left:0em;
+              }
+          }
+    }
+}
+
+@media all and (max-width: 640px)  {
+    div#mainBody  #top_bar_section {
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:0em;
+              }
+          }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_top_bar</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+            #center_bar {
+                  padding:0px 175px 0px 195px;
+            }
+     }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #bottom_bar_section {
+        box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        padding-top:1em;
+
+
+          .blog_page_nav_prev {
+             padding-left:1em;
+             margin-right:1em;
+         }
+         .blog_page_nav_prev span:before {
+             content:"<<";
+         }
+          .blog_page_nav_next {
+             padding-right:1em;
+             margin-left:1em;
+         }
+         .blog_page_nav_next span:after {
+             content:">>";
+         }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="left_bar">
+          <style>
+            <![CDATA[#mainBody #content_section {
+    #left_bar_section {
+        position:relative;
+        display:inline-block;
+        width:240px;
+        overflow:hidden;
+        .widget {
+            margin-bottom:2em;
+        }
+    }
+}
+
+@media all and (max-width: 640px)  {
+    #mainBody #content_section #left_bar_section  {
+        width:0px;
+        display:none;
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="3" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="4" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+              <params>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">3</param>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">300</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_image}</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+              </params>
+            </instance>
+            <instance order="5" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+              </params>
+            </instance>
+            <instance order="6" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">calendar_nav</param>
+              </params>
+            </instance>
+            <instance order="7" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
+                  <![CDATA[
+<p>Sign up for my mailing list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        padding-top:1em;
+
+
+          .blog_page_nav_prev {
+             padding-left:1em;
+             margin-right:2em;
+         }
+         .blog_page_nav_prev span:before {
+             content:"<< Prev";
+         }
+          .blog_page_nav_next {
+             padding-right:1em;
+             margin-left:2em;
+         }
+         .blog_page_nav_next span:after {
+             content:"Next >>";
+         }
+    }
+}
+
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar #top_bar_section {
+           left:2em;
+           right:60px;
+      }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="index_by_date">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+        margin-bottom:1em;
+
+        .widget#blog_num_nav {
+            font-size:1.3em;
+
+	    .blog_num_nav {
+	       vertical-align:top;
+	       line-height:1em;
+	    }
+	    .blog_num_nav span {
+	       font-weight:bold;
+	    }
+	    .blog_page_nav_prev {
+	       padding-left:1em;
+	       margin-right:0.1em;
+	       line-height:1em;
+	    }
+	    .blog_page_nav_prev span:before {
+		content:"\e06a";
+	    }
+	     .blog_page_nav_next {
+		padding-right:1em;
+		margin-left:0.1em;
+		line-height:1em;
+	    }
+	    .blog_page_nav_next span:after {
+		content:"\e06b";
+	    }
+	    .blog_page_nav_next span:after, .blog_page_nav_prev span:before {
+		font-family: 'Metro Icons';
+		speak: none;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		cursor:pointer;
+		font-size:1.05em;
+		line-height:1em;
+		vertical-align:top;
+	    }
+        }
+    }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_top_bar</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" class="local" name="nav_width">6</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">blog_num_nav</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="show_by_title">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+        #center_bar {
+                  padding:0px 0px 0px 0px;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+              > div:nth-child(1) {
+                  padding-left:0em;
+              }
+          }
+    }
+}
+
+
+@media all and (max-width: 640px)  {
+    div#mainBody  #top_bar_section {
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:0em;
+              }
+          }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_top_bar</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="books" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="books" action="index">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.books_listing {
+    position:relative;
+    .books { 
+        height:100%; 
+        width:100%; 
+        display:inline-block;
+
+        > div {
+            clear:both;
+        }
+
+
+         div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:25%;
+                 height:auto;
+                 padding:5px;
+                 background: <%= link_color %>;
+             }
+         }
+        .series_listing:hover, .book_listing:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }
+        .series_listing {
+            position:relative;
+             margin-bottom:3em;
+            .more_link:after {
+                content:" More...";
+            }
+
+            div.series_description {
+                position:relative;
+                display:inline-block;
+                max-width:45%;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                padding-left:1em;
+                margin-bottom:4em;
+            }
+            div.series_books {
+                display:inline-block;
+                float:left;
+                position:relative;
+                max-width:50%;
+                text-align:justify;
+                margin:0 0 4em 0;
+                padding:5px;
+
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                .series_book {
+                    display:inline-block;
+                    width:23%;
+                    padding:1%;
+                    img.series_book_cover {
+                        width:100%;
+                        height:auto;
+                        display:block;
+                    }
+                    .series_book_title {
+                        display:none;
+                    }
+               }
+           }
+       }
+   }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="books" action="show">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+             .book_title_link:before {
+                 content:'\e00a';
+             }
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:50%;
+                 height:auto;
+                 padding:5px;
+                 background: <%= link_color %>;
+             }
+         }
+
+
+
+       .book_listing:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[#bottom_bar_section {
+    clear:both;
+}
+
+div#mainBody {
+    #bottom_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+              > div:nth-child(1) {
+                  padding-left:0em;
+              }
+          }
+    }
+}
+
+@media all and (max-width: 640px)  {
+    div#mainBody  #bottom_bar_section {
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:0em;
+              }
+          }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="forum" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.forum_board_group_name {
+        font-size:1.5em;
+        width:100%;
+    }
+.forum_board_group {
+    border:solid 1px <%= text_color %>;
+    width:100%;
+    margin-bottom:1em;
+    display:table;
+    border-collapse:collapse;
+
+    .forum_board {
+        display:table-row;
+        width:100%;
+        > div {
+            display:table-cell;
+            border:solid 1px rgba(255,255,255,0.5);
+            padding:0.3em;
+        }
+        .forum_new_posts, .forum_no_new_posts {
+            width:5%;
+            text-align:center;
+            vertical-align:middle;
+        }
+        .forum_board_info {
+            width:60%;
+        }
+        .forum_board_counters {
+             width:15%;
+             .forum_board_topic_count:after {
+                 content:" topics";
+             }
+             .forum_board_post_count:after {
+                 content:" posts";
+             }
+        }
+        .forum_board_last_post {
+             width:20%;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="forum" action="show">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.forum_board {
+    width:100%;
+
+     .forum_board_header {
+         .forum_no_new_posts, .forum_new_posts {
+             display:none;
+         }
+         .forum_board_counters {
+             display:none;
+         }
+         .forum_board_name {
+              font-size:2.0em;
+         }
+     }
+
+
+    .forum_topics {
+        display:table;
+        width:100%;
+        .forum_topic:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }
+
+        .forum_topic {
+            display:table-row;
+            width:100%;
+            > div {
+                display:table-cell;
+                border:solid 1px rgba(255,255,255,0.5);
+                padding:0.3em;
+                position:relative;
+            }
+
+            .forum_num_new_posts, .topic_permission_open,.topic_permission_close,.topic_permission_moderate,.topic_permission_hide {
+                width:5%;
+                text-align:center;
+                vertical-align:middle;
+            }
+
+            .topic_permission_open:before,.topic_permission_close:before,.topic_permission_moderate:before,.topic_permission_hide:before {
+                 font-family: 'Metro Icons';
+                 font-size:1.5em;
+                 speak: none;
+                 font-weight: normal;
+                 font-variant: normal;
+                 text-transform: none;
+                 line-height: 1;
+                 -webkit-font-smoothing: antialiased;
+            }
+            .topic_permission_open:before { content:'\e002';}
+            .topic_permission_close:before { content:'\e002';}
+            .topic_permission_moderate:before { content:'\e059';}
+            .topic_permission_hide:before { content:'\e059';}
+
+            .forum_topic_info {
+                .forum_topic_title {
+                    display:block;
+                }
+                .forum_topic_post_date {
+                   display:inline;
+                }
+                .forum_topic_post_date:before {
+                    content:" on ";
+                }
+                .forum_topic_author:before {
+                    content:"by ";
+                }
+            }
+       }
+    }
+}
+.comment_form {
+     margin-top:1em;
+     label {
+         width:10%;
+     }
+     #comment_form_title {
+            width:100%;
+            label {
+                width:10%;
+                display:inline-block;
+            }
+            input {
+                display:inline-block;
+                width:85%;
+            }
+        }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="forum" action="show_topic">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.forum_topic {
+    width:100%;
+    .forum_topic_header {
+        width:100%;
+        .forum_topic_new_posts, .forum_topic_no_new_posts {
+            display:none;
+        }
+        .forum_topic_title {
+            font-size:2em;
+        }
+        .forum_topic_post_date {
+            display:none;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="home" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+            #center_bar {
+                  padding:0px 0px 0px 0px;
+                  .content_background_container {
+                      box-sizing:border-box;
+                      -moz-box-sizing:border-box;
+                      #center_content  .post {
+                          .post_header {
+                               position:relative;
+                               width:100%;
+                               .post_title {
+                                   background:<%= title_background_color %>;
+                                   position:absolute;
+                                   min-width:40%;
+                                   max-width:90%;
+                                   bottom:2em;
+                                   left:-0.3em;
+                                   color:<%= text_color %>;
+                                   text-align:left;
+                                   font-size:3em;
+                                   line-height:1em;
+                                   box-sizing:border-box;
+                                   -moz-box-sizing:border-box;
+                               }
+                               .post_title, .title_header:link, .title_header:visited {
+                                   color:<%= text_color %>;
+                               }
+                               .post_title:hover {
+                                  color:<%= highlight_color %>;
+                               }
+                           }
+                          .content { 
+                          }
+                      }
+                  }
+            }
+     }
+}
+
+@media all and (max-width:640px) {
+    div#mainBody #content_section #center_bar .content_background_container #center_content .post {
+        .post_header .post_title {
+            font-size:2em;
+            bottom:1.5em;
+            left:0em;
+            right:0em;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[#mainBody #bottom_bar_section {
+}
+
+.share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+          }]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="2" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="left_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+              <params>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">3</param>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">300</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_image}</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+              </params>
+            </instance>
+            <instance order="4" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+              </params>
+            </instance>
+            <instance order="5" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
+                  <![CDATA[
+<p>Join my e-mail list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
+                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
+                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
+                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        position:relative;
+        box-sizing:border-box;
+         -moz-box-sizing:border-box;
+        clear:both;
+
+        .widget#header_image {
+            img { max-width:100%; }
+        }
+    }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">header_image</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <![CDATA[<img src="<%= @home_page_splash_image %>"/>]]>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="people" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[.person_listing {
+     padding:1em;
+     margin-right:1em;
+    margin-top:2em;
+    .social_network_icons {
+        display:none;
+    }
+    .person_portrait {
+        position:relative;
+        top:-20px;
+        right:-20px;
+        padding:5px;
+        background: <%= link_color %>;
+        float:right;
+        max-width:35%;
+    }
+    .person_name {
+        font-size:2em;
+    }
+    .person_bio {
+        img {
+            max-width:100%;
+            padding:1em;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[.share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+          }]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="series" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="series" action="show">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.series {
+
+    .series_info {
+        position:relative;
+        box-sizing:border-box;
+         -moz-box-sizing:border-box;
+        padding:1em;
+        margin-bottom: 2em;
+        clear:both;
+
+        .series_title {
+            font-size:2.0em;
+            font-face:Verdana;
+        }
+    }
+    .series_info:hover, .book_listing:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+
+    .series_title:before {
+          font-family: 'Metro Icons';
+          speak: none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          -webkit-font-smoothing: antialiased;
+    }
+
+    .series_title:before {
+        content:'\e00b';
+        padding-right:1em;
+    }
+
+     div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+             .book_title_link:before {
+                 content:'\e00a';
+             }
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:25%;
+                 height:auto;
+                 padding:5px;
+                 background: <%= link_color %>;
+             }
+         
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+  </pages>
+</layout>

@@ -27,16 +27,16 @@
             content_tag(:div, "", :id=>"template_info_description") 
         end +
         content_tag(:div, :id=>"template_info_schemes_pane") do
+            content_tag(:div, "Color Schemes", :class=>"template_info_label_text") +
             content_tag(:div, "", :id=>"template_info_schemes") +
             content_tag(:div, :id=>"template_info_scheme_nav") do
                 content_tag(:div, "", :id=>"template_info_scheme_dots") 
-            end +
-            content_tag(:div, "Color Scheme", :class=>"template_info_label_text")
+            end 
         end 
     end 
 end %>
 <script id="template_item_template" type="text/html">
-<%= content_tag(:div, :class=>"template_item") do
+<%= content_tag(:div, :class=>"template_item", :style=>"display:inline-block") do
     content_tag(:div, "", :class=>"template_item_name") +
     tag(:img, :class=>"template_item_image") 
 end %>
@@ -57,7 +57,7 @@ $(function() {
     });
 
     // Generate the category tree/selector
-    $("#category_list").jstree({
+    $("#category_list2").jstree({
         "themes" : {"no_load" : true, url:"/assets/themes/roxiware/style.css", theme:"roxiware", "icons":false, "dots":true},
         core: {"animation":100 },
         "html_data" : {
@@ -71,13 +71,13 @@ $(function() {
         "plugins" : [ "themes", "html_data", "ui" ]
     });
 
-    $("#category_list").bind("loaded.jstree", function () {
+    $("#category_list2").bind("loaded.jstree", function () {
        $("#category_list").jstree("open_all");
     });
 
     // A category was selected, so collect all layouts that meet the criteria
     // and populate the template list with them
-   $("#category_list").bind("select_node.jstree", function(event, data) {
+   $("#category_list2").bind("select_node.jstree", function(event, data) {
        $(".category_entry_selected").removeClass("category_entry_selected");
        $(this).addClass("category_entry_selected");
        var cat_id = parseInt(data.rslt.obj.attr("id"));
@@ -98,7 +98,7 @@ $(function() {
     });
 
     $("button#preview_template").click(function() {
-        window.open("<%= preview_server %>?preview="+$("#template_info").attr("template_guid")+","+$("#template_info").attr("selected_scheme"));
+        window.open("<%= preview_server %>?preview="+$("#template_info").attr("template_guid")+","+$("#template_info").attr("selected_scheme"), "template_preview");
     });
 
     $(".template_item").click(function() {
@@ -124,14 +124,17 @@ $(function() {
        api.onClick(function(index) {
            $("#template_info").attr("selected_scheme", api.getCurrentPane().attr("id"));
        });
-       
+       $(".template_item_selected").removeClass("template_item_selected");
+       $(this).addClass("template_item_selected");
    });
 
-   $(".category_entry").first().click();
+   //$(".category_entry").first().click();
 <% if selected_template.present? %>
    <% if selected_scheme.present? %>
         $(".template_item[template_guid=<%=selected_template%>]").attr("selected_scheme", "<%= selected_scheme %>");
    <% end %>
+   var scroll_var = $(".template_item").index($(".template_item[template_guid=<%=selected_template%>]"))*200;
+   $("#template_list").prepend($(".template_item[template_guid=<%=selected_template%>]"));
    $(".template_item[template_guid=<%=selected_template%>]").click();
 <% end %>
 });

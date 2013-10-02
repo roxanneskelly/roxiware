@@ -1,14 +1,13 @@
-<div id="choose_template_form", class="large_form">
-    <%= render :partial=>"roxiware/templates/picker" , :locals=>{:selected_scheme=>selected_scheme, :selected_template=>selected_template} %>
-    <%= button_tag "Save", :id=>"save_template", :type=>"button", :class=>"save_button" %>
+<div id="choose_template_form" class="huge_form">
+    <%= render :partial=>"roxiware/templates/picker" , :locals=>{:selected_scheme=>selected_scheme, :selected_template=>selected_template, :preview_server=>"/"} %>
 </div>
 <script>
 $(function() {
-    $("button#save_template").click(function() {
+    $("button#install_template").click(function() {
 	 $.ajax({type:"PUT",
 		  url: "<%= setting_path('system') %>.json",
-		  data: jQuery.param({system: {current_template:$(".template_item_selected").attr("template_guid"),
-                                               layout_scheme:$(".template_item_selected").attr("selected_scheme") }}),
+		  data: jQuery.param({system: {current_template:$("#template_info").attr("template_guid"),
+                                               layout_scheme:$("#template_info").attr("selected_scheme") }}),
 		  error: function(xhr, textStatus, errorThrown) {
 		     $.alert(textStatus);
 		  },

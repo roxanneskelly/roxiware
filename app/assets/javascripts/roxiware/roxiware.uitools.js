@@ -894,15 +894,17 @@ function settingsForm(source, title)
                    "<div class='settings_title'>"+title+"</div>" + 
                    "<div class='contentWrap'> </div></div>");
 
+   var top = "5%";
+   var fixed=false;
    var instantiateOverlay = function() {
       overlay.overlay({
-		top: "5%",
+		top: top,
 		left: "center",
                 oneInstance: false,
 		load: true,
 		zIndex: 2000,
                 closeOnClick: false,
-                fixed:false, 
+                fixed:fixed, 
 		mask: {
 		     zIndex: 1999,
 		     color: "#222",
@@ -912,8 +914,10 @@ function settingsForm(source, title)
 		onClose: function (event) {
 		         $.roxiware.alert.popup = null;
 		         overlay.remove();
+			 $("body").css("overflow", "");
 	         },
 		 onLoad: function(event) {
+                  $("body").css("overflow", "hidden");
 		  $("button").button();
 		  $("input[alt_type=color]").colorpicker();
 		  $("input[watermark]").watermark();
@@ -945,6 +949,10 @@ function settingsForm(source, title)
    $("body").append(overlay);
    if(source instanceof jQuery) {
        overlay.find(".contentWrap").append(source.css("display","block"));
+       if(source.is(".huge_form")) {
+           overlay.css("width", "100%");
+           overlay.css("height", "100%");
+       }
        instantiateOverlay()
    }
    else {
@@ -952,6 +960,11 @@ function settingsForm(source, title)
 	  if(xhr.status != 200) {
 	      $.error(xhr.statusText);
 	      return;
+	  }
+	  if(overlay.find(".huge_form").is(".huge_form")) {
+              top = "0%";
+              fixed = true;
+	      overlay.addClass("huge_settings_form");
 	  }
 	  instantiateOverlay()
        });

@@ -6,7 +6,7 @@
    endpoint = "#{layout_index_path}.json?clone=#{@clone_id}";
 end %>
 
-<div class="layout_edit_form large_form" id="layout_edit_form">
+<div class="layout_edit_form huge_form" id="layout_edit_form">
    <%= form_for @layout, :as=>:layout, :url=> endpoint, :method=>method do |layout_form|%>   
      <%= layout_form.hidden_field :guid %>
      <div class="tab_form">

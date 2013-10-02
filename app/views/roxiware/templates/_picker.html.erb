@@ -1,54 +1,58 @@
+<%
+    cat_uls = lambda do |cat_tree|
+        result = ""
+	cat_tree.keys.sort{|x, y| x.name <=> y.name}.each do |category|
+	    children_uls = content_tag(:ul, cat_uls.call(cat_tree[category])) if cat_tree[category].present?
+	    result = result + content_tag(:li, content_tag(:a, category.name.split("/").last)+children_uls, :class=>"category_entry", :id=>category.id)
+	end
+	result.html_safe
+    end 
+%>
+
 <div id="layout_picker">
-   <li id="category_list" class="tree_box_content"><ul>
-     <li class="category_entry" id=0><a>All</a><ul>
-     <% cat_uls = lambda do |cat_tree|
-	   result = ""
-	   cat_tree.keys.sort{|x, y| x.name <=> y.name}.each do |category|
-	      children_uls = "<ul>"+cat_uls.call(cat_tree[category])+"</ul>" if cat_tree[category].present?
-	      result = result + "<li class='category_entry' id='#{category.id}'><a>#{category.name.split('/').last}</a>#{children_uls}</li>"
-	   end
-	   result
-	end %>
-     <%= raw cat_uls.call @categories %>
-   </ul></li></ul></li>
-   <div id="template_pane"><div id="template_list"></div></div>
-</div>
-
-<script id="template_template" type="text/html">
-    <div style="z-index:3000" class="settings settings_dialog settings_form"><a class="close icon-cancel-circle"></a>
-     <div id="name_reflect" class="settings_title_reflect"></div>
-     <div id="name" class="settings_title"></div>
-      <div id="template_popup" class="medium_form">
-        <div id="template_popup_form">
-	    <div id="left_pane"><div id="images"></div></div>
-	    <div id="right_pane">
-	       <div id="pane_content">
-		  <div id="description"></div>
-		  <div id="schemes"></div>
-	       </div>
-	    </div>
-	  <% if can? :edit, Roxiware::Layout %>
-	      <a id="export_template" target="_blank">Export</a>
-	  <% end %>
-        </div>
-      </div>
-<% if selected_template.present? %>
-    <%= button_tag "Select", :id=>"select_template", :type=>"button", :class=>"save_button" %>
-<% end %>
-    </div>
+<%= content_tag(:div, :id=>"template_pane") do
+    content_tag(:div, :id=>"template_selector") do
+        content_tag(:li, :id=>"category_list", :class=>"tree_box_content") do
+            content_tag(:ul, content_tag(:li, content_tag(:a, "All"), :id=>"0", :class=>"category_entry") + cat_uls.call(@categories))
+        end +
+        content_tag(:div, "", :id=>"template_list")
+    end +
+    content_tag(:div, :id=>"template_info") do 
+        content_tag(:div, :id=>"template_info_description_pane") do
+            content_tag(:div, "", :id=>"template_info_name") +
+            content_tag(:div, :id=>"template_info_buttons") do
+                button_tag("Preview", :id=>"preview_template", :type=>"button", :class=>"preview_template_button") +
+                button_tag("Install", :id=>"install_template", :type=>"button", :class=>"install_template_button") 
+            end +
+            content_tag(:div, "", :id=>"template_info_description") 
+        end +
+        content_tag(:div, :id=>"template_info_schemes_pane") do
+            content_tag(:div, "", :id=>"template_info_schemes") +
+            content_tag(:div, :id=>"template_info_scheme_nav") do
+                content_tag(:div, "", :id=>"template_info_scheme_dots") 
+            end +
+            content_tag(:div, "Color Scheme", :class=>"template_info_label_text")
+        end 
+    end 
+end %>
+<script id="template_item_template" type="text/html">
+<%= content_tag(:div, :class=>"template_item") do
+    content_tag(:div, "", :class=>"template_item_name") +
+    tag(:img, :class=>"template_item_image") 
+end %>
 </script>
-
 <script>
 $(function() {
    var layouts = <%= raw @layouts.to_json %>;
    $.each(layouts, function(index, layout) {
        if(layout['schemes'].length) {
            var selected_scheme = layout['schemes'][0]['id'];
-	   var layout_html = "<div class='template_item' id='"+index+"' template_guid='"+ layout['guid']+"' selected_scheme='"+selected_scheme+"'>" +
-	       "<img src='"+layout['thumbnail_url']+"'/>" +
-	        "<div class='template_item_name'>"+layout['name']+"</div>" +
-	        "</div>";
-	    $("div#template_list").append(layout_html);
+           var template_item = $($("#template_item_template").text());
+           template_item.attr("id", index).attr("template_guid", layout['guid']).attr("selected_scheme", selected_scheme);
+           template_item.find(".template_item_image").attr("src", layout['thumbnail_url']);
+           template_item.find(".template_item_name").text(layout['name']);
+	    $("div#template_list").append(template_item);
+	    $("div#template_list").append(" ");
          }
     });
 
@@ -91,118 +95,44 @@ $(function() {
               }
            });
        }
+    });
 
+    $("button#preview_template").click(function() {
+        window.open("<%= preview_server %>?preview="+$("#template_info").attr("template_guid")+","+$("#template_info").attr("selected_scheme"));
     });
 
     $(".template_item").click(function() {
-       // a template item was clicked, so build and bring up the template/scheme dialog
-       var overlay = $($("#template_template").text());
-       var current_scheme = $(this).attr("selected_scheme");
-       var template_item = $(this);
-
-       // bring up the layout info
+       // a template item was clicked, so populate the template_info section
        var layout = layouts[parseInt($(this).attr("id"))];
-       $(overlay).find("div#template_popup_form").attr("template_guid", $(this).attr("template_guid"));
-       $(overlay).find("div#name,div#name_reflect").text(layout['name']);
-       $(overlay).find("div#description").html(layout['description']);
-       $(overlay).find("a#export_template").attr("href", "<%= layout_index_path %>/"+$(this).attr("template_guid")+".xml");
+       $("#template_info").attr("template_guid", $(this).attr("template_guid"));
+       $("#template_info").attr("selected_scheme", $(this).attr("selected_scheme"));
+       $("#template_info_name").text(layout['name']);
+       $("#template_info_description").html(layout['description']);
 
-       // Populate schemes
-       $(overlay).find("div#schemes").html("");
-       $(overlay).find("div#left_pane #images").html("");
-
+       $("#template_info_schemes").html("");
+       $("#template_info_scheme_dots").html("");
        $.each(layout['schemes'], function(index, layout_scheme) {
-           // append scheme selector to right pane
-          $(overlay).find("div#schemes").append($("<a class='template_scheme' href='"+index+"' id='"+layout_scheme['id']+"'><img src='"+layout_scheme['thumbnail_image']+"'/><div class='template_scheme_name'>"+layout_scheme['name']+"</div></a>"));
-
-          // generate left pane preview images list
-	  var preview_images = $("<div class='preview_image_block'><div class='scrollable'><div class='items preview_images'></div></div><div class='preview_nav_controls'><div class='expand icon-fullscreen'></div><div class='prev icon-arrow-left-9'></div><div class='next icon-arrow-right-9'></div></div></div></div>");
-	  $.each(layout_scheme['large_images'], function(index, image) {
-	      preview_images.find(".preview_images").append("<div><img src='"+image['thumbnail']+"' full='"+image['full']+"'/></div>");
-	  });
-                     
-	  $(overlay).find("div#left_pane #images").append(preview_images);
-
-          // left pane is a scroller of images
-	  preview_images.find(".scrollable").scrollable({circular:false, next:overlay.find(".next"), prev:overlay.find(".prev")});
-          preview_images.find(".expand").click(function() {
-              var api = preview_images.find(".scrollable").data("scrollable");
-              var image = api.getItems().eq(api.getIndex()).find("img").attr('full');
-              var image_overlay = $("<div style='z-index:4000' class='settings settings_dialog'><div class='full_preview_overlay'><a class='close icon-cancel-circle'></a><img src='" + image + "'/></div></div>");
-              $("body").append(image_overlay);
-              image_overlay.overlay({ top:"5%", 
-                                      left:"center", 
-                                       close:image_overlay.find(".close"), 
-                                       oneInstance:false, 
-                                       load:true, 
-                                       zIndex:4000, 
-                                       fixed:false, 
-                                       onClose: function(event) {image_overlay.remove();
-                                            if($.mask.getMask()) {
-                                                $.mask.getMask().css("zIndex",2999);
-                                            }
-                                       },
-                                       onBeforeLoad: function(e) {
-                                           if($.mask.getMask()) {
-                                               $.mask.getMask().css("zIndex",3999);
-                                           }
-                                       }});
-          });
+           $("#template_info_schemes").append("<div id='"+layout_scheme['id']+"' class='template_info_scheme'><img src='"+layout_scheme['thumbnail_image']+"'/><div class='template_info_scheme_name'>"+layout_scheme['name']+"</div></div>");
+           $("#template_info_scheme_dots").append("<div id='nav_"+layout_scheme['id']+"' class='icon-radio-unchecked'></div>");
        });
 
-       // the preview images are overlayed with a nav control that will appear when hovered.
-       $(overlay).find(".preview_image_block").hover(function() {
-              $(this).find(".preview_nav_controls").fadeIn(300);
-	   },
-           function() {
-	       $(this).find(".preview_nav_controls").fadeOut(300);
+       // left pane is a scroller of images
+       var desired_item = $("div#"+$("#template_info").attr("selected_scheme")+".template_info_scheme");
+       var selected_index = $(".template_info_scheme").index(desired_item);
+       $("#template_info_scheme_dots").tabs($("#template_info_schemes > div"),{initialIndex: selected_index});
+       var api = $("#template_info_scheme_dots").data("tabs");
+       api.onClick(function(index) {
+           $("#template_info").attr("selected_scheme", api.getCurrentPane().attr("id"));
        });
-
-
-       // scheme selectors in the right pane treat all of the scheme previews in the left pane as
-       // if they're tab clients.  The current tab is indicated by the layout html
-       var current_index = $(overlay).find("div#schemes .template_scheme#"+template_item.attr("selected_scheme")).index();
-       $(overlay).find("div#schemes").tabs($(overlay).find("div#left_pane #images > div"), {initialIndex:current_index});
-       $(overlay).find("button#select_template").button();
-       $(overlay).find("button#select_template").click(function() {
-           var api = $(overlay).find("div#schemes").data("tabs");
-           template_item.attr("selected_scheme", api.getCurrentTab().attr("id")); 
-           $(".template_item_selected").removeClass("template_item_selected");
-           template_item.addClass("template_item_selected");
-
-           $(overlay).find(".close").click();
-       });
-
-       $("body").append(overlay);
-       overlay.overlay({
-           top: "15%",
-	   left: "center",
-           oneInstance: false,
-	   load: true,
-	   zIndex: 3000,
-           closeOnClick: false,
-           fixed:false, 
-	   onClose: function (event) {
-	       $.roxiware.alert.popup = null;
-               overlay.remove();
-               if($.mask.getMask()) {
-                   $.mask.getMask().css("zIndex",1999);
-               }
-           },
-           onBeforeLoad: function(e) {
-               if($.mask.getMask()) {
-                   $.mask.getMask().css("zIndex",2999);
-               }
-           }
-       });
+       
    });
 
    $(".category_entry").first().click();
 <% if selected_template.present? %>
-   $(".template_item[template_guid=<%=selected_template%>]").addClass("template_item_selected");
-<% end %>
    <% if selected_scheme.present? %>
-      $(".template_item[template_guid=<%=selected_template%>]").attr("selected_scheme", "<%= selected_scheme %>");
+        $(".template_item[template_guid=<%=selected_template%>]").attr("selected_scheme", "<%= selected_scheme %>");
    <% end %>
+   $(".template_item[template_guid=<%=selected_template%>]").click();
+<% end %>
 });
 </script>

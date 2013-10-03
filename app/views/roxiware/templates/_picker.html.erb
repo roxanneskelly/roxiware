@@ -43,13 +43,20 @@ end %>
 </script>
 <script>
 $(function() {
+   // preload the current layout and scheme
+   var layout_image = new Image();
+   layout_image.src = "<%= @current_layout.get_param("chooser_image").to_s %>";
+   var current_scheme_image = new Image();
+   current_scheme_image.src = "<%= @current_layout.get_param('schemes').h[@layout_scheme].h['thumbnail_image'].to_s %>"
+
    var layouts = <%= raw @layouts.to_json %>;
    $.each(layouts, function(index, layout) {
        if(layout['schemes'].length) {
            var selected_scheme = layout['schemes'][0]['id'];
            var template_item = $($("#template_item_template").text());
            template_item.attr("id", index).attr("template_guid", layout['guid']).attr("selected_scheme", selected_scheme);
-           template_item.find(".template_item_image").attr("src", layout['thumbnail_url']);
+           template_item.find(".template_item_image").css("opacity", "0.0").attr("src", layout['thumbnail_url']).load(function() {
+           $(this).fadeTo("fast", 1.0)});
            template_item.find(".template_item_name").text(layout['name']);
 	    $("div#template_list").append(template_item);
 	    $("div#template_list").append(" ");
@@ -112,7 +119,11 @@ $(function() {
        $("#template_info_schemes").html("");
        $("#template_info_scheme_dots").html("");
        $.each(layout['schemes'], function(index, layout_scheme) {
-           $("#template_info_schemes").append("<div id='"+layout_scheme['id']+"' class='template_info_scheme'><img src='"+layout_scheme['thumbnail_image']+"'/><div class='template_info_scheme_name'>"+layout_scheme['name']+"</div></div>");
+           var scheme_image = $("<div id='"+layout_scheme['id']+"' class='template_info_scheme'><img src='"+layout_scheme['thumbnail_image']+"'/><div class='template_info_scheme_name'>"+layout_scheme['name']+"</div></div>");
+           scheme_image.find("img").css("opacity","0.0").load(function() {
+               $(this).fadeTo("fast",1.0);
+           });
+           $("#template_info_schemes").append(scheme_image);
            $("#template_info_scheme_dots").append("<div id='nav_"+layout_scheme['id']+"' class='icon-radio-unchecked'></div>");
        });
 

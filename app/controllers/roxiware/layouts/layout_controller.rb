@@ -18,12 +18,9 @@ module Roxiware
 		 layout.get_param("schemes").h.each do |scheme_id, scheme|
 	            large_image_urls = []
                     large_image_urls = scheme.h["large_images"].a.each.collect{|image| {:thumbnail=>image.h["thumbnail"].to_s, :full=>image.h["full"].to_s}} if scheme.h["large_images"].present?
-		    thumbnail_image = ""
-		    thumbnail_image = large_image_urls.first[:thumbnail] if large_image_urls.present?
 		    schemes << {:id=>scheme_id,
 			      :name=>scheme.h["name"].to_s,
-			      :thumbnail_image=>thumbnail_image,
-			      :large_images=>large_image_urls}
+			      :thumbnail_image=>scheme.h["thumbnail_image"].to_s}
 		 end
              end
 

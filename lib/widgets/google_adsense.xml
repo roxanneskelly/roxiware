@@ -50,7 +50,7 @@ $(function() {
 ]]>
     </editform>
     <preload>
-      <![CDATA[true]]>
+      <![CDATA[@google_ad_client.present?]]>
     </preload>
     <render_view>
       <![CDATA[

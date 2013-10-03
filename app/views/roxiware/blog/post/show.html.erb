@@ -7,9 +7,9 @@
                content_tag(:div, @post.comment_count, :class=>((@post.comment_count == 1) ? "comments_count comments_singular" : "comments_count comments_plural")) +
 	       (can?(:edit, @post) ? content_tag(:div, @post.pending_comment_count, :class=>((@post.pending_comment_count == 1) ? "pending_comments_count comments_singular" : "pending_comments_count comments_plural")) : "")
            end
-	   result += render(:partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""}) if (can?(:comment, @post) && @comments.present?)
+	   result += render(:partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""}) if (can?(:comment, @post) && @show_comments)
            result += content_tag(:a, "", :name=>"comments")
-	   result += content_tag(:div, raw(Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>can?(:comment, @post), :allow_edit=>can?(:edit, @post), :comment_header_format=>@comment_header_format, :comment_date_format=>@comment_date_format)), :class=>"comments") if @comments.present?
+	   result += content_tag(:div, raw(Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>can?(:comment, @post), :allow_edit=>can?(:edit, @post), :comment_header_format=>@comment_header_format, :comment_date_format=>@comment_date_format)), :class=>"comments") if @comments.present? && @show_comments
        end
        result
     end
@@ -30,7 +30,7 @@ $(document).ready(function() {
     });
 <% end %>
 
-<% if @comments.present? && can?(:comment, @post) %>
+<% if @show_comments && can?(:comment, @post) %>
     var csrf_token = $('meta[name="csrf-token"]').attr('content');
     var csrf_param = $('meta[name="csrf-param"]').attr('content');
 

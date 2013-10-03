@@ -144,6 +144,7 @@ module Roxiware
            comments = @post.comments.visible(current_user).order("comment_date DESC")
 
            # create comment hierarchy
+	   @show_comments = true
 	   @comments = {}
            comments.each do |comment|
 	       @comments[comment.parent_id] ||= {:children=>[]}

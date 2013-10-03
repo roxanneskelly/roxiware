@@ -1015,17 +1015,17 @@ function imageDialog(conf)
    var initialimage = (options.initialImage?"src='"+options.initialImage+"'":"");
    var overlay_dialog = '<div id="image_selection_dialog" class="settings settings_dialog" style="z-index:3000"><a class="close icon-cancel-circle"></a>' +
        '<div class="settings_title">'+options.title+'</div>'+
-           '<div id="image_preview"><img '+initialimage+' style="'+image_style+'"/></div>' +
+           '<div class="contentWrap"><div id="image_preview"><img '+initialimage+' style="'+image_style+'"/></div>' +
            '<div id="upload_section">' +
-           '<button id="upload_button" type="button" name="upload" value="upload">Upload Image</button>' +
+           '<button id="upload_button" type="button" name="upload" value="upload">Choose Image</button>' +
            '<div id="progress_section" style="display:none"><div id="progress_bar"><div id="progress"></div></div><div id="upload_cancel">x</div></div>' +
            '</div>';
    if(options.allowUrl) {
        overlay_dialog = overlay_dialog + "<div id='url_section'>" +
 	        '<label for="image_url">URL</label>&nbsp;<input name="image_url" type="text"/></div>';
    }
-   overlay_dialog = overlay_dialog + '<button type="submit" name="save" value="save">Save</button>' +
-       '</div>';
+   overlay_dialog = overlay_dialog + '<button type="submit" name="save" value="save" disabled>Save</button>' +
+       '</div></div>';
    overlay_dialog = $(overlay_dialog);
    $("body").append(overlay_dialog);
    overlay_dialog.find("button").button();
@@ -1066,13 +1066,16 @@ function imageDialog(conf)
 	   overlay_dialog.find("div#progress_bar div#progress").css("width", progress + "%");
        },
        onComplete: function(id, filename, json_data) {
-	   overlay_dialog.find("button#upload_button").css("display",'');
+
 	   overlay_dialog.find("div#progress_section").css("display",'none');
 	   if(json_data["success"]) {
+	       overlay_dialog.find("button#upload_button").css("display",'none');
 	       overlay_dialog.find("div#image_preview img").attr("src", json_data["urls"][options.previewSize]);
 	       overlay_dialog.data().upload_result = {urls:json_data["urls"], thumbprint:json_data["thumbprint"]};
+	       overlay_dialog.find("button[name=save]").button("enable");
 	   }
 	   else {
+	       overlay_dialog.find("button#upload_button").css("display",'');
 	       $.alert(json_data["error"]);
 	   }
        },

@@ -43,11 +43,14 @@ end %>
 </script>
 <script>
 $(function() {
+
+<% if @current_layout.present? %>
    // preload the current layout and scheme
    var layout_image = new Image();
    layout_image.src = "<%= @current_layout.get_param("chooser_image").to_s %>";
    var current_scheme_image = new Image();
    current_scheme_image.src = "<%= @current_layout.get_param('schemes').h[@layout_scheme].h['thumbnail_image'].to_s %>"
+<% end %>
 
    var layouts = <%= raw @layouts.to_json %>;
    $.each(layouts, function(index, layout) {

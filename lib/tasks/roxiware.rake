@@ -189,6 +189,7 @@ namespace :templates do
 		filename = File.join(dir_path, scheme_data.h['name'].to_s.to_seo+".jpg")
 		puts "retrieving #{filename}"
 		File.open(filename, "w") do |f|
+		    puts "http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x200/?url=#{url}&freshness=1"
 		    f.write open("http://api.snapito.com/web/5c643ee605beba218dceb460b6ee909333e48825/300x200/?url=#{url}&freshness=1").read
 		end
 		template_obj.get_param("schemes").h[scheme_id].set_param("thumbnail_image", "http://cdn.roxiware.com/templates/#{template_obj.name.to_seo}/#{scheme_data.h['name'].to_s.to_seo}.jpg", "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme");

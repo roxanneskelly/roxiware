@@ -22,7 +22,7 @@
 		content_tag(:div, "", :id=>"template_info_name") +
 		content_tag(:div, :id=>"template_info_buttons") do
 		    button_tag("Preview", :id=>"preview_template", :type=>"button", :class=>"preview_template_button") +
-		    button_tag("Install", :id=>"install_template", :type=>"button", :class=>"install_template_button") 
+		    (button_tag("Install", :id=>"install_template", :type=>"button", :class=>"install_template_button") if show_install)
 		end +
 		content_tag(:div, "", :id=>"template_info_description") 
 	    end +

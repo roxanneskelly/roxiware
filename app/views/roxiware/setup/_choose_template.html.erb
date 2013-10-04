@@ -1,5 +1,5 @@
 <div id="setup_choose_template_form">
-   <%= render :partial=>"roxiware/templates/picker", :locals=>{:preview_server=>preview_server, :selected_scheme=>@default_scheme, :selected_template=>@default_template } %>
+   <%= render :partial=>"roxiware/templates/picker", :locals=>{:preview_server=>preview_server, :selected_scheme=>@default_scheme, :show_install=>true, :selected_template=>@default_template } %>
 </div>
 <div class="setup_buttons">
      <%= button_tag :id=>"back_button", :value=>"back", :type=>"back" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>

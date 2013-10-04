@@ -9,32 +9,34 @@
     end 
 %>
 
-<div id="layout_picker">
-<%= content_tag(:div, :id=>"template_pane") do
-    content_tag(:div, :id=>"template_selector") do
-        content_tag(:li, :id=>"category_list", :class=>"tree_box_content") do
-            content_tag(:ul, content_tag(:li, content_tag(:a, "All"), :id=>"0", :class=>"category_entry") + cat_uls.call(@categories))
-        end +
-        content_tag(:div, "", :id=>"template_list")
-    end +
-    content_tag(:div, :id=>"template_info") do 
-        content_tag(:div, :id=>"template_info_description_pane") do
-            content_tag(:div, "", :id=>"template_info_name") +
-            content_tag(:div, :id=>"template_info_buttons") do
-                button_tag("Preview", :id=>"preview_template", :type=>"button", :class=>"preview_template_button") +
-                button_tag("Install", :id=>"install_template", :type=>"button", :class=>"install_template_button") 
-            end +
-            content_tag(:div, "", :id=>"template_info_description") 
-        end +
-        content_tag(:div, :id=>"template_info_schemes_pane") do
-            content_tag(:div, "Color Schemes", :class=>"template_info_label_text") +
-            content_tag(:div, "", :id=>"template_info_schemes") +
-            content_tag(:div, :id=>"template_info_scheme_nav") do
-                content_tag(:div, "", :id=>"template_info_scheme_dots") 
-            end 
-        end 
-    end 
+<%= content_tag(:div, :id=>"layout_picker") do
+    content_tag(:div, :id=>"template_pane") do
+	content_tag(:div, :id=>"template_selector") do
+	    content_tag(:li, :id=>"category_list", :class=>"tree_box_content") do
+		content_tag(:ul, content_tag(:li, content_tag(:a, "All"), :id=>"0", :class=>"category_entry") + cat_uls.call(@categories))
+	    end +
+	    content_tag(:div, "", :id=>"template_list")
+	end +
+	content_tag(:div, :id=>"template_info") do 
+	    content_tag(:div, :id=>"template_info_description_pane") do
+		content_tag(:div, "", :id=>"template_info_name") +
+		content_tag(:div, :id=>"template_info_buttons") do
+		    button_tag("Preview", :id=>"preview_template", :type=>"button", :class=>"preview_template_button") +
+		    button_tag("Install", :id=>"install_template", :type=>"button", :class=>"install_template_button") 
+		end +
+		content_tag(:div, "", :id=>"template_info_description") 
+	    end +
+	    content_tag(:div, :id=>"template_info_schemes_pane") do
+		content_tag(:div, "Color Schemes", :class=>"template_info_label_text") +
+		content_tag(:div, "", :id=>"template_info_schemes") +
+		content_tag(:div, :id=>"template_info_scheme_nav") do
+		    content_tag(:div, "", :id=>"template_info_scheme_dots") 
+		end 
+	    end 
+	end 
+    end
 end %>
+
 <script id="template_item_template" type="text/html">
 <%= content_tag(:div, :class=>"template_item", :style=>"display:inline-block") do
     content_tag(:div, "", :class=>"template_item_name") +
@@ -150,6 +152,8 @@ $(function() {
    var scroll_var = $(".template_item").index($(".template_item[template_guid=<%=selected_template%>]"))*200;
    $("#template_list").prepend($(".template_item[template_guid=<%=selected_template%>]"));
    $(".template_item[template_guid=<%=selected_template%>]").click();
+<% else %>
+    $(".template_item").first().click();
 <% end %>
 });
 </script>

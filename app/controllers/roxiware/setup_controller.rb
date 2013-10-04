@@ -618,6 +618,7 @@ class Roxiware::SetupController < ApplicationController
     end
 
     def _author_choose_template
+        puts "AUTHOR CHOOSE"
 	result = nil
 	ActiveRecord::Base.transaction do
 	    begin
@@ -629,7 +630,7 @@ class Roxiware::SetupController < ApplicationController
 		    else
 			result = _set_setup_step("series")
 		    end
-		elsif params[:setup_action] == "save_template"
+		elsif params[:setup_action] == "install_template"
 		    # we've chosen the template, so set it, do the setup, and go to completion page
 		    Roxiware::Param::Param.refresh_application_params
 		    Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:template_guid])
@@ -657,12 +658,13 @@ class Roxiware::SetupController < ApplicationController
 
 
     def _blog_choose_template
+        puts "BLOG CHOOSE"
 	result = nil
 	ActiveRecord::Base.transaction do
 	    begin
 	        if params[:setup_action] == "back_button"
                     result = _set_setup_step("social_networks")
-		elsif params[:setup_action] == "save_template"
+		elsif params[:setup_action] == "install_template"
 		    # we've chosen the template, so set it, do the setup, and go to completion page
 		    Roxiware::Param::Param.refresh_application_params
 		    Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", params[:template_guid])

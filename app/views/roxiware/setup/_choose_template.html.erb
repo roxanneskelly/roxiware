@@ -1,10 +1,8 @@
-<div><b>So few Templates?  Don't worry.</b>  For the Beta, we'll design a background and header just for you.  Click <a href="http://www.scribaroo.com/beta">here</a> for more details.</div>
 <div id="setup_choose_template_form">
    <%= render :partial=>"roxiware/templates/picker", :locals=>{:preview_server=>preview_server, :selected_scheme=>@default_scheme, :selected_template=>@default_template } %>
 </div>
 <div class="setup_buttons">
      <%= button_tag :id=>"back_button", :value=>"back", :type=>"back" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
-     <%= button_tag "Save", :id=>"save_template", :type=>"button", :class=>"save_button" %>
 </div>
 <%= form_tag("setup", :method=>"put") do |template_form| %>
     <%= hidden_field_tag :setup_step, @setup_step %>
@@ -13,10 +11,10 @@
 
 <script>
 $(function() {
-    $("button#back_button,button#save_template").click(function() {
+    $("button#back_button,button#install_template").click(function() {
         $("input#setup_action").val($(this).attr("id"));
         var data = $("form").serializeArray();
-        if($(this).is("#save_template")) {
+        if($(this).is("#install_template")) {
             data.push({name:"template_guid",value:$(".template_item_selected").attr("template_guid")});
             data.push({name:"template_scheme",value:$(".template_item_selected").attr("selected_scheme")});
         }

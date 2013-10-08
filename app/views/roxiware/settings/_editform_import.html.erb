@@ -1,0 +1,72 @@
+<%= content_tag(:div, :class=>"small_form", :id=>"import_form") do
+   content_tag(:div, :id=>"instructions") do %>
+<div class="wizard_step">Import your posts from Wordpress.</div>
+<div class="wizard_instructions">All you need to do is get a <a href="http://codex.wordpress.org/Tools_Export_Screen">Wordpress export file</a> and upload it.  We'll extract all of your posts from the Wordpress export file, and drop them in your Scribaroo blog.</div>
+    <% end +
+    content_tag(:div, :id=>"progress_section",  :style=>"display:none") do
+       content_tag(:div, content_tag(:div, "", :id=>"progress"), :id=>"progress_bar") +
+       content_tag(:div, "x", :id=>"upload_cancel")
+   end +
+   button_tag("Import", :id=>"import_button", :type=>"button", :class=>"import_button")
+end %>
+<script>
+$(function() {
+
+   var csrf_token = $('meta[name="csrf-token"]').attr('content');
+   var csrf_param = $('meta[name="csrf-param"]').attr('content');
+   var upload_params = {};
+   if (csrf_param !== undefined && csrf_token !== undefined) {
+           upload_params[csrf_param] = csrf_token;
+   }
+   $("button#import_button").button();
+
+   var file_upload = new qq.FileUploaderBasic({
+       action: "/settings/import.xml",
+       button: $("button#import_button").get()[0],
+       multiple:false,
+       debug:true,
+       params: upload_params,
+       allowedExtensions:["xml", "jpg", "jpeg", "gif", "png"],
+       showMessage: function(message) {
+           console.log("message:" + message);
+           $.alert(message);
+       },
+       onSubmit: function(id, filename) {
+	   // replace upload button with progress bar
+	   $("div#import_form").find("button#import_button").css("display","none");
+	   $("div#import_form").find("div#progress_section").css("display",'');
+	   $("div#import_form").find("div#progres_bar div#progress").css("width", "0%");
+	   $("div#import_form").find("div#upload_cancel").click(function(e) {
+	       if(file_upload.getInProgress()) {
+		    file_upload.cancel(id);
+	       }
+           });
+       },
+       onProgress: function(id, filename, loaded, total) {
+	   var progress = String(Math.round((loaded*90)/total));
+	   $("div#import_form").find("div#progress_bar div#progress").css("width", progress + "%");
+       },
+       onComplete: function(id, filename, xml_data) {
+           console.log("complete");
+           console.log(xml_data);
+	   $("div#import_form").find("div#progress_section").css("display",'none');
+	   if(xml_data["success"]) {
+               $.notice("Import complete");
+               console.log($("#import_form").parents());
+               var overlay = $("#import_form").parents(".settings_form");
+               console.log(overlay);
+               overlay.find("a.close").click();
+	   }
+	   else {
+	       $("div#import_form").find("button#import_button").css("display",'');
+	       $.alert(xml_data["error"]);
+	   }
+       },
+       onCancel: function(id, filename) {
+           console.log("cancel");
+	   $("div#import_form").find("button#import_button").css("display",'');
+	   $("div#import_form").find("div#progress_section").css("display",'none');
+       }
+   });
+});
+</script>

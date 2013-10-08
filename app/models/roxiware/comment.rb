@@ -30,6 +30,32 @@ module Roxiware
         (user.present? && user.is_admin?) || (comment_status == "publish")
     end
 
+    def import_wp(comment_node, current_user)
+        self.comment_content = comment_node.find_first("wp:comment_content").content
+	self.comment_date = comment_node.find_first("wp:comment_date_gmt").content
+	self.comment_status = (comment_node.find_first("wp:comment_approved").content == "1") ? "publish" : "moderate"
+	comment_user_id = comment_node.find_first("wp:comment_user_id").content
+	if(comment_user_id == "1") 
+	    comment_author = Roxiware::CommentAuthor.find_or_initialize_by_authtype_and_person_id({:name=>current_user.person.full_name,
+						                                               :email=>current_user.email,
+								                               :person_id=>current_user.person.id,
+								                               :url=>"/people/#{current_user.person.seo_index}",
+								                               :comment_object=>self,
+								                               :authtype=>"roxiware",
+											       :thumbnail_url=>current_user.person.thumbnail_url}, :as=>"");
+	    comment_author.person = current_user.person
+	else
+	    comment_author = Roxiware::CommentAuthor.new({:name=>comment_node.find_first("wp:comment_author").content,
+				                          :email=>comment_node.find_first("wp:comment_author_email").content,
+							  :url=>comment_node.find_first("wp:comment_author_url").content,
+							  :comment_object=>self,
+							  :authtype=>"generic",
+							  :thumbnail_url=>default_image_path(:person, "thumbnail")}, :as=>"");
+	end
+	comment_author.save!
+    end
+
+
     before_validation() do
        self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))
     end

@@ -33,6 +33,8 @@
 		  <% if custom_settings.length > 0 %>
 		      <li id="gallery_settings"><a rel="<%= setting_path('custom') %>" form="Custom Settings">Custom</a></li>
 		  <% end %>
+                  <hr/>
+	          <li id="import"><a rel="<%= setting_path('import') %>" form="Import"><span aria-hidden="true" class="">&nbsp;&nbsp;&nbsp;</span>&nbsp;Import</a></li>
 	      </ul></li><% if can? :edit, @current_layout %><li id="layout_menu">Design<ul>
 		  <li id="edit_layout"><a rel="<%=edit_layout_path(@current_layout.guid)%>" form="Edit Template">Edit Template</a></li>
 		  <li id="new_layout"><a rel="<%=new_layout_path%>" form="New Template">New Template</a></li>

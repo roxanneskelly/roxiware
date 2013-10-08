@@ -103,8 +103,6 @@ module Roxiware
 	end
       end
       params.each do |key, value|
-          puts "PARAMS : #{key} #{value}"
-          controller.instance_variable_set("@#{key}".to_sym, value)
           if(key.to_s == "preview") 
               preview_settings = value.split(',')
               controller.instance_variable_set("@current_template".to_sym, preview_settings[0])

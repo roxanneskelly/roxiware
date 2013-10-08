@@ -126,7 +126,22 @@ module Roxiware
             self.post_exerpt = Sanitize.clean(truncate(self.post_content, :length => Roxiware.blog_exerpt_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER)
         end
     end
-  end
 
+    def import_wp(item_node, current_user)
+        self.post_title = item_node.find_first("title").content
+	self.post_content = item_node.find_first("content:encoded").content
+	self.post_date = item_node.find_first("wp:post_date_gmt").content
+	self.comment_permissions = item_node.find_first("wp:comment_status").content
+	self.post_status = item_node.find_first("wp:status").content
+	category = item_node.find_first("category")
+	self.category_name = category.content if category.present?
+	comment_nodes = item_node.find("wp:comment")
+	comment_nodes.each do |comment_node|
+	    comment = Roxiware::Comment.new()
+	    comment.import_wp(comment_node, current_user)
+	    self.comments << comment
+	end
+    end
+  end
  end
 end

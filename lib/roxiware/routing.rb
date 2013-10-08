@@ -145,7 +145,9 @@ module ActionDispatch::Routing
 	end
 
 	def roxiware_settings
-            resources :settings
+            resources :settings do
+	       post 'import', :on=>:collection
+	    end
 	end
 
 	def roxiware_sitemap

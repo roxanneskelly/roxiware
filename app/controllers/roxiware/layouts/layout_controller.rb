@@ -268,6 +268,69 @@ module Roxiware
 	   end
        end
 
+       def customize_form
+           @layout = Roxiware::Layout::Layout.where(:guid=>params[:id]).first
+	   raise ActiveRecord::RecordNotFound if @layout.nil?
+	   authorize! :read, @layout
+
+           respond_to do |format|
+	       if(@layout.settings_form.present?)
+	           format.html {render :inline=>@layout.settings_form}
+	       else
+	           format.html {render :partial=>"roxiware/templates/default_customize"}
+	       end
+	   end
+       end
+
+
+       def customize
+	   success = true
+           @layout = Roxiware::Layout::Layout.where(:guid=>params[:id]).first
+	   raise ActiveRecord::RecordNotFound if @layout.nil?
+	   authorize! :update, @layout
+           ActiveRecord::Base.transaction do
+	      begin
+                  scheme_params = @layout.get_param("schemes").h[@layout_scheme].h["params"].h
+	          params[:layout].each do |name, value|
+		     custom_setting = @layout.custom_settings[name]
+		     # look up param in custom settings
+		     if custom_setting.blank?
+		         # look up param type in style, clone it, and add to custom settings
+			 custom_setting = @layout.custom_settings[name] = scheme_params[name].deep_dup
+		     end
+		     case custom_setting.description.field_type
+		         when "text"
+			    custom_setting.textvalue = value
+			 else
+			    custom_setting.value = value
+		     end
+		     custom_setting.save!
+		  end
+	      rescue ActiveRecord::Rollback
+	         raise ActiveRecord::Rollback
+	      rescue Exception => e
+	         puts e.message
+		 puts e.backtrace.join("\n")
+	         success = false
+	         @layout.errors.add(:setup, "#{e.message}")
+		 raise ActiveRecord::Rollback
+	      end
+           end
+             
+	   respond_to do |format|
+	       if success
+		  refresh_layout
+		  format.xml  { render :xml => {:success=>true} }
+		  format.html { redirect_to return_to_location("/"), :notice => 'layout was successfully updated.' }
+		  format.json { render :json => @layout.ajax_attrs(@role) }
+	       else
+		  format.html { redirect_to return_to_location("/"), :alert => 'Failure updating layout.' }
+		  format.xml  { head :fail }
+		  format.json { render :json=>report_error(@layout)}
+	       end
+	   end
+       end
+
      private
        def _load_role
 	   @role = "guest"

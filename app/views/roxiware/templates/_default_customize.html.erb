@@ -1,0 +1,27 @@
+<div class="template_customize_form large_form" id="default_template_customize_form">
+   <%= form_for @layout, :as=>:layout, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
+       custom_params = @layout.get_param("schemes").h[@layout_scheme].h["params"].h
+       puts "CUSTOM PARAMS 1 #{custom_params.inspect}"
+       custom_params.merge(@layout.custom_settings)
+       puts "CUSTOM PARAMS 2 #{custom_params.inspect}"
+       custom_params.values.collect do |param|
+           param_field(customize_form, param) + " " 
+       end.join("").html_safe +
+       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+    end %>
+</div>
+<script>
+    $(function() {
+          console.log("setup");
+       $(".template_customize_form form").submit(function(e) {
+          console.log("save");
+           e.preventDefault();
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>", $("form").serializeArray(), {
+                                method:"PUT",
+                                success: function() {
+                                   window.location.reload();
+                                }
+           });
+    });
+ });
+</script>

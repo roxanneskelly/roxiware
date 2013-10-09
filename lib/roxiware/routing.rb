@@ -97,6 +97,8 @@ module ActionDispatch::Routing
 		    end
 		 end
 	      end
+	      get "customize" => "layout#customize_form", :on=>:member
+	      put "customize" => "layout#customize", :on=>:member
 	    end
 	end
 

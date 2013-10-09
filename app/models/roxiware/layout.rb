@@ -299,16 +299,24 @@ module Roxiware
 	  end
 
 	  def get_params(scheme)
-		 result = {}
-		 scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
-		 if(scheme.present? && scheme.h["params"].present?) 
-		   result = Hash[scheme.h["params"].h.collect{|name, param| [name, param.conv_value]}]
-		 end
-		 result
+              result = {}
+	      scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
+	      if(scheme.present? && scheme.h["params"].present?) 
+	          result = Hash[scheme.h["params"].h.collect{|name, param| [name, param.conv_value]}]
+	      end
+	      result
 	  end
 
+	  def custom_settings
+	      if @custom_settings.nil?
+	          custom_setting_result  = Roxiware::Param::Param.find_by_name_and_param_class(self.guid, "custom_setting")
+	          @custom_settings = custom_setting_result.present? ? custom_setting_result.h : {}
+	      end
+	      @custom_settings
+	  end
+
+
 	  def resolve_layout_params(scheme, params)
-	     puts "SCHEME PARAMS #{get_params(scheme).inspect}"
 	     if @layout_params.nil?
 	        @layout_params = {}
 	        self.params.where(:param_class=>:local).each do |param|
@@ -318,7 +326,7 @@ module Roxiware
 	     get_params(scheme)
 
 	     page_layout = self.find_page_layout(params)
-	     @layout_params.merge(page_layout.resolve_layout_params).merge(get_params(scheme))
+	     @layout_params.merge(page_layout.resolve_layout_params).merge(get_params(scheme)).merge(Hash[self.custom_settings.collect{|name, value| [name, value.conv_val]}])
 	  end
 
 	  before_validation do

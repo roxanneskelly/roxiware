@@ -4,28 +4,28 @@
    <% layout_params = @settings.values_at("blog_posts_per_page", "max_blog_posts_per_page", "blog_excerpt_length").compact %>
    <%= form_tag(setting_path("blog"), :method=>"put") do %>
        <%= fields_for :blog do |blog_fields| %>
-	  <ul class="tabs">
-	      <% if general_params.present? %><li><a>General</a></li><% end %>
-	      <% if feed_params.present? %><li><a>Feed</a></li><% end %>
-	      <% if layout_params.present? %><li><a>Layout</a></li><% end %>
-	  </ul>
-          <div class="panes">
-	      <% if general_params.present? %>
-		<div>
-		   <%= param_fields(blog_fields, general_params) %>
-		</div>
-              <% end %>
-	      <% if feed_params.present? %>
-		<div>
-		   <%= param_fields(blog_fields, feed_params) %>
-		</div>
-              <% end %>
-	      <% if layout_params.present? %>
-		<div>
-		   <%= param_fields(blog_fields, layout_params) %>
-		</div>
-              <% end %>
-          </div>
+	       <ul class="tabs">
+		   <% if general_params.present? %><li><a>General</a></li><% end %>
+		   <% if feed_params.present? %><li><a>Feed</a></li><% end %>
+		   <% if layout_params.present? %><li><a>Layout</a></li><% end %>
+	       </ul>
+	       <div class="panes">
+		   <% if general_params.present? %>
+		     <div>
+			<%= param_fields(blog_fields, general_params) %>
+		     </div>
+		   <% end %>
+		   <% if feed_params.present? %>
+		     <div>
+			<%= param_fields(blog_fields, feed_params) %>
+		     </div>
+		   <% end %>
+		   <% if layout_params.present? %>
+		     <div>
+			<%= param_fields(blog_fields, layout_params) %>
+		     </div>
+		   <% end %>
+	       </div>
       <% end %>
       <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
    <% end %>

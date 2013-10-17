@@ -25,10 +25,8 @@
     </div>
     <div id="right_section">
 	<span class="popup_help_text" style="float:right;">Click to change image</span><br/>
-	<img id="person_portrait" class="upload_target" src="<%= person.image_url %>" ></img>
-        <%= person_form.hidden_field :image_url %>
-	<%= person_form.hidden_field :large_image_url %>
-	<%= person_form.hidden_field :thumbnail_url %>
+	<img id="person_portrait" class="upload_target" src="<%= person.large_image_url %>" ></img>
+        <%= person_form.hidden_field :large_image_url %>
     </div>
    <%= person_form.label :bio, "Biography" %>
    <div id="bottom_section"><div class="settings_wysiwyg"><%= person_form.text_area :bio, :class=>"settings_wysiwyg" %></div></div>
@@ -36,25 +34,16 @@
 <script>
  $(function() {
      $("div#biography img.upload_target").bind("click", function() {
-        imageDialog({
-	     initialImage: "<%= person.large_image_url %>",
-             previewSize:"large",
-             uploadParams:{
-               imageSizes: {
-                  large: {width:300, height:450},
-                  medium: {width:100, height:150},
-                  thumbnail:  {width:50, height:75}
-               }
-             },
-             sizeLimit: 10000000,
-	     onSuccess: function(upload_result){
-                 $("div#biography input#person_image_url").val(upload_result["urls"]["medium"]);
-                 $("div#biography input#person_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
-                 $("div#biography input#person_large_image_url").val(upload_result["urls"]["large"]);
-                 $("div#biography img#person_portrait").attr("src", upload_result["urls"]["medium"]);
-                 $("input#person_image_url, input#person_thumbnail_url, input#person_large_image_url").trigger("change");
-             }});
-       });
+	 var params = {};
+         var url = $("div#biography input#person_large_image_url").val() || "";
+	 params = {url:encodeURI(url), width:400, height:450};
+         settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+	     success: function(image_url) {
+                 $("div#biography img.upload_target").attr("src", image_url);
+                 $("div#biography input#person_large_image_url").val(image_url);
+	     }
+	 });
+    });
 
  });
 </script>

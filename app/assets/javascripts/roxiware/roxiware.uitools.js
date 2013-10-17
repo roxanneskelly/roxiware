@@ -886,18 +886,19 @@
     }
 })(jQuery);
 
-function settingsForm(source, title)
-{
-   title = typeof title  != 'undefined' ? title : "&nbsp;";
-   var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close icon-cancel-circle'></a>" +
+function settingsForm(source, title, options) {
+    var conf = $.extend({}, options);
+    title = typeof title  != 'undefined' ? title : "&nbsp;";
+    var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close icon-cancel-circle'></a>" +
 		   "<div class='settings_title_reflect'>"+title+"</div>"+
                    "<div class='settings_title'>"+title+"</div>" + 
                    "<div class='contentWrap'> </div></div>");
 
-   var top = "5%";
-   var fixed=false;
-   var instantiateOverlay = function() {
-      overlay.overlay({
+    var top = "5%";
+    var fixed=false;
+    var instantiateOverlay = function() {
+        overlay.find(".contentWrap > div").data("settings_form", conf);
+        overlay.overlay({
 		top: top,
 		left: "center",
                 oneInstance: false,
@@ -913,31 +914,51 @@ function settingsForm(source, title)
 		      },
 		onClose: function (event) {
 		         $.roxiware.alert.popup = null;
+			 if(conf.onClose) {
+			     conf.onClose(overlay);
+			 }
 		         overlay.remove();
 			 $("body").css("overflow", "");
 	         },
 		 onLoad: function(event) {
                   $("body").css("overflow", "hidden");
-		  $("button").button();
-		  $("input[alt_type=color]").colorpicker();
-		  $("input[watermark]").watermark();
-		  $("div.settings_wysiwyg textarea").wysiwyg({ css: $.roxiware.main_css,
-                                       iFrameClass:"wysiwyg_iframe",
-			               initialContent:"",
-                                       controls: {
-                                          undo: { visible: false },
-                                          redo: { visible: false},
-				          paragraph: { visible: true},
-                                          insertHorizontalRule: { visible: true},
-                                          html: { visible: true},
-                                          insertTable: {visible: true},
-                                          'fileManager': {
-                                              visible: true,
-                                              tooltip: "File Manager"
-                                                  }
-                                           }});
-	         }
-	  });
+		  overlay.find("button").button();
+		  overlay.find("input[alt_type=color]").colorpicker();
+		  overlay.find(".param-field-image img").bind("click", function() {
+		      var param_field = $(this).parent();
+		      var params = {};
+		      params = {url:encodeURI($(this).attr("src"))};
+		      if(param_field.attr("width") && param_field.attr("height")) {
+			  params.width = param_field.attr("width");
+			  params.height = param_field.attr("height");
+                      }
+		      settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+				  success: function(image_url) {
+				      param_field.find("img").attr("src", image_url);
+				      param_field.find("input").val(image_url);
+				  }
+			  });
+		      });
+		  overlay.find("input[watermark]").watermark();
+                  $("div.settings_wysiwyg textarea").tinymce({
+		      script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+		      theme: "modern",
+		      skin: "light",
+		      menubar: false,
+		      browser_spellcheck:true,
+		      plugins: [
+		          "autolink lists link image charmap anchor",
+			  "visualblocks code",
+                          "media table contextmenu paste"
+		      ],
+		      height: $("div.settings_wysiwyg").height() - 30,
+		      statusbar:false,
+		      resize:false,
+		      schema: "html5",
+		      toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code",
+			      });
+		}
+	 });
 
       overlay.find(".contentWrap [title]").tooltip({
 	  predelay:1000,
@@ -953,7 +974,7 @@ function settingsForm(source, title)
            overlay.css("width", "100%");
            overlay.css("height", "100%");
        }
-       instantiateOverlay()
+       instantiateOverlay();
    }
    else {
        overlay.find(".contentWrap").load(source, function(responseText, textStatus, xhr) {
@@ -966,8 +987,8 @@ function settingsForm(source, title)
               fixed = true;
 	      overlay.addClass("huge_settings_form");
 	  }
-	  instantiateOverlay()
-       });
+	  instantiateOverlay();
+	   });
    }
 }
 
@@ -985,136 +1006,6 @@ function colorToHex(color) {
     var rgb = blue | (green << 8) | (red << 16);
     return digits[1] + '#' + rgb.toString(16);
 };
-
-function imageDialog(conf)
-{
-    var default_options = {
-	resizeOnUpload: false,
-	uploadRemoteURL: false,
-	allowUrl: false,
-	title: "Upload Image",
-	initialImage:false,
-	width:false,
-	height:false,
-	previewSize:"large",
-        sizeLimit:0,
-        minSizeLimit:0,
-        uploadParams: {
-	    image_sizes:{}
-	}
-    };
-   var options = $.extend(true, {}, default_options, conf);
-   
-   var image_style = "";
-   if(options.width) {
-       image_style = image_style+"width:"+options.width+"px;";
-   }
-   if(options.height) {
-       image_style = image_style+"height:"+options.height+"px;";
-   }
-   var initialimage = (options.initialImage?"src='"+options.initialImage+"'":"");
-   var overlay_dialog = '<div id="image_selection_dialog" class="settings settings_dialog" style="z-index:3000"><a class="close icon-cancel-circle"></a>' +
-       '<div class="settings_title">'+options.title+'</div>'+
-           '<div class="contentWrap"><div id="image_preview"><img '+initialimage+' style="'+image_style+'"/></div>' +
-           '<div id="upload_section">' +
-           '<button id="upload_button" type="button" name="upload" value="upload">Choose Image</button>' +
-           '<div id="progress_section" style="display:none"><div id="progress_bar"><div id="progress"></div></div><div id="upload_cancel">x</div></div>' +
-           '</div>';
-   if(options.allowUrl) {
-       overlay_dialog = overlay_dialog + "<div id='url_section'>" +
-	        '<label for="image_url">URL</label>&nbsp;<input name="image_url" type="text"/></div>';
-   }
-   overlay_dialog = overlay_dialog + '<button type="submit" name="save" value="save" disabled>Save</button>' +
-       '</div></div>';
-   overlay_dialog = $(overlay_dialog);
-   $("body").append(overlay_dialog);
-   overlay_dialog.find("button").button();
-
-   var csrf_token = $('meta[name="csrf-token"]').attr('content');
-   var csrf_param = $('meta[name="csrf-param"]').attr('content');
-   var upload_params = {};
-   if (csrf_param !== undefined && csrf_token !== undefined) {
-           upload_params[csrf_param] = csrf_token;
-   }
-   $.extend(upload_params, options.uploadParams);
-
-   var file_upload = new qq.FileUploaderBasic({
-       action: "/asset/image",
-       button: overlay_dialog.find("button#upload_button").get()[0],
-       multiple:false,
-       debug:true,
-       params: upload_params,
-       allowedExtensions:["jpg", "png", "jpeg", "gif"],
-       showMessage: function(message) {
-	       $.alert(message);
-       },
-       sizeLimit: options.sizeLimit,
-       minSizeLimit: options.minSizeLimit,
-       onSubmit: function(id, filename) {
-	   // replace upload button with progress bar
-	   overlay_dialog.find("button#upload_button").css("display","none");
-	   overlay_dialog.find("div#progress_section").css("display",'');
-	   overlay_dialog.find("div#progres_bar div#progress").css("width", "0%");
-	   overlay_dialog.find("div#upload_cancel").click(function(e) {
-	       if(file_upload.getInProgress()) {
-		    file_upload.cancel(id);
-	       }
-           });
-       },
-       onProgress: function(id, filename, loaded, total) {
-	   var progress = String(Math.round((loaded*90)/total));
-	   overlay_dialog.find("div#progress_bar div#progress").css("width", progress + "%");
-       },
-       onComplete: function(id, filename, json_data) {
-
-	   overlay_dialog.find("div#progress_section").css("display",'none');
-	   if(json_data["success"]) {
-	       overlay_dialog.find("button#upload_button").css("display",'none');
-	       overlay_dialog.find("div#image_preview img").attr("src", json_data["urls"][options.previewSize]);
-	       overlay_dialog.data().upload_result = {urls:json_data["urls"], thumbprint:json_data["thumbprint"]};
-	       overlay_dialog.find("button[name=save]").button("enable");
-	   }
-	   else {
-	       overlay_dialog.find("button#upload_button").css("display",'');
-	       $.alert(json_data["error"]);
-	   }
-       },
-       onCancel: function(id, filename) {
-	   overlay_dialog.find("button#upload_button").css("display",'');
-	   overlay_dialog.find("div#progress_section").css("display",'none');
-       }
-   });
-
-   overlay_dialog.overlay({
-      zIndex: 3005,
-      oneInstance:false,
-      top: "10%",
-      left: "center",
-      fixed:false, 
-      mask: {
-	   color: '#222',
-	   loadSpeed: 200,
-	   opacity: 0.6,
-           zIndex:2999
-      },
-      closeOnClick: true,
-      load:true,
-      onClose: function() {
-          overlay_dialog.find("div#upload_cancel").click();	    
-	  overlay_dialog.remove();
-      },
-      onBeforeLoad: function () {
-          overlay_dialog.find("button[name=save]").click(function (e) {
-	      e.preventDefault();
-	      if(overlay_dialog.data().upload_result) {
-		   options.onSuccess(overlay_dialog.data().upload_result);
-	      }
-	      overlay_dialog.overlay().close();
-	      return false;
-	  });
-       }   
-   });
-}
 
 function xmlEscape(value) {
    return value.replace(/&/g, '&amp;')
@@ -1313,3 +1204,4 @@ function forgotPassword() {
         });
     settingsForm(template, "Forgot Password");
 }
+

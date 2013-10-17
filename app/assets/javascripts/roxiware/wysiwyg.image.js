@@ -43,25 +43,13 @@
 		init: function (Wysiwyg) {
 		var self = this, elements, adialog, dialog, formImageHtml, regexp, dialogReplacements, key, translation;
 
-                imageDialog({
-			previewSize:"large",
-			uploadParams:{
-			    imageSizes: {
-				thumbnail:{width:64, height:64},
-				    xsmall:{width:100, height:100},
-				    small:{width:150, height:150},
-				    medium:{width:250, height:250},
-				    large:{width:350, height:350},
-				    xlarge:{width:500, height:500},
-				    huge:{width:600, height:600}
-			           }
-				},
-			onSuccess: function(result) {
-	                    Wysiwyg.insertHtml("<img src='" + result["urls"]["large"]+"'/>");
-			    $(Wysiwyg.editorDoc).trigger("editorRefresh.wysiwyg");
-			}
-		    });
-			
+		var params = {};
+		settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+		    success: function(image_url) {
+	                Wysiwyg.insertHtml("<img src='" + image_url+"'/>");
+			$(Wysiwyg.editorDoc).trigger("editorRefresh.wysiwyg");
+		    }
+		});
 	    }
 	}
 
@@ -119,7 +107,6 @@
                             '<div id="float_label">Image Float</div>' +
 		            '<div id="float"><a id="left">left</a> <a id="none">none</a> <a id="right">right</a></div>' +
 		        '</div>',
-		sizes: ['thumbnail', 'xsmall','small','medium','large','xlarge','huge'],
 		closeTimeout: 30000,
 		hoverDelay: 700
 		
@@ -136,7 +123,6 @@
 			 launch_dialog: function (image) {
 			     // bring up dialog over center of image
 			     self.dialog = $(conf.dialog).clone();
-			     var size_regex_string = "("+conf.sizes.join("|")+")";
 
 			     var set_dialog_position = function() {
 				 var doc_x = image.parents("body").scrollLeft();
@@ -149,25 +135,6 @@
 			     };
 			     var url_regex_string = new RegExp("^\/assets/uploads/[0-9a-f]{32}_"+size_regex_string+".(png|jpg|gif|jpeg)$");
 			     var match = url_regex_string.exec(image.attr("src"));
-			     if(match) {
-				 var size_div = $("<div id='size'></div>");
-				 conf.sizes.forEach(function(size) {
-                                     var size_specifier = $("<a id='"+size+"'>"+size+"</a>");
-				     size_specifier.click(function(event) {
-					     var regexp = new RegExp(size_regex_string);
-					     var img_src = image.attr("src").replace(regexp, size);
-					     image.attr("src", img_src);
-					     self.dialog.find("div#size a").removeAttr("disabled");
-					     self.dialog.find("div#size a#"+size).attr("disabled","disabled");
-					     Wysiwyg.saveContent();
-					     self.cleanup();
-					     
-					 });
-				     size_div.append(size_specifier);
-				 });
-				 self.dialog.append('<div id="size_label">Image Size</div>');
-				 self.dialog.append(size_div);
-			     }
 			     
                              var iframe_id = image.parents("body").attr("id");
 			     var iframe = $(window.document).find("iframe#"+iframe_id+"-wysiwyg-iframe");
@@ -214,44 +181,18 @@
 			             });
 		         },
 			 cleanup: function() {
-			     if(self.dialog) {
-				 self.dialog.remove();
-				 self.dialog = null;
-  			     }
-			     if(self.imageAttrDialogTimeout) {
-				 clearTimeout(self.imageAttrDialogTimeout); 
-			     }
-			     if(self.imageAttrHoverTimeout) {
-				 clearTimeout(self.imageAttrHoverTimeout);
-			     }
-			     image.parents("html").parent().unbind("scroll");
-			     image.unbind("mouseenter");
-			     image.unbind("mouseleave");
-			     image.mouseenter(function(event) {
-				 // on entry into the image, set up a timer to detect
-				 // a hover operation.
-				 self.imageAttrHoverTimeout =  setTimeout(function() {
-				     // if we've hovered long enough, launch the dialog
-				     self.launch_dialog(image);
-				     // close the timeout
-				     if(self.imageAttrHoverTimeout) {
-					 clearTimeout(self.imageAttrHoverTimeout);
-					 self.imageAttrHoverTimeout = null;
-				     }
-				 },
-			         conf.hoverDelay);
-			     }).mouseleave(
-	                         function(event) {
-				 if(self.imageAttrHoverTimeout) {
-				     clearTimeout(self.imageAttrHoverTimeout);
-				     self.imageAttrHoverTimeout = null;
-				 }
-			     });
 			 }
 		     }
 	     );
-	    self.cleanup();
-
+	    console.log(image);
+	    $(image).load(function() {
+		    // wrap image in a div with same style
+		    //var resize_wrapper = $(this).wrap("<div class='wysiwyg_image_wrapper'></div>");
+		    //resize_wrapper.css("display",$(this).css("inline"));
+		    $(this).css("position", "relative");
+		    $(this).resizable({handles:"all", zIndex:2004});
+		});
+	    console.log("set resize");
 	}
 
         $.fn.image_attributes_edit = function(wysiwyg, conf) {

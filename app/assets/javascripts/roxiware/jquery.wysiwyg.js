@@ -507,7 +507,7 @@
 		};
 
 
-               this.hoverHandlers = [
+               this.elementHandlers = [
                                      function(wysiwyg) {
                                          $(wysiwyg.editorDoc).find("img").image_attributes_edit(wysiwyg, {});
                                      }];
@@ -851,13 +851,13 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 		};
 
 		this.autoSaveFunction = function () {
-                        this.setHoverHandlers();
+                        this.setElementHandlers();
 			this.saveContent();
 		};
 
-               this.setHoverHandlers = function () {
+               this.setElementHandlers = function () {
                    var self=this;
-                   this.hoverHandlers.forEach(function(handler) {
+                   this.elementHandlers.forEach(function(handler) {
                            handler(self);
                        });
                }
@@ -1407,7 +1407,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 			$(self.editorDoc).bind("click.wysiwyg", function (event) {
 				self.ui.checkTargets(event.target ? event.target : event.srcElement);
 			});
-			self.setHoverHandlers();
+			self.setElementHandlers();
             
 			/**
 			 * @link http://code.google.com/p/jwysiwyg/issues/detail?id=20
@@ -1800,7 +1800,7 @@ html: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.o
 					this.options.events.save.call(this);
 				}
 			}
-                        this.setHoverHandlers();
+                        this.setElementHandlers();
 			return this;
 		};
 

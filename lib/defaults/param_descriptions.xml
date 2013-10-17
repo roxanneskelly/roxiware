@@ -419,7 +419,7 @@
   <param_description guid="E121E288-E726-46C3-8B1C-D2E8EE692531">
     <name>Main Body Background</name>
     <description>Background for the main body</description>
-    <field_type>asset</field_type>
+    <field_type>image</field_type>
     <permissions>admin</permissions>
     <meta/>
   </param_description>
@@ -680,7 +680,7 @@
   <param_description guid="6792C972-20F1-48EB-A263-E2DCF029A2E9">
     <name>Image</name>
     <description>URL to an image.</description>
-    <field_type>asset</field_type>
+    <field_type>image</field_type>
     <permissions></permissions>
     <meta/>
   </param_description>

@@ -11,15 +11,14 @@
     end %>
 </div>
 <script>
+  console.log("script");
     $(function() {
-          console.log("setup");
        $(".template_customize_form form").submit(function(e) {
-          console.log("save");
            e.preventDefault();
            $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>", $("form").serializeArray(), {
                                 method:"PUT",
-                                success: function() {
-                                   window.location.reload();
+                                success: function(json_data) {
+                                    window.location.reload();
                                 }
            });
     });

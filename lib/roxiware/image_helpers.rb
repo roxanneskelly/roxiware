@@ -1,14 +1,27 @@
 module Roxiware
   module ImageHelpers
     require 'RMagick'
+
+
+    def self.modify_image(image, upload_path, options)
+       if(options.include?(:crop))
+           image.crop!(options[:crop][:x].to_i, options[:crop][:y].to_i, options[:crop][:width].to_i, options[:crop][:height].to_i)
+       end
+       if(options.include?(:width) && options.include?(:height)) 
+           image.resize_to_fit!(options[:width].to_i, options[:height].to_i)
+       end
+       image.write(upload_path)
+    end
+
     def self.process_uploaded_image(filename, options={})
       extension = File.extname(filename)
       base_filename = File.basename(filename, extension)
       result = {:basename => base_filename, :urls=>{}}
-      requested_sizes = options[:image_sizes] || Roxiware.upload_image_sizes
+      requested_sizes = options[:image_sizes] || {"raw"=>{}}
       processed_image_root = File.join(Rails.root.join(AppConfig.processed_upload_path), base_filename)
 
       image = options[:image] || Magick::Image::read(filename).first
+      puts "REQUESTED SIZES #{requested_sizes.inspect}"
       requested_sizes.each do |name, size|
          sizes = requested_sizes[name]
 	 if name != "raw"
@@ -45,6 +58,7 @@ module Roxiware
 	 else
 	    image.write( processed_image_root + extension)
 	    result[:urls][name] = File.join(AppConfig.upload_url, base_filename + extension)
+	    result[:success] = true;
 	 end
       end
       result

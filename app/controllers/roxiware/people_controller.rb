@@ -118,7 +118,6 @@ class Roxiware::PeopleController < ApplicationController
 		 end
 	         social_networks = person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
 		 params[:person][:params][:social_networks].each do |name, value|
-		     puts "VALUE IS " + value.inspect
 	             social_network = social_networks.set_param(name, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
 		     social_network.set_param("uid", value[:uid], "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
                      puts "person " + person.user(true).inspect

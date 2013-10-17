@@ -5,31 +5,31 @@ module Roxiware::RoutingHelpers
 	def self.applications=(new_apps)
 	   @@apps = new_apps
 	end
-        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :news, :forum, :contact,:authproxy]
+        @@apps = [:setup, :page, :account, :design, :people, :galleries, :events, :books, :search, :assets, :settings, :sitemap, :blog_base, :blog, :news, :forum, :contact,:authproxy]
 
 	APP_TYPES = {
-	    :author=>[:setup, :page, :account, :design, :people, :events, :books, :search, :uploads, :settings, :sitemap, :blog_base, :blog, :contact],
-	    :custom=>[:page, :account, :design, :people, :events, :search, :uploads, :settings, :sitemap, :blog, :contact, :news, :blog_base]
+	    :author=>[:setup, :page, :account, :design, :people, :events, :books, :search, :assets, :settings, :sitemap, :blog_base, :blog, :contact],
+	    :custom=>[:page, :account, :design, :people, :events, :search, :assets, :settings, :sitemap, :blog, :contact, :news, :blog_base]
 	}
 
         APPLICATION_DEPENDENCIES = {
             :comments=>[],
 	    :authproxy=>[],
 	    :setup=>[:settings],
-	    :page=>[:uploads],
+	    :page=>[:assets],
             :account=>[],
-            :design=>[:settings, :uploads],
-	    :people=>[:uploads],
-	    :galleries=>[:uploads],
+            :design=>[:settings, :assets],
+	    :people=>[:assets],
+	    :galleries=>[:assets],
 	    :events=>[],
-	    :books=>[:uploads],
+	    :books=>[:assets],
 	    :search=>[],
-	    :uploads=>[],
+	    :assets=>[],
 	    :settings=>[],
 	    :sitemap=>[],
-	    :blog_base=>[:uploads, :comments],
-	    :blog=>[:blog_base, :uploads],
-	    :news=>[:blog_base, :uploads],
+	    :blog_base=>[:assets, :comments],
+	    :blog=>[:blog_base, :assets],
+	    :news=>[:blog_base, :assets],
 	    :forum=>[:comments],
 	    :contact=>[]
 	}
@@ -142,8 +142,13 @@ module ActionDispatch::Routing
 	    get "/search" => "search#search"
 	end
 
-	def roxiware_uploads
-             post   "asset/:upload_type" => "asset#upload"
+	def roxiware_assets
+	    scope "/asset", :as=>"asset" do
+	        post "" => "asset#create"
+		put ":asset_url" => "asset#update"
+		get "edit" => "asset#edit"
+		get ":asset_basename" => "asset#show"
+	    end
 	end
 
 	def roxiware_settings

@@ -5,6 +5,12 @@ module Roxiware
         text_field_tag(name, value, options.stringify_keys.update("type" => "date"))
       end
 
+
+      def image_upload_tag(field_group, param, options = {})
+          tag(:img, :src=>options[:value]) +
+	  field_group.hidden_field(param.name.to_sym, options)
+      end
+
       def param_field(field_group, param, options={})
             title = param.param_description.description
             result = "<div class='param-field param-field-#{param.param_description.field_type}'>"
@@ -27,6 +33,8 @@ module Roxiware
                  result += field_group.check_box(param.name.to_sym, options.merge({:checked=>param.conv_value, :param_name=>param.name, :title=>nil}), "true", "false") + content_tag(:span, "", :class=>"control-icon checkbox-icon")+label
 	       when "text"
                  result += label + text_area_tag(param.name.to_sym, param.to_s, options.merge({:param_name=>param.name}))
+	       when "image"
+                 result += label + image_upload_tag(field_group, param, options.merge({:value=>param.value, :param_name=>param.name}))
                else
                  result += label + field_group.text_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
              end

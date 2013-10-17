@@ -10,7 +10,7 @@
    <div id="right_section">
     <span class="popup_help_text" style="float:center;">Click to change image</span><br/>
     <img id="book_upload_image_url" src="" class="upload_target" />
-    <input type="hidden" name="image_thumbprint"/>
+    <input type="hidden" name="large_image_url"/>
    </div>
    <%= book_fields.label :description, "Description" %>
    <div id="bottom_section"><div class="settings_wysiwyg"><%= book_fields.text_area :description, :class=>"settings_wysiwyg" %></div></div>
@@ -23,27 +23,18 @@ $(function() {
                                trigger: true
                          });
    
-   $("img#book_upload_image_url").attr("src", $("#book_image_url").val());
+   $("img#book_upload_image_url").attr("src", $("input#book_large_image_url").val());
    $("img#book_upload_image_url").bind("click", function() {
-      imageDialog({
-	     initialImage: $("input#book_large_image_url").val(),
-             previewSize:"large",
-             uploadParams:{
-               imageSizes: {
-                  large: {width:300, height:450},
-                  medium: {width:100, height:150},
-                  thumbnail:  {width:50, height:75}
-               }
-             },
-             sizeLimit: 10000000,
-	     onSuccess: function(upload_result) {
-                 $("input#book_image_url").val(upload_result["urls"]["medium"]);
-                 $("input#book_thumbnail_url").val(upload_result["urls"]["thumbnail"]);
-                 $("input#book_large_image_url").val(upload_result["urls"]["large"]);
-                 $("img#book_upload_image_url").attr("src", upload_result["urls"]["medium"]);
-                 $("input#book_image_url, input#book_thumbnail_url, input#book_large_image_url").trigger("change");
-             }
-      });
+	 var params = {};
+         var url = $("input#book_large_image_url").val() || "";
+	 params = {url:encodeURI(url), width:300, height:450};
+         settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+	     success: function(image_url) {
+                 $("img#book_upload_image_url").attr("src", image_url);
+                 $("input#book_large_image_url").val(image_url);
+                 $("input#book_large_image_url").trigger("change");
+	     }
+	 });
     });
 });
 </script>

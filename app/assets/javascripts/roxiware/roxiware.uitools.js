@@ -913,6 +913,7 @@ function settingsForm(source, title, options) {
 		     opacity: 0.6
 		      },
 		onClose: function (event) {
+		    overlay.find("div.settings_wysiwyg textarea").tinymce().remove();
 		         $.roxiware.alert.popup = null;
 			 if(conf.onClose) {
 			     conf.onClose(overlay);
@@ -940,7 +941,7 @@ function settingsForm(source, title, options) {
 			  });
 		      });
 		  overlay.find("input[watermark]").watermark();
-                  $("div.settings_wysiwyg textarea").tinymce({
+                  overlay.find("div.settings_wysiwyg textarea").tinymce({
 		      script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
 		      theme: "modern",
 		      skin: "light",

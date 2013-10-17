@@ -144,5 +144,11 @@ class Roxiware::Book < ActiveRecord::Base
   before_validation do
      self.seo_index = (self.title || "").to_seo
      self.description = Sanitize.clean(self.description, Roxiware::Sanitizer::BASIC_SANITIZER)
+     image_uri = URI(self.large_image_url)
+     if(!image_uri.host)
+           base_file = Pathname.new(image_uri.path).basename
+           self.image_url = File.join(AppConfig.upload_url, base_file.basename(".*")+"100x150"+base_file.extname)
+           self.thumbnail_url = File.join(AppConfig.upload_url, base_file.basename(".*")+"50x75"+base_file.extname)
+     end
   end
 end

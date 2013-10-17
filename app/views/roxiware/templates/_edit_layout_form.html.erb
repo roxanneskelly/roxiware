@@ -161,23 +161,6 @@ end %>
 	       $("#"+scheme_id+".layout_scheme .layout_scheme_title").text($(this).val());
 	   });
 
-	   $(".layout_edit_form img.scheme_thumbnail").bind("click", function() {
-	     var self=this;
-	     imageDialog({
-		  initialImage: $(this).attr("src"),
-		  previewSize:"thumbnail",
-		  uploadParams:{
-		    imageSizes: {
-		       thumbnail:  {width:32, height:32}
-		    }
-		  },
-		  sizeLimit: 10000000,
-		  onSuccess: function(upload_result){
-		      var scheme_form = $(self).parents(".scheme_form");
-		      $(scheme_form).find("input.thumbnail_url").val(upload_result["urls"]["thumbnail"]);
-		      $("img[scheme_id="+scheme_form.attr("id")+"]").attr("src", upload_result["urls"]["thumbnail"]);
-		  }});
-	    });
       };
 
 
@@ -223,25 +206,6 @@ end %>
 	       tabs_api.click(-1);
 	    }
        });
-
-
-
-      $("img#layout_image_upload").bind("click", function() {
-        imageDialog({
-	     initialImage: "<%= @layout.get_param('chooser_image').to_s %>",
-             previewSize:"thumbnail",
-             uploadParams:{
-               imageSizes: {
-                  thumbnail:  {width:120, height:120}
-               }
-             },
-             sizeLimit: 10000000,
-	     onSuccess: function(upload_result){
-                 $("input#layout_params_chooser_image").val(upload_result["urls"]["thumbnail"]);
-                 $("#layout_chooser_image img").attr("src", upload_result["urls"]["thumbnail"]);
-             }});
-       });
-
 
        $("#save_button,#save_and_close_button").click(function() {
            var button = $(this);

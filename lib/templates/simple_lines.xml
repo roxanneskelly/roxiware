@@ -8,23 +8,14 @@
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
 person = Roxiware::Person.find(person_id)
-
-author_name =  @current_layout.get_by_path("_/header_bar/logo_bar/display_items/item-0/text")
-author_name.value = person.full_name
-author_name.save!
-
-social_networks_bio = @current_layout.get_by_path("_/left_bar/social_networks_header/biography_id")
-
-social_networks_bio.value = person_id
-social_networks_bio.save!
+title = person.full_name if title.blank?
 
 Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
-Roxiware::Param::Param.set_application_param("system", "title", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", person.full_name+", Author")
 Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
 Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", person.full_name)
-Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", person.full_name+", Author")
+Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", title+", #{subtitle}")
 Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
-Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", person.full_name+", Author")
+Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", title)
 
 Roxiware::Page.find_or_create_by_page_identifier("contact").save!
 
@@ -226,14 +217,14 @@ div#mainBody
         padding:2px
     }
 
-    button {
+    button.ui-widget, ui-button-text-only {
         border:none;
         background:<%= text_color %>;
         color:<%= background %>;
         border-radius:0px;
         padding:0.2em 3em 0.2em 3em;
     }
-    button:hover {
+    button.ui-state-hover {
         background:<%= link_color %>;
     }
 }
@@ -1070,9 +1061,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         position:relative;
         width:20%;
         height:150px;
-        .display_item:nth-child(0) {
-              display:none;
-         }
+        .widget_content {
+            position:relative;
+	    .site_title {
+                position:absolute;
+                white-space:nowrap;
+		font-family:Geneva, Verdana, 'sans-serif';
+		left:0.5em;
+		top:0.3em;
+                font-size:4em;
+                font-weight:300;
+                width:auto;
+	    }
+        }
     }
 
 
@@ -1192,7 +1193,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             }
             .widget#logo_bar {
                 height:40px;
-                .display_item:nth-child(1) {
+                .site_title {
                     font-size:20px !important;
                     top:-5px !important;
                     left:5px !important;
@@ -1215,20 +1216,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="47A266F2-00FA-4A28-84BA-3CCA6AE74077" order="0">
+            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="0">
               <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
-                <param description="AE42CE08-7AEA-49D0-90A0-6714CE599788" class="local" name="display_items">
-                  <param description="78732FAB-BA63-4DFE-B1BB-CEE69450BCC9" class="local" name="item-0">
-                    <param description="DED6595E-7ABE-47F7-B536-328472C14990" class="local" name="left">21px</param>
-                    <param description="06E72987-55E7-4C36-9620-776931B9B2F9" class="local" name="top">12px</param>
-                    <param description="97643629-6F5C-4121-9141-BAC6731F1B04" class="local" name="text">Roxanne Skelly</param>
-                    <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="local" name="font">Geneva</param>
-                    <param description="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78" class="local" name="weight">300</param>
-                    <param description="63275631-EEB0-43E3-A2D9-407B6423CDC9" class="local" name="size">36</param>
-                    <param description="DA84EE57-3D89-489E-8B81-08DA7A560550" class="local" name="color"></param>
-                  </param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <![CDATA[<%= 
+                      person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+                      person = Roxiware::Person.find(person_id)
+                      title = Roxiware::Param::Param.application_param_val("system", "title") 
+                      title =  person.full_name if title.blank?
+                      content_tag(:div, title, :class=>"site_title") %>]]>
                 </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
               </params>
             </instance>
             <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">

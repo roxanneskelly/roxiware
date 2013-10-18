@@ -5,6 +5,7 @@ class Roxiware::AssetController < ApplicationController
   require 'set'
   include Roxiware::ImageHelpers
 
+  skip_after_filter :store_location
   def show
       serve_file_name = Pathname(request.path).basename
       # determine if there's a width and height value

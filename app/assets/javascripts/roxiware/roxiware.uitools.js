@@ -947,12 +947,14 @@ function settingsForm(source, title, options) {
 		      skin: "light",
 		      menubar: false,
 		      browser_spellcheck:true,
+		      relative_urls: false,
+		      document_base_url: "/",
 		      plugins: [
 		          "autolink lists link image charmap anchor",
 			  "visualblocks code",
                           "media table contextmenu paste"
 		      ],
-		      height: $("div.settings_wysiwyg").height() - 30,
+		      height: overlay.find("div.settings_wysiwyg").height() - 30,
 		      statusbar:false,
 		      resize:false,
 		      schema: "html5",
@@ -1059,8 +1061,8 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
                                   '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
                                '<div><button disabled="disabled" id="login_button" name="button" type="submit">login</button></div>' +
                                '<a id="forgot_password">Forgot your password?</a>' +
-                               '<div id="social_networks_login"><a id="facebook_login" provider="facebook" class="oauth_login">Sign In with Facebook</a>'+
-                               '<a id="twitter_login" provider="twitter" class="oauth_login">Sign In with Twitter?</a></div>' +
+                               '<div id="social_networks_login"><a id="facebook_login" provider="facebook" class="oauth_login"></a>'+
+                               '<a id="twitter_login" provider="twitter" class="oauth_login"></a></div>' +
                                '</form>';
 
 

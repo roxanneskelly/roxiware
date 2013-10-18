@@ -34,5 +34,13 @@
 <script>
 $(function() {
     $("#system_settings_edit ul.tabs").tabs($("div.panes > div"))
+    $("#system_settings_edit form").submit(function(e) {
+        e.preventDefault();
+        $.ajaxSetParamsJSON('<%= "/settings/system.json" %>', $("#system_settings_edit form").serializeArray(), {form:$("#system_settings_edit form"), 
+                                                                                      method:"PUT",
+                                                                                      success: function() {
+                                                                                          window.location.reload();
+                                                                                      }});
+    });
 });
 </script>

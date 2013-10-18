@@ -1,0 +1,186 @@
+<%= content_tag(:div, :id=>"image_selection_dialog", :class=>"medium_form") do
+    content_tag(:div, tag(:img), :id=>"image_preview") +
+    content_tag(:div, :id=>"upload_section") do
+        button_tag("Upload", :id=>"upload_button", :type=>"button", :name=>"upload", :value=>"upload") +
+        content_tag(:div, :id=>"progress_section", :style=>"display:none") do
+            content_tag(:div, content_tag(:div, "", :id=>"progress"), :id=>"progress_bar") +
+            content_tag(:div, "x", :id=>"upload_cancel")
+        end
+    end +
+    content_tag(:div, :id=>"url_section") do
+        label_tag(:name, "URL") + 
+        text_field_tag(:image_url, asset_url, :id=>"image_url", :watermark=>asset_url)
+    end +
+    button_tag("Save", :id=>"save", :value=>"save", :class=>"save_button")
+end %>
+
+<script>
+$(function() {
+   image_selection_dialog = $("#image_selection_dialog");
+    $("#upload_button").button();
+       // Set up cropping control
+       var img_area_conf = {handles:true, 
+			    parent:image_selection_dialog.find("#image_preview")}
+       <% if width || height %>
+	  img_area_conf.show = true;
+	  img_area_conf.aspectRatio = '<%= "#{width}:#{height}" %>';
+       <% end %>
+
+       // preloading image
+       var loader_image = $("<img/>");
+       loader_image.load(function() {
+	   image_selection_dialog.find("#image_preview img").attr("src", $(this).attr("src"));
+	   var img_area_options =  $.extend({instance:true}, img_area_conf);
+	   img_area_options.imageHeight = loader_image[0].height;
+	   img_area_options.imageWidth = loader_image[0].width;
+       <% if width || height %>
+	   var width = <%= width %>;
+	   var height = <%= height %>;
+	   var aspect_ratio = width/height;
+	   img_area_options.onSelectChange = function(image, select) {
+	       $("button[name=save]").button("enable");
+	   }
+	   img_area_options.x1 = 0;
+	   img_area_options.y1 = 0;
+	   img_area_options.x2 = img_area_options.imageWidth;
+	   img_area_options.y2 = img_area_options.imageHeight;
+	   img_area_options.show = true;
+	   img_area_options.x2 = Math.min(img_area_options.imageWidth, width);
+	   img_area_options.y2 = Math.min(img_area_options.imageHeight, height);
+	   if (img_area_options.x2 < img_area_options.y2 * aspect_ratio) {
+	       img_area_options.x2 = Math.min(img_area_options.imageWidth,
+					      img_area_options.y2 * aspect_ratio);
+	       img_area_options.y2 = Math.min(img_area_options.imageHeight,
+							    img_area_options.x2 / aspect_ratio);
+	   }
+	   else {
+	      img_area_options.y2 = Math.min(img_area_options.imageHeight,
+						  img_area_options.x2 / aspect_ratio);
+	      img_area_options.x2 = Math.min(img_area_options.imageWidth,
+							    img_area_options.y2 * aspect_ratio);
+	   }
+       <% end %>
+	   image_selection_dialog.find("#image_preview img").imgAreaSelect({remove:true});
+	   ias = image_selection_dialog.find("#image_preview img").imgAreaSelect(img_area_options);
+	   ias.cancelSelection();
+	   ias.update();
+       });
+
+       var set_image = function(image_url) {
+	   loader_image.attr("src", image_url);
+       } 
+       set_image("<%= asset_url %>")
+
+       var changeSetTimeout = null;
+       $("input#image_url").bind("input propertychange", function() {
+               var image_url = $(this).val();
+               if(changeSetTimeout) {
+                   clearTimeout(changeSetTimeout);
+               }
+               changeSetTimeout = setTimeout(function() {
+                  clearTimeout(changeSetTimeout);
+                  set_image(image_url);
+                  changeSetTimeout = null;
+               }, 1000);
+       });
+       $("input#image_url").bind("input blur propertychange", function() {
+	       var button_state = "enable";
+	       if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+		    button_state = "disable";
+	       }
+	       $("button[name=save]").button(button_state);
+	   });
+       var csrf_token = $('meta[name="csrf-token"]').attr('content');
+       var csrf_param = $('meta[name="csrf-param"]').attr('content');
+       var upload_params = {asset_type:"image"};
+       if (csrf_param !== undefined && csrf_token !== undefined) {
+	       upload_params[csrf_param] = csrf_token;
+       }
+
+       var file_upload = new qq.FileUploaderBasic({
+	   action: "/asset.json",
+	   button: image_selection_dialog.find("button#upload_button").get()[0],
+	   multiple:false,
+	   debug:true,
+	   params: upload_params,
+	   allowedExtensions:["jpg", "png", "jpeg", "gif"],
+	   showMessage: function(message) {
+	       $.alert(message);
+	   },
+	   sizeLimit: 0,
+	   minSizeLimit: 0,
+	   onSubmit: function(id, filename) {
+	       // replace upload button with progress bar
+	       image_selection_dialog.find("button#upload_button").css("display","none");
+	       image_selection_dialog.find("div#progress_section").css("display",'');
+	       image_selection_dialog.find("div#progres_bar div#progress").css("width", "0%");
+	       image_selection_dialog.find("div#upload_cancel").click(function(e) {
+		   if(file_upload.getInProgress()) {
+			file_upload.cancel(id);
+		   }
+	       });
+	   },
+	   onProgress: function(id, filename, loaded, total) {
+	       var progress = String(Math.round((loaded*90)/total));
+	       image_selection_dialog.find("div#progress_bar div#progress").css("width", progress + "%");
+	   },
+	   onComplete: function(id, filename, json_data) {
+	       image_selection_dialog.find("div#progress_section").css("display",'none');
+	       if(json_data["success"]) {
+		   image_selection_dialog.find("button#upload_button").css("display",'none');
+		   loader_image.attr("src", json_data["url"]);
+		   image_selection_dialog.find("div#url_section input").val(json_data["url"]);
+		   image_selection_dialog.find("button[name=save]").button("enable");
+	       }
+	       else {
+		   image_selection_dialog.find("button#upload_button").css("display",'');
+		   $.alert(json_data["error"]);
+	       }
+	   },
+	   onCancel: function(id, filename) {
+	       image_selection_dialog.find("button#upload_button").css("display",'');
+	       image_selection_dialog.find("div#progress_section").css("display",'none');
+	   }
+       });
+
+       image_selection_dialog.find("button#save").click(function (e) {
+	  e.preventDefault();
+	  selection = ias.getSelection(false);
+	  //tell asset manager to generate an image with appropriate clipping
+          var settings_conf = $("#image_selection_dialog").data("settings_form");
+	  var create_params = {
+	      url:image_selection_dialog.find("div#url_section input").val(),
+	      asset_type:"image"
+	  }
+	  if(selection.width && selection.height) {
+	      create_params["crop"] = {
+				    x:selection.x1,
+				    y:selection.y1,
+				    width:selection.width,
+				    height:selection.height}
+	  }
+
+	  <% if width || height %>
+	      create_params["width"] = <%= width %>;
+	      create_params["height"] = <%= height %>;
+	  <% else %>
+	      if (!(selection.width && selection.height)) {
+                  settings_conf.success(image_selection_dialog.find("div#url_section input").val());
+	          image_selection_dialog.parents("#edit_overlay").find(".close").click();
+	          return;
+	      }
+	  <% end %>
+
+	  $.ajaxSetParamsJSON("/asset.json", create_params,
+			    {
+				method:"POST",
+				success:function(json_data) {
+                                    settings_conf.success(json_data.url);
+				    image_selection_dialog.parents("#edit_overlay").find(".close").click();
+                                }
+          });
+    });
+});
+
+
+</script>

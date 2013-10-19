@@ -91,7 +91,8 @@
 		      menubar: false,
 		      browser_spellcheck:true,
 		      relative_urls: false,
-		      document_base_url: "/",
+		      remove_script_host:true,
+		      document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
 		      plugins: [
 		          "autolink lists link anchor",
 			  "visualblocks",
@@ -135,7 +136,7 @@
 		      statusbar:false,
 		      resize:false,
 		      schema: "html5",
-		      toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link",
+		      toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link",
 			      });
 		
     }

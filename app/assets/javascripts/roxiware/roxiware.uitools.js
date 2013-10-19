@@ -948,7 +948,8 @@ function settingsForm(source, title, options) {
 		      menubar: false,
 		      browser_spellcheck:true,
 		      relative_urls: false,
-		      document_base_url: "/",
+		      remove_script_host:true,
+		      document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
 		      plugins: [
 		          "autolink lists link image charmap anchor",
 			  "visualblocks code",

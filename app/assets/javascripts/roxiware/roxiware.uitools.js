@@ -925,13 +925,13 @@ function settingsForm(source, title, options) {
                   $("body").css("overflow", "hidden");
 		  overlay.find("button").button();
 		  overlay.find("input[alt_type=color]").colorpicker();
-		  overlay.find(".param-field-image img").bind("click", function() {
-		      var param_field = $(this).parent();
+		  overlay.find(".param-field-image").bind("click", function() {
+		      var param_field = $(this);
 		      var params = {};
-		      params = {url:encodeURI($(this).attr("src"))};
-		      if(param_field.attr("width") && param_field.attr("height")) {
-			  params.width = param_field.attr("width");
-			  params.height = param_field.attr("height");
+		      params = {url:encodeURI($(this).find("img").attr("src"))};
+		      if(param_field.find("input").attr("width") && param_field.find("input").attr("height")) {
+			  params.width = param_field.find("input").attr("width");
+			  params.height = param_field.find("input").attr("height");
                       }
 		      settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
 				  success: function(image_url) {

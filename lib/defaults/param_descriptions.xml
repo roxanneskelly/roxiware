@@ -19,7 +19,7 @@
     <description>Type of display for Series on the book index page</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Simple:simple,Accordion:accordion</meta>
+    <meta>Simple:simple|Accordion:accordion</meta>
   </param_description>
 
   <param_description guid="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0">
@@ -27,7 +27,7 @@
     <description>Type of display for the list of books on the main books page, and in the series pages</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Simple:simple,Accordion:accordion,Slide Show:slideshow</meta>
+    <meta>Simple:simple|Accordion:accordion|Slide Show:slideshow</meta>
   </param_description>
 
   <param_description guid="21D5E42E-7D66-4ECF-9802-3B813ECC51AB">
@@ -99,7 +99,7 @@
     <description>Hosting package</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Custom:custom,Basic Author:basic_author,Premium Author:premium_author,Basic Blog:basic_blog,Premium Blog:premium_blog</meta>
+    <meta>Custom:custom|Basic Author:basic_author|Premium Author:premium_author|Basic Blog:basic_blog|Premium Blog:premium_blog</meta>
   </param_description>
  <param_description guid="9311CEF8-86CE-44C0-B3DD-126B718A26C2">
     <name>Hostname</name>
@@ -344,7 +344,7 @@
     <description>Permissions for comments.</description>
     <field_type>select</field_type>
     <permissions>admin</permissions>
-    <meta>Open:open,Moderate:moderate,Closed:closed,Hide:hide</meta>
+    <meta>Open:open|Moderate:moderate|Closed:closed|Hide:hide</meta>
   </param_description>
   <param_description guid="391E7C2E-A284-491A-8AB8-5FB9E002033D">
     <name>Moderate Comments</name>
@@ -423,6 +423,13 @@
     <permissions>admin</permissions>
     <meta/>
   </param_description>
+  <param_description guid="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9">
+    <name>Header Background</name>
+    <description>Background for the header</description>
+    <field_type>image</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
   <param_description guid="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">
     <name>Widget Instance ID</name>
     <description>Unique identifier for the given widget instance</description>
@@ -442,7 +449,7 @@
     <description>Float the content to the left, right, or none.</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Left:left,Right:right,None:none</meta>
+    <meta>Left:left|Right:right|None:none</meta>
   </param_description>
   <param_description guid="8E2B8249-C8F5-4FDD-BA82-B40E3B221342">
     <name>Widget Height</name>
@@ -580,16 +587,16 @@
   <param_description guid="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">
     <name>Font</name>
     <description>Font</description>
-    <field_type>string</field_type>
+    <field_type>select</field_type>
     <permissions></permissions>
-    <meta/>
+    <meta>Tahoma:Tahoma,sans-serif|Open Sans:'Open Sans',sans-serif|Lucida Console:'Lucida Console',monospace|Times New Roman:'Times New Roman',serif|Lucida Sans:'Lucida Sans Unicode','Lucida Grande',sans-serif|Courier:Courier,monospace|Arial:Arial,Helvetica,sans-serif,|Impact:Impact,Charcoal,sans-serif,Verdana:Verdana,Geneva,sans-serif|Genva:Geneva,Tahoma,sans-serif|Trebuchet MS:'Trebuchet MS',Helvetica,sans-serif|Georgia:Georgia,serif|Palatino:'Palatino Linotype','Book Antiqua',Palatino,serif|Comic Sans:'Comic Sans MS',cursive,sans-serif|Lekton:'Lekton',sans-serif|Lovers Quarrel:'Lovers Quarrel',cursive|Cutive Mono:'Cutive Mono',serif|Caesar Dressing:'Caesar Dressing',cursive|Paytone One:'Paytone One',sans-serif|Eagle Lake:'Eagle Lake',cursive|Smokum:'Smokum',cursive|Mate SC:'Mate SC',serif|Butcherman:'Butcherman',cursive|Crete Round:'Crete Round',serif|Fredoka One:'Fredoka One',cursive|UnifrakturCook:'UnifrakturCook',cursive|Tangerine:'Tangerine',cursive|Monofett:'Monofett',cursive|Great Vibes:'Great Vibes',cursive|Miss Fajardose:'Miss Fajardose',cursive|Creepster:'Creepster',cursive|Sancreek:'Sancreek',cursive|Audiowide:'Audiowide',cursive|Special Elite:'Special Elite',cursive|Julius Sans One:'Julius Sans One',sans-serif|Englebert:'Englebert',sans-serif|Ultra:'Ultra',serif</meta>
   </param_description>
   <param_description guid="74CBB3F2-5C3E-4EA1-BEC1-BF7F1F170B78">
     <name>Font Weight</name>
     <description>Font Weight</description>
     <field_type>select</field_type>
     <permissions></permissions>
-    <meta>100:100,200:200,300:300,400:400,500:500,600:600,700:700,800:800,900:900</meta>
+    <meta>100:100|200:200|300:300|400:400|500:500|600:600|700:700|800:800|900:900</meta>
   </param_description>
   <param_description guid="DA84EE57-3D89-489E-8B81-08DA7A560550">
     <name>Font Color</name>
@@ -766,7 +773,7 @@
     <description>Type of page to show on root page.</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>First Blog Post:first_blog_post, First Blog Post With Comments:first_blog_post_with_comments,First Blog Post Excerpt:first_blog_post_excerpt,Blog Posts:blog_posts,Content:content</meta>
+    <meta>First Blog Post:first_blog_post|First Blog Post With Comments:first_blog_post_with_comments|First Blog Post Excerpt:first_blog_post_excerpt|Blog Posts:blog_posts|Content:content</meta>
   </param_description>
   <param_description guid="CDC341F5-9EFB-41DB-8B84-B1101A58704D">
     <name>Date Display Format String</name>
@@ -801,7 +808,7 @@
     <description>Source of RSS feed for social networks list</description>
     <field_type>select</field_type>
     <permissions></permissions>
-    <meta>Blog:blog,News:news,None:none</meta>
+    <meta>Blog:blog|News:news|None:none</meta>
   </param_description>
   <param_description guid="5CC121A6-AB23-49B4-BB14-0E03119F00E6">
     <name>Social Network</name>
@@ -836,7 +843,7 @@
     <description>Show book description</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>None:none,Excerpt:excerpt,All:all</meta>
+    <meta>None:none|Excerpt:excerpt|All:all</meta>
   </param_description>
   <param_description guid="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0">
     <name>Path</name>
@@ -850,7 +857,7 @@
     <description>Image size.</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>Thumbnail:thumbnail,Normal:image,Large:large_image</meta>
+    <meta>Thumbnail:thumbnail|Normal:image|Large:large_image</meta>
   </param_description>
   <param_description guid="FA29F0CE-99D9-4980-ABAA-E87877C11ADF">
     <name>Mailer List</name>
@@ -885,6 +892,13 @@
     <description>Selection Order for books shown in the book bar</description>
     <field_type>select</field_type>
     <permissions>admin</permissions>
-    <meta>Random:random,Newest:newest</meta>
+    <meta>Random:random|Newest:newest</meta>
+  </param_description>
+  <param_description guid="371BA63A-EEDB-440D-B641-40A6B813D280">
+    <name>Custom Settings</name>
+    <description>Custom Settings for a layout</description>
+    <field_type>hash</field_type>
+    <permissions>admin</permissions>
+    <meta/>
   </param_description>
 </param_descriptions>

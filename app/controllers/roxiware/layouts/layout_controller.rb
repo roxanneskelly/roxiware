@@ -291,20 +291,9 @@ module Roxiware
            ActiveRecord::Base.transaction do
 	      begin
                   scheme_params = @layout.get_param("schemes").h[@layout_scheme].h["params"].h
-	          params[:layout].each do |name, value|
-		     custom_setting = @layout.custom_settings[name]
-		     # look up param in custom settings
-		     if custom_setting.blank?
-		         # look up param type in style, clone it, and add to custom settings
-			 custom_setting = @layout.custom_settings[name] = scheme_params[name].deep_dup
-		     end
-		     case custom_setting.description.field_type
-		         when "text"
-			    custom_setting.textvalue = value
-			 else
-			    custom_setting.value = value
-		     end
-		     custom_setting.save!
+
+	          params[:custom_settings].each do |name, value|
+		     @layout.set_custom_setting(name, value)
 		  end
 	      rescue ActiveRecord::Rollback
 	         raise ActiveRecord::Rollback
@@ -313,7 +302,6 @@ module Roxiware
 		 puts e.backtrace.join("\n")
 	         success = false
 	         @layout.errors.add(:setup, "#{e.message}")
-		 raise ActiveRecord::Rollback
 	      end
            end
              

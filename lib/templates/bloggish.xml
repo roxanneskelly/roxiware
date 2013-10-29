@@ -34,7 +34,121 @@ calendar_menu_permission.save!
 ]]>
   </setup>
   <settings_form>
-    <![CDATA[]]>
+    <![CDATA[
+<style>
+#template_customize_form {
+    position:relative;
+}
+div#background_pane {
+    text-align:justify;
+    position:absolute;
+}
+div#colors_pane {
+    text-align:justify;
+    line-height:3em;
+}
+div#colors_pane > div {
+    width:30%;
+    display:inline-block;
+    margin-right:2em;
+    vertical-align:top;
+}
+#param_header_background_image {
+    position:absolute;
+    bottom:4em;
+    left:4em;
+    width:475px;
+    height:95px;
+    margin-left:auto;
+    margin-right:auto;
+}
+#param_background_image {
+    position:absolute;
+    top:2em;
+    width:480px;
+    height:300px;
+    left:4em;
+}
+#param_body_background_image {
+    position:absolute;
+    top:2em;
+    width:240px;
+    height:300px;
+    right:4em;
+}
+
+#param_body_background_color {
+    position:absolute;
+    bottom:10.5em;
+    right:4em;    
+}
+
+#param_background_color {
+    position:absolute;
+    bottom:7em;
+    right:4em;    
+}
+
+#param_header_background_color {
+    position:absolute;
+    bottom:3.5em;
+    right:4em;    
+}
+
+</style>
+<div class="template_customize_form large_form" id="template_customize_form">
+   <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
+       custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
+
+       content_tag(:ul, :class=>"tabs") do
+           content_tag(:li, content_tag(:a, "Backgrounds")) +
+           content_tag(:li, content_tag(:a, "Fonts & Colors"))
+       end +
+       content_tag(:div, :class=>"panes") do 
+           content_tag(:div, :id=>"background_pane") do
+	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>170, :id=>"header_background_image") + " " +
+	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) +
+	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
+	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+           end +
+           content_tag(:div, :id=>"colors_pane") do
+               content_tag(:div, :id=>"title_fields") do
+	           param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font") +
+	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
+	           param_field(customize_form, custom_params.delete("subtitle_font"), :id=>"subtitle_font") +
+	           param_field(customize_form, custom_params.delete("subtitle_color"), :id=>"subtitle_color")
+               end +
+               content_tag(:div, :id=>"color_fields") do
+		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+		       param_field(customize_form, param, :id=>param.name) 
+		   end.join("").html_safe
+               end
+           end
+       end +
+       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+    end %>
+</div>
+<script>
+    $(function() {
+      $('select#custom_settings_title_font,select#custom_settings_subtitle_font').fontSelector({
+      });
+       $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
+
+       $(".template_customize_form form").submit(function(e) {
+           e.preventDefault();
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>.json", $("form").serializeArray(), {
+                                method:"PUT",
+                                success: function(json_data) {
+                                    window.location.reload();
+                                }
+           });
+    });
+ });
+</script>
+
+]]>
   </settings_form>
   <categories>
     <category>General</category>
@@ -51,7 +165,11 @@ calendar_menu_permission.save!
     It's better to apply styles to the #mainBody which only contains client website content */
 
 body.application_body {
-  background: <%= background %>;
+    background: <%= background_color %> url('<%= background_image %>') no-repeat scroll top left;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 /* Sizing for various devices */
@@ -191,10 +309,8 @@ div#mainBody
 
     font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
 
-    padding-left: 10px;
-    padding-right: 10px;
-    margin:0px auto 20px auto;
-    background: <%= background %>;
+    padding:0;
+    margin:0px auto 2em auto;
     color:<%= text_color %>;
 
     h1, h2, h3, h4, h5, h6 {
@@ -242,7 +358,7 @@ div#mainBody
     button.ui-widget, ui-button-text-only {
         border:none;
         background:<%= text_color %>;
-        color:<%= background %>;
+        color:<%= background_color %>;
         border-radius:0px;
         padding:0.2em 3em 0.2em 3em;
     }
@@ -257,14 +373,22 @@ div#mainBody
 {
     header {
        width:100%;
+       background: <%= header_background_color %> url('<%= header_background_image %>') no-repeat scroll top left;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
     }
 
-    #layout_body
-    {
+    #layout_body  {
        margin:0px;
        width:100%;
        display:block;
-      
+       background: <%= body_background_color %> url('<%= body_background_image %>') no-repeat scroll top left;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
     }
 
     #content_section {
@@ -273,7 +397,7 @@ div#mainBody
        position:relative;
 
         #center_bar {
-            padding:0px 175px 0px 265px;
+            padding:0px 200px 0px 290px;
 
             position:relative;
             width:100%;
@@ -353,7 +477,7 @@ div.widget_background, div.content_background
                   }
                   .post_snippet {
                       margin-top:0.5em;
-                      img { max-width:33%; }
+                      img { max-width:33%; margin:0.5em;}
                   }
             }
 div#mainBody .post {
@@ -661,7 +785,7 @@ div.book_listing {
         }
         img {
             float:left;
-            margin:1em 2em 2em 0;
+            margin:1em 1em 1em 0;
             max-width:50%;
             height:auto;
         }
@@ -685,12 +809,10 @@ div.book_listing {
               }
              <% %w(sony amazon kobo barnsandnoble).each do |store| %>
                  a.store_link_<%= store %>{
-                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", asset_color_scheme.to_s) %>') no-repeat center;
                 } 
             <% end %>   
              <% %w(sony amazon kobo barnsandnoble).each do |store| %>
                  a.store_link_<%= store %>:hover{
-                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", active_asset_color_scheme.to_s) %>') no-repeat center;
                 } 
             <% end %>   
        }
@@ -889,12 +1011,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="437FC854-D219-49AD-8C69-456F480C657C">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(102,144,199,1)</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(60,84,116,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(215,234,255,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(215,234,255,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(50,50,72,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(50,50,72,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(50,50,72,1)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Sky</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/sky.jpg</param>
@@ -902,12 +1031,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="04FF6B29-DFE7-48F6-B70D-261BA402BA5C">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(239,142,16,1)</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,201,116,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#232b2b</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#232b2b</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(255,255,255,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(255,255,255,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(255,255,255,1)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Gray</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/orange-gray.jpg</param>
@@ -915,12 +1051,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="C385EF86-FCE4-4476-8AD5-9D942C324C3B">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(92,131,73,1)</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#893667</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#F5F4EB</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#F5F4EB</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#434e3c</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#893667</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#434e3c</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#434e3c</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Garden</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/garden.jpg</param>
@@ -928,12 +1071,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="A4421F67-3B48-40B9-9A6C-6C3867A15067">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(210,125,42,1)</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#e3ae57</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#eceae0</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#eceae0</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#221e1d</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#221e1d</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#221e1d</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Creme</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/orange-creme.jpg</param>
@@ -941,12 +1091,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1A79C1DE-4E30-4A09-A36D-C70B983C1DE2">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(250,28,42,1)</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(250,28,42,0.7)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(29,41,52,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(29,41,52,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#DCDDD8</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#475f77</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#DCDDD8</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#DCDDD8</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Navy</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/navy.jpg</param>
@@ -954,12 +1111,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="B169220A-A52C-4373-BE35-A0A2A3D9C039">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">darkgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#000000</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#000000</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/white.jpg</param>
@@ -967,12 +1131,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="8227E766-97C5-4227-BE3C-9CF4293936F1">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="asset_color_scheme">lightgrey</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#000000</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#000000</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="BAA25975-B437-482B-83D8-6629D139CB82" class="style" name="active_asset_color_scheme">grey</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#ffffff</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/black.jpg</param>
@@ -1014,6 +1185,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <style>
             <![CDATA[#copyright.widget {
     text-align:right;
+    padding:1em;
     div {
         display:inline-block;
     }
@@ -1034,15 +1206,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <section name="header_bar">
           <style>
             <![CDATA[/* Header layout */
-#header_bar_section {
-   min-height:20px;
-   position:relative; 
-}
-
         
 #mainBody #header_bar_section {
+    height:170px;
     position:relative;
-    margin:0 0 3em 0;
+    margin:0;
+    margin:0;
+    padding:1em 0em 1em 0em;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
 
     .widget#logo_bar {
         position:relative;
@@ -1053,7 +1225,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 	    .site_title {
                 position:absolute;
                 white-space:nowrap;
-		font-family:Geneva, Verdana, 'sans-serif';
+		font-family:<%= title_font %>;
+                color:<%= title_color %>;
 		left:0.5em;
 		top:0.3em;
                 font-size:4em;
@@ -1063,7 +1236,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 	    .site_subtitle {
                 position:absolute;
                 white-space:nowrap;
-		font-family:Geneva, Verdana, 'sans-serif';
+		font-family:<%= subtitle_font %>;
+                color:<%= subtitle_color %>;
                 left:10em;
                 top:3.5em;
                 font-size:2em;
@@ -1075,12 +1249,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 
 
     .widget#login_bar {
-        position:absolute;
-        right:0px;
-        top:0px;
-        height:2em;
-        padding:0.2em;
-        width:100%;
+        padding:0em;
+        width:auto;
+        display:inline-block;
+        float:right;
         .widget_content {
            text-align:right;
        }
@@ -1088,9 +1260,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 
     .widget#book_bar {
          position:absolute;
-         right:0px;
-         top:2em;
+         right:2em;
+         top:3em;
          display:inline-block;
+         bottom:0.5em;
          width:auto;
         .book_list {
             vertical-align:top;
@@ -1105,8 +1278,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                     display:none;
                 }
                 .book_list_book_cover {
-                     width:100px;
-                     height:150px;
+                     height:100%;
+                     width:auto;   
                      border: solid 1px black;
                  }
             }
@@ -1116,7 +1289,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 
     /* Main Menu layout */
     .widget#main_menu { 
-        position:relative;
+        position:absolute;
+        bottom:0.5em;
+        left:2em;
+        width:auto;
         .ddsmoothmenu_widget {
             font: Verdana;
             margin-left:auto;
@@ -1231,7 +1407,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
               </params>
             </instance>
-            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="2">
+            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="3">
               <params>
                 <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1271,7 +1447,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 </param>
               </params>
             </instance>
-            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="5">
+            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="2">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1281,7 +1457,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="BEDD0F51-5E0A-489F-9495-195CDC090877" class="local" name="book_count">3</param>
               </params>
             </instance>
-            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="6">
+            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="0">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
@@ -1294,12 +1470,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[#mainBody #content_section {
         #left_bar_section {
             position:absolute;
-            left: 0px;
+            left: 2em;
             z-index:2;
 
             top:0px;
             bottom:0px;
-            float:left;
             width:250px;
             overflow:hidden;
 
@@ -1390,10 +1565,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[#right_bar_section {
     position:absolute;
     width:160px;
-    top:0px;
-    bottom:0px;
-    right:0px;
-    padding:5px;
+    top:2em;
+    bottom:2em;
+    right:2em;
+    padding:0px;
 
     overflow:hidden;
 
@@ -1574,9 +1749,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[div#mainBody {
     #bottom_bar_section {
         box-sizing:border-box;
-            -moz-box-sizing:border-box;
+        -moz-box-sizing:border-box;
         padding-top:1em;
-
 
           .blog_page_nav_prev {
              padding-left:1em;
@@ -1609,7 +1783,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[#mainBody #content_section {
         #left_bar_section {
             position:absolute;
-            left: 0px;
+            left: 2em;
             z-index:2;
 
             top:0px;
@@ -2113,7 +2287,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[#mainBody #content_section {
         #left_bar_section {
             position:absolute;
-            left: 0px;
+            left: 2em;
             z-index:2;
 
             top:0px;

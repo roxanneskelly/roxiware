@@ -13,7 +13,7 @@ module Roxiware
 
       def param_field(field_group, param, options={})
             title = param.param_description.description
-            result = "<div class='param-field param-field-#{param.param_description.field_type}'>"
+            result = "<div id='param_#{options[:id]}' class='param-field param-field-#{param.param_description.field_type}'>"
 	    label = field_group.label(param.name.to_sym, param.name.titleize, {:title=>title})
 	    options[:title] = title
             case param.param_description.field_type
@@ -25,7 +25,7 @@ module Roxiware
                when "string"
                  result += label + field_group.text_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
                when "select"
-		 select_options = param.param_description.meta.split(",").collect{|option| option.split(":")}
+		 select_options = param.param_description.meta.split("|").collect{|option| option.split(":")}
                  result += label + field_group.select(param.name.to_sym, select_options, options.merge({:selected=>param.value, :param_name=>param.name}))
                when "float"
                  result += label + field_group.number_field(param.name.to_sym, options.merge({:value=>param.value, :param_name=>param.name}))
@@ -72,7 +72,7 @@ module Roxiware
          when :book
              ActionController::Base.helpers.image_path("unknown_book_#{image_size.to_s}.png")
          else
-             ActionController::Base.helpers.image_path("unknown_image_#{image_size.to_s}.png")
+             ActionController::Base.helpers.image_path("unknown_picture_#{image_size.to_s}.png")
          end
       end
 

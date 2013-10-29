@@ -9,7 +9,7 @@
     end +
     content_tag(:div, :id=>"url_section") do
         label_tag(:name, "URL") + 
-        text_field_tag(:image_url, asset_url, :id=>"image_url", :watermark=>asset_url)
+        text_field_tag(:image_url, asset_url, :id=>"image_url", :value=>asset_url)
     end +
     button_tag("Save", :id=>"save", :value=>"save", :class=>"save_button")
 end %>
@@ -34,9 +34,18 @@ $(function() {
 	   img_area_options.imageHeight = loader_image[0].height;
 	   img_area_options.imageWidth = loader_image[0].width;
        <% if width || height %>
+       <% if width && height %>
 	   var width = <%= width %>;
 	   var height = <%= height %>;
 	   var aspect_ratio = width/height;
+       <% elsif width %>
+	   var aspect_ratio = img_area_options.imageWidth/img_area_options.imgHeight;
+	   var width = <%= width %>;
+	   var height = width/aspect_ratio;
+       <% else %>
+	   var width = <%= height %>*aspect_ratio;
+	   var height = height;
+       <% end %>
 	   img_area_options.onSelectChange = function(image, select) {
 	       $("button[name=save]").button("enable");
 	   }
@@ -84,11 +93,7 @@ $(function() {
                }, 1000);
        });
        $("input#image_url").bind("input blur propertychange", function() {
-	       var button_state = "enable";
-	       if ($(this).is(".watermark") || ($(this).val().length == 0)) {
-		    button_state = "disable";
-	       }
-	       $("button[name=save]").button(button_state);
+	       $("button[name=save]").button("enable");
 	   });
        var csrf_token = $('meta[name="csrf-token"]').attr('content');
        var csrf_param = $('meta[name="csrf-param"]').attr('content');
@@ -160,10 +165,18 @@ $(function() {
 				    height:selection.height}
 	  }
 
-	  <% if width || height %>
+	  <% if width.present? %>
 	      create_params["width"] = <%= width %>;
+          <% end %>
+          <% if height.present? %>
 	      create_params["height"] = <%= height %>;
-	  <% else %>
+          <% end %>
+	  if(image_selection_dialog.find("div#url_section input").val() == "") {
+                  settings_conf.success(image_selection_dialog.find("div#url_section input").val());
+	          image_selection_dialog.parents("#edit_overlay").find(".close").click();
+	          return;
+          }
+	  <% if !(width && height)  %>
 	      if (!(selection.width && selection.height)) {
                   settings_conf.success(image_selection_dialog.find("div#url_section input").val());
 	          image_selection_dialog.parents("#edit_overlay").find(".close").click();

@@ -184,9 +184,7 @@ module Roxiware
 	     # Sub categories are split by '/' as in 'Sci-Fi/Military' and will be split into 'Sci-Fi' and 'Sci-Fi/Military'
 	     categories = Set.new([])
 	     layout_category_nodes.collect{|layout_category_node| layout_category_node.content}.each do |category|
-	         puts "CATEGORY #{category.inspect}"
 	         category_elems = category.split("/")
-		 puts "CAT ELEMS #{category_elems.inspect}"
 	         while category_elems.present?
 		    categories.add(category_elems.join("/"))
 		    category_elems = category_elems.take(category_elems.length-1)
@@ -245,7 +243,6 @@ module Roxiware
 
           def find_page_layout(params)
 	       stack = page_layout_stack(params)
-	       puts "STACK #{stack[-1].inspect}"
 	       stack[-1] if stack.present?
 	  end
 
@@ -298,23 +295,44 @@ module Roxiware
 	     @compiled_style_cache + page_layout.get_styles(@layout_params_cache)
 	  end
 
+          def get_scheme_params(scheme)
+	      scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
+	      if(scheme.present? && scheme.h["params"].present?) 
+	          result = Hash[scheme.h["params"].h.collect{|name, param| [name, param]}]
+              else
+                 {}
+              end
+          end
+
 	  def get_params(scheme)
               result = {}
 	      scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
 	      if(scheme.present? && scheme.h["params"].present?) 
 	          result = Hash[scheme.h["params"].h.collect{|name, param| [name, param.conv_value]}]
 	      end
+	      result.merge!(Hash[self.custom_settings.h.values.collect{|param| [param.name, param.conv_value]}])
 	      result
 	  end
 
 	  def custom_settings
 	      if @custom_settings.nil?
-	          custom_setting_result  = Roxiware::Param::Param.find_by_name_and_param_class(self.guid, "custom_setting")
-	          @custom_settings = custom_setting_result.present? ? custom_setting_result.h : {}
+	          @custom_settings  = Roxiware::Param::Param.application_param_hash("custom_settings")[self.guid] || Roxiware::Param::Param.set_application_param("custom_settings", self.guid, "371BA63A-EEDB-440D-B641-40A6B813D280", {})
 	      end
+
 	      @custom_settings
 	  end
 
+	  def set_custom_setting(name, value)
+	      scheme = get_param("schemes").h.first
+	      scheme_param =scheme.last.h["params"].h[name]
+	      if(scheme_param.nil?) 
+                  puts "COULDN'T FIND SCHEME PARAM #{name}"
+              end
+              custom_settings.h[name] = custom_settings.set_param(name, value, scheme_param.description_guid, "custom_setting")
+	      custom_settings.h[name].save!
+	      custom_settings.h[name]
+	  end
+	  
 
 	  def resolve_layout_params(scheme, params)
 	     if @layout_params.nil?
@@ -326,7 +344,8 @@ module Roxiware
 	     get_params(scheme)
 
 	     page_layout = self.find_page_layout(params)
-	     @layout_params.merge(page_layout.resolve_layout_params).merge(get_params(scheme)).merge(Hash[self.custom_settings.collect{|name, value| [name, value.conv_val]}])
+             result = @layout_params.merge(page_layout.resolve_layout_params).merge(get_params(scheme))
+	     result
 	  end
 
 	  before_validation do

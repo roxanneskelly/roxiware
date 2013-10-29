@@ -24,7 +24,7 @@
 	<% recent_posts.each do |post_data| 
 	   post = post_data[:post] %>
 	   <%= content_tag(:div, :class=>"recent_post_entry") do
-	       Roxiware::Blog::PostHelper.post_header(post, :header_format=>header_format, :date_format=>date_format) + 
+	       Roxiware::Blog::PostHelper.post_header(post, :header_format=>header_format, :date_format=>date_format, :show_comments=>true) + 
 	       content_tag(:div, post_data[:snippet], :class=>"post_snippet") +
                link_to("", post.post_link, :class=>"post_more")
            end %>

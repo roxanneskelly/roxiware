@@ -30,7 +30,121 @@ calendar_menu_permission.save!
 ]]>
   </setup>
   <settings_form>
-    <![CDATA[]]>
+    <![CDATA[
+<style>
+#template_customize_form {
+    position:relative;
+}
+div#background_pane {
+    text-align:justify;
+    position:absolute;
+}
+div#colors_pane {
+    text-align:justify;
+    line-height:3em;
+}
+div#colors_pane > div {
+    width:30%;
+    display:inline-block;
+    margin-right:2em;
+    vertical-align:top;
+}
+#param_header_background_image {
+    position:absolute;
+    bottom:4em;
+    left:4em;
+    width:475px;
+    height:95px;
+    margin-left:auto;
+    margin-right:auto;
+}
+#param_background_image {
+    position:absolute;
+    top:2em;
+    width:480px;
+    height:300px;
+    left:4em;
+}
+#param_body_background_image {
+    position:absolute;
+    top:2em;
+    width:240px;
+    height:300px;
+    right:4em;
+}
+
+#param_body_background_color {
+    position:absolute;
+    bottom:10.5em;
+    right:4em;    
+}
+
+#param_background_color {
+    position:absolute;
+    bottom:7em;
+    right:4em;    
+}
+
+#param_header_background_color {
+    position:absolute;
+    bottom:3.5em;
+    right:4em;    
+}
+
+</style>
+<div class="template_customize_form large_form" id="template_customize_form">
+   <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
+       custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
+
+       content_tag(:ul, :class=>"tabs") do
+           content_tag(:li, content_tag(:a, "Backgrounds")) +
+           content_tag(:li, content_tag(:a, "Fonts & Colors"))
+       end +
+       content_tag(:div, :class=>"panes") do 
+           content_tag(:div, :id=>"background_pane") do
+	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>170, :id=>"header_background_image") + " " +
+	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) +
+	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
+	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+           end +
+           content_tag(:div, :id=>"colors_pane") do
+               content_tag(:div, :id=>"title_fields") do
+	           param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font") +
+	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
+	           param_field(customize_form, custom_params.delete("subtitle_font"), :id=>"title_font") +
+	           param_field(customize_form, custom_params.delete("subtitle_color"), :id=>"title_color")
+               end +
+               content_tag(:div, :id=>"color_fields") do
+		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+		       param_field(customize_form, param, :id=>param.name) 
+		   end.join("").html_safe
+               end
+           end
+       end +
+       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+    end %>
+</div>
+<script>
+    $(function() {
+      $('select#custom_settings_title_font,select#custom_settings_subtitle_font').fontSelector({
+      });
+       $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
+
+       $(".template_customize_form form").submit(function(e) {
+           e.preventDefault();
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>.json", $("form").serializeArray(), {
+                                method:"PUT",
+                                success: function(json_data) {
+                                    window.location.reload();
+                                }
+           });
+    });
+ });
+</script>
+
+]]>
   </settings_form>
   <categories>
     <category>General</category>
@@ -48,7 +162,11 @@ calendar_menu_permission.save!
 
 body.application_body
 {
-  background: <%= background %>;
+    background: <%= background_color %> url('<%= background_image %>') no-repeat scroll top left;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 /* Sizing for various devices */
@@ -191,7 +309,6 @@ div#mainBody
     padding-left: 10px;
     padding-right: 10px;
     margin:0px auto 20px auto;
-    background: <%= background %>;
     color:<%= text_color %>;
 
     h1, h2, h3, h4, h5, h6 {
@@ -239,7 +356,7 @@ div#mainBody
     button.ui-widget, ui-button-text-only {
         border:none;
         background:<%= link_color %>;
-        color:<%= background %>;
+        color:<%= body_background_color %>;
         border-radius:0px;
         padding:0.2em 3em 0.2em 3em;
     }
@@ -254,6 +371,11 @@ div#mainBody
 {
     header {
        width:100%;
+       background: <%= header_background_color %> url('<%= header_background_image %>') no-repeat scroll top left;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
     }
 
     #layout_body
@@ -261,7 +383,11 @@ div#mainBody
        margin:0px;
        width:100%;
        display:block;
-      
+       background: <%= body_background_color %> url('<%= body_background_image %>') no-repeat scroll top left;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
     }
 
     #content_section {
@@ -850,32 +976,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(193,212,230,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(193,212,230,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(108,140,170,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(29,41,52,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_color">rgba(29,41,52,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(29,41,52,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(29,41,52,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Navy</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/navy/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/navy/home_l.jpg</param>
-          </param>
-        </param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="A0E723E5-739B-41CA-BEFD-C3DB0EA392A2">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
@@ -888,32 +997,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(114,114,114,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">#777777</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(0,0,0,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(225,225,225,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_color">rgba(225,225,225,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(225,225,225,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(225,225,225,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Greys</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/greys/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/greys/home_l.jpg</param>
-          </param>
-        </param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="7BE741C6-CEE3-486F-BFE1-832A7341E0FE">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
@@ -926,32 +1018,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(239,168,86,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(239,168,86,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(127,100,58,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#232b2b</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_color">#232b2b</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">#232b2b</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">#232b2b</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Orange Grey</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-grey/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-grey/home_l.jpg</param>
-          </param>
-        </param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="40EEB8DD-70BA-40DD-94FC-7EAE80CDFDD0">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
@@ -964,32 +1039,16 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(92,131,73,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(92,131,73,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">#434e3c</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#f5f4eb</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_color">#f5f4eb</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">#f5f4eb</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">#f5f4eb</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Garden</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
         <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/garden/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/garden/home_l.jpg</param>
-          </param>
-        </param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="58A3C0BA-CBC5-4581-9C3B-DB4CAAA1448B">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
@@ -1002,32 +1061,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(102,144,199,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(102,144,199,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(60,84,116,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(215,234,255,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_color">rgba(215,234,255,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(215,234,255,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(215,234,255,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Sky</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/sky/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/sky/home_l.jpg</param>
-          </param>
-        </param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="bd0d9a49-8030-4470-b64f-86587ec475db">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
@@ -1040,32 +1082,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(227,61,61,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(227,61,61,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(169,45,45,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">#ffffff</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_color">#ffffff</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">#ffffff</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">#ffffff</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">White Red</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/white-red/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/white-red/home_l.jpg</param>
-          </param>
-        </param>
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="9D48B589-B703-4D0E-906F-C55E972F75C5">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">
@@ -1078,32 +1103,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_color">rgba(226,120,16,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="text_highlight_color">rgba(226,120,16,1)</param>
           <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="link_active_color">rgba(109,65,22,1)</param>
-          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background">rgba(244,243,234,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="background_color">rgba(244,243,234,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(244,243,234,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(244,243,234,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Orange Creme</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="4">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/calendar.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/calendar_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="3">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/books.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/books_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="2">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/posts.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/posts_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="5">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/biography.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/biography_l.jpg</param>
-          </param>
-          <param class="scheme" description="5D2D7A30-591E-4377-A1B5-971757ABC479" name="1">
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail">http://cdn.roxiware.com/templates/contempo/orange-creme/home.jpg</param>
-            <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="full">http://cdn.roxiware.com/templates/contempo/orange-creme/home_l.jpg</param>
-          </param>
-        </param>
       </param>
     </param>
     <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="series_book_description_length">200</param>

@@ -23,14 +23,124 @@ Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9
 books_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_2/permission")
 books_menu_permission.value = Roxiware::Param::Param.application_param_val("books", "enable_books") ? ((Roxiware::Book.all.count > 0) ? "guest" : "admin") : "super"
 books_menu_permission.save!
-
-calendar_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_3/permission")
-calendar_menu_permission.value = Roxiware::Param::Param.application_param_val("events", "enable_events") ? "guest" : "super"
-calendar_menu_permission.save!
 ]]>
   </setup>
   <settings_form>
-    <![CDATA[]]>
+    <![CDATA[
+<style>
+#template_customize_form {
+    position:relative;
+}
+div#background_pane {
+    text-align:justify;
+    position:absolute;
+}
+div#colors_pane {
+    text-align:justify;
+    line-height:3em;
+}
+div#colors_pane > div {
+    width:30%;
+    display:inline-block;
+    margin-right:2em;
+    vertical-align:top;
+}
+#param_header_background_image {
+    position:absolute;
+    bottom:4em;
+    left:4em;
+    width:475px;
+    height:50px;
+    margin-left:auto;
+    margin-right:auto;
+}
+#param_background_image {
+    position:absolute;
+    top:2em;
+    width:480px;
+    height:300px;
+    left:4em;
+}
+#param_body_background_image {
+    position:absolute;
+    top:2em;
+    width:240px;
+    height:300px;
+    right:4em;
+}
+
+#param_body_background_color {
+    position:absolute;
+    bottom:10.5em;
+    right:4em;    
+}
+
+#param_background_color {
+    position:absolute;
+    bottom:7em;
+    right:4em;    
+}
+
+#param_header_background_color {
+    position:absolute;
+    bottom:3.5em;
+    right:4em;    
+}
+
+</style>
+<div class="template_customize_form large_form" id="template_customize_form">
+   <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
+       custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
+
+       content_tag(:ul, :class=>"tabs") do
+           content_tag(:li, content_tag(:a, "Backgrounds")) +
+           content_tag(:li, content_tag(:a, "Fonts & Colors"))
+       end +
+       content_tag(:div, :class=>"panes") do 
+           content_tag(:div, :id=>"background_pane") do
+	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>100, :id=>"header_background_image") + " " +
+	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) +
+	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
+	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+           end +
+           content_tag(:div, :id=>"colors_pane") do
+               content_tag(:div, :id=>"title_fields") do
+	           param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font") +
+	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
+	           param_field(customize_form, custom_params.delete("subtitle_font"), :id=>"subtitle_font") +
+	           param_field(customize_form, custom_params.delete("subtitle_color"), :id=>"subtitle_color")
+               end +
+               content_tag(:div, :id=>"color_fields") do
+		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+		       param_field(customize_form, param, :id=>param.name) 
+		   end.join("").html_safe
+               end
+           end
+       end +
+       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+    end %>
+</div>
+<script>
+    $(function() {
+      $('select#custom_settings_title_font,select#custom_settings_subtitle_font').fontSelector({
+      });
+       $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
+
+       $(".template_customize_form form").submit(function(e) {
+           e.preventDefault();
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>.json", $("form").serializeArray(), {
+                                method:"PUT",
+                                success: function(json_data) {
+                                    window.location.reload();
+                                }
+           });
+    });
+ });
+</script>
+
+]]>
   </settings_form>
   <categories>
     <category>General</category>
@@ -48,7 +158,12 @@ calendar_menu_permission.save!
 
 body.application_body
 {
-  background: <%= background %>;
+    background: url('<%= background_image %>') no-repeat scroll top left;
+    background-color:<%= background_color %>;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 /* Sizing for various devices */
@@ -191,7 +306,6 @@ div#mainBody
     padding-left: 10px;
     padding-right: 10px;
     margin:0px auto 20px auto;
-    background: <%= background %>;
     color:<%= text_color %>;
 
     h1, h2, h3, h4, h5, h6 {
@@ -239,7 +353,7 @@ div#mainBody
     button.ui-widget, ui-button-text-only {
         border:none;
         background:<%= link_color %>;
-        color:<%= background %>;
+        color:<%= body_background_color %>;
         border-radius:0px;
         padding:0.2em 3em 0.2em 3em;
     }
@@ -254,6 +368,12 @@ div#mainBody
 {
     header {
        width:100%;
+       background: url('<%= header_background_image %>') no-repeat scroll top left;
+       bacground-color: <%= header_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
     }
 
     #layout_body
@@ -261,6 +381,12 @@ div#mainBody
        margin:0px;
        width:100%;
        display:block;
+       background: url('<%= body_background_image %>') no-repeat scroll top left;
+       background-color:<%= body_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
       
     }
 
@@ -270,7 +396,7 @@ div#mainBody
        position:relative;
 
         #center_bar {
-            padding:0px 195px 0px 175px;
+            padding:0px 195px 0px 200px;
 
             position:relative;
             width:100%;
@@ -717,9 +843,78 @@ div#mainBody .post {
 }
 
 /* Individual widget settings */
+	.widget#events_widget {
+	     margin-bottom:1em;
+	     padding-bottom:1em;
+	     width:100%;
 
+	     .widget_content {
+		 box-sizing:border-box;
+		 -moz-box-sizing:border-box;
+	    }
 
+	    .events_widget {
+		width:100%;
+	    }
 
+	     .events_widget_title:before {
+		 content: "Calendar";
+	     }
+	     .events_widget_title {
+		 font-size:1.3em;
+	     }
+
+	     .events_widget_all_events {
+                  margin-left:0.1em;
+                  padding-right:0.1em;
+                  line-height:40px;
+                  vertical-align:top;
+	      }
+	      .events_widget_all_events:before {
+		 border-top:solid 3px <%= graphic_element_color %>;
+                 width:100%;
+                 display:inline-block;
+		  content: "More...";
+	      }
+
+	     .event_widget_event {
+		 width:100%;
+		 display:block;
+		 border-top:solid 3px <%= graphic_element_color  %>;
+		 margin-top:0em;
+		 padding-top:1em;
+		 padding-bottom:2em;
+                 .event_time {
+                     font-size:0.7em;
+                     .event_start_time {
+                         display:inline-block;
+                         margin-right:1em;
+                     }
+                     .event_start_time:after {
+                         content:",  ";
+                     }
+                     .event_date_range {
+                         display:inline-block;
+                     }
+                 }
+                 .event_title {
+                     font-weight:900;
+                 }
+                 .event_full_location {
+                     font-size:0.7em;
+                     font-style:italic;
+                     .event_city, .event_state {
+                         display:inline-block;
+                     }
+                     .event_state:before {
+                         content:",  ";
+                     }
+                 }
+	     }
+	     .event_widget_event:hover {
+		 border-top:solid 3px <%= graphic_element_color  %>;
+	     }
+        }
 
 
 /* Social networking icons */
@@ -848,10 +1043,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(77,77,77,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(114,114,114,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(225,225,225,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(225,225,225,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(17,17,17,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">#777777</param>
-        </param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(255,255,255,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(255,255,255,1)</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#777777</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(108,108,108,1)</param>
+       </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Greys</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/greys.jpg</param>
       </param>
@@ -864,9 +1068,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(92,131,73,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#893667</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(92,131,73,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#f5f4eb</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#f5f4eb</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#434e3c</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(92,131,73,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">#f5f4eb</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">#f5f4eb</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(92,131,73,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(69,81,62,0.7)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Garden</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
@@ -880,9 +1093,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(227,61,61,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(227,61,61,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#ffffff</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#222222</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(227,61,61,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">#ffffff</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">#ffffff</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(227,61,61,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(255,156,156,1)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White Red</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/white-red.jpg</param>
@@ -896,9 +1118,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(239,168,86,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(239,168,86,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">#232b2b</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#232b2b</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(239,168,86,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">#232b2b</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">#232b2b</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(239,168,86,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(244,192,111,0.7)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Grey</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/orange-grey.jpg</param>
@@ -912,9 +1143,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(250,28,42,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#f75f77</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(193,212,230,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(29,41,52,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(29,41,52,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#dcddd8</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(193,212,230,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(29,41,52,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(29,41,52,1)</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(193,212,230,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(108,140,170,1)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Navy</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/navy.jpg</param>
@@ -928,9 +1168,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(102,144,199,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(102,144,199,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(215,234,255,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(215,234,255,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(50,50,72,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(102,144,199,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(215,234,255,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(215,234,255,1)</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(102,144,199,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(143,179,227,1)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Sky</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/sky.jpg</param>
@@ -944,9 +1193,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="graphic_element_color">rgba(226,120,16,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(226,120,16,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background">rgba(244,243,234,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(244,243,234,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#221e1d</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(226,120,16,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="header_background_color">rgba(244,243,234,1)</param>
+          <param class="style" description="A8AC4FA7-9574-49B0-A38A-AE067C607745" name="body_background_color">rgba(244,243,234,1)</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
+          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(226,120,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(227,160,95,1)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Creme</param>
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/orange-creme.jpg</param>
@@ -984,7 +1242,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
         <section name="footer_bar">
           <style>
-            <![CDATA[#copyright.widget {
+            <![CDATA[
+#footer_bar_section {
+    margin-top:1em;
+}
+#copyright.widget {
     text-align:right;
     div {
         display:inline-block;
@@ -1015,7 +1277,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         
 #mainBody #header_bar_section {
     position:relative;
-    margin:0.2em 0 3em 0;
+    margin:0em;
 
     .widget#logo_bar {
         border-top: solid 1px <%= graphic_element_color %>;
@@ -1028,21 +1290,21 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             position:relative;
 	    .site_title {
                 position:absolute;
-                color:<%= text_highlight_color %>;
+                color:<%= title_color %>;
                 white-space:nowrap;
-		font-family:Geneva, Verdana, 'sans-serif';
-		left:0;
+		font-family:<%= title_font %>;
+		left:1em;
 		top:0.1em;
                 font-size:2.5em;
                 font-weight:300;
                 width:auto;
 	    }
 	    .site_subtitle {
-                color:<%= secondary_text_color %>;
+                color:<%= subtitle_color %>;
                 position:absolute;
                 white-space:nowrap;
-		font-family:Geneva, Verdana, 'sans-serif';
-                left:1em;
+		font-family:<%= subtitle_font %>;
+                left:3em;
                 top:2.5em;
                 font-size:1.3em;
                 font-weight:300;
@@ -1280,87 +1542,78 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[#mainBody #content_section {
     #left_bar_section {
         position:absolute;
-        left: 0px;
+        left: 20px;
         z-index:2;
         top:0px;
+        padding-top:2em;
         float:left;
         width:160px;
         overflow:hidden;
+        .widget#recent_posts {
+            margin-top:2em;
+            .recent_posts {
+	        .recent_post_entry {
+		    vertical-align:top;
+		    display:block;
+		    margin-bottom:3em;
 
-	.widget#events_widget {
+		    .post_snippet {
+		        margin-top:0.5em;
+		        img {
+			    display:none;
+		        }
+		     }
+		     .post_header {
+			.margin-bottom:0.5em;
 
-	     margin-bottom:1em;
-	     padding-bottom:1em;
-	     width:100%;
+			.post_image {
+			    float:left;
+			    width:30%;
+			    margin:0 1em 1em 0;
+			}
+			.post_date {
+			    color:<%= secondary_text_color %>;
+			    font-style:italic;
+			    display:inline-block;
+			}
+			.comments_link {
+			    float:right;
+			    display:inline-block;
+			}
 
-	     .widget_content {
-		 padding:1em;
-		 box-sizing:border-box;
-		 -moz-box-sizing:border-box;
+			.post_title {
+			    clear:both;
+			    font-size: 1.5em;
+			    display:block;
+			    text-align:center;
+			    border-bottom:solid 3px <%= graphic_element_color %>;
+			    margin-bottom:0.3em;
+			}
+			.post_title:hover {
+			    border-bottom:solid 3px <%= link_hover_color %>;
+			}
+		    }
+		    .post_more {
+			padding-right:2em;
+			margin-left:1em;
+		    }
+		    .post_more:before {
+			content:"More...";
+			padding-left:2em;
+		    }
+		}
 	    }
-
-	    .events_widget {
-		width:100%;
+	    .recent_posts:after {
+	        width:100%;
+		content:" ";
+		display:inline-block;
 	    }
-
-	     .events_widget_title:before {
-		 content: "Calendar";
-	     }
-	     .events_widget_title {
-		 font-size:1.3em;
-	     }
-
-	     .events_widget_all_events {
-                  margin-left:0.1em;
-                  padding-right:0.1em;
-                  line-height:40px;
-                  vertical-align:top;
-	      }
-	      .events_widget_all_events:before {
-		 border-top:solid 3px <%= graphic_element_color %>;
-                 width:100%;
-                 display:inline-block;
-		  content: "More...";
-	      }
-
-	     .event_widget_event {
-		 width:100%;
-		 display:block;
-		 border-top:solid 3px <%= graphic_element_color  %>;
-		 margin-top:0em;
-		 padding-top:1em;
-		 padding-bottom:2em;
-                 .event_time {
-                     font-size:0.7em;
-                     .event_start_time {
-                         display:inline-block;
-                         margin-right:1em;
-                     }
-                     .event_start_time:after {
-                         content:",  ";
-                     }
-                     .event_date_range {
-                         display:inline-block;
-                     }
-                 }
-                 .event_title {
-                     font-weight:900;
-                 }
-                 .event_full_location {
-                     font-size:0.7em;
-                     font-style:italic;
-                     .event_city, .event_state {
-                         display:inline-block;
-                     }
-                     .event_state:before {
-                         content:",  ";
-                     }
-                 }
-	     }
-	     .event_widget_event:hover {
-		 border-top:solid 3px <%= graphic_element_color  %>;
-	     }
+	}
+<% if Roxiware::Param::Param.application_param_val("system", "google_ad_client").present? %>
+        .recent_posts {
+            display:none;
         }
+<% end %>
     }
 }
 
@@ -1380,6 +1633,16 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
               </params>
             </instance>
+            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">100</param>
+                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
+                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">5</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}%{post_image}</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+              </params>
+            </instance>
           </widget_instances>
         </section>
         <section name="right_bar">
@@ -1390,76 +1653,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     top:0px;
     bottom:0px;
     right:0px;
-    padding:5px;
+    padding: 2 0.5em 2em 0.5em;
+        padding-top:2em;
     overflow:hidden;
-    .widget#events_widget {
-	margin-bottom:1em;
-	padding-bottom:1em;
-	width:100%;
-	.widget_content {
-	    padding:1em;
-	    box-sizing:border-box;
-	    -moz-box-sizing:border-box;
-	}
-	.events_widget {
-	    width:100%;
-	}
-        .events_widget_title:before {
-	    content: "Calendar";
-	}
-	.events_widget_title {
-	    font-size:1.3em;
-	}
-	.events_widget_all_events {
-            margin-left:0.1em;
-            padding-right:0.1em;
-            vertical-align:top;
-	}
-	.events_widget_all_events:before {
-	    border-top:solid 3px <%= graphic_element_color %>;
-            width:100%;
-            display:inline-block;
-	    content: "More...";
-	 }
-
-	.event_widget_event {
-	    width:100%;
-	    display:block;
-	    border-top:solid 3px <%= graphic_element_color  %>;
-	    margin-top:0em;
-	    padding-top:1em;
-	    padding-bottom:2em;
-            .event_time {
-                font-size:0.7em;
-                .event_start_time {
-                    display:inline-block;
-                    margin-right:1em;
-                }
-                .event_start_time:after {
-                    content:",  ";
-                }
-                .event_date_range {
-                    display:inline-block;
-                }
-            }
-            .event_title {
-                font-weight:900;
-            }
-            .event_full_location {
-                font-size:0.7em;
-                font-style:italic;
-                .event_city, .event_state {
-                    display:inline-block;
-                }
-                .event_state:before {
-                    content:",  ";
-                }
-            }
-	}
-	.event_widget_event:hover {
-	    border-top:solid 3px <%= graphic_element_color  %>;
-	}
-    }
+    
 }]]>
           </style>
           <params>
@@ -1481,7 +1678,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             </instance>
             <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="3">
               <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
                   <![CDATA[<p>Sign up for my mailing list!</p>
 <p>
@@ -1637,7 +1834,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <![CDATA[div#mainBody {
     #content_section {
             #center_bar {
-                  padding:0px 175px 0px 195px;
+                  padding:0px 200px 0px 220px;
             }
      }
 }]]>
@@ -1650,24 +1847,25 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[div#mainBody {
     #bottom_bar_section {
         box-sizing:border-box;
-            -moz-box-sizing:border-box;
+        -moz-box-sizing:border-box;
         padding-top:1em;
+        padding-bottom:1em;
 
 
-          .blog_page_nav_prev {
+        .blog_page_nav_prev {
              padding-left:1em;
              margin-right:1em;
-         }
-         .blog_page_nav_prev span:before {
+        }
+        .blog_page_nav_prev span:before {
              content:"<<";
-         }
-          .blog_page_nav_next {
+        }
+        .blog_page_nav_next {
              padding-right:1em;
              margin-left:1em;
-         }
-         .blog_page_nav_next span:after {
+        }
+        .blog_page_nav_next span:after {
              content:">>";
-         }
+        }
     }
 }]]>
           </style>
@@ -1681,7 +1879,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[#mainBody #content_section {
         #left_bar_section {
             position:absolute;
-            left: 0px;
+            left: 20px;
             z-index:2;
 
             top:0px;
@@ -1690,67 +1888,71 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             width:180px;
 
             .widget#google_widget {
+                margin-top:1em;
                 margin-bottom:2em;
             }
 
-            .widget#recent_posts {
-                 .recent_posts_title {
-                     width:100%;
-                     font-size:1.3em;
-                     color:<%= secondary_text_color %>;
-                     margin-bottom:1.5em;
-                 }
-                    .recent_posts_title:before {
-                        content:"Recent Posts";
-                    }
+	    .widget#recent_posts {
+                margin-top:2em;
+		.recent_posts {
+		    .recent_post_entry {
+			vertical-align:top;
+			display:block;
+			margin-bottom:3em;
 
-                .recent_posts {
-                    .recent_posts_title:before {
-                        content:"Recent Posts";
-                        font-size:2em;
-                        color:<%= secondary_text_color %>;
-                    }
-                    .recent_post_entry {
-                        display:block;
-                        width:100%;
-                        margin-bottom:3em;
-                        .post_snippet {
-                            img {
-                                max-width:60px;
-                                max-height:60px;
-                            }
-                        }
-                        .post_header {
-                            margin-bottom:0.5em;
-                            .post_date {
-                                color:<%= secondary_text_color %>;
-                                display:inline-block;
-                            }
-                            .comments_link {
-                                float:right;
-                                display:inline-block;
-                            }
+			.post_snippet {
+			    margin-top:0.5em;
+			    img {
+				display:none;
+			    }
+			}
+			.post_header {
+			    .margin-bottom:0.5em;
 
-                            .post_title {
-                                clear:both;
-                                font-size: 1.2em;
-                                display:block;
-                                text-align:center;
-                                border-bottom:solid 3px <%= graphic_element_color %>;
-                                margin-bottom:0.3em;
-                            }
-                            .post_title:hover {
-                                border-bottom:solid 3px <%= link_hover_color %>;
-                            }
-                        }
-                    }
-                }
-                .recent_posts:after {
-                    width:100%;
-                    content:" ";
-                    display:inline-block;
-                }
-            }
+			    .post_image {
+				float:left;
+				width:30%;
+				margin:0 1em 1em 0;
+			    }
+			    .post_date {
+				color:<%= secondary_text_color %>;
+				font-style:italic;
+				display:inline-block;
+			    }
+			    .comments_link {
+				float:right;
+				display:inline-block;
+			    }
+
+			    .post_title {
+				clear:both;
+				font-size: 1.5em;
+				display:block;
+				text-align:center;
+				border-bottom:solid 3px <%= graphic_element_color %>;
+				margin-bottom:0.3em;
+			    }
+			    .post_title:hover {
+				border-bottom:solid 3px <%= link_hover_color %>;
+			    }
+			}
+			.post_more {
+			    padding-right:2em;
+			    margin-left:1em;
+			}
+			.post_more:before {
+			    content:"More...";
+			    padding-left:2em;
+			}
+		    }
+		}
+		.recent_posts:after {
+		    width:100%;
+		    content:" ";
+		    display:inline-block;
+		}
+	    }
+
 
 	    .widget#calendar_nav {
                 .widget_content {
@@ -1829,14 +2031,14 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">100</param>
                 <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
                 <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">5</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}%{post_image}</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
             <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="3">
               <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
                   <![CDATA[
 <p>Sign up for my mailing list.</p>
@@ -1870,7 +2072,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     width:160px;
     top:0px;
     bottom:0px;
-    right:0px;
+    right:20px;
     padding:5px;
 
     overflow:hidden;
@@ -1967,6 +2169,13 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
               </params>
             </instance>
+            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="2">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
+                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
           </widget_instances>
         </section>
         <section name="top_bar">
@@ -1974,7 +2183,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[div#mainBody {
     #top_bar_section {
         box-sizing:border-box;
-            -moz-box-sizing:border-box;
+        -moz-box-sizing:border-box;
         padding-top:1em;
 
 
@@ -2019,7 +2228,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <![CDATA[div#mainBody {
     #content_section {
             #center_bar {
-                  padding:0px 175px 0px 195px;
+                  padding:0px 200px 0px 220px;
             }
      }
 }]]>
@@ -2106,7 +2315,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <![CDATA[div#mainBody {
     #content_section {
         #center_bar {
-            padding:0px 175px 0px 195px;
+            padding:0px 200px 0px 220px;
         }
     }
 }]]>
@@ -2286,15 +2495,15 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
         <section name="bottom_bar">
           <style>
-            <![CDATA[#bottom_bar_section {
-    clear:both;
-}
+            <![CDATA[
 
 div#mainBody {
     #bottom_bar_section {
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
+        padding-bottom:1em;
+        clear:both;
 
          .share_bar {
               > div {
@@ -2510,15 +2719,17 @@ div#mainBody {
         <![CDATA[div#mainBody {
     #content_section {
             #center_bar {
-                  padding:0px 20px 0px 175px;
+                  padding:0px 20px 0em 200px;
                   .content_background_container {
                       padding:1em;
+                      margin-top:0em;
                       box-sizing:border-box;
                       -moz-box-sizing:border-box;
                       background: <%= background_highlight_color %>;
-                      #center_content .posts .post_list_item .post {
+                      #center_content .post_listing .post {
                           .post_header {
                                width:70%;
+                               display:inline-block;
                                .post_title { clear:none;}
                            }
                           .content { display:inline;}
@@ -2550,6 +2761,7 @@ div#mainBody {
         <section name="bottom_bar">
           <style>
             <![CDATA[#mainBody #bottom_bar_section {
+    padding-bottom:1em;
     .widget#recent_posts {
         text-align:justify;
         .recent_posts {
@@ -2561,17 +2773,22 @@ div#mainBody {
                 margin-bottom:3em;
 
                 .post_snippet {
+                    margin-top:0.5em;
                     img {
-                        max-width:60px;
-                        max-height:60px;
-                        padding:3px;
+                        display:none;
                     }
                 }
                 .post_header {
                     .margin-bottom:0.5em;
 
+                    .post_image {
+                        float:left;
+                        width:30%;
+                        margin:0 1em 1em 0;
+                    }
                     .post_date {
                         color:<%= secondary_text_color %>;
+                        font-style:italic;
                         display:inline-block;
                     }
                     .comments_link {
@@ -2625,7 +2842,7 @@ div#mainBody {
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">200</param>
                 <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
                 <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">6</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{comments}%{post_image}</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
@@ -2640,16 +2857,16 @@ div#mainBody {
             <![CDATA[#mainBody #content_section {
     #left_bar_section {
         position:absolute;
-        left: 0px;
+        left: 20px;
         z-index:2;
         top:0px;
         float:left;
         width:160px;
         overflow:hidden;
         .widget {
-            margin-bottom:2em;
+            margin-bottom:1em;
+            margin-top:1em;
         }
-
     }
 }
 
@@ -2662,17 +2879,24 @@ div#mainBody {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_adsense</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
+            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="1">
+              <params>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
+                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+              </params>
+            </instance>
             <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="2">
               <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
                   <![CDATA[
 <p>Join my e-mail list.</p>
@@ -2706,9 +2930,8 @@ div#mainBody {
         position:relative;
         box-sizing:border-box;
          -moz-box-sizing:border-box;
-        padding:1em;
-        background: <%= background_highlight_color %>;
         clear:both;
+        margin-top:1.5em;
 
         .widget#home_page_clear {
 
@@ -2722,21 +2945,25 @@ div#mainBody {
              position:relative;
              float:right;
              width:auto;
-             top:-2em;
-             right:-1em;
+             top:-0.5em;
+             right:-0.5em;
              z-index:3;
-             .bio_name, .bio_title {
-                 display:none;
-             }
-             .bio_portrait {
-                 padding:0.5em;
-                 margin:0.5em;
-                 max-width:100%;
-                 height:auto;
-                 background: <%= link_color %>;
-             }
-             .bio_portrait:hover {
-                background: <%= link_hover_color %>;
+             .biography a {
+                 display:inline-block;
+		 .bio_name, .bio_title {
+		     display:none;
+		 }
+		 .bio_portrait {
+		     padding:0.5em;
+		     max-width:100%;
+		     height:auto;
+		     background: <%= link_color %>;
+		     box-sizing:border-box;
+		     -moz-box-sizing:border-box;
+		 }
+		 .bio_portrait:hover {
+		    background: <%= link_hover_color %>;
+		 }
              }
         }
     }
@@ -2771,6 +2998,8 @@ div#mainBody {
      background: <%= background_highlight_color %>;
      padding:1em;
      margin-right:1em;
+     margin-top:1.5em;
+     margin-bottom:1.5em;
     .social_network_icons {
         display:none;
     }
@@ -2799,7 +3028,11 @@ div#mainBody {
       <sections>
         <section name="bottom_bar">
           <style>
-            <![CDATA[.share_bar {
+            <![CDATA[
+#bottom_bar_section {
+    margin-bottom:1em;
+}
+.share_bar {
               > div {
                   display:inline-block;
                   padding-left:2em;

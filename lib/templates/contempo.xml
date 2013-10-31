@@ -1048,7 +1048,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </param>
         <param class="scheme" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" name="name">Garden</param>
         <param class="scheme" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="thumbnail_image"></param>
-        <param class="scheme" description="975967EA-A9BC-40EE-8E1B-7F3CA8089E66" name="large_images">
       </param>
       <param class="scheme" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" name="58A3C0BA-CBC5-4581-9C3B-DB4CAAA1448B">
         <param class="scheme" description="2124E080-D791-4784-A89D-B1984DB73657" name="params">

@@ -29,7 +29,7 @@ module Roxiware
 	    if(sizes["width"].to_i > 200)
 	       image_watermark = options[:watermark]
 	       if options[:watermark_person].present?
-		  image_watermark = "©" + DateTime.now.year.to_s + " " + options[:watermark_person].full_name;
+		  image_watermark = "\xa9" + DateTime.now.year.to_s + " " + options[:watermark_person].full_name;
 	       end
 	    end
 	    

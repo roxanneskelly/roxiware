@@ -278,8 +278,7 @@ div#mainBody {
 
 
 /* Fonts and text */
-div#mainBody
-{
+div#mainBody {
 
     font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
 

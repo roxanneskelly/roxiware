@@ -175,7 +175,6 @@ div#mainBody {
 /* for all mobile devices, set width to 100% */
 @media all and (max-device-width: 1024px) {
       div#mainBody {
-          border:solid 1px black;
           position:absolute;
           right:0px;
           left:0px;

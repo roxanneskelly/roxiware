@@ -3,7 +3,11 @@
   <!-- Roxiware Web Engine Template: Catalyst Royal -->
   <name>Catalyst Royal</name>
   <description>
-    <![CDATA[<b>Modern Meets Vintage</b> <p>The modern Catalyst template with a touch of class.  Present yourself as a creator of words in this template for bloggers and writers.  </p><p>  Modern typography and striking colors frame your writing in this content-centric template.  It features easy to navigate menus, a columns featuring your recent blog posts, a contact widget for your mailing list, and full threaded comments with Facebook and Twitter login.</p><p></p><p><br></p>]]>
+    <![CDATA[<p><b>Modern Meets Vintage</b></p>
+<p>The modern Catalyst template with a touch of class.  Present yourself as a creator of words in this template for bloggers and writers.</p>
+<p>Modern typography and striking colors frame your writing in this content-centric template.  It features easy to navigate menus, a columns featuring your recent blog posts, a contact widget for your mailing list, and full threaded comments with Facebook and Twitter login.</p>
+<p> </p>
+<p> </p>]]>
   </description>
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -30,7 +34,118 @@ calendar_menu_permission.save!
 ]]>
   </setup>
   <settings_form>
-    <![CDATA[]]>
+    <![CDATA[
+<style>
+#template_customize_form {
+    position:relative;
+}
+div#background_pane {
+    text-align:justify;
+    position:absolute;
+}
+div#colors_pane {
+    text-align:justify;
+    line-height:3em;
+}
+div#colors_pane > div {
+    width:30%;
+    display:inline-block;
+    margin-right:2em;
+    vertical-align:top;
+}
+#param_header_background_image {
+    position:absolute;
+    bottom:4em;
+    left:4em;
+    width:475px;
+    height:50px;
+    margin-left:auto;
+    margin-right:auto;
+}
+#param_background_image {
+    position:absolute;
+    top:2em;
+    width:480px;
+    height:300px;
+    left:4em;
+}
+#param_body_background_image {
+    position:absolute;
+    top:2em;
+    width:240px;
+    height:300px;
+    right:4em;
+}
+
+#param_body_background_color {
+    position:absolute;
+    bottom:10.5em;
+    right:4em;    
+}
+
+#param_background_color {
+    position:absolute;
+    bottom:7em;
+    right:4em;    
+}
+
+#param_header_background_color {
+    position:absolute;
+    bottom:3.5em;
+    right:4em;    
+}
+
+</style>
+<div class="template_customize_form large_form" id="template_customize_form">
+   <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
+       custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
+
+       content_tag(:ul, :class=>"tabs") do
+           content_tag(:li, content_tag(:a, "Backgrounds")) +
+           content_tag(:li, content_tag(:a, "Fonts & Colors"))
+       end +
+       content_tag(:div, :class=>"panes") do 
+           content_tag(:div, :id=>"background_pane") do
+	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>1038, :height=>150, :id=>"header_background_image") + " " +
+	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1038, :height=>1200) +
+	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
+	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+           end +
+           content_tag(:div, :id=>"colors_pane") do
+               content_tag(:div, :id=>"left_fields") do
+                   param_field(customize_form, custom_params.delete("home_page_splash_image"), :width=>728, :height=>450, :id=>"home_page_splash_image") 
+               end +
+               content_tag(:div, :id=>"right_fields") do
+		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+		       param_field(customize_form, param, :id=>param.name) 
+		   end.join("").html_safe
+               end
+           end
+       end +
+       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+    end %>
+</div>
+<script>
+    $(function() {
+      $('select#custom_settings_title_font,select#custom_settings_subtitle_font').fontSelector({
+      });
+       $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
+
+       $(".template_customize_form form").submit(function(e) {
+           e.preventDefault();
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>.json", $("form").serializeArray(), {
+                                method:"PUT",
+                                success: function(json_data) {
+                                    window.location.reload();
+                                }
+           });
+    });
+ });
+</script>
+
+]]>
   </settings_form>
   <categories>
     <category>General</category>
@@ -48,74 +163,65 @@ calendar_menu_permission.save!
     font-size:1.7em;
     color:<%= title_color %>;
     background:<%= highlight_color %>;
-    padding:0.4em 1em 0.2em 1em;
     text-align:left;
     width:100%;
     display:block;
     margin-bottom:0.7em;
     text-transform:uppercase;
     line-height:1.0em;
+    padding:0.4em 1em 0.2em 1em;
     box-sizing:border-box;
     -moz-box-sizing:border-box;
 }
 
 body.application_body
 {
-  background: <%= background_color %>;
+    background: url('<%= background_image %>') no-repeat scroll top left;
+    background-color:<%= background_color %>;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 
 /* General layout */
 div#mainBody {
     font-size:12px;
-    width:1024px; 
-    box-sizing:border-box;
-    -moz-box-sizing:border-box;
+    width:1038px; 
+}
+
+div#mainBody {
     #content_section {
         #center_bar {
             width:728px;
-            margin-left:20px;
-            padding:0px;
+            padding:0px 0px 0px 20px;
             display:inline-block;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
             position:relative;
             vertical-align:top;
         }
         #left_bar_section {
             display:inline-block;
             width:250px;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
+            padding-left:20px;
             .widget {
                 margin-bottom:2em;
             }
         }
     }
 }
-@media all and (max-device-width:1023px) and (orientation:portrait) {
+@media all and (max-width:1037px) and (orientation:portrait) {
     div#mainBody {
-        width:748px;
+        width:100%;
+        border:solid 1px red;
     }
     div#mainBody #content_section {
         width:100%;
         #center_bar {
             margin-left:auto;
             margin-right:auto;
-            width:100%;
-        }
-        #left_bar_section {
-            display:none;
-        }
-    }
-}
-@media all and (max-device-height:768px) and (orientation:landscape) {
-    div#mainBody #content_section {
-        width:100%;
-        #center_bar {
-            margin-left:auto;
-            margin-right:auto;
-            width:100%;
+            width:95%;
+            padding:0px;
         }
         #left_bar_section {
             display:none;
@@ -127,18 +233,17 @@ div#mainBody {
     div#mainBody {
         width:100%;
         #center_bar {
-            width:95%;
             .widget#google_top_bar {
                 display:none;
             }
         }
     }
 }
+
 @media all and (max-device-height:747px) and (orientation:landscape) {
     div#mainBody {
         width:100%;
         #center_bar {
-            width:95%;
             .widget#google_top_bar {
                 display:none;
             }
@@ -264,17 +369,29 @@ div#mainBody
 {
     header {
        width:100%;
+       background: url('<%= header_background_image %>') no-repeat scroll top left;
+       background-color: <%= header_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
     }
 
     footer {
        width:100%;
     }
 
-    #layout_body
-    {
+    #layout_body {
        margin:0px;
+       padding:20px 0px 20px 0px;
        width:100%;
        display:block;
+       background: url('<%= body_background_image %>') no-repeat scroll top left;
+       background-color:<%= body_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
       
     }
 
@@ -299,13 +416,7 @@ div#mainBody
 div#mainBody
 {
     font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
-
-    padding-left: 10px;
-    padding-right: 10px;
-    box-sizing:border-box;
-    -moz-box-sizing:border-box;
     margin:0px auto 20px auto;
-    background: <%= content_background_color %>;
     color:<%= text_color %>;
 
     h1, h2, h3, h4, h5, h6 {
@@ -419,11 +530,11 @@ div#mainBody .post {
              line-height:1em;
              margin-bottom:0.3em;
              text-transform:uppercase;
-             color:<%= text_color %>;
+             color:<%= title_color %>;
              background:<%= highlight_color %>;
          }
          .post_title:visited, .post_title:link {
-             color:<%= text_color %>;
+             color:<%= title_color %>;
          }
   
          .post_title:first-letter {
@@ -910,6 +1021,7 @@ div#mainBody .post {
                 }
                 .post_snippet {
                     img { display:none; }
+	            iframe { display:none; }
                 }
                 .post_snippet:first-letter { font-size:1.5em; margin:0 0.1em 0 0;}
                 .post_more {
@@ -983,7 +1095,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
     <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
     <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
-    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="chooser_image">http://cdn.roxiware.com/templates/catalyst-royal/chooser_image.jpg</param>
+    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="template" name="chooser_image">http://cdn.roxiware.com/templates/catalyst-royal/chooser_image.jpg</param>
     <param description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE" class="local" name="comment_header_format">%{author_image}%{author_name}%{date}%{moderate_indicator}</param>
     <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
     <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">first_blog_post</param>
@@ -992,15 +1104,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="25DC87D1-F2A9-41B6-9561-9A0B6C166F06">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(138,141,147,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(138,141,147,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(32,32,32,1.0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(138,141,147,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(138,141,147,1)</param>
           <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(32,32,32,1.0)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
         </param>
@@ -1009,15 +1125,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1A6CCF07-2996-4A30-B934-7385C530A0EC">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(62,50,36,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(171,138,100,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(62,50,36,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(171,138,100,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(171,138,100,1)</param>
           <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalsepia.jpg</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(62,50,36,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
         </param>
@@ -1026,15 +1146,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="F0CC81E4-74CC-41D3-AA58-21BA3C92A4FC">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(29,175,185,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(16,224,238,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(6,35,37,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(16,224,238,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(16,224,238,1)</param>
           <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(6,35,37,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
         </param>
@@ -1043,15 +1167,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="E352E31C-4315-485B-A297-B40F4CBBD2CC">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(40,37,17,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(219,219,219,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(221,200,38,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(221,200,38,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(16,16,16,1)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(221,200,38,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(40,37,17,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(221,200,38,1)</param>
           <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(219,219,219,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(16,16,16,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
         </param>
@@ -1060,15 +1188,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="39943BC1-8DF7-4837-BAEB-B807A1564740">
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(200,100,32,1.0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="content_background_color">rgba(16,16,16,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(200,100,32,1.0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(32,32,32,1.0)</param>
+          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(0,0,0,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_active_color">rgba(200,100,32,1.0)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(16,16,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(200,100,32,1.0)</param>
           <param description="6792C972-20F1-48EB-A263-E2DCF029A2E9" class="style" name="home_page_splash_image">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
+          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_background_color">rgba(32,32,32,1.0)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,255,255,1.0)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
         </param>
@@ -1081,7 +1213,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
   </params>
   <pages>
     <page application="" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[
 #left_bar_section
@@ -1124,29 +1256,41 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
         <section name="footer_bar">
           <style>
-            <![CDATA[#copyright.widget {
+            <![CDATA[
+#footer_bar_section {
+    margin-top:1em;
+}
+#copyright.widget {
     text-align:right;
     div {
         display:inline-block;
     }
     .scribaroo_site {
-         padding-left:2em;
+        padding-right:2em;
+        display:inline-block;
+        float:right;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
     }
 }
 #scribaroo_copyright {
     text-align:right;
     padding-right:2em;
+    float:left;
+    display:inline-block;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
 }
 ]]>
           </style>
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="1">
+            <instance order="1" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
               <params>
               </params>
             </instance>
-            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="2">
+            <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
@@ -1162,8 +1306,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[/* Header layout */ 
 #mainBody #header_bar_section {
     position:relative;
-    margin:0.2em 0 5em 0;
-   text-align:right;
+    margin:0;
+    text-align:right;
+    height:150px;
 
     .widget#logo_bar{
         display:block;
@@ -1228,11 +1373,12 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 
     /* Main Menu layout */
     .widget#main_menu { 
-        text-align:right;
-        width:100%;
+        position:absolute;
+        bottom:0px;
+        right:0px;
         display:inline-block;
+        text-align:right;
         padding-bottom:0.3em;
-        float:right;
         font-size:1.4em;
 
         .ddsmoothmenu_widget {
@@ -1355,11 +1501,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="1">
+            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
                 <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
                 <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
                 <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
                   <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
@@ -1372,7 +1518,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 </param>
               </params>
             </instance>
-            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="2">
+            <instance order="2" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
               <params>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_greeting">true</param>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
@@ -1381,7 +1527,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="5">
+            <instance order="5" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
@@ -1396,7 +1542,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
               </params>
             </instance>
-            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="6">
+            <instance order="6" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
@@ -1416,13 +1562,13 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                     <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
                   </param>
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_2">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">admin</param>
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">super</param>
                     <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/books</param>
                     <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
                   </param>
                   <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_3">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
+                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">super</param>
                     <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Calendar</param>
                     <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/events</param>
                     <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_calendar</param>
@@ -1444,7 +1590,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     #left_bar_section {
         position:relative;
         display:inline-block;
-        width:240px;
+        width:250px;
         overflow:hidden;
         .widget {
             margin-bottom:2em;
@@ -1462,14 +1608,14 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
-            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
                 <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1479,14 +1625,14 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="4">
+            <instance order="4" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
               </params>
             </instance>
-            <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="5">
+            <instance order="5" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
@@ -1512,37 +1658,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                     </param>
                   </param>
                 </param>
-              </params>
-            </instance>
-          </widget_instances>
-        </section>
-        <section name="right_bar">
-          <style>
-            <![CDATA[#right_bar_section {
-    position:absolute;
-    width:120px;
-    top:0px;
-    bottom:0px;
-    right:-140px;
-    padding:5px;
-    overflow:hidden;
-}]]>
-          </style>
-          <params>
-          </params>
-          <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">5895634678</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-              </params>
-            </instance>
-            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="2">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
-                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
           </widget_instances>
@@ -1581,7 +1696,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_top_bar</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
@@ -1593,7 +1708,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </sections>
     </page>
     <page application="blog" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[div#mainBody {
     #content_section {
@@ -1643,7 +1758,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     #left_bar_section {
         position:relative;
         display:inline-block;
-        width:240px;
+        width:250px;
         overflow:hidden;
         .widget {
             margin-bottom:2em;
@@ -1661,14 +1776,14 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="3">
+            <instance order="3" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
-            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="4">
+            <instance order="4" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
                 <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -1678,20 +1793,20 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="5">
+            <instance order="5" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
               </params>
             </instance>
-            <instance widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B" order="6">
+            <instance order="6" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">calendar_nav</param>
               </params>
             </instance>
-            <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="7">
+            <instance order="7" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
@@ -1757,7 +1872,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="1">
+            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
               <params>
               </params>
             </instance>
@@ -1829,14 +1944,14 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_top_bar</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
-            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="2">
+            <instance order="2" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" class="local" name="nav_width">6</param>
@@ -1896,14 +2011,14 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_top_bar</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">9975719875</param>
               </params>
             </instance>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="2">
+            <instance order="2" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>
@@ -1912,7 +2027,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </sections>
     </page>
     <page application="books" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[]]>
       </style>
@@ -1922,7 +2037,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </sections>
     </page>
     <page application="books" action="index">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[.books_listing {
     position:relative;
@@ -2007,7 +2122,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </sections>
     </page>
     <page application="books" action="show">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[div.book_listing {
              clear:both;
@@ -2076,7 +2191,7 @@ div#mainBody {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>
@@ -2085,7 +2200,7 @@ div#mainBody {
       </sections>
     </page>
     <page application="forum" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[.forum_board_group_name {
         font-size:1.5em;
@@ -2135,7 +2250,7 @@ div#mainBody {
       </sections>
     </page>
     <page application="forum" action="show">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[.forum_board {
     width:100%;
@@ -2235,7 +2350,7 @@ div#mainBody {
       </sections>
     </page>
     <page application="forum" action="show_topic">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[.forum_topic {
     width:100%;
@@ -2264,7 +2379,6 @@ div#mainBody {
         <![CDATA[div#mainBody {
     #content_section {
             #center_bar {
-                  padding:0px 0px 0px 0px;
                   .content_background_container {
                       box-sizing:border-box;
                       -moz-box-sizing:border-box;
@@ -2330,7 +2444,7 @@ div#mainBody {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="2">
+            <instance order="2" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>
@@ -2343,14 +2457,14 @@ div#mainBody {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
               </params>
             </instance>
-            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
                 <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -2360,14 +2474,14 @@ div#mainBody {
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="4">
+            <instance order="4" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
               </params>
             </instance>
-            <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="5">
+            <instance order="5" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
@@ -2416,7 +2530,7 @@ div#mainBody {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="1">
+            <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">header_image</param>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
@@ -2474,7 +2588,7 @@ div#mainBody {
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>
@@ -2483,7 +2597,7 @@ div#mainBody {
       </sections>
     </page>
     <page application="series" action="">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[]]>
       </style>
@@ -2493,7 +2607,7 @@ div#mainBody {
       </sections>
     </page>
     <page application="series" action="show">
-      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
       <style>
         <![CDATA[.series {
 

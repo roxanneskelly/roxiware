@@ -842,78 +842,73 @@ div#mainBody .post {
 }
 
 /* Individual widget settings */
-	.widget#events_widget {
-	     margin-bottom:1em;
-	     padding-bottom:1em;
-	     width:100%;
-
-	     .widget_content {
-		 box-sizing:border-box;
-		 -moz-box-sizing:border-box;
-	    }
-
-	    .events_widget {
-		width:100%;
-	    }
-
-	     .events_widget_title:before {
-		 content: "Calendar";
-	     }
-	     .events_widget_title {
-		 font-size:1.3em;
-	     }
-
-	     .events_widget_all_events {
-                  margin-left:0.1em;
-                  padding-right:0.1em;
-                  line-height:40px;
-                  vertical-align:top;
-	      }
-	      .events_widget_all_events:before {
-		 border-top:solid 3px <%= graphic_element_color %>;
-                 width:100%;
-                 display:inline-block;
-		  content: "More...";
-	      }
-
-	     .event_widget_event {
-		 width:100%;
-		 display:block;
-		 border-top:solid 3px <%= graphic_element_color  %>;
-		 margin-top:0em;
-		 padding-top:1em;
-		 padding-bottom:2em;
-                 .event_time {
-                     font-size:0.7em;
-                     .event_start_time {
-                         display:inline-block;
-                         margin-right:1em;
-                     }
-                     .event_start_time:after {
-                         content:",  ";
-                     }
-                     .event_date_range {
-                         display:inline-block;
-                     }
-                 }
-                 .event_title {
-                     font-weight:900;
-                 }
-                 .event_full_location {
-                     font-size:0.7em;
-                     font-style:italic;
-                     .event_city, .event_state {
-                         display:inline-block;
-                     }
-                     .event_state:before {
-                         content:",  ";
-                     }
-                 }
-	     }
-	     .event_widget_event:hover {
-		 border-top:solid 3px <%= graphic_element_color  %>;
-	     }
+.widget#events_widget {
+     margin-bottom:1em;
+     padding-bottom:1em;
+     width:100%;
+     .widget_content {
+	 box-sizing:border-box;
+	 -moz-box-sizing:border-box;
+    }
+    .events_widget {
+	width:100%;
+    }
+    .events_widget_title:before {
+	 content: "Calendar";
+    }
+    .events_widget_title {
+	 font-size:1.3em;
+    }
+    .events_widget_all_events {
+        margin-left:0.1em;
+        padding-right:0.1em;
+        line-height:40px;
+        vertical-align:top;
+    }
+    .events_widget_all_events:before {
+	 border-top:solid 3px <%= graphic_element_color %>;
+         width:100%;
+         display:inline-block;
+         content: "More...";
+    }
+    .event_widget_event {
+        width:100%;
+	display:block;
+	border-top:solid 3px <%= graphic_element_color  %>;
+	margin-top:0em;
+	padding-top:1em;
+	padding-bottom:2em;
+        .event_time {
+            font-size:0.7em;
+            .event_start_time {
+                display:inline-block;
+                margin-right:1em;
+            }
+            .event_start_time:after {
+                content:",  ";
+            }
+            .event_date_range {
+                display:inline-block;
+            }
         }
+        .event_title {
+            font-weight:900;
+        }
+        .event_full_location {
+            font-size:0.7em;
+            font-style:italic;
+            .event_city, .event_state {
+                display:inline-block;
+            }
+            .event_state:before {
+                content:",  ";
+            }
+        }
+    }
+    .event_widget_event:hover {
+        border-top:solid 3px <%= graphic_element_color  %>;
+    }
+}
 
 
 /* Social networking icons */
@@ -1652,8 +1647,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     top:0px;
     bottom:0px;
     right:0px;
-    padding: 2 0.5em 2em 0.5em;
-        padding-top:2em;
+    padding: 2em 0.5em 2em 0.5em;
     overflow:hidden;
     
 }]]>
@@ -1849,7 +1843,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         -moz-box-sizing:border-box;
         padding-top:1em;
         padding-bottom:1em;
-
 
         .blog_page_nav_prev {
              padding-left:1em;
@@ -2776,6 +2769,9 @@ div#mainBody {
                     img {
                         display:none;
                     }
+                    iframe {
+                       display:none;
+                    }
                 }
                 .post_header {
                     .margin-bottom:0.5em;
@@ -2929,6 +2925,7 @@ div#mainBody {
         position:relative;
         box-sizing:border-box;
          -moz-box-sizing:border-box;
+        background: <%= background_highlight_color %>;
         clear:both;
         margin-top:1.5em;
 

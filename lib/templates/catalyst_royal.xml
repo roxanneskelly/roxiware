@@ -213,7 +213,6 @@ div#mainBody {
 @media all and (max-width:1037px) and (orientation:portrait) {
     div#mainBody {
         width:100%;
-        border:solid 1px red;
     }
     div#mainBody #content_section {
         width:100%;
@@ -221,7 +220,7 @@ div#mainBody {
             margin-left:auto;
             margin-right:auto;
             width:95%;
-            padding:0px;
+            padding:0 0 0 0px;
         }
         #left_bar_section {
             display:none;
@@ -1228,7 +1227,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         }
         #center_bar {
             margin:0px 0px 0px 0px;
-            padding:0px 20px 0px 0px !important;
+            padding:0px 20px 0px 20px !important;
         }
     }
 }]]>
@@ -1309,6 +1308,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     margin:0;
     text-align:right;
     height:150px;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
 
     .widget#logo_bar{
         display:block;
@@ -1453,8 +1454,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 @media all and (max-width: 640px)  {
     div#mainBody {
         #header_bar_section {
+            height:100px;
            .widget#main_menu {
-               margin:1em;
                 ul li a {
                     font-size:10px !important;
                     padding:0 0.2em 0 0.2em;
@@ -1490,6 +1491,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 @media all and (max-width: 320px)  {
     div#mainBody {
         #header_bar_section {
+           height:50px;
            .widget#main_menu a {
                 font-size:8px !important;
             }
@@ -1968,7 +1970,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <![CDATA[div#mainBody {
     #content_section {
         #center_bar {
-                  padding:0px 0px 0px 0px;
+                  padding:0px 20px 0px 20px;
         }
     }
 }]]>
@@ -2517,7 +2519,7 @@ div#mainBody {
     #top_bar_section {
         position:relative;
         box-sizing:border-box;
-         -moz-box-sizing:border-box;
+        -moz-box-sizing:border-box;
         clear:both;
 
         .widget#header_image {

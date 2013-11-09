@@ -124,7 +124,9 @@ div#colors_pane > div {
 </div>
 <script>
     $(function() {
-      $('select#custom_settings_title_font,select#custom_settings_subtitle_font').fontSelector({
+      $('select#custom_settings_title_font').fontSelector({
+      });
+      $('select#custom_settings_subtitle_font').fontSelector({
       });
        $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
 
@@ -164,6 +166,7 @@ body.application_body
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    background-position:center top;
 }
 
 /* Sizing for various devices */
@@ -302,8 +305,6 @@ div#mainBody
 
     font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
 
-    padding-left: 10px;
-    padding-right: 10px;
     margin:0px auto 20px auto;
     color:<%= text_color %>;
 
@@ -373,6 +374,7 @@ div#mainBody
        -moz-background-size: cover;
        -o-background-size: cover;
        background-size: cover;
+       background-position:center top;
     }
 
     #layout_body
@@ -386,7 +388,7 @@ div#mainBody
        -moz-background-size: cover;
        -o-background-size: cover;
        background-size: cover;
-      
+       background-position:center top;
     }
 
     #content_section {
@@ -1263,7 +1265,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <style>
             <![CDATA[/* Header layout */
 #header_bar_section {
-   min-height:20px;
+   height:100px;
    position:relative;
    text-align:right;
 }

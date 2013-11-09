@@ -305,8 +305,6 @@ div#mainBody
 
     font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
 
-    padding-left: 10px;
-    padding-right: 10px;
     margin:0px auto 20px auto;
     color:<%= text_color %>;
 
@@ -2696,7 +2694,6 @@ div#mainBody {
                       margin-top:0em;
                       box-sizing:border-box;
                       -moz-box-sizing:border-box;
-                      background: <%= background_highlight_color %>;
                       #center_content .post_listing .post {
                           .post_header {
                                width:70%;

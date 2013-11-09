@@ -71,11 +71,16 @@ class Roxiware::Person < ActiveRecord::Base
     before_validation do
        self.seo_index = self.full_name.to_seo
        self.bio = Sanitize.clean(self.bio, Roxiware::Sanitizer::BASIC_SANITIZER)
-       image_uri = URI(self.large_image_url)
-       if(!image_uri.host)
-           base_file = Pathname.new(image_uri.path).basename
-           self.image_url = File.join(AppConfig.upload_url, base_file.basename(".*")+"200x225"+base_file.extname)
-           self.thumbnail_url = File.join(AppConfig.upload_url, base_file.basename(".*")+"50x50"+base_file.extname)
+       puts "image_url #{image_url}"
+       if(self.large_image_url.present?)
+           image_uri = URI(self.large_image_url)
+           if(!image_uri.host)
+               base_file = Pathname.new(image_uri.path).basename
+               extension = base_file.extname
+               base_file_name = base_file.basename(".*")
+               self.image_url = "/asset/#{base_file_name}_200x225#{extension}"
+               self.thumbnail_url = "/asset/#{base_file_name}_50x50#{extension}"
+           end
        end
     end
 end

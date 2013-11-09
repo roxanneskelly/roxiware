@@ -147,8 +147,10 @@ class Roxiware::Book < ActiveRecord::Base
      image_uri = URI(self.large_image_url)
      if(!image_uri.host)
            base_file = Pathname.new(image_uri.path).basename
-           self.image_url = File.join(AppConfig.upload_url, base_file.basename(".*")+"100x150"+base_file.extname)
-           self.thumbnail_url = File.join(AppConfig.upload_url, base_file.basename(".*")+"50x75"+base_file.extname)
+           extension = base_file.extname
+           base_file_name = base_file.basename(".*")
+           self.image_url = "/asset/#{base_file_name}_100x150#{extension}"
+           self.thumbnail_url = "/asset/#{base_file_name}_50x75#{extension}"
      end
   end
 end

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<layout version="1.0" guid="99907bbb-a979-f10d-40b9-30253e89865f">
+<layout guid="99907bbb-a979-f10d-40b9-30253e89865f" version="1.0">
   <!-- Roxiware Web Engine Template: Bloggish -->
   <name>Bloggish</name>
   <description>
@@ -165,11 +165,13 @@ div#colors_pane > div {
     It's better to apply styles to the #mainBody which only contains client website content */
 
 body.application_body {
-    background: <%= background_color %> url('<%= background_image %>') no-repeat scroll top left;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
+    background: url('<%= background_image %>') no-repeat scroll top left;
+    background-color: <%= background_color %>;
+    -webkit-background-size: 100%;
+    -moz-background-size: 100%;
+    -o-background-size: 100%;
+    background-size: 100%;
+    background-position:center top;
 }
 
 /* Sizing for various devices */
@@ -373,22 +375,26 @@ div#mainBody
 {
     header {
        width:100%;
-       background: <%= header_background_color %> url('<%= header_background_image %>') no-repeat scroll top left;
-       -webkit-background-size: cover;
-       -moz-background-size: cover;
-       -o-background-size: cover;
-       background-size: cover;
+       background: url('<%= header_background_image %>') no-repeat scroll top left;
+       background-color: <%= header_background_color %>;
+       -webkit-background-size: 100%;
+       -moz-background-size: 100%;
+       -o-background-size: 100%;
+       background-size: 100%;
+       background-position:center top;
     }
 
     #layout_body  {
        margin:0px;
        width:100%;
        display:block;
-       background: <%= body_background_color %> url('<%= body_background_image %>') no-repeat scroll top left;
-       -webkit-background-size: cover;
-       -moz-background-size: cover;
-       -o-background-size: cover;
-       background-size: cover;
+       background: url('<%= body_background_image %>') no-repeat scroll top left;
+       background-color:<%= body_background_color %>;
+       -webkit-background-size: 100%;
+       -moz-background-size: 100%;
+       -o-background-size: 100%;
+       background-size: 100%;
+       background-position:center top;
     }
 
     #content_section {
@@ -446,40 +452,39 @@ div.widget_background, div.content_background
 
 /* Post*/
 
-            .widget#recent_posts {
-                  .widget_content {
-                      padding:1em;
-                  }
-                  .recent_post_title:before {
-                     font-size:1.5em;
-                     content: "Recent Posts";
-                  }
+.widget#recent_posts {
+    .widget_content {
+        padding:1em;
+    }
+    .recent_post_title:before {
+        font-size:1.5em;
+        content: "Recent Posts";
+    }
+    .post_header {
+        margin-top:1em;
+        width:90%;
+        left:5%;
+        color: <%= link_color %>;
 
-                  .post_header {
-                      margin-top:1em;
-                      width:90%;
-                      left:5%;
-                      color: <%= link_color %>;
+        .post_title {
+            font-size:1.3em;
+            font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+            display:block;
+        }
 
-                      .post_title {
-                          font-size:1.3em;
-                          font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
-                          display:block;
-                       }
+        .post_date, .post_author {
+            display:inline-block;
+        }
 
-                       .post_date, .post_author {
-                           display:inline-block;
-                       }
-
-                       .post_author:before {
-                           content:"\0000a0by\0000a0";
-                       }
-                  }
-                  .post_snippet {
-                      margin-top:0.5em;
-                      img { max-width:33%; margin:0.5em;}
-                  }
-            }
+        .post_author:before {
+            content:"\0000a0by\0000a0";
+        }
+    }
+    .post_snippet {
+        margin-top:0.5em;
+        img { max-width:33%; margin:0.5em;}
+    }
+}
 div#mainBody .post {
     position:relative;
     margin: 0;
@@ -974,12 +979,24 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         display:inline-block;
         padding-left:2em;
     }
-    > div:nth-child(1) {
+    > div:nth-child(1) {
         padding-left:0em;
     }
 }
 
 
+@media all and (max-width: 768px)  {
+    div#mainBody {
+        width:100%;
+        .share_bar > div {
+            padding-left:0em;
+        }
+        #content_section #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px 200px 0px 50px !important;
+        }
+    }
+}
 @media all and (max-width: 640px)  {
     div#mainBody {
         width:100%;
@@ -989,168 +1006,168 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         #right_bar_section {
             display:none;
         }
-        #center_bar {
+        #content_section #center_bar {
             margin:0px 0px 0px 0px;
-            padding:0px 10px 0px 30px !important;
+            padding:0px 10px 0px 50px !important;
         }
     }
 }]]>
   </style>
   <params>
-    <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_description_length">500</param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="book_excerpt_length">1000</param>
-    <param description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0" class="local" name="books_display_type">simple</param>
-    <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="chooser_image">http://cdn.roxiware.com/templates/bloggish/chooser_image.jpg</param>
-    <param description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE" class="local" name="comment_header_format">%{author_image}%{date} by %{author_name}%{moderate_indicator}</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="event_date_format">%b %e</param>
-    <param description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" class="local" name="home_page_type">blog_posts</param>
-    <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="post_date_format">%e %b %Y</param>
-    <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{author_image}%{title}%{date}%{author_name}%{comments}</param>
-    <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="437FC854-D219-49AD-8C69-456F480C657C">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(102,144,199,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(60,84,116,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(215,234,255,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(50,50,72,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
-          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(50,50,72,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(50,50,72,1)</param>
+    <param class="local" name="asset_theme" description="67BFE233-F4D1-400B-855F-393BF53B05A4">clear</param>
+    <param class="local" name="book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">500</param>
+    <param class="local" name="book_excerpt_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">1000</param>
+    <param class="local" name="books_display_type" description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0">simple</param>
+    <param class="scheme" name="chooser_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/chooser_image.jpg</param>
+    <param class="local" name="comment_header_format" description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE">%{author_image}%{date} by %{author_name}%{moderate_indicator}</param>
+    <param class="local" name="event_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%b %e</param>
+    <param class="local" name="home_page_type" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4">blog_posts</param>
+    <param class="local" name="post_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%e %b %Y</param>
+    <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{author_image}%{title}%{date}%{author_name}%{comments}</param>
+    <param class="scheme" name="schemes" description="62275C2A-29F9-4BAA-9893-BB0417917807">
+      <param class="scheme" name="437FC854-D219-49AD-8C69-456F480C657C" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(102,144,199,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(60,84,116,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(215,234,255,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(50,50,72,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#cc2222</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(50,50,72,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(50,50,72,1)</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Sky</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/sky.jpg</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Sky</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/sky.jpg</param>
       </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="04FF6B29-DFE7-48F6-B70D-261BA402BA5C">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(239,142,16,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,201,116,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#232b2b</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(255,255,255,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
-          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">rgba(255,255,255,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(255,255,255,1)</param>
+      <param class="scheme" name="04FF6B29-DFE7-48F6-B70D-261BA402BA5C" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(239,142,16,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,201,116,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#232b2b</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#cc2222</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Gray</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/orange-gray.jpg</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Orange Gray</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/orange-gray.jpg</param>
       </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="C385EF86-FCE4-4476-8AD5-9D942C324C3B">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(92,131,73,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#893667</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#F5F4EB</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#434e3c</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#893667</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
-          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#434e3c</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#434e3c</param>
+      <param class="scheme" name="C385EF86-FCE4-4476-8AD5-9D942C324C3B" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#893667</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#F5F4EB</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#434e3c</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#893667</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#434e3c</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#434e3c</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Garden</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/garden.jpg</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Garden</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/garden.jpg</param>
       </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="A4421F67-3B48-40B9-9A6C-6C3867A15067">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(210,125,42,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#e3ae57</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#eceae0</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#221e1d</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
-          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#221e1d</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#221e1d</param>
+      <param class="scheme" name="A4421F67-3B48-40B9-9A6C-6C3867A15067" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#e3ae57</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#221e1d</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#cc2222</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#221e1d</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#221e1d</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Creme</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/orange-creme.jpg</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Orange Creme</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/orange-creme.jpg</param>
       </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1A79C1DE-4E30-4A09-A36D-C70B983C1DE2">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">rgba(250,28,42,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(250,28,42,0.7)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">rgba(29,41,52,1)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#DCDDD8</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#475f77</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
-          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#DCDDD8</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#DCDDD8</param>
+      <param class="scheme" name="1A79C1DE-4E30-4A09-A36D-C70B983C1DE2" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,28,42,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,28,42,0.7)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(29,41,52,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#DCDDD8</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#475f77</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#DCDDD8</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#DCDDD8</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Navy</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/navy.jpg</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Navy</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/navy.jpg</param>
       </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="B169220A-A52C-4373-BE35-A0A2A3D9C039">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
-          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#000000</param>
+      <param class="scheme" name="B169220A-A52C-4373-BE35-A0A2A3D9C039" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#7e7e7e</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#b3b3b3</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#000000</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#cc2222</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#000000</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#000000</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">White</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/white.jpg</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">White</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/white.jpg</param>
       </param>
-      <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="8227E766-97C5-4227-BE3C-9CF4293936F1">
-        <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_color">#7e7e7e</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#b3b3b3</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="background_color">#000000</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_alert_color">#cc2222</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="header_background_color">rgba(0,0,0,0)</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="body_background_color">rgba(0,0,0,0)</param>
-          <param description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9" class="style" name="header_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="body_background_image"></param>
-          <param description="E121E288-E726-46C3-8B1C-D2E8EE692531" class="style" name="background_image"></param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
-          <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#ffffff</param>
-          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">#ffffff</param>
+      <param class="scheme" name="8227E766-97C5-4227-BE3C-9CF4293936F1" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#7e7e7e</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#b3b3b3</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#000000</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#cc2222</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
         </param>
-        <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Black</param>
-        <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/bloggish/black.jpg</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Black</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/black.jpg</param>
       </param>
     </param>
-    <param description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" class="local" name="series_book_description_length">200</param>
-    <param description="0ADB2780-3D21-409F-A7B4-670395F99CD5" class="local" name="series_display_type">simple</param>
+    <param class="local" name="series_book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">200</param>
+    <param class="local" name="series_display_type" description="0ADB2780-3D21-409F-A7B4-670395F99CD5">simple</param>
   </params>
   <pages>
     <page application="" action="">
@@ -1197,7 +1214,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="0">
+            <instance order="0" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
               <params>
               </params>
             </instance>
@@ -1265,11 +1282,17 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
          display:inline-block;
          bottom:0.5em;
          width:auto;
+         .widget_content {
+             height:100%;
+         }
+         
         .book_list {
             vertical-align:top;
             float:right;
+            height:100%;
             .book_list_book {
                 vertical-align:top;
+                height:100%;
                 line-height:auto;
                 margin:0 0.5em 0 0.5em;
                 display:inline-block;
@@ -1359,6 +1382,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 @media all and (max-width: 640px)  {
     div#mainBody {
         #header_bar_section {
+            height:115px;
             .widget#book_bar {
                 display:none;
             }
@@ -1383,6 +1407,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 @media all and (max-width: 320px)  {
     div#mainBody {
         #header_bar_section {
+           height:60px;
            .widget#main_menu a {
                 font-size:8px !important;
             }
@@ -1393,10 +1418,16 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="1">
+            <instance order="0" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                <param class="local" name="show_search_box" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">login_bar</param>
+              </params>
+            </instance>
+            <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                   <![CDATA[<%= 
                       person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
                       person = Roxiware::Person.find(person_id)
@@ -1404,63 +1435,57 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                       title =  person.full_name if title.blank?
                       content_tag(:div, title, :class=>"site_title") + content_tag(:div, Roxiware::Param::Param.application_param_val("system", "subtitle"), :class=>"site_subtitle") %>]]>
                 </param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">logo_bar</param>
               </params>
             </instance>
-            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="3">
+            <instance order="2" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
               <params>
-                <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
-                <param description="45A433ED-7183-4A28-890B-08F585A0E41A" class="local" name="menu_root">
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_0">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Home</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">book_bar</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="cover_size" description="BF45A131-4491-42FF-942F-C42CC28E6987">image</param>
+                <param class="local" name="selection_order" description="F247867F-5D91-4D9F-A73B-B0022130FD88">newest</param>
+                <param class="local" name="refresh_period" description="26F42447-4148-4F5F-AAE3-FE3744618E3F">86400</param>
+                <param class="local" name="book_count" description="BEDD0F51-5E0A-489F-9495-195CDC090877">3</param>
+              </params>
+            </instance>
+            <instance order="3" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+              <params>
+                <param class="local" name="show_arrow" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680">false</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="show_search_box" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">main_menu</param>
+                <param class="local" name="menu_root" description="45A433ED-7183-4A28-890B-08F585A0E41A">
+                  <param class="local" name="child_0" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">Home</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3"></param>
                   </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_1">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Blog</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/blog</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                  <param class="local" name="child_1" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">Blog</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/blog</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3"></param>
                   </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_2">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">admin</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/books</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
+                  <param class="local" name="child_2" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">Books</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/books</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3">main_menu_books</param>
                   </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_3">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Calendar</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/events</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                  <param class="local" name="child_3" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">Calendar</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/events</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3"></param>
                   </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_4">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Biography</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/biography</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
+                  <param class="local" name="child_4" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">Biography</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/biography</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3"></param>
                   </param>
                 </param>
-              </params>
-            </instance>
-            <instance widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F" order="2">
-              <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">book_bar</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="BF45A131-4491-42FF-942F-C42CC28E6987" class="local" name="cover_size">image</param>
-                <param description="F247867F-5D91-4D9F-A73B-B0022130FD88" class="local" name="selection_order">newest</param>
-                <param description="26F42447-4148-4F5F-AAE3-FE3744618E3F" class="local" name="refresh_period">86400</param>
-                <param description="BEDD0F51-5E0A-489F-9495-195CDC090877" class="local" name="book_count">3</param>
-              </params>
-            </instance>
-            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="0">
-              <params>
-                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
           </widget_instances>
@@ -1497,9 +1522,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-width: 768px)  {
     #mainBody #content_section #left_bar_section  {
-        width:20px;
+        width:30px;
 
         .widget#google_widget { display:none; }
         .widget#social_networks_header {
@@ -1524,38 +1549,38 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="0">
+            <instance order="0" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
-                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
-                <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
-                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
+                <param class="local" name="biography_id" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06"></param>
+                <param class="local" name="rss_feed_source" description="D52AAF6A-0228-427B-8529-348282E4C771">blog</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">social_networks_header</param>
+                <param class="local" name="social_networks" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
+                  <param class="local" name="goodreads" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="foursquare" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="google" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="facebook" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="tumblr" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="youtube" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="twitter" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
                 </param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">google_widget</param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2312852271</param>
               </params>
             </instance>
-            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">150</param>
-                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
-                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">5</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{author_name}</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="excerpt_length" description="F4AF8F08-955D-4800-992A-3E2912CA8740">150</param>
+                <param class="local" name="date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%e %b %Y</param>
+                <param class="local" name="recent_posts_count" description="5AD23478-C90D-4BA8-81DF-7112B0762257">5</param>
+                <param class="local" name="header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{title}%{date}%{author_name}</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">recent_posts</param>
               </params>
             </instance>
           </widget_instances>
@@ -1644,41 +1669,41 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="0">
+            <instance order="0" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2452453078</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id"></param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2452453078</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"></param>
               </params>
             </instance>
-            <instance widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768" order="1">
+            <instance order="1" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
-                <param description="6CD4546A-E350-46AC-BAF5-A788047DCD08" class="local" name="events_count">3</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">events_widget</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">true</param>
+                <param class="local" name="events_count" description="6CD4546A-E350-46AC-BAF5-A788047DCD08">3</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">events_widget</param>
               </params>
             </instance>
-            <instance widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE" order="2">
+            <instance order="2" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">contact_widget</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
-                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="mailer_form">
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">contact_widget</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">true</param>
+                <param class="local" name="mailer_form" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                   <![CDATA[<p>Join my mailing list!</p>
 <p>
 <label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
 </p>]]>
                 </param>
-                <param description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" class="local" name="mailers">
-                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="response">
-                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Thank you for your interest.</param>
-                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                <param class="local" name="mailers" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF">
+                  <param class="local" name="response" description="EE53AA34-7EC8-409A-AF77-446F712B7777">
+                    <param class="local" name="subject" description="F25B251A-E227-450E-AC2C-0F4A37E79051">Thank you for your interest.</param>
+                    <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                       <![CDATA[Thank you for signing up for my mailing list.
 ]]>
                     </param>
                   </param>
-                  <param description="EE53AA34-7EC8-409A-AF77-446F712B7777" class="local" name="notification">
-                    <param description="F25B251A-E227-450E-AC2C-0F4A37E79051" class="local" name="subject">Contact Request</param>
-                    <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <param class="local" name="notification" description="EE53AA34-7EC8-409A-AF77-446F712B7777">
+                    <param class="local" name="subject" description="F25B251A-E227-450E-AC2C-0F4A37E79051">Contact Request</param>
+                    <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                       <![CDATA[ A mailing-list request Has Been Received from: $email
 ]]>
                     </param>
@@ -1724,7 +1749,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="367F87CF-2B37-481A-B02E-9918E989BBB7" order="0">
+            <instance order="0" widget_guid="367F87CF-2B37-481A-B02E-9918E989BBB7">
               <params>
               </params>
             </instance>
@@ -1751,6 +1776,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
+        padding-bottom:1em;
 
           .blog_page_nav_prev {
              padding-left:1em;
@@ -1772,7 +1798,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="0">
+            <instance order="0" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
               <params>
               </params>
             </instance>
@@ -1810,9 +1836,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-width: 768px)  {
     #mainBody #content_section #left_bar_section  {
-        width:20px;
+        width:30px;
         .widget#social_networks_header {
             .widget_content {
                  .social_network_icon {
@@ -1841,44 +1867,44 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="0">
+            <instance order="0" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
-                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
-                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="rss_feed_source" description="D52AAF6A-0228-427B-8529-348282E4C771">blog</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">social_networks_header</param>
+                <param class="local" name="biography_id" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06"></param>
+                <param class="local" name="social_networks" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
+                  <param class="local" name="google" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="tumblr" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="twitter" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="youtube" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="goodreads" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="foursquare" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="facebook" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
                 </param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">google_widget</param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2312852271</param>
               </params>
             </instance>
-            <instance widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A" order="2">
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">100</param>
-                <param description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" class="local" name="date_format">%e %b %Y</param>
-                <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">5</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{date}%{author_name}</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="excerpt_length" description="F4AF8F08-955D-4800-992A-3E2912CA8740">100</param>
+                <param class="local" name="date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%e %b %Y</param>
+                <param class="local" name="recent_posts_count" description="5AD23478-C90D-4BA8-81DF-7112B0762257">5</param>
+                <param class="local" name="header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{title}%{date}%{author_name}</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">recent_posts</param>
               </params>
             </instance>
-            <instance widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B" order="3">
+            <instance order="3" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">calendar_nav</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">true</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">calendar_nav</param>
               </params>
             </instance>
           </widget_instances>
@@ -1930,11 +1956,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
-                <param description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB" class="local" name="share_link"></param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">share_bar</param>
+                <param class="local" name="share_link" description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB"></param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">share_bar</param>
               </params>
             </instance>
           </widget_instances>
@@ -1995,11 +2021,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
-                <param description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB" class="local" name="share_link"></param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">share_bar</param>
+                <param class="local" name="share_link" description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB"></param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">share_bar</param>
               </params>
             </instance>
           </widget_instances>
@@ -2256,7 +2282,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[
-        div#mainBody .post .post_tags {
+div#mainBody .post .post_tags {
     display:none;
 }
       ]]>
@@ -2276,7 +2302,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="1">
+            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
               <params>
               </params>
             </instance>
@@ -2318,9 +2344,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-width: 768px)  {
     #mainBody #content_section #left_bar_section  {
-        width:20px;
+        width:30px;
         .widget#google_widget, .widget#calendar_nav {
             display:none;
         }
@@ -2343,34 +2369,34 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="0">
+            <instance order="0" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
               <params>
-                <param description="B908FDB5-A0B5-48AC-8BAE-48741485CC06" class="local" name="biography_id"></param>
-                <param description="D52AAF6A-0228-427B-8529-348282E4C771" class="local" name="rss_feed_source">blog</param>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">social_networks_header</param>
-                <param description="4EB6BB84-276A-4074-8FEA-E49FABC22D83" class="local" name="social_networks">
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="goodreads"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="foursquare"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="google"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="facebook"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="tumblr"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="youtube"></param>
-                  <param description="FB528C00-8510-4876-BD82-EF694FEAC06D" class="local" name="twitter"></param>
+                <param class="local" name="biography_id" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06"></param>
+                <param class="local" name="rss_feed_source" description="D52AAF6A-0228-427B-8529-348282E4C771">blog</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">social_networks_header</param>
+                <param class="local" name="social_networks" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
+                  <param class="local" name="goodreads" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="foursquare" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="google" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="facebook" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="tumblr" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="youtube" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="twitter" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
                 </param>
               </params>
             </instance>
-            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="1">
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">google_widget</param>
-                <param description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" class="local" name="google_ad_slot">2312852271</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">google_widget</param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2312852271</param>
               </params>
             </instance>
-            <instance widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B" order="2">
+            <instance order="2" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">true</param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">calendar_nav</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">true</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">calendar_nav</param>
               </params>
             </instance>
           </widget_instances>
@@ -2439,7 +2465,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <params>
           </params>
           <widget_instances>
-            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
               </params>
             </instance>

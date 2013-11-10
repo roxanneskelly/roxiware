@@ -12,19 +12,26 @@
 </div>
 <script>
   $(function() {
-    $("textarea.settings_wysiwyg").wysiwyg({ css: "<%= stylesheet_path('application') %>",
-                                       iFrameClass:"wysiwyg_iframe",
-                                       controls: {
-                                          undo: { visible: false },
-                                          redo: { visible: false},
-                                          insertHorizontalRule: { visible: true},
-                                          html: { visible: true},
-                                          insertTable: {visible: true},
-                                          'fileManager': {
-                                              visible: true,
-                                              tooltip: "File Manager"
-                                                  }
-                                           }});
+      $("div.settings_wysiwyg textarea").tinymce({
+          script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+	  theme: "modern",
+	  skin: "light",
+	  menubar: false,
+	  browser_spellcheck:true,
+	  relative_urls: false,
+	  remove_script_host:true,
+	  document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
+	  plugins: [
+	      "autolink lists link image charmap anchor",
+	      "visualblocks code",
+              "media table contextmenu paste"
+	  ],
+	  height: $("div.settings_wysiwyg").height() - 30,
+	  statusbar:false,
+	  resize:false,
+	  schema: "html5",
+	  toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code",
+    });
 
     $("button#back_button,button#save").click(function() {
         $(".watermark").val("");

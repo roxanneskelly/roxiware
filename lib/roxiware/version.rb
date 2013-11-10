@@ -1,3 +1,3 @@
 module Roxiware
-  VERSION = "0.3.58"
+  VERSION = "0.3.59"
 end

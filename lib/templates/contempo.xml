@@ -102,9 +102,9 @@ div#colors_pane > div {
        end +
        content_tag(:div, :class=>"panes") do 
            content_tag(:div, :id=>"background_pane") do
-	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>100, :id=>"header_background_image") + " " +
+	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>900, :height=>225, :id=>"header_background_image") + " " +
 	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
-	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) +
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>900, :height=>1200) +
 	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
 	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
 	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
@@ -381,7 +381,8 @@ div#mainBody
        margin:0px;
        width:100%;
        display:block;
-       background: <%= body_background_color %> url('<%= body_background_image %>') no-repeat scroll top left;
+       background: url('<%= body_background_image %>') no-repeat scroll top left;
+       background-color: <%= body_background_color %>;
        -webkit-background-size: cover;
        -moz-background-size: cover;
        -o-background-size: cover;

@@ -1,13 +1,13 @@
 <%= content_tag(:div, :id=>@topic.id, :class=>"forum_topic", :rel=>forum_update_topic_path(@topic.board.seo_index, @topic.id)) do %>
     <%= content_tag(:div, :class=>"forum_topic_header forum_topic_menu_target", :topic_permission=>@topic.permissions) do %>
-        <%= content_tag(:div, @topic.new_post_count, :class=>(@topic.new_post_count > 0) ? "forum_topic_new_posts" : "forum_topic_no_new_posts") %>
+        <%= content_tag(:div, @topic.new_post_count(@topic_last_read), :class=>(@topic.new_post_count(@topic_last_read) > 0) ? "forum_topic_new_posts" : "forum_topic_no_new_posts") %>
         <%= link_to("", forum_index_path, :class=>"forum_home_title") %>
         <%= link_to(@topic.board.name, forum_path(@topic.board.seo_index), :class=>"forum_board_title") %>
         <%= content_tag(:div, @topic.title, :class=>"forum_topic_title") %>
         <%= content_tag(:div, @topic.root_post.comment_date.strftime("%c"), :class=>"forum_topic_post_date") %>
     <% end %>
     <%= content_tag(:div, :class=>"comments") do %>
-        <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>true, :allow_edit=>(current_user.present? && current_user.is_admin?), :comment_date_format=>"%c") %>
+        <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>true, :allow_edit=>(current_user.present? && current_user.is_admin?), :comment_date_format=>"%c", :comment_header_format=>@forum_post_header_format) %>
     <% end %>
 <% end %>
 <% if can? :post, @topic %>
@@ -23,6 +23,10 @@
 
 <script>
 $(function() {
+
+    $(".unread_comment").first().each(function(index, object) {
+        $(object)[0].scrollIntoView(true);
+    });
 
 <% if can? :delete, @topic %>
     $("#delete_forum_topic_app_menu").click(function() {

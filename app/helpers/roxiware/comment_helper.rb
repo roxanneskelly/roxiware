@@ -18,6 +18,7 @@ module Roxiware::CommentHelper
 	    child = comment_map[child_id][:comment]
 	    next unless (allow_edit) || (child.comment_status == "publish")
 	    comment_result = "".html_safe
+	    comment_result += content_tag(:a, "", :id=>child_id)
             comment_result +=  content_tag(:div, :class=>"manage_menu manage_comment", :id=>"manage_comment_#{child.id}") do 
                 content_tag(:ul) do 
 		    content_tag(:li) do 
@@ -54,8 +55,6 @@ module Roxiware::CommentHelper
 	    header_content[:date] = content_tag(:div, child.comment_date.localtime.strftime(comment_date_format), :class=>"comment_date")
 	    header_content[:moderate_indicator] = allow_edit ? content_tag(:div, "Hidden", :class=>"comment_moderate_indicator comment_status_#{child.comment_status}") : ""
 
-	    puts "HEADER: " + (comment_header_format % header_content)
-
             comment_result += content_tag(:div, 
 	         (comment_header_format % header_content).html_safe, 
 		 :class=>"comment_header", 
@@ -66,7 +65,8 @@ module Roxiware::CommentHelper
             end
 	    result += content_tag(:div, comment_result, :class=>"comment_content_wrapper")
            result +=  display_comments(comment_map, params.merge({:comment_id=>child_id}))
-           content_tag(:div, result, :class=>"comment", :comment_id=>child.id)
+	   read_class = comment_map[child_id][:unread] ? "unread_comment" : "read_comment"
+           content_tag(:div, result, :class=>"comment #{read_class}", :comment_id=>child.id)
         end.join("").html_safe
     end
 end

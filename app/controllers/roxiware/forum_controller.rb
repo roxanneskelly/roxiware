@@ -15,7 +15,7 @@ class Roxiware::ForumController < ApplicationController
 
       # grab the board groups.  View will use the 'boards' off of the board group to list the boards
       @forum_board_groups = Roxiware::Forum::BoardGroup.includes(:boards).order(:display_order)
-
+      @board_data = {}
       respond_to do |format|
           format.html 
       end
@@ -28,6 +28,7 @@ class Roxiware::ForumController < ApplicationController
       @board = Roxiware::Forum::Board.find_by_seo_index(params[:id])
       raise ActiveRecord::RecordNotFound if @board.nil?
       authorize! :read, @board
+      @topics_data = ActiveSupport::JSON.decode(cookies[:forum_topics_read] || "{}")
       respond_to do |format|
           format.html 
       end
@@ -70,7 +71,12 @@ class Roxiware::ForumController < ApplicationController
       authorize! :read, @topic
 
       comments = @topic.posts.visible(current_user)
-
+      topics_info = ActiveSupport::JSON.decode(cookies[:forum_topics_read] || "{}") || {}
+      @topic_last_read = topics_info[@topic.id.to_s] || 0
+      topics_info[@topic.id.to_s] = Time.now().to_i
+      puts "TOPICS #{topics_info.to_json}"
+      cookies[:forum_topics_read] = topics_info.to_json
+      
       # create comment hierarchy
       @comments = {}
       comments.each do |comment|
@@ -78,6 +84,7 @@ class Roxiware::ForumController < ApplicationController
           @comments[comment.id] ||= {:children=>[]}
           @comments[comment.parent_id][:children] << comment.id
           @comments[comment.id][:comment] = comment
+          @comments[comment.id][:unread] = (Time.at(@topic_last_read) < comment.comment_date.to_time)
       end
 
       respond_to do |format|

@@ -50,8 +50,8 @@ module Roxiware
 	    end
 	end
 
-        def new_post_count
-            0
+        def new_post_count(topics_read)
+            1
         end
 
         def post_count
@@ -108,18 +108,19 @@ module Roxiware
       edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :as=>[:super, :admin, :user, nil]
       ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :posts, :topic_link, :guid
 
-      scope :visible, lambda{ |user| joins(:comments).where('forum_topics.permissions != "hide" AND comments.comment_status="publish"').group(:id) unless (user.present? && user.is_admin?) }
+      scope :visible, lambda{ |user| joins(:comments).where('forum_topics.permissions != "hide" AND comments.comment_status="publish"').group("forum_topics.id") unless (user.present? && user.is_admin?) }
 
       def root_post
 	  self.posts.first
       end
 
-      def new_post_count
-          0
+      def new_post_count(last_read)
+          self.comments.where("comment_date > ? AND comments.id != ?", Time.at(last_read.to_i), self.root_post.id).count
       end
 
       def post_count
-          comment_count
+          # don't count the first one
+          comment_count-1
       end
 
       def pending_post_count

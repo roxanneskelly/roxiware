@@ -55,6 +55,9 @@ module Roxiware
 	comment_author.save!
     end
 
+    def unread?(last_read)
+        
+    end
 
     before_validation() do
        self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))

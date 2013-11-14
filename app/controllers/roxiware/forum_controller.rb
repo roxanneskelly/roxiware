@@ -115,7 +115,7 @@ class Roxiware::ForumController < ApplicationController
       end
       @topic_last_read = topics_info[@topic.id.to_s] || 0
       topics_info[@topic.id.to_s] = Time.now().to_i
-      cookies[:forum_topics_read] = topics_info.to_msgpack
+      cookies.permanent[:forum_topics_read] = topics_info.to_msgpack
       #while(cookies[:forum_topics_read].size > MAX_COOKIE_SIZE) do
           # need to reduce the cookie size, so we need to 
           

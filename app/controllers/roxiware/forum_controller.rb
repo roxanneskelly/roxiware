@@ -1,6 +1,10 @@
+require 'msgpack'
+
 class Roxiware::ForumController < ApplicationController
     include Roxiware::ApplicationControllerHelper
     application_name "forum"
+
+    MAX_COOKIE_SIZE = 4000
 
 
     before_filter do
@@ -15,7 +19,22 @@ class Roxiware::ForumController < ApplicationController
 
       # grab the board groups.  View will use the 'boards' off of the board group to list the boards
       @forum_board_groups = Roxiware::Forum::BoardGroup.includes(:boards).order(:display_order)
-      @board_data = {}
+      @changed_topic_count = {}
+      @topics = Roxiware::Forum::Topic.visible(current_user)
+      @topics_data = {}
+      begin
+          @topics_data = MessagePack.unpack(cookies[:forum_topics_read])
+      rescue Exception => e
+          puts "MSGPACK Error #{e.message}"
+          puts e.backtrace.join("\n")
+      end
+      @topics.each do |topic|
+          @changed_topic_count[topic.board_id] ||= 0
+          puts "#{topic.last_post_date.inspect} < #{@topics_data[topic.id.to_s] || 0}"
+          @changed_topic_count[topic.board_id] += 1 if ((@topics_data[topic.id.to_s] || 0) <= (topic.last_post_date || 0))
+      end
+      puts @changed_topic_count.inspect
+
       respond_to do |format|
           format.html 
       end
@@ -28,7 +47,23 @@ class Roxiware::ForumController < ApplicationController
       @board = Roxiware::Forum::Board.find_by_seo_index(params[:id])
       raise ActiveRecord::RecordNotFound if @board.nil?
       authorize! :read, @board
-      @topics_data = ActiveSupport::JSON.decode(cookies[:forum_topics_read] || "{}")
+      @topics_data = {}
+      begin
+          @topics_data = MessagePack.unpack(cookies[:forum_topics_read])
+      rescue Exception => e
+          puts "MSGPACK Error #{e.message}"
+          puts e.backtrace.join("\n")
+      end
+      @new_post_counts = {}
+      @last_posts = {}
+      @root_posts = {}
+      @topics = @board.topics.visible(current_user)
+      @board.posts.includes(:comment_author).visible(current_user).each do |post|
+          @last_posts[post.post_id] = post if @root_posts[post.post_id].present? && (@last_posts[post.post_id].blank? || post.comment_date > @last_posts[post.post_id].comment_date)
+          @root_posts[post.post_id] ||= post
+          @new_post_counts[post.post_id] ||= 0
+          @new_post_counts[post.post_id] += 1 if (Time.at(@topics_data[post.post_id.to_s] || 0) < post.comment_date.to_time)
+      end
       respond_to do |format|
           format.html 
       end
@@ -71,12 +106,20 @@ class Roxiware::ForumController < ApplicationController
       authorize! :read, @topic
 
       comments = @topic.posts.visible(current_user)
-      topics_info = ActiveSupport::JSON.decode(cookies[:forum_topics_read] || "{}") || {}
+      topics_info = {}
+      begin
+          topics_info = MessagePack.unpack(cookies[:forum_topics_read])
+      rescue Exception => e
+          puts "MSGPACK Error #{e.message}"
+          puts e.backtrace.join("\n")
+      end
       @topic_last_read = topics_info[@topic.id.to_s] || 0
       topics_info[@topic.id.to_s] = Time.now().to_i
-      puts "TOPICS #{topics_info.to_json}"
-      cookies[:forum_topics_read] = topics_info.to_json
-      
+      cookies[:forum_topics_read] = topics_info.to_msgpack
+      #while(cookies[:forum_topics_read].size > MAX_COOKIE_SIZE) do
+          # need to reduce the cookie size, so we need to 
+          
+      #end
       # create comment hierarchy
       @comments = {}
       comments.each do |comment|

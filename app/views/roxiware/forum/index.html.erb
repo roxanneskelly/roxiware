@@ -3,7 +3,8 @@
         content_tag(:div, group.name, :class=>"forum_board_group_name") +
         content_tag(:div, :id=>group.id, :class=>"forum_board_group") do 
             group.boards.visible(current_user).collect do |board|
-                new_posts_class = (board.post_count != (@board_data[board.id.to_s] || 0)) ? "forum_board_new_posts" : "forum_board_no_new_posts"
+                puts "NEW #{@changed_topic_count[board.id].inspect}"
+                new_posts_class = (0 < (@changed_topic_count[board.id] || 0)) ? "forum_board_new_posts" : "forum_board_no_new_posts"
                 content_tag(:div, :id=>board.id, :class=>"forum_board #{new_posts_class}") do
                     content_tag(:div, :class=>"forum_board_info") do 
                         link_to(board.name, forum_path(board.seo_index), :class=>"forum_board_name") +

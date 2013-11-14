@@ -34,5 +34,6 @@ Gem::Specification.new do |s|
   s.add_dependency "httparty", "0.11.0"
   s.add_dependency "libxml-ruby"
   s.add_dependency "recaptcha"
+  s.add_dependency "msgpack"
   s.add_development_dependency "sqlite3"
 end

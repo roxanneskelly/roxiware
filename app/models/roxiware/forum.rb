@@ -23,6 +23,7 @@ module Roxiware
         include Roxiware::BaseModel
         self.table_name="forum_boards"
 	has_many :topics, :dependent=>:destroy, :autosave=>true
+        has_many :posts, :through=>:topics, :source=>:comments, :class_name=>"Roxiware::Comment"
         belongs_to :board_group
         belongs_to :last_post, :class_name=>"Roxiware::Comment"
         default_scope order(:display_order)
@@ -63,7 +64,7 @@ module Roxiware
         end
 
         before_validation do
-            self.comment_count = self.topics.sum(:comment_count)
+            self.comment_count = self.topics.sum(:comment_count)-self.topics.count
             self.pending_comment_count = self.topics.sum(:pending_comment_count)
 	    last_topic = self.topics.select{|topic| topic.last_post.present?}.sort{|x, y| x.last_post.comment_date <=> y.last_post.comment_date}.last
 

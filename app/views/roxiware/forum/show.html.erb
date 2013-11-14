@@ -22,26 +22,26 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
             content_tag(:div, "", :class=>"forum_topic_num_posts_header") +
             content_tag(:div, "", :class=>"forum_topic_last_post_header") 
         end +
-	@board.topics.visible(current_user).collect do |topic|
-            num_new_posts = topic.new_post_count(@topics_data[topic.id.to_s])
+	@topics.collect do |topic|
+            num_new_posts = (@new_post_counts[topic.id] || 0) - 1
             new_post_class=((num_new_posts > 0) || @topics_data[topic.id.to_s].blank? ? "forum_new_posts" : "forum_no_new_posts")
             permissions_class= "topic_permission_"+topic.resolve_comment_permissions 
-	    content_tag(:div, :id=>topic.id, :class=>"forum_topic #{new_post_class}", :rel=>forum_update_topic_path(topic.board.seo_index, topic.id)) do 
+	    content_tag(:div, :id=>topic.id, :class=>"forum_topic #{new_post_class}", :rel=>forum_update_topic_path(@board.seo_index, topic.id)) do 
 		content_tag(:div, :class=>"forum_topic_info") do
 	            content_tag(:div, "", :class=>permissions_class+" forum_topic_permissions") +
 	            link_to(topic.title, topic.topic_link, :class=>"forum_topic_title") + 
-		    (topic.root_post.comment_author.present? ? link_to(topic.root_post.comment_author.name, topic.root_post.comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
-		    (content_tag(:div, topic.last_post.comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if topic.last_post.present?)
+		    (@root_posts[topic.id].comment_author.present? ? link_to(@root_posts[topic.id].comment_author.name, @root_posts[topic.id].comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
+		    (content_tag(:div, @last_posts[topic.id].comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if @last_posts[topic.id].present?)
 	        end + 
 		content_tag(:div, topic.post_count, :class=>"forum_topic_post_count") do
                     content_tag(:span, topic.post_count, :class=>"forum_topic_num_posts") +
-                    (content_tag(:span, topic.pending_post_count, :class=>"forum_topic_pending_post_count") if can?(:edit, :@board)) +
+                    (content_tag(:span, topic.pending_post_count, :class=>"forum_topic_pending_post_count") if can?(:edit, @board)) +
 		    (content_tag(:span, num_new_posts, :class=>"forum_topic_num_new_posts") if num_new_posts > 0) 
                 end +
 		content_tag(:div, :class=>"forum_topic_last_post forum_topic_menu_target", :topic_permission=>topic.permissions) do
-                    if(topic.last_post.present?)
-		        (topic.last_post.comment_author.present? ? link_to(topic.last_post.comment_author.name, topic.last_post.comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
-		        content_tag(:div, topic.last_post.comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date")
+                    if(@last_posts[topic.id].present?)
+		        (@last_posts[topic.id].comment_author.present? ? link_to(@last_posts[topic.id].comment_author.name, @last_posts[topic.id].comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
+		        content_tag(:div, @last_posts[topic.id].comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date")
                     end
                 end 
 	    end
@@ -62,7 +62,7 @@ end %>
 <% if can? :edit, Roxiware::Forum::Topic %>
 <%= render :partial=>"roxiware/forum/topic_manage_control" %>
 <% end %>
-<% if can? :edit, Roxiware::Forum::Board %>
+<% if can? :edit, @board %>
 <%= render :partial=>"roxiware/forum/board_manage_control" %>
 <% end %>
 

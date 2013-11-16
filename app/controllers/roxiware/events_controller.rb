@@ -10,7 +10,8 @@ class Roxiware::EventsController < ApplicationController
   end
 
   def index
-    time_check = Time.now.utc.midnight - 1.month
+    time_check = Time.now.utc.midnight 
+    time_check -= 1.month if current_user.present? && current_user.is_admin?
     @events = (Roxiware::Event.order("start ASC").select{|event| event.end_time > time_check}) || []
     @title = @title + " : Events"
     @meta_description = @meta_description +" : Events"

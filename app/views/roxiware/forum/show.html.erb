@@ -31,7 +31,7 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
 	            content_tag(:div, "", :class=>permissions_class+" forum_topic_permissions") +
 	            link_to(topic.title, topic.topic_link, :class=>"forum_topic_title") + 
 		    (@root_posts[topic.id].comment_author.present? ? link_to(@root_posts[topic.id].comment_author.name, @root_posts[topic.id].comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
-		    (content_tag(:div, @last_posts[topic.id].comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if @last_posts[topic.id].present?)
+		    (content_tag(:div, @root_posts[topic.id].comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if @root_posts[topic.id].present?)
 	        end + 
 		content_tag(:div, topic.post_count, :class=>"forum_topic_post_count") do
                     content_tag(:span, topic.post_count, :class=>"forum_topic_num_posts") +

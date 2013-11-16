@@ -317,6 +317,16 @@ module Roxiware
 	  def custom_settings
 	      if @custom_settings.nil?
 	          @custom_settings  = Roxiware::Param::Param.application_param_hash("custom_settings")[self.guid] || Roxiware::Param::Param.set_application_param("custom_settings", self.guid, "371BA63A-EEDB-440D-B641-40A6B813D280", {})
+                  # filter the custom settings by the scheme params
+	          scheme = get_param("schemes").h.first
+	          scheme_params = scheme.last.h["params"].h.keys
+                  @custom_settings.h.each do |key, value|
+                      if !scheme_params.include?(key)
+                          value.destroy
+                      end
+                      
+                  end
+                  
 	      end
 
 	      @custom_settings

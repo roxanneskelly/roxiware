@@ -114,7 +114,12 @@ module Roxiware
     end
 
     def post_image
-        self.post_content[/img.*?src="(.*?)"/i,1]
+        videos = self.post_content[/iframe.*?src="http:\/\/www\.youtube\.com\/embed\/(.*?)"/i,1]
+	if videos.present?
+            "http://img.youtube.com/vi/#{videos}/0.jpg"
+        else
+            self.post_content[/img.*?src="(.*?)"/i,1]
+        end
     end
 
     before_validation() do

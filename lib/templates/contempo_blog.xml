@@ -1558,6 +1558,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 		        img {
 			    display:none;
 		        }
+			iframe {
+			   display:none;
+			}
 		     }
 		     .post_header {
 			.margin-bottom:0.5em;
@@ -1898,6 +1901,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 			    margin-top:0.5em;
 			    img {
 				display:none;
+			    }
+			    iframe {
+			       display:none;
 			    }
 			}
 			.post_header {

@@ -5,7 +5,6 @@
   <description>
     <![CDATA[<p><b>Modern Meets Vintage</b></p>
 <p>The modern Catalyst template with a touch of class.  Present yourself as a creator of words in this template for bloggers and writers.</p>
-<p>Modern typography and striking colors frame your writing in this content-centric template.  It features easy to navigate menus, a columns featuring your recent blog posts, a contact widget for your mailing list, and full threaded comments with Facebook and Twitter login.</p>
 <p> </p>
 <p> </p>]]>
   </description>
@@ -176,7 +175,7 @@ div#colors_pane > div {
 
 body.application_body
 {
-    background: url('<%= background_image %>') no-repeat scroll top left;
+    background: url('<%= background_image %>') no-repeat fixed top left;
     background-color:<%= background_color %>;
     -webkit-background-size: cover;
     -moz-background-size: cover;

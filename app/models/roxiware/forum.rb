@@ -182,7 +182,7 @@ module Roxiware
       end
 
       before_validation() do
-         seo_index = self.title.downcase.gsub(/[^a-z0-9]+/i, '-')
+         seo_index = self.title.to_seo
          self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{self.root_post.comment_date.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.root_post
 	 self.last_post = self.posts.published().last
 	 self.last_post_date = self.last_post.present? ? self.last_post.comment_date : nil

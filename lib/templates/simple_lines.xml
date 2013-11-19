@@ -165,13 +165,12 @@ div#colors_pane > div {
 
 body.application_body
 {
-    background: url('<%= background_image %>') no-repeat scroll top left;
+    background: url('<%= background_image %>') no-repeat fixed top left;
     background-color: <%= background_color %>;
-    -webkit-background-size: 100%;
-    -moz-background-size: 100%;
-    -o-background-size: 100%;
-    background-size: 100%;
-    background-position:center top;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 /* Sizing for various devices */

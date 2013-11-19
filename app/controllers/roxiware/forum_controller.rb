@@ -30,10 +30,8 @@ class Roxiware::ForumController < ApplicationController
       end
       @topics.each do |topic|
           @changed_topic_count[topic.board_id] ||= 0
-          puts "#{topic.last_post_date.inspect} < #{@topics_data[topic.id.to_s] || 0}"
           @changed_topic_count[topic.board_id] += 1 if ((@topics_data[topic.id.to_s] || 0) <= (topic.last_post_date || 0))
       end
-      puts @changed_topic_count.inspect
 
       respond_to do |format|
           format.html 

@@ -781,47 +781,14 @@ div#mainBody .post {
     #comment_form_core {
         text-align:justify;
         width:100%;
-        #comment_form_content {
-            vertical-align:top;
-            position:relative;
-            width:82%;
-            min-height:150px;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
-            display:inline-block;
-        }
-
         img#comment_author_image {
-            vertical-align:top;
-            max-width:64px;
-            display:inline;
-            width:15%;
-            height:auto;
-            margin:0.5em 1% 0 0;
-            background:<%= text_color %>;
-            display:inline-block;
 	    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 	    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 	    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 	    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 	    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
 	     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	     box-sizing:border-box;
-	     -moz-box-sizing:border-box;
         }
-
-    }
-    #comment_form_core:after {
-        width:100%;
-        display:inline-block;
-        content:"";
-        height:0px;
-    }
-
-    button.post_comment_button {
-        float:right;
-            clear:both;
-        margin:1em;
     }
     .comment_recaptcha {
          .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
@@ -1622,7 +1589,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">3</param>
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">300</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_image}</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_thumbnail}</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
@@ -1790,7 +1757,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">3</param>
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">300</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_image}</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_thumbnail}</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>
@@ -1969,7 +1936,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <![CDATA[div#mainBody {
     #content_section {
         #center_bar {
-                  padding:0px 20px 0px 20px;
+                  padding:0px 0px 0px 20px;
         }
     }
 }]]>
@@ -2471,7 +2438,7 @@ div#mainBody {
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="5AD23478-C90D-4BA8-81DF-7112B0762257" class="local" name="recent_posts_count">3</param>
                 <param description="F4AF8F08-955D-4800-992A-3E2912CA8740" class="local" name="excerpt_length">300</param>
-                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_image}</param>
+                <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="header_format">%{title}%{post_thumbnail}</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">recent_posts</param>
               </params>
             </instance>

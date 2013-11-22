@@ -679,41 +679,6 @@ div#mainBody .post {
     #comment_form_core {
         text-align:justify;
         width:100%;
-        #comment_form_content {
-            resize:vertical;
-            vertical-align:top;
-            position:relative;
-            width:82%;
-            min-height:150px;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
-            display:inline-block;
-        }
-
-        img#comment_author_image {
-            vertical-align:top;
-            max-width:64px;
-            display:inline;
-            width:15%;
-            height:auto;
-            margin:0.5em 1% 0 0;
-            background:<%= text_color %>;
-            display:inline-block;
-	     box-sizing:border-box;
-	     -moz-box-sizing:border-box;
-        }
-
-    }
-    #comment_form_core:after {
-        width:100%;
-        display:inline-block;
-        content:"";
-        height:0px;
-    }
-
-    button.post_comment_button {
-        float:right;
-            clear:both;
     }
     .comment_recaptcha {
          .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {

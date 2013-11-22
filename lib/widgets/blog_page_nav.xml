@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="" guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+    <name>Blog Page Navigation</name>
+    <description>
+      <![CDATA[Displays a list of numbers and next, last for blog posts]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[@page.present? && @num_pages.present? && (@num_pages > 1)]]>
+    </preload>
+    <render_view>
+      <![CDATA[<% if @num_pages.blank? %>
+	    Blog listing required
+	 <% else %>
+         <nav class="blog_num_nav">
+           <%= link_to(content_tag(:span,""), @prev_page_link, :class=>"blog_page_nav_prev") if @prev_page_link %>
+           <% current_page = 1
+              page_list_start = @page - nav_width 
+              page_list_end = @page + nav_width 
+              while(current_page <= @num_pages) do %>
+                <div class="blog_num_nav">
+		  <% if((current_page == 2) && (page_list_start > 2)) %>
+	            <div class="blog_num_nav">&#133;</div>
+	          <% current_page = page_list_start
+		     end %>
+                  <% if current_page != @page %>
+		     <%= link_to(current_page.to_s, url_for({:page=>current_page}.merge @link_params), :class=>"num_nav_num") %>
+		  <% else %>
+		     <span class="num_nav_num"><%= current_page.to_s %></span>
+		  <% end %>
+		  <% if((current_page == page_list_end) && (current_page < (@num_pages-1))) %>
+	               <div class="blog_num_nav">&#133;</div>
+	               <% current_page = @num_pages-1
+		     end %>
+                  <% current_page = current_page + 1 %>
+		</div>
+             <% end %>
+           <%= link_to(content_tag(:span,""), @next_page_link, :class=>"blog_page_nav_next") if @next_page_link %>
+	 </nav>
+      <% end %>]]>
+    </render_view>
+    <style>
+      <![CDATA[nav.blog_num_nav div {
+   display:inline-block;
+}
+nav.blog_num_nav 
+{
+   text-align:center;
+   align:center;
+   width:100%;
+}]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+      <param class="local" description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F" name="nav_width">6</param>
+    </params>
+  </widget>
+</widgets>

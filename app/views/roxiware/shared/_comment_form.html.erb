@@ -34,51 +34,103 @@
        <%= hidden_field_tag :root_id, 0 %>
        <%= hidden_field_tag :root_type, "" %>
        <%= raw additional_fields if additional_fields.present? %>
-       <%= content_tag("div",  :id=>"comment_form_core") do 
-               tag(:img, :id=>"comment_author_image", :class=>"comment_author_image", :src=>(user_signed_in? ? current_user.person.thumbnail_url : default_image_path(:person, :thumbnail))) +  " " +
+       <%= content_tag(:div,  :id=>"comment_form_core") do 
+               content_tag(:div, :id=>"comment_form_core_left") do
+                   tag(:img, :id=>"comment_author_image", :class=>"comment_author_image", :src=>(user_signed_in? ? current_user.person.thumbnail_url : default_image_path(:person, :thumbnail))) +
+                   content_tag(:div, "", :id=>"comment_author_name") +
+                   if !user_signed_in?
+		       content_tag(:div, :id=>"social_network_login", :style=>"display:none") do
+		           content_tag(:a, "", :id=>"facebook_login", :provider=>"facebook") +
+		           content_tag(:a, "", :id=>"twitter_login", :provider=>"twitter") +
+		           content_tag(:a, "", :id=>"facebook_logout", :provider=>"facebook", :style=>"display:none") +
+		           content_tag(:a, "", :id=>"twitter_logout", :provider=>"twitter", :style=>"display:none")
+		       end 
+                   end
+               end +
                content_tag(:div, text_area_tag(:comment_content, nil, :class=>"settings_wysiwyg"), :id=>"comment_form_content", :class=>"settings_wysiwyg") +
                hidden_field_tag(:comment_author_authtype, "generic") +
                hidden_field_tag(:comment_author_auth_token, nil)
-          end %>
-       <% if user_signed_in? %>
-            <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button" %>
-       <% else %>
-           <%= content_tag(:div, :id=>"comment_auth") do 
+           end +
+           content_tag(:div, :id=>"anonymous_author", :style=>"display:none") do
 	       content_tag(:div, :id=>"anonymous_author_info") do
-                  label_tag(:comment_author, "Name", :class=>"comment_author") + " " +
-                  text_field_tag(:comment_author, "", :class=>"comment_author", :watermark=>"Required") +
-	          label_tag(:comment_author_url, "URL", :class=>"comment_form_author_url") + " " +
-                  text_field_tag(:comment_author_url, nil, :class=>"comment_form_author_url", :watermark=>"Optional") +
-	          label_tag(:comment_author_email, "Email", :class=>"comment_form_author_email") + " " +
-                  text_field_tag(:comment_author_email, nil, :class=>"comment_form_author_email", :watermark=>"Required.  Not visible.") 
-               end +
-               content_tag(:div, :id=>"social_network_login") do 
-	           content_tag(:a, "", :id=>"facebook_login", :provider=>"facebook") +
-                   content_tag(:a, "", :id=>"twitter_login", :provider=>"twitter")
-               end +
-               content_tag(:div, :id=>"comment_recaptcha", :class=>"comment_recaptcha", :style=>"display:none") do %>
-		   <div id="recaptcha_image" class="recaptcha_image"></div>
-		   <div class="recaptcha_only_if_incorrect_sol">Incorrect please try again</div>
-		   <div class="captcha_reload" onclick="Recaptcha.reload()"></div>
-		   <div class="captcha_audio recaptcha_only_if_image" onclick="Recaptcha.switch_type('audio')"></div>
-		   <div class="captcha_image recaptcha_only_if_audio" onclick="Recaptcha.switch_type('image')"></div>
-		   <div class="captcha_help" onclick="Recaptcha.showhelp()"></div>
-		   <input type="text" class="recaptcha_response_field" id="recaptcha_response_field" name="recaptcha_response_field" watermark="Type the two verification words." />
-               <% end
-           end %>
-	   <%= button_tag "Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button", :disabled=>"disabled" %>
-        <% end %>
+		   content_tag(:div) do
+                       label_tag(:comment_author, "Name", :class=>"comment_author") +
+		       text_field_tag(:comment_author, "", :class=>"comment_author", :watermark=>"Required")
+                   end +
+		   content_tag(:div) do
+                       label_tag(:comment_author_url, "URL", :class=>"comment_form_author_url") + 
+		       text_field_tag(:comment_author_url, nil, :class=>"comment_form_author_url", :watermark=>"Optional")
+                   end +
+                   content_tag(:div) do 
+		       label_tag(:comment_author_email, "Email", :class=>"comment_form_author_email") + 
+		       text_field_tag(:comment_author_email, nil, :class=>"comment_form_author_email", :watermark=>"Required.  Not visible.") 
+                   end
+	       end +
+	       content_tag(:div, :id=>"comment_recaptcha", :class=>"comment_recaptcha", :style=>"display:none") do
+		   content_tag(:div, "", :id=>"recaptcha_image", :class=>"recaptcha_image") +
+		   content_tag(:div, "Incorrect, please try again", :class=>"recaptcha_only_if_incorrect_sol") +
+		   content_tag(:div, "", :class=>"captcha_reload", :onclick=>"Recaptcha.reload()") +
+		   content_tag(:div, "", :class=>"captcha_audio recaptcha_only_if_image", :onclick=>"Recaptcha.switch_type('audio')") +
+		   content_tag(:div, "", :class=>"captcha_image recaptcha_only_if_audio", :onclick=>"Recaptcha.switch_type('image')") +
+		   content_tag(:div, "", :class=>"captcha_help", :onclick=>"Recaptcha.showhelp()") +
+		   text_field_tag(:recaptcha_response_field, "", :class=>"recaptcha_response_field", :id=>"recaptcha_response_field", :watermark=>"Type the two verification words.")
+	       end
+           end +
+           content_tag(:div, :id=>"post_controls", :style=>"display:none") do
+               button_tag("Post", :id=>"post_comment", :class=>"post_comment_button", :type=>"button", :disabled=>"disabled")
+           end
+    %>
     </form>
 </div>
-<script type="text/template" id="social_networks_info">
-<div id="social_network_login"><div id="comment_author_name"></div></div>
-</script>
 <script>
 
 
     var initialized = false;
+    var comment_form=$(".comment_form");
+    var auth_controls_shown = false;
+    var showAuthControls = function() {
+        if(auth_controls_shown) {
+            return;
+        }
+        auth_controls_shown = true;
+        comment_form.find("#post_controls").css("display","block");
+<% if user_signed_in? %>
+        comment_form.find("button.post_comment_button").button("enable");
+<% else %>
+        comment_form.find("#social_network_login").css("display","block");
+        comment_form.find("#anonymous_author").css("display","block");
+        comment_form.find("button.post_comment_button").require_fields("input.comment_author, input.comment_author_email, input.recaptcha_response_field");
+        comment_form.find("#facebook_login,#twitter_login").css("display","block");
+        comment_form.find("#facebook_logout,#twitter_logout").css("display","none");
+        comment_form.find("#comment_author_name").text("");
+        comment_form.find("#comment_author_image").attr("src", "<%= default_image_path(:person, :thumbnail) %>");
+        comment_form.find("#comment_author_authtype").val("generic");
+        comment_form.find("#comment_author_auth_token").val("");
+<% end %>
+    };
+    var setLoginState = function(response) {
+        console.log("set login state");
+        console.log(response);
+        /* If we're logged in to facebook or twitter, remove the 'login' buttons, as well as
+           the anonymous auth controls */
+        
+        comment_form.find("#social_network_login").css("display","block");
+        comment_form.attr("comment_author_auth", response.auth_kind);
+        comment_form.find("#comment_author_image").attr("src", response.thumbnail_url);
+        comment_form.find("#comment_author_name").text(response.full_name);
+        comment_form.find("#comment_author_authtype").val(response.auth_kind);
+        comment_form.find("#comment_author_auth_token").val(response.auth_token);
+        comment_form.find("#anonymous_author").css("display","none");
+        comment_form.find("#facebook_login,#twitter_login").css("display","none");
+        comment_form.find("#"+response.auth_kind+"_logout").css("display","block");
+        comment_form.find("#post_controls").css("display","block");
+
+        comment_form.find("button.post_comment_button").button("enable");
+
+        auth_controls_shown = true;
+    }
+
     var resetCommentForm = function() {
-       var comment_form=$(".comment_form");
        if(initialized) {
            
            $(comment_form).find("textarea").tinymce().remove();
@@ -133,6 +185,9 @@
 					{title: 'Justify', icon: 'alignjustify', format: 'alignjustify'}
 				]}
 			],
+                        setup : function(ed) {
+                            ed.on('focus',showAuthControls);
+			 },
 		      statusbar:false,
 		      resize:false,
 		      schema: "html5",
@@ -172,15 +227,7 @@
                          oauth_state:$(this).data("oauth_state")},
                          onSuccess: function(response) {
                              if(response) {
-                                 var social_networks_info = $($("#social_networks_info").text());
-                                 comment_form.attr("comment_author_auth", auth_type);
-                                 comment_form.find("#comment_author_image").attr("src", response.thumbnail_url);
-                                 social_networks_info.find("#comment_author_name").text(response.full_name);
-                                 comment_form.find("#comment_form_header").html(social_networks_info);
-                                 comment_form.find("#comment_author_authtype").attr("value", response.auth_kind);
-                                 comment_form.find("#comment_author_auth_token").attr("value", response.auth_token);
-                                 comment_form.find("#comment_auth").remove();
-                                 comment_form.find("button.post_comment_button").button("enable");
+                                 setLoginState(response);
                              }
                           }};
 
@@ -198,14 +245,25 @@
 		  do_login(data);
 	      }
 	});
+       $("a#facebook_logout, a#twitter_logout").click(function() {
+           reset_login();
+           auth_controls_shown = false;
+           showAuthControls();
+       });
        <% end %>
 
        $(comment_form).find("input[watermark]").watermark();
        resetCommentForm();
 
-       comment_form.find("button.post_comment_button").require_fields("input.comment_author, input.comment_author_email, input.recaptcha_response_field");
-       comment_form.find("textarea#comment_content").focus();
-
+<% if !user_signed_in? %>
+       do_login({
+           check_login_state:true,
+           proxy:true,
+           onSuccess: function(response) {
+           setLoginState(response);
+           }
+       });
+<% end %>
        comment_form.find("button.post_comment_button").unbind("click");
        comment_form.find("button.post_comment_button").click(function() {
            comment_form.find("input.watermark").val("");

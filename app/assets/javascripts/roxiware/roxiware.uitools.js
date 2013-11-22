@@ -1092,13 +1092,7 @@ $.fn.require_fields = function(fields) {
 
 function do_login(data) {
     // Bring up a 3rd party login window
-    var login_url = "/account/auth/authproxy?"+$.param(data.params);
-    var width=500;
-    var height=300;
-    var left = $(window).width()/2-width/2;
-    var top=$(window).height()/2-height/2;
     var auth_info = {};
-
     if (data.proxy && localStorage.roxiwareAuthInfo) {
         if(localStorage.roxiwareAuthInfo) {
 	    try{
@@ -1112,14 +1106,22 @@ function do_login(data) {
 	    auth_info = {}
 	}
     }
-    if(auth_info.auth_kind == data.params.provider) {
+    if(data.check_login_state || (auth_info.auth_kind == data.params.provider)) {
         if(new Date(auth_info.expires*1000) > new Date()) {
             data.onSuccess(auth_info);
 	    return;
         }
     }
+    if(data.check_login_state) {
+        return;
+    }
     localStorage.roxiwareAuthInfo = undefined;
 
+    var login_url = "/account/auth/authproxy?"+$.param(data.params);
+    var width=500;
+    var height=300;
+    var left = $(window).width()/2-width/2;
+    var top=$(window).height()/2-height/2;
     var login_popup = window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
     var timer = setInterval(function() {
         if(login_popup.closed) {

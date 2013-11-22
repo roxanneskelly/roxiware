@@ -1,0 +1,2052 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0" guid="1075C771-6271-4B63-9D61-F1B3FD389B20">
+  <!-- Roxiware Web Engine Template: Videodrome -->
+  <name>Videodrome</name>
+  <description>
+    <![CDATA[<p><b>Be Seen.</b> <br>Designed for video bloggers, photographers, and artists. The focus is on your images.</p>]]>
+  </description>
+  <setup>
+    <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+person = Roxiware::Person.find(person_id)
+
+subtitle = Roxiware::Param::Param.application_param_val("system", "subtitle")
+title = Roxiware::Param::Param.application_param_val("system", "title")
+title = person.full_name if title.blank?
+
+Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
+Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
+Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", person.full_name)
+Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", title+", #{subtitle}")
+Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
+Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", title)
+]]>
+  </setup>
+  <settings_form>
+    <![CDATA[
+<style>
+#template_customize_form {
+    position:relative;
+}
+div#background_pane {
+    text-align:justify;
+    position:absolute;
+}
+div#colors_pane {
+    text-align:justify;
+    line-height:3em;
+}
+div#colors_pane > div {
+    width:30%;
+    display:inline-block;
+    margin-right:2em;
+    vertical-align:top;
+}
+#param_header_background_image {
+    position:absolute;
+    bottom:4em;
+    left:4em;
+    width:475px;
+    height:50px;
+    margin-left:auto;
+    margin-right:auto;
+}
+#param_background_image {
+    position:absolute;
+    top:2em;
+    width:480px;
+    height:300px;
+    left:4em;
+}
+#param_body_background_image {
+    position:absolute;
+    top:2em;
+    width:240px;
+    height:300px;
+    right:4em;
+}
+
+#param_body_background_color {
+    position:absolute;
+    bottom:10.5em;
+    right:4em;    
+}
+
+#param_background_color {
+    position:absolute;
+    bottom:7em;
+    right:4em;    
+}
+
+#param_header_background_color {
+    position:absolute;
+    bottom:3.5em;
+    right:4em;    
+}
+
+</style>
+<div class="template_customize_form large_form" id="template_customize_form">
+   <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
+       custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
+
+       content_tag(:ul, :class=>"tabs") do
+           content_tag(:li, content_tag(:a, "Backgrounds")) +
+           content_tag(:li, content_tag(:a, "Fonts & Colors"))
+       end +
+       content_tag(:div, :class=>"panes") do 
+           content_tag(:div, :id=>"background_pane") do
+	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>100, :id=>"header_background_image") + " " +
+	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1024) + " " +
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1024, :height=>1200) +
+	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
+	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+           end +
+           content_tag(:div, :id=>"colors_pane") do
+               content_tag(:div, :id=>"title_fields") do
+	           param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font") +
+	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
+	           param_field(customize_form, custom_params.delete("subtitle_font"), :id=>"subtitle_font") +
+	           param_field(customize_form, custom_params.delete("subtitle_color"), :id=>"subtitle_color") +
+	           param_field(customize_form, custom_params.delete("menu_text_color"), :id=>"menu_text_color") +
+	           param_field(customize_form, custom_params.delete("menu_text_selected_color"), :id=>"menu_text_selected_color") +
+	           param_field(customize_form, custom_params.delete("menu_background_color"), :id=>"menu_background_color") +
+	           param_field(customize_form, custom_params.delete("menu_background_hover_color"), :id=>"menu_background_hover_color")
+               end +
+               content_tag(:div, :id=>"title_fields") do
+	           param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
+	           param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
+	           param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
+	           param_field(customize_form, custom_params.delete("post_text_color"), :id=>"post_text_color") +
+	           param_field(customize_form, custom_params.delete("post_link_color"), :id=>"post_link_color") +
+	           param_field(customize_form, custom_params.delete("post_link_hover_color"), :id=>"post_link_hover_color") +
+	           param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") 
+               end +
+               content_tag(:div, :id=>"color_fields") do
+		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+		       param_field(customize_form, param, :id=>param.name) 
+		   end.join("").html_safe
+               end
+           end
+       end +
+       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+    end %>
+</div>
+<script>
+    $(function() {
+      $('select#custom_settings_title_font').fontSelector({
+      });
+      $('select#custom_settings_subtitle_font').fontSelector({
+      });
+       $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
+
+       $(".template_customize_form form").submit(function(e) {
+           e.preventDefault();
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>.json", $("form").serializeArray(), {
+                                method:"PUT",
+                                success: function(json_data) {
+                                    window.location.reload();
+                                }
+           });
+    });
+ });
+</script>
+
+]]>
+  </settings_form>
+  <categories>
+    <category>General</category>
+  </categories>
+  <packages>
+    <package>basic_blog</package>
+    <package>premium_blog</package>
+  </packages>
+  <style>
+    <![CDATA[/* Document layout */
+/* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
+    It's better to apply styles to the #mainBody which only contains client website content */
+
+
+
+body.application_body
+{
+    background: url('<%= background_image %>') no-repeat fixed top left;
+    background-color:<%= background_color %>;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-position:center top;
+}
+
+/* Sizing for various devices */
+div#mainBody {
+     font-size:12px;
+     width:1024px;
+}
+
+/* for all mobile devices, set width to 100% */
+@media all and (max-device-width: 1024px) {
+      div#mainBody {
+          position:absolute;
+          right:0px;
+          left:0px;
+          width:auto;
+      }
+}
+
+/* Various mobile portrait guesses */
+@media all and (min-device-height: 320px) and (orientation:portrait) {
+      div#mainBody {
+           font-size:8px;
+           #content_section {
+               min-height:220px;
+           }
+      }
+}
+
+@media all and (min-device-height: 480px) and (orientation:portrait) {
+      div#mainBody #content_section {
+           min-height:370px;
+       }
+}
+
+@media all and (min-device-height: 640px) and (orientation:portrait) {
+      div#mainBody {
+          min-height:600px;
+      }
+}
+
+@media all and (device-height: 800px) and (orientation:portrait) {
+      div#mainBody {
+           font-size:10px;
+      }
+      div#mainBody #content_section {
+           min-height:600px;
+       }
+}
+
+@media all and (min-device-height: 1024px) and (orientation:portrait) {
+      div#mainBody {
+           font-size:11px;
+      }
+      div#mainBody #content_section {
+           min-height:740px;
+       }
+}
+
+@media all and (min-device-height: 1280px) and (orientation:portrait) {
+      div#mainBody {
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:1000px;
+       }
+}
+
+/* Landscape */
+@media all and (min-device-width: 320px) and (orientation:landscape) {
+      div#mainBody {
+          font-size:8px;
+      }
+      div#mainBody #content_section {
+           min-height:220px;
+       }
+}
+
+@media all and (min-device-width: 480px) and (orientation:landscape) {
+      div#mainBody #content_section {
+           min-height:370px;
+       }
+}
+
+
+@media all and (min-device-width: 640px) and (orientation:landscape) {
+      div#mainBody {
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:540px;
+       }
+}
+
+@media all and (min-device-width: 768px) and (orientation:landscape) {
+      div#mainBody {
+          min-height:680px;
+      }
+      div#mainBody #content_section {
+           min-height:480px;
+       }
+}
+
+@media all and (min-device-width: 800px) and (orientation:landscape) {
+      div#mainBody {
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:550px;
+       }
+}
+
+@media all and (min-device-width: 1024px) and (orientation:landscape) {
+      div#mainBody {
+          min-height:940px;
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:740px;
+       }
+}
+
+@media all and (device-width: 1280px) and (device-height:800px) and (orientation:landscape) {
+      div#mainBody {
+          min-height:1200px;
+          font-size:12px;
+      }
+      div#mainBody #content_section {
+           min-height:1000px;
+       }
+}
+
+
+/* Fonts and text */
+div#mainBody
+{
+
+    font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
+
+    margin:0px auto 20px auto;
+    color:<%= text_color %>;
+
+    h1, h2, h3, h4, h5, h6 {
+	font-family:Georgia, serif;
+	color:<%= text_color %>;
+    }
+
+    h1 {font-size:1.3em;line-height:1;margin-bottom:0.5em;}
+    h2 {font-size:1.2em;margin-bottom:0.75em;}
+    h3 {font-size:1.1em;line-height:1;margin-bottom:1em;}
+    h4 {font-size:1.1em;line-height:1.25;margin-bottom:1.25em;}
+    h5 {font-size:1em;font-weight:bold;margin-bottom:1.5em;}
+    h6 {font-size:1em;font-weight:bold;}
+
+    hr {
+        color: <%= text_color %>;
+    }
+
+    a, a:visited, a:link {
+        color: <%= link_color %>;
+        text-decoration:none;
+        font-style:none;
+        cursor:pointer;
+    }
+
+    a, a:visited, a:link, a:hover {
+        color: <%= link_color %>;
+    }
+    a:hover {
+      color: <%= link_hover_color %>;
+    }
+    
+  .watermark {
+       color:#ccc !important;
+    }
+    input {
+        margin:0px;
+        padding:1px;
+    }
+    label {
+        padding:2px
+    }
+
+    button.ui-widget, ui-button-text-only {
+        border:none;
+        background:<%= background_highlight_color %>;
+        color:<%= post_text_color %>;
+        border-radius:0px;
+        padding:0.2em 3em 0.2em 3em;
+	-o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	-icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	-khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	-moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	-webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    }
+    button.ui-state-hover {
+        background:<%= background_highlight_hover_color %>;
+    }
+    button.ui-state-active {
+	-o-box-shadow: none;
+	-icab-box-shadow: none;
+	-khtml-box-shadow: none;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+    }
+}
+
+
+/* General layout */
+div#mainBody
+{
+    header {
+       width:100%;
+       background: url('<%= header_background_image %>') no-repeat scroll top left;
+       bacground-color: <%= header_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
+       background-position:center top;
+    }
+
+    #layout_body
+    {
+       margin:0px;
+       width:100%;
+       display:block;
+       background: url('<%= body_background_image %>') no-repeat scroll top left;
+       background-color:<%= body_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
+       background-position:center top;
+    }
+
+    #content_section {
+       display:block;
+       width:100%;
+       position:relative;
+
+        #center_bar {
+            padding:0px 0px 0px 0px;
+
+            position:relative;
+            width:100%;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            display:inline-block;
+            vertical-align:top;
+
+            .content_background_container {
+                #center_content {
+                    position:relative;
+                    width:100%;
+                }
+            }
+        }
+
+    }
+}
+
+
+
+.manage_button {
+    opacity:0;
+    color: <%= link_color %>
+}
+
+/* Content and widget background boxes */
+/* set the content background to relative so we can position the content background off of it */
+div.content_background_container, .widget
+{
+   position:relative;
+}
+
+/* The backgrounds for the content and widget containers span the entire widget */
+div.widget_background, div.content_background
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+
+div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+        margin-bottom:1em;
+
+        .widget#blog_num_nav {
+            font-size:1.3em;
+
+	    .blog_num_nav {
+	       vertical-align:top;
+	       line-height:1em;
+	    }
+	    .blog_num_nav span {
+	       font-weight:bold;
+	    }
+	    .blog_page_nav_prev {
+	       padding-left:1em;
+	       margin-right:0.1em;
+	       line-height:1em;
+	    }
+	    .blog_page_nav_prev span:before {
+		content:"\e06a";
+	    }
+	     .blog_page_nav_next {
+		padding-right:1em;
+		margin-left:0.1em;
+		line-height:1em;
+	    }
+	    .blog_page_nav_next span:after {
+		content:"\e06b";
+	    }
+	    .blog_page_nav_next span:after, .blog_page_nav_prev span:before {
+		font-family: 'Metro Icons';
+		speak: none;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		cursor:pointer;
+		font-size:1.05em;
+		line-height:1em;
+		vertical-align:top;
+	    }
+        }
+    }
+}
+
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar #top_bar_section {
+           left:2em;
+           right:60px;
+      }
+}
+
+div#mainBody .page_content {
+   position:relative;
+    width:100%;
+    padding:2em;
+    background: <%= background_highlight_color %>;
+    box-sizing:border-box;
+    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    color: <%= post_text_color %>;
+
+    a, a:link, a:visited {
+        color: <%= post_link_color %>;
+    }
+    a:hover {
+        color: <%= post_link_hover_color %>;
+    }
+}
+
+/* Post*/
+div#mainBody .post {
+    position:relative;
+    margin: 0 0 2em 0;
+    width:100%;
+    padding:0;
+    background: <%= background_highlight_color %>;
+    box-sizing:border-box;
+    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    color: <%= post_text_color %>;
+
+    a, a:link, a:visited {
+        color: <%= post_link_color %>;
+    }
+    a:hover {
+        color: <%= post_link_hover_color %>;
+    }
+
+    .post_header {
+        display:inline;
+        box-sizing:border-box;
+        display:inline-block;
+        width:100%;
+        margin-bottom:0.5em;
+        .post_date {
+            opacity:0.8;
+            display:inline-block;
+         }
+         .comments_link {
+             float:right;
+             display:inline-block;
+         }
+         .post_title {
+             font-size: 2em;
+             display:block;
+             text-align:left;
+             margin-bottom:0.3em;
+         }
+     }
+    .content {
+        display:inline;
+        margin-top:0.5em;
+        margin-left:0em;
+        overflow:hidden;
+        box-sizing:border-box;
+        display:inline-block;
+        width:100%;
+        iframe {
+            display:none;
+        }
+        img {
+            padding:0.5em;
+            height:auto;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        }
+    }
+    .post_tags {
+        position:absolute;
+        right:1em;
+        bottom:1em;
+        .post_tag {
+        }
+        .post_tag:after {
+            content:"\0000a0|\0000a0";
+        }
+        .post_tag:last-child:after {
+            content:"";
+        }
+    }
+    .post_tags:before {
+        position:relative;
+        top:0.2em;
+        font-family: 'Metro Icons';
+        speak: none;
+        font-size:1.3em;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	color: <%= link_color %>;
+        content:"\e012\0000a0\0000a0";
+    }
+}
+
+
+/* Video post item in index of posts*/
+div#mainBody .post_list_item .post_type_youtube_video {
+     height:360px;
+    .post_header {
+        padding:1em 1.5em 1em 660px;
+	iframe.post_video {
+	     position:absolute;
+             top:0px;
+             left:0px;
+	     width:640px !important;
+	     height:360px !important;
+             border-right:solid 1px rgba(0,0,0,0.7);
+             z-index:50;
+        }
+     }
+    .content {
+        padding:1em 1.5em 1em 660px;
+        img {
+            max-width:20%;
+        }
+    }
+    .more_link {
+        margin-top:1em;
+        padding-left:660px;
+    }
+    .more_link:before {
+        content:"More...";
+    }
+}
+
+/* Image post item in index of posts*/
+div#mainBody .post_list_item {
+    .post_type_image, .post_type_text, .post_type_audio {
+        padding-bottom:1em;
+	.post_header {
+	    padding:1em 1.5em 1em 1.5em;
+	    img {
+		display:none;
+	    }
+	 }
+	.content {
+	    padding:1em 1.5em 1em 1.5em;
+	    img {
+		max-width:20%;
+	    }
+	}
+	.more_link {
+	    margin-top:1em;
+	    padding-left:1.5em;
+	    padding-bottom:1em;
+	}
+	.more_link:before {
+	    content:"More...";
+	}
+    }
+}
+
+
+/* Show post */
+div#mainBody .post_listing .post_type_youtube_video {
+    padding:2em;
+    .post_header {
+	iframe.post_video {
+             display:block;
+             margin: 0 auto 2em auto;
+	     width:854px !important;
+	     height:480px !important;
+	     -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+     }
+    .content {
+        img {
+            padding:0.5em;
+            max-width:100%;
+            height:auto;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        }
+    }
+}
+
+div#mainBody .post_listing {
+    .post_type_image, .post_type_text, .post_type_audio {
+        padding:2em;
+        .post_header {
+	    img { display:none; }
+        }
+     
+        .content {
+            img {
+                padding:0.5em;
+                max-width:100%;
+                height:auto;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+            }
+        }
+    }
+}
+
+.comments_link {
+    display:inline-block;
+    float:right;
+    .comments_count, .pending_comments_count {
+        margin-right:1em;
+        padding-left:0.1em;
+        display:inline;
+    }
+
+    .comments_count:after, .pending_comments_count:after {
+        font-family: 'Metro Icons';
+        speak: none;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	color: <%= link_color %>;
+	cursor:pointer;
+	content: "\e032";
+	padding-left:0.5em;
+    }
+    .pending_comments_count, .pending_comments_count:after {
+        color: <%= text_alert_color %>;
+    }
+}
+
+
+.comments_link:hover a {
+    color:<%= link_hover_color %>;
+}
+
+.comments_link:hover a:after {
+    color:<%= link_hover_color %>;
+}
+
+.comments {
+    margin-top:2em;
+    clear:both;
+    .comment > .comment_content_wrapper {
+        margin-left:2em;
+    }
+    .comment > .comment > .comment_content_wrapper {
+        margin-left:4em;
+    }
+
+    .comment > .comment > .comment > .comment_content_wrapper {
+        margin-left:6em;
+    }
+
+    .comment > .comment > .comment > .comment .comment_content_wrapper {
+        margin-left:8em;
+    }
+
+    .comment {
+       background: <%= background_highlight_color %>;
+       box-sizing:border-box;
+       -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+       -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+       -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+       -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+       -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	color: <%= post_text_color %>;
+        padding:1em;
+        margin-bottom:2em;
+        clear:both;
+        position:relative;
+
+        .comment_content_wrapper {
+            padding-bottom:1em;
+	    .comment_status_moderate {
+		float:right;
+		color: <%= text_alert_color %>;
+		margin-right:4em;
+	    }
+	    .comment_status_publish {
+		  display:none;
+	    }
+	    .comment_content {
+		clear:both;
+		padding-left:6em;
+	    }
+
+	    .comment_header {
+		vertical-align:top;
+		color: <%= link_color %>;
+		display:block;
+
+		.comment_author_image {
+		   max-width:10%;
+		   float:left;
+		   margin-right:1em;
+		   height:auto;
+		   -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+		   -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+		   -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+		   -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+		   -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+		   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+		   box-sizing:border-box;
+		   -moz-box-sizing:border-box;
+		}
+
+		.comment_author_name {
+		    display:inline-block;
+		    margin-right:0.5em;
+		    font-weight:500;
+		    font-size:1.3em;
+		}
+
+		.comment_date {
+		    display:block;
+		    float:right;
+		    margin-right:3em;
+		    font-style:italic;
+		    font-size:0.8em;
+		}
+	    }
+	    .comment_footer {
+		clear:both;
+		text-align:center;
+		.comment_reply {
+		    text-align:right;
+		    cursor:pointer;
+		    padding-left:2em;
+		    font-size:1.1em;
+		    display:block;
+		    top:1em;
+		    right:1em;
+		}
+
+		 .comment_reply:before {
+		     font-family: 'Metro Icons';
+		     speak: none;
+		     font-weight: normal;
+		     font-variant: normal;
+		     text-transform: none;
+		     line-height: 1;
+		     -webkit-font-smoothing: antialiased;
+		     cursor:pointer;
+		     content: "\e043";
+		     padding-right:0.5em;
+		     font-size:0.9em;
+		 }
+	    }
+	}
+    }
+    .comment_content_wrapper:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+}
+
+.post:hover {
+    .manage_button {
+        cursor:pointer;
+        opacity:0.5;
+    }
+}
+
+/* Full post display with comments */
+.post_listing {
+    .post_footer {
+        .comments_link {
+            width:100%;
+            text-align:right;
+	    .comment_count, .pending_comment_count {
+		font-size:1.3em;
+		display:inline-block;
+	    }
+	    .comment_count {
+		color:<%= secondary_text_color %>;
+	     }
+	     .pending_comment_count {
+		color:<%= text_alert_color %>;
+	     }
+
+	     .comment_count:after, .pending_comment_count:after {
+		 font-family: 'Metro Icons';
+		 speak: none;
+		 font-weight: normal;
+		 font-variant: normal;
+		 text-transform: none;
+		 line-height: 1;
+		 -webkit-font-smoothing: antialiased;
+		 content: "\e032";
+		 padding-left:0.5em;
+		 padding-right:1.2em;
+	     }
+        }
+    }
+}
+
+.comment_form {
+    position:relative;
+    width:100%;
+    margin:2em 0 3em 0;
+    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    background:<%= background_highlight_color %>;
+    color:<%= post_text_color %>;
+    #comment_form_core {
+        img#comment_author_image {
+	    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+        }
+
+    }
+    .comment_recaptcha {
+         .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+             color: <%= post_link_color %>;
+         }
+         .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+             color: <%= post_link_hover_color %>;
+         }
+    }
+}
+
+
+.page_content, .person_listing {
+    .manage_button {
+        position:absolute;
+        top:0px;
+        right:0px;
+        cursor:pointer;
+        opacity:0.5;
+    }
+}
+
+.book_title_link, .series_link {
+    font-face: Verdana;
+    margin-bottom:1em;
+    display:block;
+    font-size:1.5em;
+    border-bottom:solid 3px <%= graphic_element_color %>;
+}
+.book_title_link:before, .series_link:before {
+    font-family: 'Metro Icons';
+    speak: none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    font-size:1.4em;
+    line-height:1em;
+    width:10%;
+    display:inline-block;
+}
+.series_link:before {
+    content:'\e00b';
+}
+.book_title_link:before {
+    content:'\e00a';
+}
+.book_title, .series_title {
+    display:inline-block;
+    max-width:80%;
+    padding:0em 1em 0em 1em;
+    vertical-align:top;
+}
+
+.bookstore_list {
+     float:right;
+         ul {
+          list-style-type:none;
+         li.book_store {
+              display:inline-block;
+              a.store_link {
+                  width:32px;
+                  height:32px;
+                  display:inline-block;
+                  div.store_name {
+                      display:none;
+                  }
+              }
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", "dark") %>') no-repeat center;
+                } 
+            <% end %>   
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>:hover{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", "light") %>') no-repeat center;
+                } 
+            <% end %>   
+       }
+    }
+}
+
+
+/* WIDGETS */
+.widget {
+    width:100%;
+    margin:0px;
+
+    .widget_content {
+        margin:0px;
+        padding:0px;
+        position:relative;
+
+        .widget_content h1 {
+            font-size:1.2em;
+            font-weight:700;
+        }
+    }
+}
+
+/* Individual widget settings */
+.widget#events_widget {
+     margin-bottom:1em;
+     padding-bottom:1em;
+     width:100%;
+     .widget_content {
+	 box-sizing:border-box;
+	 -moz-box-sizing:border-box;
+    }
+    .events_widget {
+	width:100%;
+    }
+    .events_widget_title:before {
+	 content: "Calendar";
+    }
+    .events_widget_title {
+	 font-size:1.3em;
+    }
+    .events_widget_all_events {
+        margin-left:0.1em;
+        padding-right:0.1em;
+        line-height:40px;
+        vertical-align:top;
+    }
+    .events_widget_all_events:before {
+	 border-top:solid 3px <%= graphic_element_color %>;
+         width:100%;
+         display:inline-block;
+         content: "More...";
+    }
+    .event_widget_event {
+        width:100%;
+	display:block;
+	border-top:solid 3px <%= graphic_element_color  %>;
+	margin-top:0em;
+	padding-top:1em;
+	padding-bottom:2em;
+        .event_time {
+            font-size:0.7em;
+            .event_start_time {
+                display:inline-block;
+                margin-right:1em;
+            }
+            .event_start_time:after {
+                content:",  ";
+            }
+            .event_date_range {
+                display:inline-block;
+            }
+        }
+        .event_title {
+            font-weight:900;
+        }
+        .event_full_location {
+            font-size:0.7em;
+            font-style:italic;
+            .event_city, .event_state {
+                display:inline-block;
+            }
+            .event_state:before {
+                content:",  ";
+            }
+        }
+    }
+    .event_widget_event:hover {
+        border-top:solid 3px <%= graphic_element_color  %>;
+    }
+}
+
+
+/* Social networking icons */
+span.social_network_icon {
+     display:inline-block;
+        font-family: 'Metro Icons';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+}
+
+span#twitter.social_network_icon:before,span.twitter_icon:before { content:'\e0a2'; }
+span#google.social_network_icon:before,span.google_icon:before { content:'\e09c'; }
+span#facebook.social_network_icon:before,span.facebook_icon:before { content:'\e09f'; }
+span#rss.social_network_icon:before,span.rss_icon:before { content:'\e0a5'; }
+span#youtube.social_network_icon:before,span.youtube_icon:before { content:'\e0a9'; }
+span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; }
+
+/* Prev/Next post */
+.widget#prev_next_post {
+    text-align:center;
+    margin:2em 0em 1em 0em;
+    .widget_content {
+        width:20em;
+        .prev_post {
+            float:left;
+        }
+        .prev_post:before {
+           content: "<< ";
+        }
+
+        .next_post {
+             float:right;
+        }
+        .next_post:after {
+            content:" >>";
+        }
+    }
+}
+
+
+.share_bar {
+    > div {
+        display:inline-block;
+        padding-left:2em;
+    }
+}
+
+/* Various mobile portrait guesses */
+@media all and (max-width 2000px)  {
+    div#mainBody {
+        background:red;
+    }
+    div#mainBody article.post {
+        .post_title {
+            font-size:12px;
+            margin: 1em 0em 0.5em 0em;
+            width:55%;
+        }
+        .post_header {
+            font-size:8px;
+            .post_date {
+                width:20% !important;
+            }
+        }
+    }
+}
+
+@media all and (max-width: 640px) and (orientation:portrait)  {
+    div#mainBody {
+        .post {
+            .post_title {
+                font-size:8px;
+                width:55%;
+            }
+            .post_header {
+                font-size:8px;
+                .post_date {
+                    width:20%;
+                }
+            }
+         }
+    }
+}
+
+@media all and (max-width: 640px)  {
+    div#mainBody {
+
+        width:100%;
+
+        #right_bar_section {
+            display:none;
+        }
+        #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px 20px 0px 10px !important;
+        }
+    }
+}]]>
+  </style>
+  <params>
+    <param class="local" name="asset_theme" description="67BFE233-F4D1-400B-855F-393BF53B05A4">clear</param>
+    <param class="local" name="book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">500</param>
+    <param class="local" name="book_excerpt_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">1000</param>
+    <param class="local" name="books_display_type" description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0">simple</param>
+    <param class="template" name="chooser_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/chooser_image.jpg</param>
+    <param class="local" name="comment_header_format" description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE">%{author_image}%{author_name}%{date}%{moderate_indicator}</param>
+    <param class="local" name="event_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%b %e</param>
+    <param class="local" name="home_page_type" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4">blog_posts</param>
+    <param class="local" name="post_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%e %b %Y</param>
+    <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{post_asset}%{title}%{date}%{comments}</param>
+    <param class="local" name="posts_per_page" description="5A60C89E-4A1E-4D0C-B90F-E0D284883C89">2</param>
+    <param class="scheme" name="schemes" description="62275C2A-29F9-4BAA-9893-BB0417917807">
+      <param class="scheme" name="6605BFB7-3D19-4603-8965-A969C87138C6" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="secondary_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(69,81,62,0.7)</param>
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+          <param class="style" name="post_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#434e3c</param>
+          <param class="style" name="post_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#734e3c</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="text_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
+          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
+          <param class="style" name="menu_text_selected_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
+          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
+          <param class="style" name="menu_background_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(215,234,255,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(69,81,62,0.7)</param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="post_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#434e3c</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#893667</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#893667</param>
+          <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,189,181,1)</param>
+          <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,189,181,1)</param>
+          <param class="style" name="graphic_element_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+        </param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Garden</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+      </param>
+    </param>
+    <param class="local" name="series_book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">200</param>
+    <param class="local" name="series_display_type" description="0ADB2780-3D21-409F-A7B4-670395F99CD5">simple</param>
+  </params>
+  <pages>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="content">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="footer_bar">
+          <style>
+            <![CDATA[
+#footer_bar_section {
+    margin-top:1em;
+}
+#copyright.widget {
+    text-align:right;
+    div {
+        display:inline-block;
+    }
+    .scribaroo_site {
+         padding-left:2em;
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="1">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="header_bar">
+          <style>
+            <![CDATA[/* Header layout */
+
+
+#home_menu a:before {
+    font-family: 'Metro Icons';
+    speak: none;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+}
+#home_menu a:before {
+    content:"\e000";
+}
+
+#mainBody header.main_header {
+    position:fixed;
+    left:0px;
+    right:0px;
+    top:0px;
+    text-align:center;
+    z-index:100;
+    background-color:<%= menu_background_color %>;
+    -o-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
+     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
+    font-size:1.3em;
+    #header_bar_section {
+        margin:0em auto 0em auto;
+        text-align:right;
+        width:1024px;
+
+	/* Main Menu layout */
+	.widget#main_menu {
+            margin-left:2em;
+	    display:inline-block;
+	    text-align:left;
+	    float:left;
+            width:auto;
+            .widget_content {
+                width:auto;
+            }
+	    .ddsmoothmenu_widget {
+		font: Verdana;
+		margin-left:auto;
+		margin-right:auto;
+
+		display:inline-block;
+		ul {
+		    list-style-type:none;
+		    display:inline-block;
+                    margin:0;
+                    padding:0;
+
+		    li { 
+		       display:inline-block;
+		       vertical-align:middle;
+		       text-align:center;
+                       margin:0;
+                       padding:0;
+
+		       a, a:link, a:visited {
+			   color: <%= menu_text_color %>;
+			   background: none;
+			   display:inline-block;
+			   text-decoration:none;
+			   width:auto;
+		           padding:0.5em;
+		       }
+	               a:hover {
+			   color: <%= menu_text_color %>;
+		           background: <%= menu_background_hover_color %>;
+                       }
+
+		       a.menu_selected, a.selected
+		       ul li a.menu_selected {
+			   color: <%= menu_text_selected_color %>;
+		       }
+
+		       ul {
+			  padding-right:0px;
+			  position: absolute;
+			  left:0;
+			  display: none;
+			  visibility: hidden;
+			  width: auto;
+			  li {
+			      width:100%;
+			      padding-bottom:0px;
+			      display: list-item;
+			      margin:0;
+			      height:auto;
+			      border:none;
+			      a {
+				  padding-top:0.5em;
+				  padding-bottom:0.5em;
+				  margin:0em;
+			      }
+			  }
+		      }
+		  }
+	      }
+	  }
+      }
+      .widget#social_networks_header {
+	    display:inline-block;
+	    width:auto;
+	    .widget_content {
+		.social_networks{
+		      .social_networks_item {
+			     display:inline-block;
+		             padding:0.5em;
+                             a, a:hover, a:active, a:link {
+                                 color:<%= menu_text_color %>;
+                             }
+		      }
+		      .social_networks_item:hover {
+		           background: <%= menu_background_hover_color %>;
+                      }
+		  }
+	      }
+	}
+
+
+	.widget#login_bar {
+	    display:inline-block;
+	    width:auto;
+            margin-right:2em;
+
+	    border-left: groove 3px <%= menu_background_color %>;
+            padding: 0.5em;
+	    .widget_content {
+	       text-align:right;
+	       color:<%= menu_text_color %>;
+               a, a:link, a:visited {
+	           color:<%= menu_text_color %>;
+               }
+               a:hover {
+	           color:<%= menu_text_selected_color %>;
+               }
+	   }
+	}
+
+    }
+}
+
+@media all and (max-width: 640px)  {
+    div#mainBody {
+        #header_bar_section {
+            .widget#book_bar {
+                display:none;
+            }
+           .widget#main_menu a {
+                font-size:12px !important;
+            }
+            .widget#logo_bar {
+                .site_title {
+                    font-size:20px !important;
+                    top:-5px !important;
+                    left:5px !important;
+                }
+                .site_subtitle {
+                    display:none;
+                }
+            }
+        }
+    }
+}
+
+@media all and (max-width: 320px)  {
+    div#mainBody {
+        #header_bar_section {
+           .widget#main_menu a {
+                font-size:8px !important;
+            }
+        }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D" order="1">
+              <params>
+                <param class="local" name="show_search_box" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">false</param>
+                <param class="local" name="show_arrow" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680">false</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">main_menu</param>
+                <param class="local" name="menu_root" description="45A433ED-7183-4A28-890B-08F585A0E41A">
+                  <param class="local" name="child_0" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3">home_menu</param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB"></param>
+                  </param>
+                  <param class="local" name="child_1" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/blog</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3"></param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">Archive</param>
+                  </param>
+                  <param class="local" name="child_2" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">super</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/events</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3"></param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">Calendar</param>
+                  </param>
+                  <param class="local" name="child_3" description="FB30B299-B498-4848-AD22-7B973433C9F9">
+                    <param class="local" name="permission" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">guest</param>
+                    <param class="local" name="url" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0">/about</param>
+                    <param class="local" name="identifier" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3"></param>
+                    <param class="local" name="name" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB">About</param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+            <instance widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7" order="2">
+              <params>
+                <param class="local" name="biography_id" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06"></param>
+                <param class="local" name="rss_feed_source" description="D52AAF6A-0228-427B-8529-348282E4C771">blog</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">true</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">social_networks_header</param>
+                <param class="local" name="social_networks" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
+                  <param class="local" name="goodreads" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="foursquare" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="google" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="tumblr" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="facebook" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="youtube" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="twitter" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                </param>
+              </params>
+            </instance>
+            <instance widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A" order="3">
+              <params>
+                <param class="local" name="show_greeting" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">true</param>
+                <param class="local" name="show_search_box" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">false</param>
+                <param class="local" name="show_links" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">true</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">login_bar</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="left_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #left_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+        display:block;
+        width:100%;
+        margin-top:3em;
+        height:110px;
+        position:relative;
+        .widget#header_google_ad {
+            float:right;
+            width:728px;
+            height:90px;
+            margin:10px 0 10px 0;
+        }
+	.widget#logo_bar {
+	    margin-top:0.2em;
+	    .widget_content {
+		position:relative;
+		.site_title {
+		    position:absolute;
+		    color:<%= title_color %>;
+		    white-space:nowrap;
+		    font-family:<%= title_font %>;
+		    left:0.75em;
+		    top:0em;
+		    font-size:3em;
+		    font-weight:300;
+		    width:auto;
+		}
+		.site_subtitle {
+		    color:<%= subtitle_color %>;
+		    position:absolute;
+		    white-space:nowrap;
+		    font-family:<%= subtitle_font %>;
+		    left:3em;
+		    top:3em;
+		    font-size:1.3em;
+		    font-weight:300;
+		    width:auto;
+		}
+	    }
+	}
+    }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="1">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[<%= 
+                      person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+                      person = Roxiware::Person.find(person_id)
+                      title = Roxiware::Param::Param.application_param_val("system", "title") 
+                      title =  person.full_name if title.blank?
+                      content_tag(:div, title, :class=>"site_title") + content_tag(:div, Roxiware::Param::Param.application_param_val("system", "subtitle"), :class=>"site_subtitle") %>]]>
+                </param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">logo_bar</param>
+              </params>
+            </instance>
+            <instance widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C" order="2">
+              <params>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">header_google_ad</param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">9975719875</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+            #center_bar {
+                  padding:0px 0px 0px 0px;
+            }
+     }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #bottom_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+        padding-bottom:1em;
+
+        .blog_page_nav_prev {
+             padding-left:1em;
+             margin-right:1em;
+        }
+        .blog_page_nav_prev span:before {
+             content:"<<";
+        }
+        .blog_page_nav_next {
+             padding-right:1em;
+             margin-left:1em;
+        }
+        .blog_page_nav_next span:after {
+             content:">>";
+        }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+
+          .blog_page_nav_prev {
+             padding-left:1em;
+             margin-right:2em;
+         }
+         .blog_page_nav_prev span:before {
+             content:"<< Prev";
+         }
+          .blog_page_nav_next {
+             padding-right:1em;
+             margin-left:2em;
+         }
+         .blog_page_nav_next span:after {
+             content:"Next >>";
+         }
+    }
+}
+
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar #top_bar_section {
+           left:2em;
+           right:60px;
+      }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="1">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="index_by_date">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+            #center_bar {
+                  padding:0px 0px 0px 0px;
+            }
+     }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="top_bar">
+          <style>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="1">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="nav_width" description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F">6</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">blog_num_nav</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="show_by_title">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+        #center_bar {
+            padding:0px 0px 0px 0px;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+              > div:nth-child(1) {
+                  padding-left:0em;
+              }
+          }
+    }
+}
+
+
+@media all and (max-width: 640px)  {
+    div#mainBody  #top_bar_section {
+         .share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:0em;
+              }
+          }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="home" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+            #center_bar {
+                  padding:0px 0px 0em 0px;
+                  .content_background_container {
+                      padding:1em;
+                      margin-top:0em;
+                      box-sizing:border-box;
+                      -moz-box-sizing:border-box;
+                      #center_content .post_listing .post {
+                          .post_header {
+                               width:70%;
+                               display:inline-block;
+                               .post_title { clear:none;}
+                           }
+                          .content { display:inline;}
+                      }
+                  }
+            }
+     }
+}
+#left_bar_section
+{
+    min-height:40px;
+}
+@media all and (max-width: 640px)  {
+    div#mainBody {
+        width:100%;
+        #left_bar_section {
+            display:none;
+        }
+        #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px 20px 0px 0px !important;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[
+.share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+          }]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A" order="1">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="nav_width" description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F">6</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">blog_num_nav</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="people" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[.person_listing {
+     background: <%= background_highlight_color %>;
+     padding:1em;
+     margin-right:1em;
+     margin-top:1.5em;
+     margin-bottom:1.5em;
+    .social_network_icons {
+        display:none;
+    }
+    .person_portrait {
+        position:relative;
+        top:-20px;
+        right:-20px;
+        padding:5px;
+        background: <%= link_color %>;
+        float:right;
+        max-width:35%;
+    }
+    .person_name {
+        font-size:2em;
+    }
+    .person_bio {
+        img {
+            max-width:100%;
+            padding:1em;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[
+#bottom_bar_section {
+    margin-bottom:1em;
+}
+.share_bar {
+              > div {
+                  display:inline-block;
+                  padding-left:2em;
+              }
+          }]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3" order="1">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="series" action="">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="series" action="show">
+      <render_layout>roxiware/layouts/threecolumn</render_layout>
+      <style>
+        <![CDATA[.series {
+
+    .series_info {
+        position:relative;
+        box-sizing:border-box;
+         -moz-box-sizing:border-box;
+        padding:1em;
+        background: <%= background_highlight_color %>;
+        margin-bottom: 2em;
+        clear:both;
+
+        .series_title {
+            font-size:2.0em;
+            font-face:Verdana;
+        }
+    }
+    .series_info:hover, .book_listing:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+
+    .series_title:before {
+          font-family: 'Metro Icons';
+          speak: none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          -webkit-font-smoothing: antialiased;
+    }
+
+    .series_title:before {
+        content:'\e00b';
+        padding-right:1em;
+    }
+
+     div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+             .book_title_link:before {
+                 content:'\e00a';
+             }
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:25%;
+                 height:auto;
+                 padding:5px;
+                 background: <%= link_color %>;
+             }
+         
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+  </pages>
+</layout>

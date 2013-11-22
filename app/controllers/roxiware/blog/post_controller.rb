@@ -53,7 +53,7 @@ module Roxiware
 	   if params[:format] == "rss"
               @num_posts = [(params[:max] || @blog_posts_per_feed).to_i, @max_blog_posts_per_feed].min
 	   else
-              @num_posts = [(params[:max] || @blog_posts_per_page).to_i, @max_blog_posts_per_page].min
+              @num_posts = [(params[:max] || (@posts_per_page || @blog_posts_per_page)).to_i, @max_blog_posts_per_page].min
 	   end
 
 	   if params.has_key?(:year)

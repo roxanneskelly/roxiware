@@ -16,7 +16,13 @@ module Roxiware::Blog::PostHelper
             end.join("").html_safe
         end
 
-        header_content[:post_image] = tag(:img, :src=>post.post_image, :class=>"post_image")
+        header_content[:post_thumbnail] = tag(:img, :src=>post.post_thumbnail_url, :class=>"post_thumbnail")
+        case post.post_type 
+            when "youtube_video"
+                header_content[:post_asset] = content_tag(:iframe, "", :src=>post.post_video, :class=>"post_video")
+            when "image"
+                 header_content[:post_asset] = tag(:img, :src=>post.post_image_url, :class=>"post_image")
+        end
         header_content[:author_image] = (post.person.present? ? tag(:img, :src=>post.person.thumbnail_url, :class=>"post_author_img person_thumbnail") : "")
         header_content[:title] = link_to(post.post_title, post.post_link, :class=>"post_title")
         header_content[:author_name] = (post.person.present? ? link_to(post.person.full_name, "/people/"+post.person.seo_index, :class=>"post_author") : "")

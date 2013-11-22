@@ -114,12 +114,10 @@ module Roxiware
     end
 
     def post_image
-        videos = self.post_content[/iframe.*?src="http:\/\/www\.youtube\.com\/embed\/(.*?)"/i,1]
-	if videos.present?
-            "http://img.youtube.com/vi/#{videos}/0.jpg"
-        else
-            self.post_content[/img.*?src="(.*?)"/i,1]
-        end
+        self.post_image_url
+    end
+    def post_video
+        self.post_video_url
     end
 
     before_validation() do
@@ -129,6 +127,21 @@ module Roxiware
         end
 	if self.post_content_changed?
             self.post_exerpt = Sanitize.clean(truncate(self.post_content, :length => Roxiware.blog_exerpt_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER)
+	    videos = self.post_content[/iframe.*?src="http:\/\/www\.youtube\.com\/embed\/(.*?)"/i,1]
+	    if videos.present?
+                self.post_type="youtube_video"
+		self.post_image_url ||= "http://img.youtube.com/vi/#{videos}/0.jpg"
+		self.post_thumbnail_url ||= "http://img.youtube.com/vi/#{videos}/1.jpg"
+                self.post_video_url = "http://www.youtube.com/embed/#{videos}"
+	    else
+		self.post_image_url = self.post_content[/img.*?src="(.*?)"/i,1]
+		self.post_thumbnail_url = self.post_content[/img.*?src="(.*?)"/i,1]
+                if(self.post_image_url.present?)
+                    self.post_type="image"
+                else
+                    self.post_type="text"
+                end
+	    end
         end
     end
 

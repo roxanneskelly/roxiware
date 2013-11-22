@@ -17,14 +17,19 @@ module Roxiware
 		when "blog_posts"
                     # Show the first page of blog posts
 		    respond_to do |format|
-		        num_posts = Roxiware::Param::Param.application_param_val("blog", "blog_posts_per_page")
+		        num_posts = @posts_per_page || Roxiware::Param::Param.application_param_val("blog", "blog_posts_per_page")
 		        @posts = Roxiware::Blog::Post.where(:post_status=>"publish").order("post_date DESC").limit(num_posts+1)
+		        post_count = Roxiware::Blog::Post.where(:post_status=>"publish").count
 		        @page_images = [@posts.first.post_image] if @posts.first.present?
-			@og_url = @posts.first.post_link if @posts.first.present?
+			@blog_url = @posts.first.post_link if @posts.first.present?
 			@blog_class="blog"
-			if(@posts.length > num_posts)
+                        @page = 1
+                        @link_params = {:controller=>"roxiware/blog/post", :action=>"index_by_date"}
+			if(@posts.length == num_posts+1)
 			   @next_page_link = send("#{@blog_class}_path")+"?page=2"
+                           @posts.pop
 			end
+	                 @num_pages = (post_count.to_f/num_posts.to_f).ceil.to_i
 			format.html { render :template=>"roxiware/blog/post/index"}
 		    end
 		when "first_blog_post_excerpt"

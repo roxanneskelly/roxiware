@@ -1422,7 +1422,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
           <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(162,29,23,1)</param>
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(205,205,205,1)</param>
-          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(220,90,80,&#14;1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(220,90,80,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
           <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
           <param class="style" name="button_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>

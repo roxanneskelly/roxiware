@@ -22,6 +22,8 @@ module Roxiware::Blog::PostHelper
                 header_content[:post_asset] = content_tag(:iframe, "", :src=>post.post_video, :class=>"post_video")
             when "image"
                  header_content[:post_asset] = tag(:img, :src=>post.post_image_url, :class=>"post_image")
+            else
+                 header_content[:post_asset] = "".html_safe
         end
         header_content[:author_image] = (post.person.present? ? tag(:img, :src=>post.person.thumbnail_url, :class=>"post_author_img person_thumbnail") : "")
         header_content[:title] = link_to(post.post_title, post.post_link, :class=>"post_title")
@@ -32,7 +34,6 @@ module Roxiware::Blog::PostHelper
             (content_tag(:div, post.pending_comment_count, :class=>((post.pending_comment_count == 1) ? "comments_singular pending_comments_count" : "comments_plural pending_comments_count")) if options[:show_pending_comments])
         end if show_comments
         header_content[:date] = content_tag(:div, post.post_date.localtime.strftime(date_format).html_safe, :class=>"post_date")
-
         content_tag(:div, ((header_format || "%{author_image}%{date}%{author_name}%{comments}%{title}") % header_content).html_safe, :class=>"post_header")
     end
 end

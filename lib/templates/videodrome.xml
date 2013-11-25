@@ -45,8 +45,8 @@ div#colors_pane > div {
     position:absolute;
     bottom:4em;
     left:4em;
-    width:475px;
-    height:50px;
+    width:512px;
+    height:55px;
     margin-left:auto;
     margin-right:auto;
 }
@@ -94,8 +94,8 @@ div#colors_pane > div {
        end +
        content_tag(:div, :class=>"panes") do 
            content_tag(:div, :id=>"background_pane") do
-	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>100, :id=>"header_background_image") + " " +
-	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1024) + " " +
+	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>1024, :height=>110, :id=>"header_background_image") + " " +
+	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
 	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1024, :height=>1200) +
 	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
 	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
@@ -182,16 +182,6 @@ body.application_body
 div#mainBody {
      font-size:12px;
      width:1024px;
-}
-
-/* for all mobile devices, set width to 100% */
-@media all and (max-device-width: 1024px) {
-      div#mainBody {
-          position:absolute;
-          right:0px;
-          left:0px;
-          width:auto;
-      }
 }
 
 /* Various mobile portrait guesses */
@@ -307,13 +297,17 @@ div#mainBody {
        }
 }
 
+/* for all mobile devices, set width to 100% */
+@media all and (max-width: 1024px) {
+      div#mainBody {
+          width:100%;
+      }
+}
+
 
 /* Fonts and text */
-div#mainBody
-{
-
+div#mainBody {
     font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
-
     margin:0px auto 20px auto;
     color:<%= text_color %>;
 
@@ -360,19 +354,19 @@ div#mainBody
 
     button.ui-widget, ui-button-text-only {
         border:none;
-        background:<%= background_highlight_color %>;
+        background:<%= button_color %>;
         color:<%= post_text_color %>;
         border-radius:0px;
         padding:0.2em 3em 0.2em 3em;
-	-o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	-icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	-khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	-moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	-webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	-o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	-icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	-khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	-moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	-webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
     }
     button.ui-state-hover {
-        background:<%= background_highlight_hover_color %>;
+        background:<%= button_hover_color %>;
     }
     button.ui-state-active {
 	-o-box-shadow: none;
@@ -390,8 +384,6 @@ div#mainBody
 {
     header {
        width:100%;
-       background: url('<%= header_background_image %>') no-repeat scroll top left;
-       bacground-color: <%= header_background_color %>;
        -webkit-background-size: cover;
        -moz-background-size: cover;
        -o-background-size: cover;
@@ -525,12 +517,12 @@ div#mainBody .page_content {
     padding:2em;
     background: <%= background_highlight_color %>;
     box-sizing:border-box;
-    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     color: <%= post_text_color %>;
 
     a, a:link, a:visited {
@@ -544,17 +536,17 @@ div#mainBody .page_content {
 /* Post*/
 div#mainBody .post {
     position:relative;
-    margin: 0 0 2em 0;
+    margin: 0 0 3em 0;
     width:100%;
     padding:0;
     background: <%= background_highlight_color %>;
     box-sizing:border-box;
-    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     color: <%= post_text_color %>;
 
     a, a:link, a:visited {
@@ -607,8 +599,7 @@ div#mainBody .post {
         position:absolute;
         right:1em;
         bottom:1em;
-        .post_tag {
-        }
+        color:<%= post_link_color %>;
         .post_tag:after {
             content:"\0000a0|\0000a0";
         }
@@ -627,7 +618,7 @@ div#mainBody .post {
 	text-transform: none;
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
-	color: <%= link_color %>;
+        color:<%= post_link_color %>;
         content:"\e012\0000a0\0000a0";
     }
 }
@@ -644,7 +635,7 @@ div#mainBody .post_list_item .post_type_youtube_video {
              left:0px;
 	     width:640px !important;
 	     height:360px !important;
-             border-right:solid 1px rgba(0,0,0,0.7);
+             border-right:solid 1px rgba(0,0,0,0.4);
              z-index:50;
         }
      }
@@ -662,6 +653,7 @@ div#mainBody .post_list_item .post_type_youtube_video {
         content:"More...";
     }
 }
+
 
 /* Image post item in index of posts*/
 div#mainBody .post_list_item {
@@ -690,6 +682,69 @@ div#mainBody .post_list_item {
     }
 }
 
+@media all and (max-width: 960px) {
+    div#mainBody .post_list_item {
+        .post {
+	    margin-left:auto;
+	    margin-right:auto;
+	    width:640px;
+	    height:auto;
+        }
+	.post_type_youtube_video {
+	    margin-left:auto;
+	    margin-right:auto;
+	    width:640px;
+	    height:auto;
+	    .post_header {
+		padding:380px 1.5px 1em 1.5em;
+	    }
+	    .content {
+		padding:1em 1.5em 1em 1.5em;
+	    }
+	    .more_link {
+		margin-top:1em;
+		padding-left:1.5em;
+	    }
+	}
+    }
+}
+
+@media all and (max-width: 660px) {
+    div#mainBody .post_list_item {
+        .post {
+	    width:426px;
+        }
+        .post_type_youtube_video {
+	    .post_header {
+	        padding:260px 1.5px 1em 1.5em;
+	        iframe.post_video {
+		    width:426px !important;
+		     height:240px !important;
+                }
+	    }
+	}
+    }
+}
+
+@media all and (max-width: 426px) {
+    div#mainBody .post_list_item {
+        .post {
+	    width:320px;
+        }
+        .post_type_youtube_video {
+	    .post_header {
+	        padding:200px 1.5px 1em 1.5em;
+	        iframe.post_video {
+		    width:320px !important;
+		     height:180px !important;
+                }
+	    }
+	}
+    }
+}
+
+
+
 
 /* Show post */
 div#mainBody .post_listing .post_type_youtube_video {
@@ -700,12 +755,12 @@ div#mainBody .post_listing .post_type_youtube_video {
              margin: 0 auto 2em auto;
 	     width:854px !important;
 	     height:480px !important;
-	     -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	     -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	     -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	     -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	     -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	      box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	     -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	     -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	     -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	     -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	     -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	      box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
         }
      }
     .content {
@@ -718,6 +773,49 @@ div#mainBody .post_listing .post_type_youtube_video {
         }
     }
 }
+
+@media all and (max-width: 874px) {
+    div#mainBody .post_listing {
+        .post_type_youtube_video {
+	    .post_header {
+	        iframe.post_video {
+		    width:640px !important;
+		     height:320px !important;
+                }
+	    }
+	}
+    }
+}
+
+@media all and (max-width: 660px) {
+    div#mainBody .post_listing {
+        .post_type_youtube_video {
+	    .post_header {
+	        iframe.post_video {
+		    width:426px !important;
+		     height:240px !important;
+                }
+	    }
+	}
+    }
+}
+
+@media all and (max-width: 426px) {
+    div#mainBody .post_listing {
+        .post_type_youtube_video {
+	    .post_header {
+	        iframe.post_video {
+		    width:300px !important;
+		     height:168px !important;
+                }
+	    }
+	}
+    }
+}
+
+
+
+
 
 div#mainBody .post_listing {
     .post_type_image, .post_type_text, .post_type_audio {
@@ -755,7 +853,7 @@ div#mainBody .post_listing {
 	text-transform: none;
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
-	color: <%= link_color %>;
+	color: <%= post_link_color %>;
 	cursor:pointer;
 	content: "\e032";
 	padding-left:0.5em;
@@ -795,12 +893,12 @@ div#mainBody .post_listing {
     .comment {
        background: <%= background_highlight_color %>;
        box-sizing:border-box;
-       -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-       -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-       -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-       -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-       -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+       -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+       -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+       -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+       -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+       -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+	box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 	color: <%= post_text_color %>;
         padding:1em;
         margin-bottom:2em;
@@ -832,12 +930,12 @@ div#mainBody .post_listing {
 		   float:left;
 		   margin-right:1em;
 		   height:auto;
-		   -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-		   -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-		   -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-		   -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-		   -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-		   box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+		   -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		   -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		   -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		   -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		   -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+		   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 		   box-sizing:border-box;
 		   -moz-box-sizing:border-box;
 		}
@@ -912,7 +1010,7 @@ div#mainBody .post_listing {
 		display:inline-block;
 	    }
 	    .comment_count {
-		color:<%= secondary_text_color %>;
+		color:<%= link_color %>;
 	     }
 	     .pending_comment_count {
 		color:<%= text_alert_color %>;
@@ -938,22 +1036,22 @@ div#mainBody .post_listing {
     position:relative;
     width:100%;
     margin:2em 0 3em 0;
-    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     background:<%= background_highlight_color %>;
     color:<%= post_text_color %>;
     #comment_form_core {
         img#comment_author_image {
-	    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+	    -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	    -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	    -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	    -moz-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
 
     }
@@ -983,7 +1081,7 @@ div#mainBody .post_listing {
     margin-bottom:1em;
     display:block;
     font-size:1.5em;
-    border-bottom:solid 3px <%= graphic_element_color %>;
+    border-bottom:solid 3px <%= text_color %>;
 }
 .book_title_link:before, .series_link:before {
     font-family: 'Metro Icons';
@@ -1081,7 +1179,7 @@ div#mainBody .post_listing {
         vertical-align:top;
     }
     .events_widget_all_events:before {
-	 border-top:solid 3px <%= graphic_element_color %>;
+	 border-top:solid 3px <%= text_color %>;
          width:100%;
          display:inline-block;
          content: "More...";
@@ -1089,7 +1187,7 @@ div#mainBody .post_listing {
     .event_widget_event {
         width:100%;
 	display:block;
-	border-top:solid 3px <%= graphic_element_color  %>;
+	border-top:solid 3px <%= text_color  %>;
 	margin-top:0em;
 	padding-top:1em;
 	padding-bottom:2em;
@@ -1121,7 +1219,7 @@ div#mainBody .post_listing {
         }
     }
     .event_widget_event:hover {
-        border-top:solid 3px <%= graphic_element_color  %>;
+        border-top:solid 3px <%= text_color  %>;
     }
 }
 
@@ -1223,7 +1321,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         }
         #center_bar {
             margin:0px 0px 0px 0px;
-            padding:0px 20px 0px 10px !important;
         }
     }
 }]]>
@@ -1239,38 +1336,161 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param class="local" name="home_page_type" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4">blog_posts</param>
     <param class="local" name="post_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%e %b %Y</param>
     <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{post_asset}%{title}%{date}%{comments}</param>
-    <param class="local" name="posts_per_page" description="5A60C89E-4A1E-4D0C-B90F-E0D284883C89">2</param>
+    <param class="local" name="posts_per_page" description="5A60C89E-4A1E-4D0C-B90F-E0D284883C89">5</param>
     <param class="scheme" name="schemes" description="62275C2A-29F9-4BAA-9893-BB0417917807">
       <param class="scheme" name="6605BFB7-3D19-4603-8965-A969C87138C6" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
-          <param class="style" name="secondary_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(69,81,62,0.7)</param>
-          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
-          <param class="style" name="post_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#434e3c</param>
-          <param class="style" name="post_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#734e3c</param>
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(174,174,174,1)</param>
+          <param class="style" name="post_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(101,101,101,1)</param>
+          <param class="style" name="post_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(150,150,150,1)</param>
           <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
-          <param class="style" name="text_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
-          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
-          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
-          <param class="style" name="menu_text_selected_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
-          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
-          <param class="style" name="menu_background_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(215,234,255,1)</param>
-          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(69,81,62,0.7)</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(207,207,207,1)</param>
+          <param class="style" name="menu_text_selected_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(105,105,105,1)</param>
+          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(28,28,28,1)</param>
+          <param class="style" name="menu_background_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(111,111,111,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(176,176,176,1)</param>
           <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
-          <param class="style" name="post_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#434e3c</param>
-          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
-          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#893667</param>
+          <param class="style" name="post_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(47,47,47,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(225,225,225,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
           <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
-          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
           <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
-          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
-          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
-          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#893667</param>
-          <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,189,181,1)</param>
-          <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,189,181,1)</param>
-          <param class="style" name="graphic_element_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(221,221,221,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(40,40,40,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
+          <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
+          <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
+          <param class="style" name="button_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
+          <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
         </param>
-        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Garden</param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Slate</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+      </param>
+      <param class="scheme" name="D8ED6A26-FD22-4742-AB88-7ACDE18C7D3A" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(128,128,128,1)</param>
+          <param class="style" name="post_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(101,101,101,1)</param>
+          <param class="style" name="post_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(150,150,150,1)</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(207,207,207,1)</param>
+          <param class="style" name="menu_text_selected_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(105,105,105,1)</param>
+          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(28,28,28,1)</param>
+          <param class="style" name="menu_background_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(111,111,111,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(111,111,111,1)</param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="post_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(47,47,47,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(64,64,64,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(41,41,41,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(185,185,185,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(77,77,77,1)</param>
+          <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
+          <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
+          <param class="style" name="button_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
+          <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
+        </param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Grey</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+      </param>
+      <param class="scheme" name="C299992B-869C-4CF6-9181-A108D02100F5" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(162,29,23,1)</param>
+          <param class="style" name="post_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(162,29,23,1)</param>
+          <param class="style" name="post_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(220,90,80,1)</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(235,235,235,1)</param>
+          <param class="style" name="menu_text_selected_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(235,205,205,1)</param>
+          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(162,29,23,1)</param>
+          <param class="style" name="menu_background_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(105,33,30,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(37,37,37,1)</param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="post_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(37,37,37,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(37,37,37,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(102,102,102,1)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(162,29,23,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(205,205,205,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(220,90,80,&#14;1)</param>
+          <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
+          <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
+          <param class="style" name="button_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
+          <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
+        </param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Candy Cane</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+      </param>
+      <param class="scheme" name="F9478A1E-3D64-4186-ADEF-3E510FE04A3B" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(174,164,164,1)</param>
+          <param class="style" name="post_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
+          <param class="style" name="post_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(211,83,77,1)</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(167,167,167,1)</param>
+          <param class="style" name="menu_text_selected_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(76,71,71,1)</param>
+          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(28,20,20,1)</param>
+          <param class="style" name="menu_background_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(60,22,22,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="post_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(157,157,157,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(225,225,225,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,160,122,1)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(221,215,215,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(60,22,22,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
+          <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,13,13,1)</param>
+          <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(236,223,223,1)</param>
+          <param class="style" name="button_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
+          <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
+        </param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Crimson</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+      </param>
+      <param class="scheme" name="4777A407-CE06-497D-BA03-1C822262EC16" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#e0f4ff</param>
+          <param class="style" name="post_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,53,129,1)</param>
+          <param class="style" name="post_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(24,86,211,1)</param>
+          <param class="style" name="subtitle_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(167,167,167,1)</param>
+          <param class="style" name="menu_text_selected_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(71,71,76,1)</param>
+          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(5,5,30,1)</param>
+          <param class="style" name="menu_background_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(40,40,96,1)</param>
+          <param class="style" name="subtitle_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#c0e2ef</param>
+          <param class="style" name="title_font" description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0">Tahoma,sans-serif</param>
+          <param class="style" name="post_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(10,10,10,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(225,225,225,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(225,50,50,1)</param>
+          <param class="style" name="header_background_image" description="C66AC78D-6121-4EA5-86FF-8A3D4423ABF9"></param>
+          <param class="style" name="header_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,0)</param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(215,215,221,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,32,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(200,200,200,1)</param>
+          <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
+          <param class="style" name="background_highlight_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(200,200,200,1)</param>
+          <param class="style" name="button_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
+          <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
+        </param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Navy</param>
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
       </param>
     </param>
@@ -1312,19 +1532,39 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 #copyright.widget {
     text-align:right;
+    padding-right:2em;
     div {
         display:inline-block;
     }
     .scribaroo_site {
          padding-left:2em;
     }
-}]]>
+}
+#scribaroo_copyright {
+    text-align:right;
+    padding-right:2em;
+    float:left;
+    display:inline-block;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+]]>
           </style>
           <params>
           </params>
           <widget_instances>
             <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="1">
               <params>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">scribaroo_copyright</param>
               </params>
             </instance>
           </widget_instances>
@@ -1355,17 +1595,17 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     text-align:center;
     z-index:100;
     background-color:<%= menu_background_color %>;
-    -o-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
-    -icab-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
-    -khtml-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
-    -moz-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
-    -webkit-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
-     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.7);
+    -o-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.8);
+    -icab-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.8);
+    -khtml-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.8);
+    -moz-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.8);
+    -webkit-box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.8);
+     box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.8);
     font-size:1.3em;
     #header_bar_section {
         margin:0em auto 0em auto;
         text-align:right;
-        width:1024px;
+        width:100%;
 
 	/* Main Menu layout */
 	.widget#main_menu {
@@ -1484,21 +1724,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 @media all and (max-width: 640px)  {
     div#mainBody {
         #header_bar_section {
-            .widget#book_bar {
-                display:none;
-            }
            .widget#main_menu a {
                 font-size:12px !important;
-            }
-            .widget#logo_bar {
-                .site_title {
-                    font-size:20px !important;
-                    top:-5px !important;
-                    left:5px !important;
-                }
-                .site_subtitle {
-                    display:none;
-                }
             }
         }
     }
@@ -1583,22 +1810,25 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <style>
             <![CDATA[div#mainBody {
     #left_bar_section {
+        background: url('<%= header_background_image %>') no-repeat scroll top left;
+        bacground-color: <%= header_background_color %>;
         box-sizing:border-box;
         -moz-box-sizing:border-box;
-        padding-top:1em;
         display:block;
         width:100%;
         margin-top:3em;
-        height:110px;
         position:relative;
+        text-align:justify;
         .widget#header_google_ad {
-            float:right;
+            display:inline-block;
             width:728px;
             height:90px;
             margin:10px 0 10px 0;
         }
 	.widget#logo_bar {
-	    margin-top:0.2em;
+            height:110px;
+            width:200px;
+            display:inline-block;
 	    .widget_content {
 		position:relative;
 		.site_title {
@@ -1606,9 +1836,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 		    color:<%= title_color %>;
 		    white-space:nowrap;
 		    font-family:<%= title_font %>;
-		    left:0.75em;
+		    left:0.25em;
 		    top:0em;
-		    font-size:3em;
+		    font-size:4em;
 		    font-weight:300;
 		    width:auto;
 		}
@@ -1617,14 +1847,68 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 		    position:absolute;
 		    white-space:nowrap;
 		    font-family:<%= subtitle_font %>;
-		    left:3em;
-		    top:3em;
-		    font-size:1.3em;
+		    left:2em;
+		    top:3.2em;
+		    font-size:1.7em;
 		    font-weight:300;
 		    width:auto;
 		}
 	    }
 	}
+    }
+    #left_bar_section:after {
+        content:"";
+        display:inline-block;
+        width:100%;
+    }
+}
+
+@media all and (max-width: 1024px) {
+    div#mainBody {
+        #left_bar_section {
+            height:auto;
+            .widget#logo_bar2 {
+                display:block;
+            }
+	    .widget#header_google_ad2 {
+		float:none;
+                display:block;
+		margin:10px auto 10px auto;
+	    }
+        }
+    }
+}
+
+@media all and (max-width: 728px) {
+    div#mainBody {
+        #left_bar_section {
+            .widget#logo_bar {
+                height:70px;
+            }
+	    .widget#header_google_ad {
+                display:none;
+	    }
+        }
+    }
+}
+
+@media all and (max-width: 640px)  {
+    div#mainBody {
+        #left_bar_section {
+            .widget#logo_bar {
+	        height:50px;
+                .site_title {
+                    font-size:20px !important;
+                    top:0.1em !important;
+                    left:10px !important;
+                }
+                .site_subtitle {
+                    font-size:10px !important;
+                    top:3.5em !important;
+                    left:20px !important;
+                }
+            }
+        }
     }
 }
 ]]>
@@ -1842,7 +2126,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             #center_bar {
                   padding:0px 0px 0em 0px;
                   .content_background_container {
-                      padding:1em;
                       margin-top:0em;
                       box-sizing:border-box;
                       -moz-box-sizing:border-box;
@@ -1870,7 +2153,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         }
         #center_bar {
             margin:0px 0px 0px 0px;
-            padding:0px 20px 0px 0px !important;
         }
     }
 }]]>

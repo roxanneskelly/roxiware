@@ -1330,7 +1330,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param class="local" name="book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">500</param>
     <param class="local" name="book_excerpt_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">1000</param>
     <param class="local" name="books_display_type" description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0">simple</param>
-    <param class="template" name="chooser_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/chooser_image.jpg</param>
+    <param class="scheme" name="chooser_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/chooser_image.jpg</param>
     <param class="local" name="comment_header_format" description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE">%{author_image}%{author_name}%{date}%{moderate_indicator}</param>
     <param class="local" name="event_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%b %e</param>
     <param class="local" name="home_page_type" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4">blog_posts</param>
@@ -1367,7 +1367,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
         </param>
         <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Slate</param>
-        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/slate.jpg</param>
       </param>
       <param class="scheme" name="D8ED6A26-FD22-4742-AB88-7ACDE18C7D3A" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
@@ -1398,7 +1398,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
         </param>
         <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Grey</param>
-        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/grey.jpg</param>
       </param>
       <param class="scheme" name="C299992B-869C-4CF6-9181-A108D02100F5" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
@@ -1429,7 +1429,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
         </param>
         <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Candy Cane</param>
-        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/candy-cane.jpg</param>
       </param>
       <param class="scheme" name="F9478A1E-3D64-4186-ADEF-3E510FE04A3B" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
@@ -1460,7 +1460,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
         </param>
         <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Crimson</param>
-        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/crimson.jpg</param>
       </param>
       <param class="scheme" name="4777A407-CE06-497D-BA03-1C822262EC16" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
@@ -1491,7 +1491,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param class="style" name="button_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(190,190,190,1)</param>
         </param>
         <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Navy</param>
-        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/navy.jpg</param>
       </param>
     </param>
     <param class="local" name="series_book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">200</param>
@@ -1558,13 +1558,13 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
               <params>
               </params>
             </instance>
-            <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="2">
               <params>
-                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                   <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
                 </param>
-                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">scribaroo_copyright</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">scribaroo_copyright</param>
               </params>
             </instance>
           </widget_instances>
@@ -2046,6 +2046,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
         <section name="top_bar">
           <style>
+            <![CDATA[]]>
           </style>
           <params>
           </params>
@@ -2181,6 +2182,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
         <section name="top_bar">
           <style>
+            <![CDATA[]]>
           </style>
           <params>
           </params>

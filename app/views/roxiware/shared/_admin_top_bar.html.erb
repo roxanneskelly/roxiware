@@ -93,7 +93,13 @@
 	               content_tag(:li, content_tag(:a, "Forums", :target=>"_blank", :href=>"http://www.scribaroo.com/forum")) +
 	               content_tag(:li, content_tag(:a, "Report Bug", :target=>"_top", :href=>"mailto:bugs@roxiware.com?Subject="+(u "Bug Report - #{request.host}")))
                    end
-               end
+               end +
+               tag(:hr) +
+               content_tag(:li) do
+	           content_tag(:a, :href=>destroy_session_path('user')) do
+                       content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-switch-2")+content_tag(:span, "Log Out", :class=>"top_menu_text")
+                   end
+               end 
            end
        end
    end %>

@@ -35,7 +35,13 @@
   </article></section>
    <% if (can? :edit, @person)  %>
      <% if !["forum","custom"].include?(@setup_type) %>
-       <ul id="biography_application_menu" class="application_menu"><li><a rel="<%= edit_person_path(@person.id) %>" form="Edit Biography"><span aria-hidden="true" class="icon-profile"></span>&nbsp;Edit Biography</a></li></ul>
+<%= content_tag(:ul, :id=>"biography_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=> edit_person_path(@person.id), :form=>"Edit Profile") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Profile", :class=>"top_menu_text")
+        end
+    end 
+end %>
      <% else %>
      <ul id="biography_application_menu" class="application_menu"><li>Biography<ul>
          <li><a rel="<%= edit_person_path(@person.id) %>" form="Edit Biography">Edit Biography</a></li>

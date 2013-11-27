@@ -1,7 +1,12 @@
 <section class="page_content">
   <% if (can? :edit, @page) %>
-       <ul id="page_index_application_menu" class="application_menu"><li><a rel="<%= edit_page_path(@page.page_identifier) %>" form="Edit <%= @page.page_type.titleize %>"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit <%= @page.page_type.titleize %></a></li></ul>
-
+<%= content_tag(:ul, :id=>"page_edit_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=> edit_page_path(@page.page_identifier), :form=>"Edit #{@page.page_type.titleize}") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Page", :class=>"top_menu_text")
+        end
+    end 
+end %>
        <ul id="page_context_menu" class="context_menu">
 	  <li id="edit_page"><a menu_item="edit_page"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit <%= @page.page_type.titleize %></a></li>
        </ul>

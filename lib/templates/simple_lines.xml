@@ -379,7 +379,7 @@ div#mainBody
        min-height:400px;
 
         #center_bar {
-            padding:0px 20px 20px 20px;
+            padding:0px 200px 20px 20px;
 
             position:relative;
             width:100%;
@@ -1317,9 +1317,11 @@ padding:2em;
         <section name="right_bar">
           <style>
             <![CDATA[#right_bar_section {
-            position:relative;
+            position:absolute;
             display:inline-block;
             width:160px;
+            top:0px;
+            right:0px;
             padding:0px 20px 20px 0px;
 
 	.widget#events_widget {

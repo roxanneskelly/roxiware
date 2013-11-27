@@ -16,10 +16,18 @@
   </section>
 </div>
 <% if can? :edit, @series %>
-    <ul id="series_show_application_menu" class="application_menu"><li><span aria-hidden="true" class="icon-books"></span>&nbsp;Series<ul>
-       <li><a rel="<%= edit_book_series_path(@series.id)%>" form="Edit Series"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
-       <li><a id="delete_series_app_menu" form="Delete Series">Delete</a></li>
-    </ul></li></ul>
+<%= content_tag(:ul, :id=>"series_edit_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=> edit_book_series_path(@series.id), :form=>"Edit") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Series", :class=>"top_menu_text")
+        end
+    end +
+    content_tag(:li) do
+        content_tag(:a, :id=>"delete_series_app_menu") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-remove-2")+content_tag(:span, "Delete Series", :class=>"top_menu_text")
+        end
+    end
+end %>
    <%= render :partial=>"roxiware/books/series/context_menus" %>
    <ul id="series_context_menu" class="context_menu">
       <li id="edit_series"><a menu_item="edit_series"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit Series</a></li>

@@ -5,10 +5,18 @@
 <% end %>
 <% if can? :edit, @book %>
     <%= render :partial=>"roxiware/books/context_menus" %>
-    <ul id="book_show_application_menu" class="application_menu"><li><span aria-hidden="true" class="icon-book"></span>&nbsp;Book<ul>
-    <li><a rel="<%= edit_book_path(@book.id)%>" form="Edit Book"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
-    <li><a id="delete_book_app_menu" ><span aria-hidden="true" class="icon-none"></span>&nbsp;Delete</a></li>
-   </ul></li></ul>
+<%= content_tag(:ul, :id=>"book_edit_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=> edit_book_path(@book.id), :form=>"Edit Book") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Book", :class=>"top_menu_text")
+        end
+    end +
+    content_tag(:li) do
+        content_tag(:a, :id=>"delete_book_app_menu") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-remove-2")+content_tag(:span, "Delete Book", :class=>"top_menu_text")
+        end
+    end 
+end %>
     <div class="help_bar_entry">Left-click to manage the book.</div>
 <% end %>
 <script>

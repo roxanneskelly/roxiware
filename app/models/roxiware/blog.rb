@@ -15,7 +15,7 @@ module Roxiware
     include ActionView::Helpers::TextHelper
     include Roxiware::BaseModel
     self.table_name="blog_posts"
-    ALLOWED_STATUS = %w(new publish draft trash)
+    ALLOWED_STATUS = %w(publish draft trash)
     ALLOWED_COMMENT_PERMISSIONS = %w(default open moderate closed hide)
     belongs_to :person
     has_many :comments, :class_name=>"Roxiware::Comment", :dependent=>:destroy, :as=>:post

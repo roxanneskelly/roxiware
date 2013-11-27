@@ -33,9 +33,13 @@
 </section>
 
 <% if (can? :create, Roxiware::Event)  %>
-     <ul id="blog_index_application_menu" class="application_menu"><li><a rel="<%= new_event_path %>" form="New Event"><span aria-hidden="true" class="icon-calendar"></span>&nbsp;New Event</a></li></ul>
-     <%= render :partial=>"roxiware/events/context_menus" %>
-<script>
+<%= content_tag(:ul, :id=>"events_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=> new_event_path, :form=>"New Event") do
+            content_tag(:span, "+", "aria-hidden"=>"true", :class=>"menu-icon icon-calendar")+content_tag(:span, "New", :class=>"top_menu_text")
+        end
+    end
+end %>
 $(function() {
     $(".event .manage_menu").each(function(index, menu) {
 	ddsmoothmenu.init({

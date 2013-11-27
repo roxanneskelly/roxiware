@@ -14,10 +14,31 @@
 <%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""} %>
 <% end %>
 <% if can? :edit, @topic %>
-<ul id="topic_show_application_menu" class="application_menu"><li><a rel="<%= forum_edit_topic_path(@topic.board.seo_index, @topic.id) %>" form="Edit Topic"><span aria-hidden="true" class="icon-file"></span>&nbsp;Topic</a><ul>
-<li><a rel="<%= forum_edit_topic_path(@topic.board.seo_index, @topic.id) %>" form="Edit Topic"><span aria-hidden="true" class="icon-quill"></span>&nbsp;Edit</a></li>
-<% if can? :delete, @topic %><li><a id="delete_forum_topic_app_menu">Delete</a></li><% end %>
-</ul></li></ul>
+<%= content_tag(:ul, :id=>"topic_edit_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=> forum_edit_topic_path(@topic.board.seo_index, @topic.id), :form=>"Edit Topic") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Topic", :class=>"top_menu_text")
+        end
+    end +
+    content_tag(:li) do
+        content_tag(:a, :id=>"delete_forum_topic_app_menu") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-remove-2")+content_tag(:span, "Delete Topic", :class=>"top_menu_text")
+        end
+    end +
+    content_tag(:li, :class=>"forum_topic_moderate_menu forum_topic_permission_#{@topic.permissions}") do
+        content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-bubbles")+content_tag(:span, "Permissions", :class=>"top_menu_text") +
+        content_tag(:ul, :class=>"moderate_options") do
+            Roxiware::Forum::Topic::ALLOWED_TOPIC_PERMISSIONS.collect do |permission|
+                current_perm = "selected_item" if @topic.permissions == permission
+                content_tag(:li, :class=>"forum_topic_permission") do
+                    content_tag(:a, :id=>permission, :class=>current_perm) do
+                        content_tag(:span, "", :class=>"icon-checkmark menu-icon") + content_tag(:span, permission.titleize)
+                    end
+                end
+            end.join("").html_safe
+        end
+    end
+end %>
 <%= render :partial=>"roxiware/forum/context_menus" %>
 <% end %>
 
@@ -52,6 +73,9 @@ $(function() {
      });
 <% end %>
 <% if can? :edit, @topic %>
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    var csrf_param = $('meta[name="csrf-param"]').attr('content');
+
     $(".manage_comment").each(function(index, menu) {
 	    ddsmoothmenu.init({
 		mainmenuid: $(this).attr("id"),
@@ -61,7 +85,37 @@ $(function() {
 		contentsource: "markup"
 	    });
     });
-    /* Handle publish/hide */
+
+
+    /* handle comment permissions */
+    $(".forum_topic_moderate_menu .forum_topic_permission a").click(function(e) {
+        e.stopPropagation();
+        var self = $(this);
+        var old_perm = $(".forum_topic_moderate_menu .forum_topic_permission").attr("id");
+        if(self.is(".selected_item")) { return; }
+        var forum_topic = self.parents(".forum_topic");
+        var upload_params = {forum_topic:{permissions:self.attr("id")}};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
+       $.ajax("<%= forum_update_topic_path(@topic.board.seo_index, @topic.id) %>.json", {
+           type:"PUT",
+	   data: upload_params,
+           dataType: "json",
+	   error: function (jqXHR, textStatus, errorThrown) {
+	       $.alert(errorThrown);
+           },
+           success: function() {
+             $(".forum_topic_moderate_menu .forum_topic_permission a").removeClass("selected_item");
+             self.addClass("selected_item");
+             $(".forum_topic_moderate_menu")<%= Roxiware::Forum::Topic::ALLOWED_TOPIC_PERMISSIONS.collect{|permission| ".removeClass('forum_topic_permission_#{permission}')"}.join("").html_safe %>;
+             $(".forum_topic_moderate_menu").addClass("forum_topic_permission_"+self.attr("id"));
+             $(".forum_topic_header").attr("topic_permission", self.attr("id"));
+           }
+	});
+    });
+
+    /* Handle publish/hide comment */
     $(".manage_comment .publish_comment, .manage_comment .hide_comment").click(function() {
         console.log("MANAGING");
         if($(this).parent().is(".selected_item")) {

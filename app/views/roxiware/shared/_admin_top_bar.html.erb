@@ -126,12 +126,7 @@ $(function() {
         });
 
         $("#expand_collapse").click(function() {
-            if($("#settings_bar").toggleClass("menu_expanded").is(".menu_expanded")) {
-                sessionStorage.menu_expanded = "menu_expanded";
-            }
-            else {
-                sessionStorage.menu_expanded = "";
-            }
+            sessionStorage.menu_collapsed = $("#settings_bar").toggleClass("menu_expanded").is(".menu_expanded");
 	    ddsmoothmenu.init({
 		noarrow: false,
 		mainmenuid: "settings_menu",
@@ -144,7 +139,7 @@ $(function() {
         });
 
         $("#settings_bar").addClass(sessionStorage.admin_menu_class);
-        $("#settings_bar").addClass(sessionStorage.menu_expanded);
+        $("#settings_bar").addClass(sessionStorage.menu_collapsed ? "" : "menu_expanded");
 
         ddsmoothmenu.init({
             noarrow: false,

@@ -35,9 +35,9 @@
 	              content_tag(:li, content_tag(:a, "Appearance", :rel=>customize_layout_path(@current_layout.guid), :form=>"Customize Template")) +
 	              if (can? :edit, @current_layout) 
                           tag(:hr) +
-                          content_tag(:li, content_tag(:a, "New", :rel=>new_layout_path+"?clone="+@current_layout.guid, :form=>"New Template")) +
                           content_tag(:li, content_tag(:a, "Edit", :rel=>edit_layout_path(@current_layout.guid), :form=>"Edit Template")) +
-                          content_tag(:li, content_tag(:a, "Export", :rel=>layout_path(@current_layout.guid), :target=>"_blank"))
+                          content_tag(:li, content_tag(:a, "New", :rel=>new_layout_path+"?clone="+@current_layout.guid, :form=>"New Template")) +
+                          content_tag(:li, content_tag(:a, "Export", :href=>layout_path(@current_layout.guid)+".xml", :target=>"_blank"))
                       end
                   end
                end +

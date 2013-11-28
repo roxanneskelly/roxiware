@@ -34,6 +34,8 @@ class Roxiware::AssetController < ApplicationController
 	      raise ActiveRecord::RecordNotFound
           end
       end
+      response.headers["Expires"] = 1.year.from_now.httpdate
+      response.headers["Cache-Control"] = "public"
       send_file(serve_file_path, :type=>request.format.to_s, :disposition=>"inline") 
   end
 

@@ -16,26 +16,30 @@ class Roxiware::AssetController < ApplicationController
 	  case request.format.to_sym
 	  when :jpeg, :gif, :png, :tiff
 	      allowed_image_sizes = Set.new(%w(50x50 50x75 300x450 400x400 400x450 200x225 180x180 200x200 100x100 100x150))
+              puts "SERVE FILE NAME #{serve_file_name}"
 	      match = /^(.+)_(\d+)x(\d+)$/.match(serve_file_name.basename(".*"))
 	      width =  match[2].to_i if match
 	      height = match[3].to_i if match
 	      root_name = match[1] if match
 
-	      raise ActiveRecord::RecordNotFound unless (user_signed_in? || allowed_image_sizes.include?("#{width}x#{height}"))
-	      # if someone tries to generate an image that's too big, then toss them
-	      root_file_path = Rails.root.join(AppConfig.raw_upload_path, root_name+extension)
-	      raise ActiveRecord::RecordNotFound if(width > 1600) || (height > 1050)
-	      raise ActiveRecord::RecordNotFound unless File.exist?(root_file_path)
+	      if root_name.present?
+		  puts "ROOT NAME #{root_name}"
+		  raise ActiveRecord::RecordNotFound unless (user_signed_in? || allowed_image_sizes.include?("#{width}x#{height}"))
+		  # if someone tries to generate an image that's too big, then toss them
+		  root_file_path = Rails.root.join(AppConfig.raw_upload_path, root_name+extension)
+		  raise ActiveRecord::RecordNotFound if(width > 1600) || (height > 1050)
+		  raise ActiveRecord::RecordNotFound unless File.exist?(root_file_path)
 
-	      image = Magick::Image.from_blob(open(root_file_path, "r").read).first
-	      image.resize_to_fit!(width, height)
-	      image.write(serve_file_path)
+		  image = Magick::Image.from_blob(open(root_file_path, "r").read).first
+		  image.resize_to_fit!(width, height)
+		  image.write(serve_file_path)
+              end
 	  else
 	      raise ActiveRecord::RecordNotFound
           end
       end
       response.headers["Expires"] = 1.year.from_now.httpdate
-      response.headers["Cache-Control"] = "public"
+      response.headers["Cache-Control"] = "public,max-age=31536000"
       send_file(serve_file_path, :type=>request.format.to_s, :disposition=>"inline") 
   end
 

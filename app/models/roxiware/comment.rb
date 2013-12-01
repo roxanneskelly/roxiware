@@ -21,10 +21,10 @@ module Roxiware
     edit_attr_accessible :comment_content, :comment_date, :parent_id, :as=>[:super, :admin, :user, :guest, nil]
     ajax_attr_accessible :comment_content, :comment_date, :parent_id, :comment_status
     
-    scope :published, where(:comment_status=>"publish")
-    scope :visible, lambda{|user| where((user.blank?) ? "comment_status='publish'" : ((user.is_admin?) ? "" : 'comment_status="publish"')) }
+    scope :published, -> { where(:comment_status=>"publish") }
+    scope :visible, -> (user) { where((user.blank?) ? "comment_status='publish'" : ((user.is_admin?) ? "" : 'comment_status="publish"')) }
 
-    default_scope order("comment_date ASC")  
+    default_scope { includes(:comment_author).order("comment_date ASC") }
 
     def visible?(user) 
         (user.present? && user.is_admin?) || (comment_status == "publish")

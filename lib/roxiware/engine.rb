@@ -1,5 +1,7 @@
 require 'rails'
 require 'devise'
+require 'devise-encryptable'
+require 'protected_attributes'
 require 'omniauth'
 require 'omniauth-facebook'
 require 'omniauth-twitter'

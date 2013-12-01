@@ -8,7 +8,7 @@ module Roxiware
          module ParamClientBaseClassMethods
          end
 	    def get_params(param_class=:local)
-	       Hash[get_param_objs.select{|name, param_obj| param_obj.param_class.to_sym == param_class}.collect{|param_pair| [param_pair[0].to_sym, param_pair[1].conv_value]}]
+	       Hash[get_param_objs.select{|name, param_obj| param_obj.param_class == param_class}.collect{|param_pair| [param_pair[0].to_sym, param_pair[1].conv_value]}]
 	    end
 
 	    def get_by_path(path)
@@ -83,16 +83,12 @@ module Roxiware
 	    end
 
 	    def get_param_objs
-	       if @param_objs.nil?
-		  @param_objs = {}
-		  params.each do |param|
-		     @param_objs[param.name.to_sym] =  param
-		  end
-	       end
+	       @param_objs ||= Hash[self.params.collect{|param| [param.name.to_sym, param]}]
 	       @param_objs
 	    end
+
 	    def get_param_obj_list
-	        get_param_objs.keys.sort{|x, y| x.to_s <=> y.to_s}.collect{|key| @param_objs[key]}
+	        get_param_objs.keys.sort{|x, y| x <=> y}.collect{|key| @param_objs[key]}
 	    end
       end
 
@@ -100,6 +96,8 @@ module Roxiware
           include Roxiware::BaseModel
 	  include ParamClientBase
           self.table_name= "params"
+
+          PRELOAD_APPLICATION_PARAMS = %w(system blog events books events people setup custom_settings)
 
 	  has_many   :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  belongs_to :param_object, :polymorphic=>true
@@ -132,8 +130,14 @@ module Roxiware
 	  end
 
 	  def self.application_params(application)
-	     @application_params ||= {}
-	     @application_params[application] ||= Hash[self.where(:param_class=>application).collect(){|param| [param.name, param]}]
+             if @application_params.blank?
+                 @application_params = {}
+                 self.where(:param_class=>PRELOAD_APPLICATION_PARAMS).each do |param|
+                     @application_params[param.param_class] ||= {}
+                     @application_params[param.param_class][param.name] = param
+                 end
+             end
+             @application_params[application] ||= Hash[self.where(:param_class=>application).collect(){|param| [param.name, param]}]
 	     @application_params[application].values
 	  end
 
@@ -342,8 +346,7 @@ module Roxiware
 	  attr_accessible :permissions  # permissions for parameter
 
 	  def self.find_description(description_guid)
-	      @param_descriptions ||= {}
-	      @param_descriptions[description_guid] ||= self.find_by_guid(description_guid)
+	      @param_descriptions ||= Hash[Roxiware::Param::ParamDescription.all.collect{|param_description| [param_description.guid, param_description]}]
 	      @param_descriptions[description_guid]
 	  end
 

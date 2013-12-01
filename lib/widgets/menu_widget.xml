@@ -226,8 +226,8 @@ div.menu_edit
 	    <% end %>
 	  </li>
       <% end %>
-      <div class="ddsmoothmenu_widget" id="menu-<%= menu_root.id %>">
-	<ul id="root_<%= menu_root.id %>">
+      <div class="ddsmoothmenu_widget" id="menu-<%= widget_instance_id %>">
+	<ul id="root_<%= widget_instance_id %>">
           <% menu_root.each do |menu_node_child| 
 	     render_menu(menu_node_child)
            end%>
@@ -253,7 +253,7 @@ div.menu_edit
       <script>
 	ddsmoothmenu.init({
 	   noarrow: <%= show_arrow ?"false":"true" %>,
-	   mainmenuid: "menu-<%= menu_root.id %>",
+	   mainmenuid: "menu-<%= widget_instance_id %>",
 	   orientation: 'h',
 	   classname: 'ddsmoothmenu_widget',
 	   contentsource: "markup"});

@@ -1,3 +1,5 @@
+require 'uri'
+
 module Roxiware
   module Sanitizer
     BASIC_STYLE_TRANSFORMER = lambda do |env|
@@ -19,6 +21,7 @@ module Roxiware
 
       # Verify that the video URL is actually a valid YouTube video URL.
       return unless ((node['src'] =~ /\Ahttps?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com\//) ||
+                     (node['src'] =~ /\Ahttp?:\/\/(?:www\.)?youtube(?:-nocookie)?\.com\//) ||
                      (node['src'] =~ /\Ahttp?:\/\/(?:player\.)?vimeo(?:-nocookie)?\.com\//))
 
       # We're now certain that this is a YouTube embed, but we still need to run
@@ -31,7 +34,16 @@ module Roxiware
 	  'iframe'  => %w[allowfullscreen frameborder webkitAllowFullScreen mozallowfullscreen height src width]
 	}
       })
-
+      puts "\n\nNODE: #{node}\n\n"
+      youtube_uri = URI(node[:src])
+      puts "URI #{youtube_uri.inspect}"
+      query = Rack::Utils.parse_nested_query(youtube_uri.query || "")
+      puts "QUERY #{query.inspect}"
+      query["wmode"] = "opaque"
+      
+      youtube_uri.query = query.to_param
+      puts "URI #{youtube_uri.inspect}"
+      node[:src] = youtube_uri.to_s
       # Now that we're sure that this is a valid YouTube embed and that there are
       # no unwanted elements or attributes hidden inside it, we can tell Sanitize
       # to whitelist the current node.
@@ -96,6 +108,7 @@ module Roxiware
         'col'        => ['span', 'width'],
         'colgroup'   => ['span', 'width'],
         'del'        => ['cite', 'datetime'],
+        'iframe'     => ['align', 'alt', 'height', 'src', 'width'],
         'img'        => ['align', 'alt', 'height', 'src', 'width'],
         'ins'        => ['cite', 'datetime'],
         'ol'         => ['start', 'reversed', 'type'],

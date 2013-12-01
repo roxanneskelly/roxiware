@@ -18,8 +18,8 @@ module Roxiware
 
 	class StyleRenderClass
 	   include Roxiware::Helpers
-	   def initialize(params)
-              params.each do |key, value|
+	   def initialize(params_in)
+              params_in.each do |key, value|
 		 singleton_class.send(:define_method, key) { value }
               end 
            end
@@ -30,11 +30,11 @@ module Roxiware
 	end
 
         def style_params
-	    Hash[self.params.where(:param_class=>:style).collect {|param| [param.name, param.conv_value]}]
+	    get_params(:style)
         end
 
-        def eval_style(params)
-	    style_class = StyleRenderClass.new(params)
+        def eval_style(params_in)
+	    style_class = StyleRenderClass.new(params_in)
 	    ERB.new(self.style).result(style_class.get_binding)
 	end
      end
@@ -48,6 +48,9 @@ module Roxiware
           include Roxiware::Param::ParamClientBase
 
 	  self.table_name= "layouts"
+
+          after_initialize :init_layout
+          after_find :init_layout
 
           has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
           has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term", :autosave=>true
@@ -251,13 +254,18 @@ module Roxiware
 	      find_page_layout({:application=>(page_id[0] || ""), :application_path=>(page_id[1] || "")})
 	  end
 
+          def init_layout
+              page_layout_list = self.page_layouts.collect {|page_layout| page_layout}
+	      page_layout_list.each{|page_layout| page_layout.layout = self}
+	      @page_layout_cache=[]
+	      @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.present?})
+	      @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.blank? || page_layout.action.present?})
+	      @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.blank? || page_layout.action.blank?})
+          end
+
           def page_layout_stack(params)
 	     if @page_layout_cache.blank?
-	         page_layout_list = self.page_layouts.collect {|page_layout| page_layout}
-		 @page_layout_cache=[]
-	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.present?})
-	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.blank? || page_layout.action.present?})
-	         @page_layout_cache.concat(self.page_layouts.reject {|page_layout| page_layout.application.blank? || page_layout.action.blank?})
+                 # init_layout
 	     end
 
 	     result = []
@@ -270,8 +278,8 @@ module Roxiware
 	     result
 	  end
 
-	  def get_styles(scheme, params)
-             page_layout = find_page_layout(params)
+	  def get_styles(scheme, params_in)
+             page_layout = find_page_layout(params_in)
 
 	     if(scheme != @current_scheme) 
 	         @current_scheme = scheme
@@ -280,7 +288,7 @@ module Roxiware
              end
 	     
 	     if(@layout_params_cache.blank?) 
-	        @layout_params_cache = get_params(scheme).merge(style_params)
+	        @layout_params_cache = get_scheme_param_values(scheme).merge(style_params)
                 @compiled_style_cache = nil
 		page_layout.refresh_styles
              end
@@ -304,7 +312,7 @@ module Roxiware
               end
           end
 
-	  def get_params(scheme)
+	  def get_scheme_param_values(scheme)
               result = {}
 	      scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
 	      if(scheme.present? && scheme.h["params"].present?) 
@@ -343,19 +351,9 @@ module Roxiware
 	      custom_settings.h[name]
 	  end
 	  
-
-	  def resolve_layout_params(scheme, params)
-	     if @layout_params.nil?
-	        @layout_params = {}
-	        self.params.where(:param_class=>:local).each do |param|
-	           @layout_params[param.name] = param.conv_value
-	        end
-             end
-	     get_params(scheme)
-
-	     page_layout = self.find_page_layout(params)
-             result = @layout_params.merge(page_layout.resolve_layout_params).merge(get_params(scheme))
-	     result
+	  def resolve_layout_params(scheme, params_in)
+	     page_layout = self.find_page_layout(params_in)
+             get_params(:local).merge(page_layout.resolve_layout_params).merge(get_scheme_param_values(scheme))
 	  end
 
 	  before_validation do
@@ -378,11 +376,13 @@ module Roxiware
 
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
           has_many        :layout_sections, :autosave=>true, :dependent=>:destroy
-          belongs_to      :layout
 
 	  edit_attr_accessible :render_layout, :style, :as=>[:super, nil]
 	  edit_attr_accessible :application, :action, :layout_id, :as=>[nil]
 	  ajax_attr_accessible :render_layout, :style, :application, :action, :layout_id, :as=>[:super, nil]
+
+
+          attr_accessor :layout
 
 	  def get_by_path(path)
 	     path_components = path.split("/", 2)
@@ -464,9 +464,9 @@ module Roxiware
 	     @compiled_style_cache = nil
 	  end
 	  
-	  def get_styles(params)
+	  def get_styles(params_in)
 	     if(@compiled_style_cache.blank?)
-	        new_params = params.merge(style_params)
+	        new_params = params_in.merge(style_params)
 	        evaled_layout_style = eval_style(new_params) + self.sections.values.collect{|section| section.get_styles(new_params)}.join(" ")
 		begin
 		   @compiled_style_cache = Sass::Engine.new(evaled_layout_style, {
@@ -487,13 +487,7 @@ module Roxiware
 	  end
 
 	  def resolve_layout_params
-	     if @layout_params.nil?
-	        @layout_params = {}
-	        self.params.where(:param_class=>:local).each do |param|
-	           @layout_params[param.name] = param.conv_value
-	        end
-             end
-	     @layout_params
+	     get_params(:local)
           end
 
 	  def reset_sections
@@ -513,6 +507,7 @@ module Roxiware
 	        @sections = {}
              end
              layout_sections.each do |layout_section|
+	        layout_section.page_layout = self
 		@sections[layout_section.name] = layout_section
 	     end
 	  end
@@ -541,7 +536,8 @@ module Roxiware
 
 	  has_many        :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
 	  has_many        :widget_instances, :autosave=>true
-	  belongs_to      :page_layout
+
+	  attr_accessor :page_layout
 
 	  edit_attr_accessible :style, :as=>[:super, nil]
 	  edit_attr_accessible :name, :as=>[nil]
@@ -603,7 +599,8 @@ module Roxiware
           end
 
 	  def get_widget_instances
-	     @ordered_instances ||= self.widget_instances.order(:section_order)
+	     @ordered_instances ||= self.widget_instances
+	     @ordered_instances.each{|instance| instance.layout_section = self}
 	     @ordered_instances
 	  end
 
@@ -669,6 +666,11 @@ module Roxiware
 	  edit_attr_accessible :name, :version, :description, :preload, :render_view, :style, :editform, :as=>[:super, nil]
 	  ajax_attr_accessible :guid, :as=>[:super, nil]
 
+          def self.get_widget(guid)
+              @widgets ||= Hash[Roxiware::Layout::Widget.includes(:params).collect{|widget| [widget.guid, widget]}]
+              @widgets[guid]
+          end
+
           def import(widget_node)
 	     self.version = widget_node["version"]
 	     self.guid = widget_node["guid"]
@@ -714,11 +716,13 @@ module Roxiware
           self.table_name= "widget_instances"
 
 	  has_many   :params, :class_name=>"Roxiware::Param::Param", :as=>:param_object, :autosave=>true, :dependent=>:destroy
-	  belongs_to :layout_section
 
 	  edit_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 	  ajax_attr_accessible :layout_section_id, :section_order, :widget_guid, :as=>[:super, nil]
 
+	  attr_accessor :layout_section
+
+          default_scope {order(:section_order)}
 	  def deep_dup
 	      new_widget_instance = dup
 	      new_widget_instance.params = params.collect{|p| p.deep_dup}
@@ -735,12 +739,10 @@ module Roxiware
 	  end
 
 	  def widget
-	     @widget ||= Roxiware::Layout::Widget.where(:guid=>self.widget_guid).first
-	     @widget
+	     Roxiware::Layout::Widget.get_widget(self.widget_guid)
 	  end
 
 	  def widget=(newwidget)
-	     @widget = newwidget
 	     self.widget_guid = newwidget.guid
 	  end
 
@@ -767,23 +769,19 @@ module Roxiware
 	     end
           end
 	  
-	  def get_styles(params)
-	     self.widget.eval_style(params.merge(style_params))
+	  def get_styles(base_params)
+	     self.widget.eval_style(base_params.merge(style_params))
 	  end
 
 	  def get_param_objs
-	     if @param_objs.nil?
-	        @param_objs = {}
-	        params.each do |param|
-                   @param_objs[param.name.to_sym] =  param
-                end
-		widget.params.each do |param|
-		   # fall back to 
-                   @param_objs[param.name.to_sym] ||=  param
-                end
-             end
+             @param_objs ||= widget.get_param_objs.merge(Hash[self.params.collect{|param| [param.name.to_sym, param]}])
 	     @param_objs
           end
+
+          def resolve_params
+              Hash[get_param_objs.collect{|key, param| [key, param.conv_value]}]
+          end
+
       end
    end
 end

@@ -62,7 +62,11 @@ module Roxiware
        puts "CURRENT TEMPLATE #{@current_template}"
        puts "CURRENT SCHEME #{@layout_scheme}"
        run_setup = @@loaded_layouts[@current_template].nil?
-       @@loaded_layouts[@current_template] ||= Roxiware::Layout::Layout.where(:guid=>@current_template).first
+       #@@loaded_layouts[@current_template] ||= Roxiware::Layout::Layout.includes( page_layouts: [
+       #                                                                              {layout_sections: [ {:widget_instances =>[:params]}, :params]}, 
+       #                                                                              :params
+       #                                                                           ], :params).where(:guid=>@current_template).first
+       @@loaded_layouts[@current_template] ||= Roxiware::Layout::Layout.includes({:page_layouts=>[ {:layout_sections=>[:widget_instances, :params]}, :params ]}, :params).where(:guid=>@current_template).first
        raise Exception.new("Invalid Layout #{@current_template}") if @@loaded_layouts[@current_template].nil?
        @current_layout = @@loaded_layouts[@current_template]
        run_layout_setup if run_setup

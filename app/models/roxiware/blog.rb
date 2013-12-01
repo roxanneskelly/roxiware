@@ -28,6 +28,7 @@ module Roxiware
     validates_uniqueness_of :post_link, :message=>"Duplicate post title for this date."
 
     validates_presence_of :post_date, :message=>"The post must have a post date"
+    default_scope { includes(:terms)}
 
     validates :post_content, :length=>{:minimum=>5,
                                       :too_short => "The post must contain at least  %{count} characters.",
@@ -49,8 +50,8 @@ module Roxiware
     edit_attr_accessible :post_exerpt, :as=>[nil]
     ajax_attr_accessible :guid, :blog_class, :post_date, :post_exerpt, :post_link, :post_title, :post_content, :person_id, :post_status, :comment_permissions, :tag_csv, :category_name
     
-    scope :published, where(:post_status=>"publish")
-    scope :visible, lambda{|user| where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id || 0} OR post_status='publish'")) }
+    scope :published, -> { where(:post_status=>"publish") }
+    scope :visible, ->(user) {where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id || 0} OR post_status='publish'")) }
 
     after_save do
       Roxiware::Blog.notify_update
@@ -82,7 +83,7 @@ module Roxiware
     end
 
     def tags
-      self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::TAG_NAME))
+      self.terms.select{|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::TAG_NAME)}
     end
 
     def category_ids
@@ -94,7 +95,7 @@ module Roxiware
     end
 
     def categories
-      self.terms.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::CATEGORY_NAME))
+      self.terms.select{|term| term.term_taxonomy_id == Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::CATEGORY_NAME)}
     end
 
     def category_name
@@ -110,7 +111,7 @@ module Roxiware
     end
 
     def snippet(post_content_length, options={}, &block)
-	Sanitize.clean(truncate(self.post_exerpt, :length => post_content_length, :omission=>"", :separator=>" "), options[:sanitizer] || Roxiware::Sanitizer::BASIC_SANITIZER) + block.call
+	(Sanitize.clean(truncate(self.post_content, :escape=>false, :length => post_content_length, :omission=>"", :separator=>" "), options[:sanitizer] || Roxiware::Sanitizer::EXTENDED_SANITIZER) + block.call)
     end
 
     def post_image
@@ -126,8 +127,8 @@ module Roxiware
             self.guid = self.post_link = "/"+self.blog_class+"/" + self.post_date.strftime("%Y/%-m/%-d/") + seo_index
         end
 	if self.post_content_changed?
-            self.post_exerpt = Sanitize.clean(truncate(self.post_content, :length => Roxiware.blog_exerpt_length, :omission=>"", :separator=>" "), Roxiware::Sanitizer::BASIC_SANITIZER)
-	    videos = self.post_content[/iframe.*?src="http:\/\/www\.youtube\.com\/embed\/(.*?)"/i,1]
+            self.post_exerpt = self.snippet(Roxiware.blog_exerpt_length, Roxiware::Sanitizer::EXTENDED_SANITIZER){""}
+	    videos = self.post_content[/iframe.*?src="(http|https):\/\/www\.youtube\.com\/embed\/(.*?)"/i,2]
 	    if videos.present?
                 self.post_type="youtube_video"
 		self.post_image_url ||= "http://img.youtube.com/vi/#{videos}/0.jpg"

@@ -21,11 +21,11 @@ Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight
   <%= link_to("", events_path, :class=>"events_widget_title") %>
   <%= event_item = events.collect do |event| 
       # generate the date range string
-      show_date = event.start.strftime(@event_date_format)
+      show_date = event.start.strftime(@event_date_format || "")
       end_time = event.end_time
 
       if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
-          show_date += " - " + end_time.strftime(@event_date_format)
+          show_date += " - " + end_time.strftime(@event_date_format || "")
       end
       result = raw("")
       result = content_tag(:div, event.start.strftime("%l:%M %p"), :class=>"event_start_time") if (event.duration_units != "days") || (event.start_time != "12:00 AM")
@@ -35,7 +35,7 @@ Roxiware::Event.where("start >= :start_date", :start_date=>Time.now.utc.midnight
       location_str += content_tag(:div, event.city, :class=>"event_city")  unless event.city.blank?
       location_str += content_tag(:div, event.state, :class=>"event_state")  unless event.state.blank?
       result += content_tag(:div, location_str, :class=>"event_full_location") 
-      link_to (result, events_path, :anchor => "event-#{ event.id }", :id=> "event-#{event.id}", :class=>"event_widget_event")
+      link_to(result, events_path, :anchor=>"event-#{ event.id }", :id=> "event-#{event.id}", :class=>"event_widget_event")
   end.join("")
   puts event_item
   raw(event_item) %>

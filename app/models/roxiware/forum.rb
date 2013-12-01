@@ -5,7 +5,7 @@ module Roxiware
         include Roxiware::BaseModel
         self.table_name="forum_board_groups"
         has_many :boards
-        default_scope order(:display_order)
+        default_scope { order(:display_order) }
 
 
         validates_presence_of :name
@@ -26,7 +26,7 @@ module Roxiware
         has_many :posts, :through=>:topics, :source=>:comments, :class_name=>"Roxiware::Comment"
         belongs_to :board_group
         belongs_to :last_post, :class_name=>"Roxiware::Comment"
-        default_scope order(:display_order)
+        default_scope { order(:display_order) }
         ALLOWED_TOPIC_PERMISSIONS = %w(open moderate closed hide)
 
         validates :description, :length=>{:maximum=>255,
@@ -40,7 +40,7 @@ module Roxiware
 	edit_attr_accessible :name, :permissions, :description, :display_order, :board_group_id, :as=>[nil, :super, :admin]
 	ajax_attr_accessible :name, :permissions, :seo_index, :description, :display_order, :board_group_id
 
-        scope :visible, lambda{|user| where((user.present? && user.is_admin?) ? "" : 'permissions != "hide"')}
+        scope :visible, ->(user) {where((user.present? && user.is_admin?) ? "" : 'permissions != "hide"')}
 
 
 	def resolve_permissions
@@ -96,7 +96,7 @@ module Roxiware
 
       has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
       has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
-      default_scope order("last_post_date DESC")
+      default_scope { order("last_post_date DESC") }
 
       validates :title, :length=>{:minimum=>1,
 					:too_short => "The title must at least  %{count} characters.",

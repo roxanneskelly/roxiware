@@ -7,6 +7,6 @@ class CreateNewsItems < ActiveRecord::Migration
       t.text :content, :null=>false
       t.timestamps
     end
-    add_index (:news_items, :seo_index, :unique=>true)
+    add_index(:news_items, [:seo_index], :unique=>true)
   end
 end

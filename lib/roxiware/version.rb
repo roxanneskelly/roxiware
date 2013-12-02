@@ -1,3 +1,3 @@
 module Roxiware
-  VERSION = "0.3.76.ruby2"
+  VERSION = "0.3.77.ruby2"
 end

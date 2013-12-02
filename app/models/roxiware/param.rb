@@ -77,7 +77,7 @@ module Roxiware
 		else
 		  @param_objs[name.to_sym].value = value
 	      end
-	      @param_objs [name.to_sym].save!
+	      @param_objs[name.to_sym].save!
 
 	      @param_objs[name.to_sym]
 	    end

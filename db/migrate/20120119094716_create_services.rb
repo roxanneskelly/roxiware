@@ -8,6 +8,6 @@ class CreateServices < ActiveRecord::Migration
       t.text :description
       t.timestamps
     end
-    add_index (:services, [:service_class, :seo_index], :unique=>true)
+    add_index(:services, [:service_class, :seo_index], :unique=>true)
   end
 end

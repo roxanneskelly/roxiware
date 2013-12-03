@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_dependency "jquery-rails"
   s.add_dependency "uuid"
   s.add_dependency "sanitize", "2.0.3"
-  s.add_dependency "acts_as_tree_rails3"
+  s.add_dependency "acts_as_tree"
   s.add_dependency "httparty", "0.11.0"
   s.add_dependency "libxml-ruby"
   s.add_dependency "recaptcha"

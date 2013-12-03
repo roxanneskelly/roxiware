@@ -120,7 +120,6 @@ class Roxiware::PeopleController < ApplicationController
 		 params[:person][:params][:social_networks].each do |name, value|
 	             social_network = social_networks.set_param(name, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
 		     social_network.set_param("uid", value[:uid], "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
-                     puts "person " + person.user(true).inspect
 		     if(person.user.present? && can?(:edit, person.user))
 		         social_network.set_param("allow_login", value[:allow_login], "CCD842C8-F516-49DD-A8C3-FF32750124D2", "local")
 			 if value[:allow_login]

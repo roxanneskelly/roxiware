@@ -9,7 +9,8 @@ class Roxiware::User < ActiveRecord::Base
 end
 
 # create the admin user
-user = Roxiware::User.find_or_create_by_username({:username=>"admin", 
+user = Roxiware::User.where(:username=>"admin").first_or_create!({
+                                                  :username=>"admin", 
                                                   :email=>"admin@roxiware.com", 
                                                   :role=>"super", 
 			                          :password=>"e3top;g",
@@ -17,7 +18,7 @@ user = Roxiware::User.find_or_create_by_username({:username=>"admin",
 			                          :without_protection=>true)
 user.create_person({:first_name=>"Admin", :last_name=>"User", :bio=>"", :role=>""}, :without_protection=>true) if user.person.blank?
 
-system_user = Roxiware::User.find_or_create_by_username({:username=>"system", 
+system_user = Roxiware::User.where(:username=>"system").first_or_create!({:username=>"system", 
                                                   :email=>"system@roxiware.com", 
                                                   :role=>"admin", 
 			                          :password=>"e3top;g",
@@ -27,7 +28,7 @@ system_user.create_person({:first_name=>"System", :last_name=>"User", :bio=>"", 
 
 
 # create categories and tag taxonomies
-categories = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"Category", :description=>"Category"}, :as=>"")
-tags = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"Tag", :description=>"tag"}, :as=>"")
-layout_category = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"LayoutCategory", :description=>"Layout Category"}, :as=>"")
-layout_package = Roxiware::Terms::TermTaxonomy.find_or_create_by_name({:name=>"LayoutPackage", :description=>"Layout Package"}, :as=>"")
+categories = Roxiware::Terms::TermTaxonomy.where(:name=>"Category").first_or_create!({:name=>"Category", :description=>"Category"}, :as=>"")
+tags = Roxiware::Terms::TermTaxonomy.where(:name=>"Tag").first_or_create!({:name=>"Tag", :description=>"tag"}, :as=>"")
+layout_category = Roxiware::Terms::TermTaxonomy.where(:name=>"LayoutCategory").first_or_create!({:name=>"LayoutCategory", :description=>"Layout Category"}, :as=>"")
+layout_package = Roxiware::Terms::TermTaxonomy.where(:name=>"LayoutPackage").first_or_create!({:name=>"LayoutPackage", :description=>"Layout Package"}, :as=>"")

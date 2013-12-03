@@ -43,7 +43,8 @@ class Roxiware::PageController < ApplicationController
       @page ||=  Roxiware::Page.new({:page_type=>page_type, :page_identifier=>params[:id], :content=>""}, :as=>"") if can? :create, Roxiware::Page
       raise ActiveRecord::RecordNotFound if @page.nil?
       respond_to do |format|
-        if @page.update_attributes(params[:page], :as=>@role)
+        @page.assign_attributes(params[:page], :as=>@role)
+        if @page.save
           format.html { render :action=>:show, :notice => 'Page was successfully updated.' }
           format.json { render :json => @page.ajax_attrs(@role) }
         else

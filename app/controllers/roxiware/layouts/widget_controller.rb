@@ -160,9 +160,8 @@ module Roxiware
 			 @widget_instance.set_param(param.name, param)
 		     end
 		 end
-		 if !@widget_instance.update_attributes(params, :as=>@role)
-		    raise ActiveRecord::Rollback
-		 end 
+                 @widget_instance.assign_attributes(params, :as=>@role)
+                 @widget_instance.save!
 	      rescue Exception => e
 	         @widget_instance.errors.add(:base, e.message)
 	         puts e.message

@@ -82,7 +82,8 @@ class Roxiware::GalleryController < ApplicationController
   def create
      @robots="noindex,nofollow"
      respond_to do |format|
-       if !@gallery.update_attributes(params, :as=>@role)
+       @gallery.assign_attributes(params, :as=>@role)
+       if !@gallery.save
          format.json { render :json=>report_error(@gallery) }
        else
          format.json { render :json=> @gallery.ajax_attrs(@role) }
@@ -93,7 +94,8 @@ class Roxiware::GalleryController < ApplicationController
   def update
      @robots="noindex,nofollow"
      respond_to do |format|
-       if !@gallery.update_attributes(params, :as=>@role)
+       @gallery.assign_attributes(params, :as=>@role)
+       if !@gallery.save
          run_layout_setup
          format.json { render :json=>report_error(@gallery)}
        else

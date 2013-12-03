@@ -202,9 +202,8 @@ class Roxiware::BooksController < ApplicationController
 		  param.import(param_node, false)
               end
 	  end
-	  if !book.update_attributes(params[:book], :as=>@role)
-	      raise ActiveRecord::Rollback
-	  end 
+          book.assign_attributes(params[:book], :as=>@role)
+          book.save!
        rescue Exception => e
            print e.message
 	   puts e.backtrace.join("\n")

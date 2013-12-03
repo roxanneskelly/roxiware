@@ -78,8 +78,8 @@ class Roxiware::ServicesController < ApplicationController
        if params.has_key?(:move)
           @service = _move_service(@service, params[:move])
        end
-       
-       if @service.update_attributes(params, :as=>@role)
+       @service.assign_attributes(params, :as=>@role)
+       if @service.save
            logger.debug("success updating")
 	   format.html { redirect_to @service, :notice => 'Service was successfully updated.' }
            format.json { render :json => @service.ajax_attrs(@role) }
@@ -105,7 +105,8 @@ class Roxiware::ServicesController < ApplicationController
   def create
     respond_to do |format|
       @service.service_class=params[:service_class]
-      if @service.update_attributes(params, :as=>@role)
+      @service.assign_attributes(params, :as=>@role)
+      if @service.save
          format.html { redirect_to @service, :notice => 'Service was successfully created.' }
          format.json { render :json => @service.ajax_attrs(@role) }
       else

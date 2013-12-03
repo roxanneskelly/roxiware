@@ -61,7 +61,8 @@ class Roxiware::GalleryItemController < ApplicationController
        @gallery_item.person_id = current_user.person.id
      end
      respond_to do |format|
-       if !@gallery_item.update_attributes(params, :as=>@role)
+       @gallery_item.assign_attributes(params, :as=>@role)
+       if !@gallery_item.save
          format.json { render :json=>report_error(@gallery_item) }
        else
          Roxiware::ImageHelpers.process_uploaded_image(@gallery_item.image_thumbprint, :watermark_person=>@gallery_item.person, :image_sizes=>params[:image_sizes])
@@ -73,7 +74,8 @@ class Roxiware::GalleryItemController < ApplicationController
   def update
      @robots="noindex,nofollow"
      respond_to do |format|
-       if !@gallery_item.update_attributes(params, :as=>@role)
+       @gallery_item.assign_attributes(params, :as=>@role)
+       if !@gallery_item.save
          format.json { render :json=>report_error(@gallery_item)}
        else
          Roxiware::ImageHelpers.process_uploaded_image(@gallery_item.image_thumbprint, :watermark_person=>@gallery_item.person, :image_sizes=>params[:image_sizes])

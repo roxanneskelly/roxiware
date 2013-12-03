@@ -65,7 +65,7 @@ class Roxiware::SetupController < ApplicationController
 	      @user.create_person({:first_name=>first_name, :last_name=>last_name, :middle_name=>middle_name, :role=>"", :bio=>"", :email=>email}, :as=>"")
 	      @user.auth_services.create({:provider=>"roxiware", :uid=>username}, :as=>"")
 	  else
-              @user = Roxiware::User.find_by_username(username)
+              @user = Roxiware::User.where(:username=>username).first
 	      sign_in(:user, @user)
 	  end
       elsif @setup_step != "welcome"
@@ -161,7 +161,8 @@ class Roxiware::SetupController < ApplicationController
        ActiveRecord::Base.transaction do
            begin
 	       @user = Roxiware::User.new
-	       if @user.update_attributes(params, :as=>"")
+               @user.assign_attributes(params, :as=>"")
+	       if @user.save
 		    @user.role = "admin"
 		    Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", "author")
 		    result = _set_setup_step("name")
@@ -227,7 +228,9 @@ class Roxiware::SetupController < ApplicationController
 		   end
 		   result = _set_setup_step("name")
 	       elsif params[:setup_action] == "skip_import"
-		   if current_user.person.update_attributes({:role=>"", :bio=>"", :email=>current_user.email, :thumbnail_url=>"", :image_url=>"", :large_image_url=>""}, :as=>"")
+                   current_user.person.assign_attributes({:role=>"", :bio=>"", :email=>current_user.email, :thumbnail_url=>"", :image_url=>"", :large_image_url=>""}, :as=>"")
+
+		   if current_user.person.save
 		       result = _set_setup_step("edit_biography")
 		   else
 		       result = report_error(current_user.person)
@@ -272,7 +275,8 @@ class Roxiware::SetupController < ApplicationController
 		    end
 		elsif params[:setup_action] == "save"
 		    current_user.person.show_in_directory = true;
-		    if(!current_user.person.update_attributes(params[:person], :as=>@role))
+		    current_user.person.assign_attributes(params[:person], :as=>@role)
+		    if(!current_user.person.save)
 		         result = report_error(current_user.person)
 		    else
 			 Roxiware::Param::Param.set_application_param("people", "default_biography", "B908FDB5-A0B5-48AC-8BAE-48741485CC06", current_user.person.id)
@@ -532,8 +536,8 @@ class Roxiware::SetupController < ApplicationController
 		    end
 		    series_list.each do |series|
 		       book_series = Roxiware::BookSeries.new
-		       if book_series.update_attributes(series, :as=>@role)
-		           book_series.save!
+		       book_series.assign_attributes(series, :as=>@role)
+		       if book_series.save
 		           # create joins, linking books to the series
 		           order = 1
 		           books = series[:books][:book]

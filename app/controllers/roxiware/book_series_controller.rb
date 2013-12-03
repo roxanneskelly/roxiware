@@ -178,7 +178,8 @@ class Roxiware::BookSeriesController < ApplicationController
 	     join.destroy
 	  end
 
-	  if !@book_series.update_attributes(params[:book_series], :as=>@role)
+          @book_series.assign_attributes(params[:book_series], :as=>@role)
+	  if !@book_series.save
 	      puts @book_series.errors.inspect
 	      success = false
 	  end 

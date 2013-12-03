@@ -8,7 +8,7 @@ module Roxiware
          module ParamClientBaseClassMethods
          end
 	    def get_params(param_class=:local)
-	       Hash[get_param_objs.select{|name, param_obj| param_obj.param_class == param_class}.collect{|param_pair| [param_pair[0].to_sym, param_pair[1].conv_value]}]
+	       Hash[get_param_objs.select{|name, param_obj| param_obj.param_class == param_class.to_s}.collect{|param_pair| [param_pair[0].to_sym, param_pair[1].conv_value]}]
 	    end
 
 	    def get_by_path(path)
@@ -171,7 +171,7 @@ module Roxiware
               end
 
 	     @application_params[application][name] ||= Param.new()
-	     @application_params[application][name].update_attributes({:param_class=>application, 
+	     @application_params[application][name].assign_attributes({:param_class=>application, 
 	                                                               :name=>name,
 			                                               :param_object_type=>nil, 
 			                                               :description_guid=>description_guid, 

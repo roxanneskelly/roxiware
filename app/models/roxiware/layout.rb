@@ -353,6 +353,7 @@ module Roxiware
 	  
 	  def resolve_layout_params(scheme, params_in)
 	     page_layout = self.find_page_layout(params_in)
+	     puts "LAYOUT_PARAMS #{get_params(:local).inspect}"
              get_params(:local).merge(page_layout.resolve_layout_params).merge(get_scheme_param_values(scheme))
 	  end
 

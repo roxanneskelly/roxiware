@@ -75,7 +75,8 @@ class Roxiware::AccountController < ApplicationController
     @user.person.bio = ""
     @user.person.role = params[:user][:role] if params.has_key?("role")
     respond_to do |format|
-      if !@user.update_attributes(params[:user], :as=>current_user.role)
+      @user.assign_attributes(params[:user], :as=>current_user.role)
+      if !@user.save
          format.html { redirect_to "/", :notice=>flash_from_object_errors(@user) } 
          format.json { render :json=>report_error(@user)}
       else
@@ -109,7 +110,8 @@ class Roxiware::AccountController < ApplicationController
     end
 
     respond_to do |format|
-      if !@user.update_attributes(update_params, :as=>current_user.role)
+      @user.assign_attributes(update_params, :as=>current_user.role)
+      if !@user.save
          format.html { redirect_to "/", :notice=>flash_from_object_errors(@user) } 
          format.json { render :json=>report_error(@user)}
       else
@@ -197,7 +199,8 @@ class Roxiware::AccountController < ApplicationController
 		format.json { render :json=>{:error=>[["password", "New password can't be blank."]] }}
 		format.html { redirect_to "/",  :alert=>"Password cannot be blank." }
 	    elsif @user.valid_password?(update_params[:current_password]) 
-		if !@user.update_attributes(update_params, :as=>current_user.role)
+                @user.assign_attributes(update_params, :as=>current_user.role)
+		if !@user.save
 		   format.json { render :json=>report_error(@user)}
 		   format.html { redirect_to "/", :alert=>flash_from_object_errors(@user) } 
 		else

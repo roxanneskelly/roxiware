@@ -50,9 +50,8 @@ module Roxiware
 		       end
 		    end
 		 end
-		 if !@section.update_attributes(params[:layout_section], :as=>@role)
-		    raise ActiveRecord::Rollback
-		 end 
+                 @section.assign_attributes(params[:layout_section], :as=>@role)
+		 @section.save!
 	      rescue Exception => e
 	         print e.message
 	         success = false
@@ -81,7 +80,7 @@ module Roxiware
 	   if(section_params[:clone].present?)
 	      clone_section = Roxiware::Layout::LayoutSection.find(section_params[:clone])
 	      raise ActiveRecord::RecordNotFound if clone_section.nil?
-	      @section.update_attributes(clone_section.attributes, :as=>"")
+	      @section.assign_attributes(clone_section.attributes, :as=>"")
 	      clone_section.params.each do |section_param|
 	          # NOTE, recursive params?
 	          @section.params << section_param.dup
@@ -99,9 +98,8 @@ module Roxiware
 		       end
 		    end
 		 end
-		 if !@section.update_attributes(params, :as=>@role)
-		    raise ActiveRecord::Rollback
-		 end 
+                 @section.assign_attributes(params, :as=>@role)
+		 @section.save!
 	      rescue Exception => e
 	         print e.message
 	         success = false

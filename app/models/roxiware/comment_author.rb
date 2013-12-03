@@ -61,13 +61,14 @@ module Roxiware
     def self.comment_author_from_params(params)
         current_user = params[:current_user]
 	if current_user.present?
-	    comment_author = Roxiware::CommentAuthor.find_or_initialize_by_authtype_and_person_id({:name=>current_user.person.full_name,
-						                                               :email=>current_user.email,
-								                               :person_id=>current_user.person.id,
-								                               :url=>"/people/#{current_user.person.seo_index}",
-								                               :comment_object=>@comment,
-								                               :authtype=>"roxiware",
-											       :thumbnail_url=>current_user.person.thumbnail_url}, :as=>"");
+	    comment_author = Roxiware::CommentAuthor.where(:authtype=>"roxiware", :person_id=>current_user.person.id).first_or_create!
+	    comment_author.assign_attributes({:name=>current_user.person.full_name,
+					      :email=>current_user.email,
+					      :person_id=>current_user.person.id,
+					      :url=>"/people/#{current_user.person.seo_index}",
+					      :comment_object=>@comment,
+					      :authtype=>"roxiware",
+					      :thumbnail_url=>current_user.person.thumbnail_url}, :as=>"");
 	    comment_author.person = current_user.person
 	else
 	    case params[:comment_author_authtype]
@@ -83,8 +84,7 @@ module Roxiware
 		       auth_user_token = Roxiware::AuthHelpers::AuthUserToken.new(params[:comment_author_auth_token])
 		       token_attributes = auth_user_token.token_attributes
 		       token_attributes[:comment_object]=@comment
-		       comment_author = Roxiware::CommentAuthor.find_or_initialize_by_authtype_and_uid(token_attributes, :as=>"")
-		       comment_author.update_attributes(token_attributes, :as=>"")
+		       comment_author = Roxiware::CommentAuthor.where(:authtype=>token_attributes[:authtype], :uid=>token_attributes[:uid]).first_or_create!(token_attributes)
 		   rescue Exception => e
 		       comment_author = Roxiware::CommentAuthor.new()
 		       comment_author.errors.add("exception", e.message())

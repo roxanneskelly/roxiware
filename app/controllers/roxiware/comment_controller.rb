@@ -29,7 +29,8 @@ module Roxiware
 
 		   params[:comment_content] = Sanitize.clean(params[:comment_content], Roxiware::Sanitizer::BASIC_SANITIZER)
 
-		   @comment = @post.comments.new(params.merge({
+		   @comment = @post.comments.new
+		   @comment.assign_attributes(params.merge({
 						  :comment_status=>comment_status,
 						  :comment_date=>DateTime.now.utc}), :as=>"")
 
@@ -85,7 +86,8 @@ module Roxiware
 	 def update
 	   person_id = (current_user && current_user.person)?current_user.person.id : -1
 	   respond_to do |format|
-	       if @comment.update_attributes(params, :as=>@role)
+               @comment.assign_attributes(params, :as=>@role)
+	       if @comment.save
 		  format.json { render :json => @comment.ajax_attrs(@role) }
 	       else
 		  format.json { render :json=>report_error(@comment)}

@@ -17,7 +17,7 @@ class Roxiware::AssetController < ApplicationController
 	  when :jpeg, :gif, :png, :tiff
 	      allowed_image_sizes = Set.new(%w(50x50 50x75 300x450 400x400 400x450 200x225 180x180 200x200 100x100 100x150))
               puts "SERVE FILE NAME #{serve_file_name}"
-	      match = /^(.+)_(\d+)x(\d+)$/.match(serve_file_name.basename(".*"))
+	      match = /^(.+)_(\d+)x(\d+)$/.match(serve_file_name.basename(".*").to_s)
 	      width =  match[2].to_i if match
 	      height = match[3].to_i if match
 	      root_name = match[1] if match

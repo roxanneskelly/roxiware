@@ -47,9 +47,8 @@ module Roxiware
 		       end
 		    end
 		 end
-		 if !@page.update_attributes(params, :as=>@role)
-		    raise ActiveRecord::Rollback
-		 end 
+                 @page.assign_attributes(params, :as=>@role)
+                 @page.save!
 	      rescue Exception => e
 	         print e.message
 	         success = false
@@ -78,7 +77,7 @@ module Roxiware
 	   if (params[:clone].present?)
                clone_page = Roxiware::Layout::PageLayout.find(params[:clone])
 	       raise ActiveRecord::RecordNotFound if clone_page.nil?
-	       @page.update_attributes(clone_page.attributes, :as=>"")
+	       @page.assign_attributes(clone_page.attributes, :as=>"")
 	       clone_page.params.each do |page_param|
 	          # NOTE, recursive params?
 	          @page.params << page_param.dup
@@ -97,9 +96,8 @@ module Roxiware
 		       end
 		    end
 		 end
-		 if !@page.update_attributes(params, :as=>@role)
-		    raise ActiveRecord::Rollback
-		 end 
+                 @page.assign_attributes(params, :as=>@role)
+		 @page.save!
 	      rescue Exception => e
 	         print e.message
 	         success = false

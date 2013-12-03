@@ -112,6 +112,7 @@ class Roxiware::PeopleController < ApplicationController
       success = true
       ActiveRecord::Base.transaction do
 	 begin
+            puts "BEGIN TRANSACTION #{params[:person][:params].inspect}"
 	     if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
 	         if person.user.present? && can?(:edit, person.user)
 		     person.user.auth_services = []
@@ -129,21 +130,25 @@ class Roxiware::PeopleController < ApplicationController
 		 end
 	     end
 	     
-	     success = @person.update_attributes(params[:person], :as=>@role)
+	     @person.assign_attributes(params[:person], :as=>@role)
+	     success = @person.save
 	 rescue Exception => e
+             puts "EXCEPTION"
 	     print e.message
 	     puts e.backtrace.join("\n")
 	     success = false
 	 end
       end
+      puts "layout setup?"
       run_layout_setup if success
+      puts "finished"
       respond_to do |format|
 	 if success
 	     format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Person was successfully updated.' }
-	     format.json { render :json => @person }
+	     format.json { render :json => @person.ajax_attrs(@role) }
 	 else
 	    format.html { redirect_to "/biography/#{@person.seo_index}", :notice => 'Failure updating person.' }
-	    format.json { head :fail }
+	      format.json { render :json=>report_error(@person)}
 	 end
      end
   end

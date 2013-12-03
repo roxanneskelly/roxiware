@@ -233,7 +233,8 @@ module Roxiware
            end
 
 	   respond_to do |format|
-	       if @post.update_attributes(params[:blog_post], :as=>@role)
+               @post.assign_attributes(params[:blog_post], :as=>@role)
+	       if @post.save
 		  format.html { redirect_to @post, :notice => 'Blog post was successfully created.' }
 		  format.json { render :json => @post.ajax_attrs(@role) }
 	       else
@@ -254,7 +255,8 @@ module Roxiware
 	       end
            end
 	   respond_to do |format|
-	       if @post.update_attributes(params[:blog_post], :as=>@role)
+               @post.assign_attributes(params[:blog_post], :as=>@role)
+	       if @post.save
 		  format.html { redirect_to @post.post_link, :notice => 'Blog post was successfully updated.' }
 		  format.json { render :json => @post.ajax_attrs(@role) }
 	       else

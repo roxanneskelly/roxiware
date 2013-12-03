@@ -30,7 +30,6 @@ module Roxiware
 
 
      before_destroy :destroy_images
-     configure_image_handling(%w(small medium huge))
 
      def person_data
         return self.person.ajax_attrs(:guest)

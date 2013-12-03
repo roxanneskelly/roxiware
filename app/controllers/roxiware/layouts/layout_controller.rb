@@ -209,9 +209,8 @@ module Roxiware
 		        layout_scheme.set_param("thumbnail_image", scheme_data[:thumbnail_image], "0B092D47-0161-42C8-AEEC-6D7AA361CF1D", "scheme")
 		     end
 		 end
-		 if !@layout.update_attributes(layout_data, :as=>@role)
-		    raise ActiveRecord::Rollback
-		 end
+                 @layout.assign_attributes(layout_data, :as=>@role)
+		 @layout.save!
 		 # Validate style.  It'd be nice to do this as a validator for
 		 # the layout, but we need the context of the layout to check parameter
 		 # changes to the layout

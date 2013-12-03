@@ -86,7 +86,8 @@ class Roxiware::ForumController < ApplicationController
       raise ActiveRecord::RecordNotFound if @board.nil?
       authorize! :update, @board
       respond_to do |format|
-          if @board.update_attributes(params[:forum_board], :as=>@role)
+          @board.assign_attributes(params[:forum_board], :as=>@role)
+          if @board.save
 	      format.json { render :json => @board.ajax_attrs(@role) }
 	  else
 	      format.json { render :json=>report_error(@board)}
@@ -147,7 +148,8 @@ class Roxiware::ForumController < ApplicationController
       raise ActiveRecord::RecordNotFound if @topic.nil?
       authorize! :update, @topic
       respond_to do |format|
-          if @topic.update_attributes(params[:forum_topic], :as=>@role)
+          @topic.assign_attributes(params[:forum_topic], :as=>@role)
+          if @topic.save
 	      format.json { render :json => @topic.ajax_attrs(@role) }
 	  else
 	      format.json { render :json=>report_error(@topic)}

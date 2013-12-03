@@ -41,7 +41,8 @@ class Roxiware::PortfolioEntriesController < ApplicationController
   def create
       uri_obj = URI
       respond_to do |format|
-        if @portfolio_entry.update_attributes(params, :as=>@role)
+        @portfolio_entry.assign_attributes(params, :as=>@role)
+        if @portfolio_entry.save
 	   format.html { redirect_to @portfolio_entry, :notice => 'Portfolio Entry was successfully updated.' }
            format.json { render :json => @portfolio_entry.ajax_attrs(@role) }
         else
@@ -55,7 +56,8 @@ class Roxiware::PortfolioEntriesController < ApplicationController
   # PUT /portfolio_entries/1.json
   def update
       respond_to do |format|
-        if @portfolio_entry.update_attributes(params, :as=>@role)
+        @portfolio_entry.assign_attributes(params, :as=>@role)
+        if @portfolio_entry.save
            format.html { redirect_to @portfolio_entry, :notice => 'Portfolio entry was successfully updated.' }
            format.json { render :json => @portfolio_entry.ajax_attrs(@role) }
         else

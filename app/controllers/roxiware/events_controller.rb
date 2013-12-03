@@ -58,7 +58,8 @@ class Roxiware::EventsController < ApplicationController
          params[:event][:duration_units] = "none"
      end
      respond_to do |format|
-       if @event.update_attributes(params[:event], :as=>@role)
+       @event.assign_attributes(params[:event], :as=>@role)
+       if @event.save
          format.json { render :json=> @event.ajax_attrs(@role) }
        else
          format.json { render :json=>report_error(@event) }
@@ -72,7 +73,8 @@ class Roxiware::EventsController < ApplicationController
          params[:event][:duration_units] = "none"
      end
      respond_to do |format|
-       if !@event.update_attributes(params[:event], :as=>@role)
+       @event.assign_attributes(params[:event], :as=>@role)
+       if !@event.save
          format.json { render :json=>report_error(@event)}
        else
          format.json { render :json=> @event.ajax_attrs(@role) }

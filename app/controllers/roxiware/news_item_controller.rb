@@ -56,7 +56,8 @@ module Roxiware
     def create
       params[:post_date] = DateTime.now
       respond_to do |format|
-        if @news_item.update_attributes(params, :as=>@role)
+        @news_item.assign_attributes(params, :as=>@role)
+        if @news_item.save
 	   format.html { redirect_to @news_item, :notice => 'NewsItem was successfully updated.' }
            format.json { render :json => @news_item.ajax_attrs(@role) }
         else
@@ -71,7 +72,8 @@ module Roxiware
     def update
       params[:post_date] = DateTime.now
       respond_to do |format|
-        if @news_item.update_attributes(params, :as=>@role)
+        @news_item.assign_attributes(params, :as=>@role)
+        if @news_item.save
            format.html { redirect_to @news_item, :notice => 'NewsItem was successfully updated.' }
            format.json { render :json => @news_item.ajax_attrs(@role) }
         else

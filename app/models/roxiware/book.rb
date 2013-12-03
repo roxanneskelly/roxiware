@@ -13,8 +13,8 @@ class Roxiware::Book < ActiveRecord::Base
   validates_uniqueness_of :seo_index, :allow_nil=>true, :allow_blank=>true, :message=>"The book has already been added."
 
 
-  edit_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :publish_date, :as=>[:super, :admin, :user, nil]
-  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image_url, :isbn, :isbn13, :large_image_url, :thumbnail_url, :title, :bookstores, :publish_date, :as=>[:super, :admin, :user, :guest, nil]
+  edit_attr_accessible :seo_index, :goodreads_id, :description, :image, :isbn, :isbn13, :large_image, :thumbnail, :title, :bookstores, :publish_date, :as=>[:super, :admin, :user, nil]
+  ajax_attr_accessible :seo_index, :goodreads_id, :description, :image, :isbn, :isbn13, :large_image, :thumbnail, :title, :bookstores, :publish_date, :as=>[:super, :admin, :user, :guest, nil]
 
 
   EDITIONS = {
@@ -82,9 +82,9 @@ class Roxiware::Book < ActiveRecord::Base
       self.title = goodreads_result[:title]
       self.isbn=goodreads_result[:isbn]
       self.isbn13=goodreads_result[:isbn13]
-      self.large_image_url=goodreads_result[:large_image_url]
-      self.image_url=goodreads_result[:image_url]
-      self.thumbnail_url=goodreads_result[:thumbnail_url]
+      self.large_image=goodreads_result[:large_image_url]
+      self.image=goodreads_result[:image_url]
+      self.thumbnail=goodreads_result[:thumbnail_url]
       self.description=goodreads_result[:description]
       self.goodreads_id = goodreads_result[:goodreads_id]
       self.publish_date = DateTime.new(goodreads_result[:publication_year], goodreads_result[:publication_month], goodreads_result[:publication_day])
@@ -144,13 +144,13 @@ class Roxiware::Book < ActiveRecord::Base
   before_validation do
      self.seo_index = (self.title || "").to_seo
      self.description = Sanitize.clean(self.description, Roxiware::Sanitizer::BASIC_SANITIZER)
-     image_uri = URI(self.large_image_url)
+     image_uri = URI(self.large_image)
      if(!image_uri.host)
            base_file = Pathname.new(image_uri.path).basename
            extension = base_file.extname
            base_file_name = base_file.basename(".*")
-           self.image_url = "/asset/#{base_file_name}_100x150#{extension}"
-           self.thumbnail_url = "/asset/#{base_file_name}_50x75#{extension}"
+           self.image = "/asset/#{base_file_name}_100x150#{extension}"
+           self.thumbnail = "/asset/#{base_file_name}_50x75#{extension}"
      end
   end
 end

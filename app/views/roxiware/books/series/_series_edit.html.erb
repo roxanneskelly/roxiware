@@ -9,7 +9,7 @@
        <div id="series_book_selector">
 	<div id="current_books">
 	  <div id="current_books_list" class="books_sortable"><% @books.each do |book| %>
-	      <div class="series_book draggable_tile" goodreads_id="<%= book.goodreads_id %>" book_id="<%= book.id %>" title="<%= book.title %>"><span class="icon-move"></span>&nbsp;<img src="<%= book.thumbnail_url %>"/><div class="book_title"><%= book.title %></div></div>
+	      <div class="series_book draggable_tile" goodreads_id="<%= book.goodreads_id %>" book_id="<%= book.id %>" title="<%= book.title %>"><span class="icon-move"></span>&nbsp;<img src="<%= book.thumbnail %>"/><div class="book_title"><%= book.title %></div></div>
 	  <% end %></div>
 	</div>
 	<div id="series_books"><div id="series_books_list" class="books_sortable"></div></div>

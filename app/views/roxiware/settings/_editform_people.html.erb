@@ -3,7 +3,7 @@
         <div  id="people_list">
             <% Roxiware::Person.all.each do |person| %>
 	        <% default_person = " default_person " if @settings.include?('default_biography') && @settings['default_biography'].conv_value == person.id %>
-	        <div class="person <%= default_person %>" person_id="<%=person.id%>" user_id="<%= person.user_id %>"><img src="<%= person.thumbnail_url %>" class="person_thumbnail"/><div class="person_name"><%= person.full_name %></div></div>
+	        <div class="person <%= default_person %>" person_id="<%=person.id%>" user_id="<%= person.user_id %>"><img src="<%= person.thumbnail %>" class="person_thumbnail"/><div class="person_name"><%= person.full_name %></div></div>
 	    <% end %>
        </div>
        <div id="person_edit_bar"><div id="new_person" title="Add a person">+</div><div id="delete_person" title="Remove a person">-</div><div id="edit_person" title="Edit a person">o</div></div>

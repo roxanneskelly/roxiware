@@ -48,7 +48,7 @@ module Roxiware
     def get_thumbnail_url
         case authtype
         when "roxiware"
-           person.thumbnail_url || default_image_path(:person, "thumbnail")
+           person.thumbnail || default_image_path(:person, "thumbnail")
         when "facebook"
            "http://graph.facebook.com/#{uid}/picture?type=square"
         when "twitter"
@@ -61,14 +61,15 @@ module Roxiware
     def self.comment_author_from_params(params)
         current_user = params[:current_user]
 	if current_user.present?
-	    comment_author = Roxiware::CommentAuthor.where(:authtype=>"roxiware", :person_id=>current_user.person.id).first_or_create!
-	    comment_author.assign_attributes({:name=>current_user.person.full_name,
-					      :email=>current_user.email,
-					      :person_id=>current_user.person.id,
-					      :url=>"/people/#{current_user.person.seo_index}",
-					      :comment_object=>@comment,
-					      :authtype=>"roxiware",
-					      :thumbnail_url=>current_user.person.thumbnail_url}, :as=>"");
+	    comment_author = Roxiware::CommentAuthor.where(:authtype=>"roxiware", :person_id=>current_user.person.id).first_or_initialize
+	    comment_author.assign_attributes(
+	             {:name=>current_user.person.full_name,
+		      :email=>current_user.email,
+		      :person_id=>current_user.person.id,
+		      :url=>"/people/#{current_user.person.seo_index}",
+		      :comment_object=>@comment,
+		      :authtype=>"roxiware",
+		      :thumbnail_url=>current_user.person.thumbnail}, :as=>"")
 	    comment_author.person = current_user.person
 	else
 	    case params[:comment_author_authtype]

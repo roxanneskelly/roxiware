@@ -43,7 +43,7 @@ class Roxiware::BooksController < ApplicationController
     authorize! :read, @book
 
     @page_title = @book.title
-    @page_images = [@book.large_image_url, @book.image_url, @book.thumbnail_url]
+    @page_images = [@book.large_image, @book.image, @book.thumbnail]
     @meta_keywords = @meta_keywords + ", " + @book.title
 
     respond_to do |format|

@@ -228,7 +228,7 @@ class Roxiware::SetupController < ApplicationController
 		   end
 		   result = _set_setup_step("name")
 	       elsif params[:setup_action] == "skip_import"
-                   current_user.person.assign_attributes({:role=>"", :bio=>"", :email=>current_user.email, :thumbnail_url=>"", :image_url=>"", :large_image_url=>""}, :as=>"")
+                   current_user.person.assign_attributes({:role=>"", :bio=>"", :email=>current_user.email, :thumbnail=>"", :image=>"", :large_image=>""}, :as=>"")
 
 		   if current_user.person.save
 		       result = _set_setup_step("edit_biography")
@@ -241,9 +241,9 @@ class Roxiware::SetupController < ApplicationController
 		   author = goodreads.search_author({:goodreads_id=>params[:goodreads_id]}).first;
 		   if(author.present?)
 		       current_user.person.bio = author[:about]
-		       current_user.person.thumbnail_url = author[:thumbnail_url]
-		       current_user.person.image_url = author[:image_url]
-		       current_user.person.large_image_url = author[:large_image_url]
+		       current_user.person.thumbnail = author[:thumbnail_url]
+		       current_user.person.image = author[:image_url]
+		       current_user.person.large_image = author[:large_image_url]
 		       # import image here
 		       current_user.person.save!
 		   end
@@ -766,7 +766,7 @@ class Roxiware::SetupController < ApplicationController
 <p>Welcome to my website!</p>
 <p>Be sure to check out my <a href="/books">books</a>, and if you'd like to find out more about me, take a look at my <a href="/biography">biography</a>.</p>
 <p>And definitely enjoy my latest</p></br>
-<a href="#{book_path(latest_book.seo_index)}" style="font-size:2em">#{ latest_book.title}</a><p style="clear:both"><a href="#{book_path(latest_book.seo_index)}"><img src="#{latest_book.image_url}" style="float:left;"/></a>#{latest_book.description}<br></p>
+<a href="#{book_path(latest_book.seo_index)}" style="font-size:2em">#{ latest_book.title}</a><p style="clear:both"><a href="#{book_path(latest_book.seo_index)}"><img src="#{latest_book.image}" style="float:left;"/></a>#{latest_book.description}<br></p>
 <p><br/>
 <br/>
 - #{current_user.person.full_name}

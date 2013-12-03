@@ -44,8 +44,8 @@ class Roxiware::Person < ActiveRecord::Base
                                  :too_long => "The bio must be no more than %{count} characters." 
 				 }
 
-   edit_attr_accessible :first_name, :middle_name, :last_name, :show_in_directory, :role, :email, :image_url, :thumbnail_url, :large_image_url, :bio, :goodreads_id, :as=>[:super, :admin, :self, nil]
-   ajax_attr_accessible :first_name, :middle_name, :last_name, :role, :email, :image_url, :thumbnail_url, :large_image_url, :bio, :show_in_directory, :full_name, :seo_index, :goodreads_id
+   edit_attr_accessible :first_name, :middle_name, :last_name, :show_in_directory, :role, :email, :image, :thumbnail, :large_image, :bio, :goodreads_id, :as=>[:super, :admin, :self, nil]
+   ajax_attr_accessible :first_name, :middle_name, :last_name, :role, :email, :image, :thumbnail, :large_image, :bio, :show_in_directory, :full_name, :seo_index, :goodreads_id
 
    before_destroy :destroy_images
 
@@ -71,14 +71,14 @@ class Roxiware::Person < ActiveRecord::Base
     before_validation do
        self.seo_index = self.full_name.to_seo
        self.bio = Sanitize.clean(self.bio, Roxiware::Sanitizer::BASIC_SANITIZER)
-       if(self.large_image_url.present?)
-           image_uri = URI(self.large_image_url)
+       if(self.large_image.present?)
+           image_uri = URI(self.large_image)
            if(!image_uri.host)
                base_file = Pathname.new(image_uri.path).basename
                extension = base_file.extname
                base_file_name = base_file.basename(".*")
-               self.image_url = "/asset/#{base_file_name}_200x225#{extension}"
-               self.thumbnail_url = "/asset/#{base_file_name}_50x50#{extension}"
+               self.image = "/asset/#{base_file_name}_200x225#{extension}"
+               self.thumbnail = "/asset/#{base_file_name}_50x50#{extension}"
            end
        end
     end

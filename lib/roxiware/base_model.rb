@@ -47,20 +47,6 @@ module Roxiware
             @ajax_attrs[as_option.to_s].merge(args.collect {|arg| arg.to_s})
           end
 	end
-
-        
-        #def configure_image_handling(sizes = Roxiware.upload_image_sizes.keys)
-        #  sizes.each do |size|
-        #    ajax_attr_accessible "#{size}_image_url".to_sym
-	#    define_method("#{size}_image_url".to_sym) do
-	#       if(image_thumbprint.present?) 
-	#          File.join(AppConfig.upload_url, image_thumbprint + "_#{size.to_s}"+Roxiware.upload_image_file_type)
-	#       else
-	#          "/assets/"+self.class.default_image + "_#{size.to_s}"+Roxiware.upload_image_file_type
-	#       end
-        #    end
-	# end
-       #end
     end
 
         def destroy_images
@@ -93,8 +79,6 @@ module Roxiware
 
         attrs = {}
         valid_read_keys.each do |key|
-	  puts "self.#{key}"
-	  puts eval("self['#{key}'].inspect")
 	  value = eval("self['#{key}']")
 	  if value.class == Array
 	     attrs[key+"[]"] = value

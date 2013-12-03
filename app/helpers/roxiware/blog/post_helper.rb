@@ -25,7 +25,7 @@ module Roxiware::Blog::PostHelper
             else
                  header_content[:post_asset] = "".html_safe
         end
-        header_content[:author_image] = (post.person.present? ? tag(:img, :src=>post.person.thumbnail_url, :class=>"post_author_img person_thumbnail") : "")
+        header_content[:author_image] = (post.person.present? ? tag(:img, :src=>post.person.thumbnail, :class=>"post_author_img person_thumbnail") : "")
         header_content[:title] = link_to(post.post_title, post.post_link, :class=>"post_title")
         header_content[:author_name] = (post.person.present? ? link_to(post.person.full_name, "/people/"+post.person.seo_index, :class=>"post_author") : "")
         header_content[:comments] = ""

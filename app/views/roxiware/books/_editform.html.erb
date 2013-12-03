@@ -49,10 +49,10 @@
         $("#book_edit_form ul.tabs").data("tabs").next();
      });
 
-     $("img#book_image_url").attr("src", "<%= @book.image_url %>");
-     $("input#book_image_url").val("<%= @book.image_url %>");
-     $("input#book_large_image_url").val("<%= @book.large_image_url %>");
-     $("input#book_thumbnail_url").val("<%= @book.thumbnail_url %>");
+     $("img#book_image").attr("src", "<%= @book.image %>");
+     $("input#book_image").val("<%= @book.image %>");
+     $("input#book_large_image").val("<%= @book.large_image %>");
+     $("input#book_thumbnail").val("<%= @book.thumbnail %>");
      
      $("#book_edit_form input#import_search").watermark();
      $("#book_edit_form input#import_search").bind("input blur propertychange", function(){
@@ -131,7 +131,7 @@
                               $.each(book['authors'], function(index, author) {
                                   authors.append("<div class='search_result_author'>"+author['author_name']+"</div>");
                               });
-			      var book_html = $("<div class='search_result list_box_item'><div class='book_info'><img src='"+book["thumbnail_url"]+"'/>"+
+			      var book_html = $("<div class='search_result list_box_item'><div class='book_info'><img src='"+book["thumbnail"]+"'/>"+
                                                   "<div class='search_result_title'>"+book["title"]+"</div>"+
                                                  authors.html()+
 	                                         "<br style='clear:both'/></div>");
@@ -149,10 +149,10 @@
                                      $("#book_description_form input#book_isbn13").val(data.isbn13);
                                      $("#book_description_form input#book_title").val(data.title);
                                      $("#book_description_form input#book_goodreads_id").val(goodreads_id);
-                                     $("#book_description_form input#book_large_image_url").val(data.large_image_url);
-                                     $("#book_description_form input#book_image_url").val(data.image_url);
-                                     $("#book_description_form input#book_thumbnail_url").val(data.thumbnail_url);
-                                     $("#book_description_form img#book_upload_image_url").attr("src", data.image_url);
+                                     $("#book_description_form input#book_large_image").val(data.large_image);
+                                     $("#book_description_form input#book_image").val(data.image);
+                                     $("#book_description_form input#book_thumbnail").val(data.thumbnail);
+                                     $("#book_description_form img#book_upload_image").attr("src", data.image);
                               
                                      $("#book_description_form textarea#book_description").html(data.description);
                                      $("#book_description_form textarea").wysiwyg("setContent", data.description);

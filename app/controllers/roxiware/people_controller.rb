@@ -40,7 +40,7 @@ class Roxiware::PeopleController < ApplicationController
     # iterate each person to see if user can read them
     @people = people.select { |person| can? :read, person }
     @page_title = @person.full_name
-    @page_images = [@person.large_image_url, @person.image_url, @person.thumbnail_url]
+    @page_images = [@person.large_image, @person.image, @person.thumbnail]
     respond_to do |format|
        format.html # show.html.erb
        format.json { render :json => @person.ajax_attrs(@role) }
@@ -112,7 +112,6 @@ class Roxiware::PeopleController < ApplicationController
       success = true
       ActiveRecord::Base.transaction do
 	 begin
-            puts "BEGIN TRANSACTION #{params[:person][:params].inspect}"
 	     if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
 	         if person.user.present? && can?(:edit, person.user)
 		     person.user.auth_services = []

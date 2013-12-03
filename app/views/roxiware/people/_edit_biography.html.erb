@@ -25,8 +25,8 @@
     </div>
     <div id="right_section">
 	<span class="popup_help_text" style="float:right;">Click to change image</span><br/>
-	<img id="person_portrait" class="upload_target" src="<%= person.large_image_url %>" ></img>
-        <%= person_form.hidden_field :large_image_url %>
+	<img id="person_portrait" class="upload_target" src="<%= person.large_image %>" ></img>
+        <%= person_form.hidden_field :large_image %>
     </div>
    <%= person_form.label :bio, "Biography" %>
    <div id="bottom_section"><div class="settings_wysiwyg"><%= person_form.text_area :bio, :class=>"settings_wysiwyg" %></div></div>
@@ -35,12 +35,12 @@
  $(function() {
      $("div#biography img.upload_target").bind("click", function() {
 	 var params = {};
-         var url = $("div#biography input#person_large_image_url").val() || "";
+         var url = $("div#biography input#person_large_image").val() || "";
 	 params = {url:encodeURI(url), width:400, height:450};
          settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
-	     success: function(image_url) {
-                 $("div#biography img.upload_target").attr("src", image_url);
-                 $("div#biography input#person_large_image_url").val(image_url);
+	     success: function(image) {
+                 $("div#biography img.upload_target").attr("src", image);
+                 $("div#biography input#person_large_image").val(image);
 	     }
 	 });
     });

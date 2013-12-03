@@ -35,11 +35,11 @@ $(function() {
                                          :isbn13=>book.isbn13 || "",
                                          :publish_date=>book.publish_date.strftime("%-m/%-d/%Y") ||  "1/1/0",
                                          :goodreads_id=>book.goodreads_id || "",
-                                         :large_image_url=>book.large_image_url || "",
-                                         :image_url=>book.image_url || "",
-                                         :thumbnail_url=>book.thumbnail_url || ""}}.to_json %>,
+                                         :large_image=>book.large_image || "",
+                                         :image=>book.image || "",
+                                         :thumbnail=>book.thumbnail || ""}}.to_json %>,
            function(index, book) {
-               var book_html = $("<div class='book list_box_item'><img src='"+book.thumbnail_url+"'/><div class='book_details'><div class='book_title'>"+book.title+"</div></div></div>");
+               var book_html = $("<div class='book list_box_item'><img src='"+book.thumbnail+"'/><div class='book_details'><div class='book_title'>"+book.title+"</div></div></div>");
                book_html.data().book = book;
                $("div#book_list").append(book_html);
             });
@@ -49,14 +49,14 @@ $(function() {
 	 isbn:$("#book_edit_form input#book_isbn").val(),
 	 isbn13:$("#book_edit_form input#book_isbn13").val(),
 	 publish_date:$("#book_edit_form input#book_publish_date").val(),
-	 large_image_url:$("#book_edit_form input#book_large_image_url").val(),
-	 thumbnail_url:$("#book_edit_form input#book_thumbnail_url").val(),
-	 image_url:$("#book_edit_form input#book_image_url").val(),
+	 large_image:$("#book_edit_form input#book_large_image").val(),
+	 thumbnail:$("#book_edit_form input#book_thumbnail").val(),
+	 image:$("#book_edit_form input#book_image").val(),
          goodreads_id:$("#book_edit_form input#book_goodreads_id").val(),
 	 description: $("#book_edit_form textarea#book_description").wysiwyg("getContent")
       }
      $(book).find(".book_title").text($("#book_edit_form input#book_title").val());
-     $(book).find("img").attr("src", $("#book_edit_form input#book_thumbnail_url").val());
+     $(book).find("img").attr("src", $("#book_edit_form input#book_thumbnail").val());
    }
    
 
@@ -70,10 +70,10 @@ $(function() {
       api.setValue(new Date($(book).data().book.publish_date));
 
       $("#book_edit_form input#book_goodreads_id").val($(book).data().book.goodreads_id);
-      $("#book_edit_form input#book_image_url").val($(book).data().book.image_url);
-      $("#book_edit_form input#book_thumbnail_url").val($(book).data().book.thumbnail_url);
-      $("#book_edit_form input#book_large_image_url").val($(book).data().book.large_image_url);
-      $("#book_edit_form img#book_upload_image_url").attr("src", $(book).data().book.image_url);
+      $("#book_edit_form input#book_image").val($(book).data().book.image);
+      $("#book_edit_form input#book_thumbnail").val($(book).data().book.thumbnail);
+      $("#book_edit_form input#book_large_image").val($(book).data().book.large_image);
+      $("#book_edit_form img#book_upload_image").attr("src", $(book).data().book.image);
    }
 
      $("#book_edit_form textarea").wysiwyg({ css: "<%= stylesheet_path('application') %>",
@@ -128,9 +128,9 @@ $(function() {
           xml_data = xml_data + 
              '<book ' + goodreads_id + ' isbn="'+book.isbn+'" isbn13="' + book.isbn13+'" publish_date="' + book.publish_date + '">' +
                  '<title '+goodreads_id+'>'+xmlEscape(book.title)+'</title>' +
-                 '<image_url>'+book.image_url+'</image_url>' +
-                 '<large_image_url>'+book.large_image_url+'</large_image_url>' +
-                 '<thumbnail_url>'+book.thumbnail_url+'</thumbnail_url>' +
+                 '<image>'+book.image+'</image>' +
+                 '<large_image>'+book.large_image+'</large_image>' +
+                 '<thumbnail>'+book.thumbnail+'</thumbnail>' +
                  '<description><![CDATA[ '+ book.description+']]></description>' +
               '</book>';
       });
@@ -148,9 +148,9 @@ $(function() {
 	 isbn:"",
 	 isbn13:"",
 	 publish_date:"1/1/0000",
-	 large_image_url:"",
-	 thumbnail_url:"",
-	 image_url:"",
+	 large_image:"",
+	 thumbnail:"",
+	 image:"",
 	 description: ""
       }
       if(current_selected_book.length != 0) {
@@ -180,7 +180,7 @@ $(function() {
 	 
    });
    
-   $("input#book_thumbnail_url").change(function() {
+   $("input#book_thumbnail").change(function() {
       $(".list_box_item_selected").find("img").attr("src", $(this).val());
    });
 

@@ -1,6 +1,6 @@
 <div id="book_description_form">
-   <%= book_fields.hidden_field :goodreads_id %><%= book_fields.hidden_field :image_url %>
-    <%= book_fields.hidden_field :thumbnail_url %><%= book_fields.hidden_field :large_image_url %>
+   <%= book_fields.hidden_field :goodreads_id %><%= book_fields.hidden_field :image %>
+    <%= book_fields.hidden_field :thumbnail %><%= book_fields.hidden_field :large_image %>
    <div id="left_section">
     <div id="title_entry"><%= book_fields.label :title, "Title"%><%= book_fields.text_field :title %></div>
     <div id="isbn_entry"><%= book_fields.label :isbn, "ISBN"%><%= book_fields.text_field :isbn %></div>
@@ -10,7 +10,7 @@
    <div id="right_section">
     <span class="popup_help_text" style="float:center;">Click to change image</span><br/>
     <img id="book_upload_image_url" src="" class="upload_target" />
-    <input type="hidden" name="large_image_url"/>
+    <input type="hidden" name="large_image"/>
    </div>
    <%= book_fields.label :description, "Description" %>
    <div id="bottom_section"><div class="settings_wysiwyg"><%= book_fields.text_area :description, :class=>"settings_wysiwyg" %></div></div>
@@ -23,7 +23,7 @@ $(function() {
                                trigger: true
                          });
    
-   $("img#book_upload_image_url").attr("src", $("input#book_large_image_url").val());
+   $("img#book_upload_image_url").attr("src", $("input#book_large_image").val());
    $("img#book_upload_image_url").bind("click", function() {
 	 var params = {};
          var url = $("input#book_large_image_url").val() || "";

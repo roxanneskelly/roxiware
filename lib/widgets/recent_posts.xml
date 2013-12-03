@@ -12,7 +12,7 @@
       <![CDATA[if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
 	 globals[:recent_posts] = []
 	 Roxiware::Blog::Post.published().order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
-	   globals[:recent_posts] << {:post=>post, :snippet=>raw(post.snippet(locals[:excerpt_length]){""})}
+	   globals[:recent_posts] << {:post=>post, :snippet=>raw(post.snippet(locals[:excerpt_length], :sanitizer=>Roxiware::Sanitizer::EXTENDED_SANITIZER){""})}
 	 end
          globals[:recent_posts_last_update] = Roxiware::Blog.last_update
        end
@@ -25,7 +25,7 @@
 	   post = post_data[:post] %>
 	   <%= content_tag(:div, :class=>"recent_post_entry") do
 	       Roxiware::Blog::PostHelper.post_header(post, :header_format=>header_format, :date_format=>date_format, :show_comments=>true) + 
-	       content_tag(:div, post_data[:snippet], :class=>"post_snippet") +
+	       content_tag(:div, post_data[:snippet].html_safe, :class=>"post_snippet") +
                link_to("", post.post_link, :class=>"post_more")
            end %>
 	<% end %>

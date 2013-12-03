@@ -12,7 +12,7 @@
          show_widget = true
          widget_path  =  layout_page_section_widget_path(@current_layout.guid, layout_section.page_layout.get_url_identifier, layout_section.name, widget_instance.id)
          begin
-           locals = widget_instance.get_params 
+           locals = widget_instance.resolve_params
 	   locals[:widget_instance]=widget_instance 
 	   locals[:widget_instance_id] =  "widget-#{widget_instance.id}" if locals[:widget_instance_id].blank? 
 	   locals[:layout_section]=layout_section 

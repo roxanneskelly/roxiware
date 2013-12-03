@@ -71,7 +71,6 @@ class Roxiware::Person < ActiveRecord::Base
     before_validation do
        self.seo_index = self.full_name.to_seo
        self.bio = Sanitize.clean(self.bio, Roxiware::Sanitizer::BASIC_SANITIZER)
-       puts "image_url #{image_url}"
        if(self.large_image_url.present?)
            image_uri = URI(self.large_image_url)
            if(!image_uri.host)

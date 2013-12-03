@@ -312,6 +312,22 @@ class Roxiware::SetupController < ApplicationController
         _show_social_networks
     end
 
+    def _set_social_networks
+        if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
+	    social_networks = current_user.person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
+	    params[:person][:params][:social_networks].each do |name, value|
+		social_network = social_networks.set_param(name, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
+		social_network.set_param("uid", value[:uid], "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
+		if(current_user.present? && can?(:edit, current_user))
+		    social_network.set_param("allow_login", value[:allow_login], "CCD842C8-F516-49DD-A8C3-FF32750124D2", "local")
+		    if value[:allow_login]
+		        current_user.auth_services.create({:provider=>name, :uid=>value[:uid]}, :as=>@role)
+                    end
+		end
+	    end
+	end
+    end
+
     def _author_social_networks
 	result = nil
 	ActiveRecord::Base.transaction do
@@ -322,18 +338,7 @@ class Roxiware::SetupController < ApplicationController
 		elsif params[:setup_action] == "save"
 		    ActiveRecord::Base.transaction do
 		       begin
-			   if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
-			       social_networks = current_user.person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
-			       params[:person][:params][:social_networks].each do |name, value|
-			       social_network = social_networks.set_param(name, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
-			       social_network.set_param("uid", value[:uid], "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
-			       if(person.user.present? && can?(:edit, person.user))
-				   social_network.set_param("allow_login", value[:allow_login], "CCD842C8-F516-49DD-A8C3-FF32750124D2", "local")
-				   if value[:allow_login]
-				       person.user.auth_services.create({:provider=>name, :uid=>value[:uid]}, :as=>@role);
-				   end
-			       end
-			   end
+		           _set_social_networks
 			   result = _set_setup_step("manage_books")
 			   # preload the list of books
 			   _show_author_manage_books
@@ -366,12 +371,7 @@ class Roxiware::SetupController < ApplicationController
 		elsif params[:setup_action] == "save"
 		    ActiveRecord::Base.transaction do
 		       begin
-			   if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
-			       social_networks = current_user.person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
-			       params[:person][:params][:social_networks].each do |name, value|
-				   social_networks.set_param(name, value, "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
-			       end
-			   end
+		           _set_social_networks
 			   result = _set_setup_step("choose_template")
 			   # preload the list of books
 			   _show_blog_choose_template

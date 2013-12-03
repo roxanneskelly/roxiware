@@ -10,6 +10,6 @@ class CreatePeople < ActiveRecord::Migration
       t.text   :bio
       t.timestamps
     end
-    add_index (:people, :seo_index, :unique=>true)
+    add_index(:people, :seo_index, :unique=>true)
   end
 end

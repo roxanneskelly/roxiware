@@ -229,9 +229,9 @@ module Roxiware
 	    title = match[1] if match.present?
 	
 	    result = {    :title=>title,
-			  :large_image_url=>large_image,
-			  :image_url=>image,
-			  :thumbnail_url=>thumbnail_image,
+			  :large_image=>large_image,
+			  :image=>image,
+			  :thumbnail=>thumbnail_image,
 			  :goodreads_id=>result_book['id'],
 			  :publication_year=>(result_book['publication_year'] || 0).to_i,
 			  :publication_day=>(result_book['publication_day'] || 1).to_i,
@@ -302,9 +302,9 @@ module Roxiware
 	   author["large_image_url"] = default_image_path(:person, "large") unless (author["image_url"] =~ /.*nophoto.*/).nil?
 	   result << {:goodreads_id=>author["id"],
                       :name=>author["name"],
-		      :thumbnail_url=>author["small_image_url"],
-		      :image_url=>author["small_image_url"],
-		      :large_image_url=>author["image_url"],
+		      :thumbnail=>author["small_image_url"],
+		      :image=>author["small_image_url"],
+		      :large_image=>author["image_url"],
 		      :about=>author["about"] || "",
 		      :books=>books}
 	end

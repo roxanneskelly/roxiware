@@ -1,30 +1,26 @@
-<div class="books">
-<% if display_type == "simple" %>
-    <% books.each do |book| %>
-            <% if book.class == Roxiware::Book %>
-                <%= render :partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image_url, :book_description_length=>@book_description_length}  %>
-            <% elsif book.class == Roxiware::BookSeries %>
-                <%= render :partial=>"roxiware/books/series", :locals=>{:series=>book, :book_description_length=>@book_description_length, :display_type=>display_type}  %>
-            <% end %>
-    <% end %>
-<% elsif display_type == "accordion" %>
-    <% books.each do |book| %>
-        <div class="book_tab"><div class="book_title"><%= book.title %></div></div><div class="book_info"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>book_description_length}  %></div>
-    <% end %>
-<% elsif display_type == "slideshow" %>
-    <div class="book_slides">
-        <% books.each do | book| %>
-            <% if book.class == Roxiware::Book %>
-                <div class="book_slide"><%= render :partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image_url, :book_description_length=>0}  %></div>
-            <% elsif book.class == Roxiware::BookSeries %>
-                <div class="book_slide"><%= render :partial=>"roxiware/books/series", :locals=>{:series=>book, :book_description_length=>0, :display_type=>"slide"}  %></div>
-            <% end %>
-        <% end %>
-   </div>
-   <div id="backward" class="backward icon-arrow-left-9"></div><div id="forward" class="forward icon-arrow-right-9"></div><div id="play" class="play icon-play-3"></div><div id="pause" class="pause icon-pause-2" style="display:none"></div>
-   <div class="book_slide_tabs"><%= raw books.collect{|book| "<a href='#'></a>"} %></div>
-<% end %>
-</div>
+<%= content_tag(:div, :class=>"books") do
+    books.collect do |book| 
+        if(book.class == Roxiware::Book)
+	    case display_type
+		when "simple"
+                    render(:partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image, :book_description_length=>@book_description_length})
+		when "accordion"
+                    content_tag(:div, content_tag(:div, book.title, :class=>"book_title"), :class=>"book_tab") +
+                    content_tag(:div, render( :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image, :book_description_length=>book_description_length}), :class=>"book_info")
+		when "slideshow"
+                    content_tag(:div, render(:partial=>"roxiware/books/book", :locals=>{:book=>book, :book_image_url=>book.large_image, :book_description_length=>@book_description_length}), :class=>"book_slide")
+	    end
+        elsif(book.class == Roxiware::BookSeries)
+	    case display_type
+		when "simple"
+                    render(:partial=>"roxiware/books/series", :locals=>{:series=>book, :book_description_length=>@book_description_length, :display_type=>display_type})
+		when "accordion"
+		when "slideshow"
+                    content_tag(:div, render(:partial=>"roxiware/books/series", :locals=>{:series=>book, :book_description_length=>@book_description_length, :display_type=>display_type}), :class=>"book_side")
+	    end
+        end
+    end.join("").html_safe
+end %>
 <script>
 $(function() {
 

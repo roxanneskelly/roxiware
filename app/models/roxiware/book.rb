@@ -75,6 +75,7 @@ class Roxiware::Book < ActiveRecord::Base
   end
 
   def bookstores
+     puts "BOOKSTORES " + get_param("bookstores").inspect
      get_param("bookstores").a.collect{|bookstore| bookstore.to_jstree_data}
   end
 
@@ -82,9 +83,9 @@ class Roxiware::Book < ActiveRecord::Base
       self.title = goodreads_result[:title]
       self.isbn=goodreads_result[:isbn]
       self.isbn13=goodreads_result[:isbn13]
-      self.large_image=goodreads_result[:large_image_url]
-      self.image=goodreads_result[:image_url]
-      self.thumbnail=goodreads_result[:thumbnail_url]
+      self.large_image=goodreads_result[:large_image]
+      self.image=goodreads_result[:image]
+      self.thumbnail=goodreads_result[:thumbnail]
       self.description=goodreads_result[:description]
       self.goodreads_id = goodreads_result[:goodreads_id]
       self.publish_date = DateTime.new(goodreads_result[:publication_year], goodreads_result[:publication_month], goodreads_result[:publication_day])
@@ -92,9 +93,9 @@ class Roxiware::Book < ActiveRecord::Base
 
   def init_sales_links
       stores =  params.build({:param_class=>"local", 
-                                     :description_guid=>"6C16D934-0643-48EC-806C-95BDAF52E078",
-                                     :name=>"bookstores",
-                                     :value=>""}, :as=>"")
+                              :description_guid=>"6C16D934-0643-48EC-806C-95BDAF52E078",
+                              :name=>"bookstores",
+                              :value=>""}, :as=>"")
     Roxiware::Book::STORES.each do |key, value|
        store = stores.params.build({:param_class=>"local", :description_guid=>"E59B2EB2-6867-475D-A691-ABF1A68E5BE7",
                                         :name=>key}, :as=>"")

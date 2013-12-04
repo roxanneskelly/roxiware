@@ -79,7 +79,7 @@ module Roxiware
 
         attrs = {}
         valid_read_keys.each do |key|
-	  value = eval("self['#{key}']")
+	  value = eval("self.#{key}")
 	  if value.class == Array
 	     attrs[key+"[]"] = value
 	     if valid_write_keys.include?(key)

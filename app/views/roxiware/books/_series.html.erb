@@ -10,27 +10,28 @@
     <a href="<%= book_series_path(series.seo_index) %>" class="series_link"><div class="series_title"><%= series.title %></div></a>
     <div class="series_description"><%= raw series.description %><br/>
     <a href="<%= book_series_path(series.seo_index) %>" class="more_link"></a></div>
-    <div class="series_books">
-      <% if display_type == "accordion" %>
-        <% series.books.order(:series_order).each do |book| %>
-	   <div class="series_book_tab"><div class="series_book_title"><%= book.title %></div></div><div class="series_book_info"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image_url, :book_description_length=>series_book_description_length}  %></div>
-	<% end %>
-      <% elsif display_type == "simple" %>
-        <%= series.books.order(:series_order).collect{|book| link_to(tag(:img, :src=>book.image_url, :class=>"series_book_cover") + content_tag(:div, book.title, :class=>"series_book_title"), book_path(book.seo_index), :class=>"series_book") }.join ("").html_safe %>
-      <% elsif display_type == "slide" %>
-          <% series.books[0..11].each do |book| %> <img src="<%= book.image_url %>" class="book_cover"/><% end %>
-      <% elsif display_type == "slideshow" %>
-	  <% books = series.books.order(:series_order) %>
-	  <div class="book_slides">
-	     <% books.each do | book| %>
-		<div class="book_slide"><%= render :partial=>"book", :locals=>{:book=>book, :book_image_url=>book.large_image_url, :book_description_length=>series_book_description_length}  %></div>
-	     <% end %>
-	  </div>
-	  <div class="book_nav_controls"><div class="prev icon-arrow-left-9"></div><div class="next icon-arrow-right-9"></div></div>
-	  <div class="book_slide_tabs"><%= books.collect{|book| "<a href='#'></a>"} %></div>
-	  </div>
-      <% end %>
-    </div>
+    <%= content_tag(:div, :class=>"series_books") do
+        series.books.order("book_series_joins.series_order ASC").collect do |book|
+            case display_type
+                when "accordion"
+                    content_tag(:div, content_tag(:div, book.title, :class=>"series_book_title"), :class=>"series_book_tab") +
+                    content_tag(:div, :class=>"series_book_info") do
+                        render(:partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image, :book_description_length=>series_book_description_length})
+                    end
+                when "simple"
+                    link_to(book_path(book.seo_index), :class=>"series_book") do
+                        tag(:img, :src=>book.image, :class=>"series_book_cover") + 
+                        content_tag(:div, book.title, :class=>"series_book_title")
+                    end
+                when "slide"
+                    tag(:img, :src=>book.image, :class=>"book_cover")
+                when "slideshow"
+                    content_tag(:div, :class=>"book_slide") do
+                        render(:partial=>"book", :locals=>{:book=>book, :book_image_url=>book.image, :book_description_length=>series_book_description_length})
+                    end
+            end
+        end.join("").html_safe
+    end %>
 </div>
 <% if display_type == "accordion" %>
 <script>

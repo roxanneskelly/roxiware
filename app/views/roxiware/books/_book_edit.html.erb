@@ -9,7 +9,7 @@
    </div>
    <div id="right_section">
     <span class="popup_help_text" style="float:center;">Click to change image</span><br/>
-    <img id="book_upload_image_url" src="" class="upload_target" />
+    <img id="book_upload_image" src="" class="upload_target" />
     <input type="hidden" name="large_image"/>
    </div>
    <%= book_fields.label :description, "Description" %>
@@ -23,16 +23,16 @@ $(function() {
                                trigger: true
                          });
    
-   $("img#book_upload_image_url").attr("src", $("input#book_large_image").val());
-   $("img#book_upload_image_url").bind("click", function() {
+   $("img#book_upload_image").attr("src", $("input#book_large_image").val());
+   $("img#book_upload_image").bind("click", function() {
 	 var params = {};
-         var url = $("input#book_large_image_url").val() || "";
+         var url = $("input#book_large_image").val() || "";
 	 params = {url:encodeURI(url), width:300, height:450};
          settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
-	     success: function(image_url) {
-                 $("img#book_upload_image_url").attr("src", image_url);
-                 $("input#book_large_image_url").val(image_url);
-                 $("input#book_large_image_url").trigger("change");
+	     success: function(image) {
+                 $("img#book_upload_image").attr("src", image);
+                 $("input#book_large_image").val(image);
+                 $("input#book_large_image").trigger("change");
 	     }
 	 });
     });

@@ -202,6 +202,8 @@ class Roxiware::BooksController < ApplicationController
 		  param.import(param_node, false)
               end
 	  end
+	  puts "PUBLISH_DATE " + params[:book][:publish_date].inspect
+	  params[:book][:publish_date] = DateTime.strptime(params[:book][:publish_date], "%m/%d/%Y")
           book.assign_attributes(params[:book], :as=>@role)
           book.save!
        rescue Exception => e

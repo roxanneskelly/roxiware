@@ -15,8 +15,8 @@ $(function() {
         $("input#setup_action").val($(this).attr("id"));
         var data = $("form").serializeArray();
         if($(this).is("#install_template")) {
-            data.push({name:"template_guid",value:$(".template_item_selected").attr("template_guid")});
-            data.push({name:"template_scheme",value:$(".template_item_selected").attr("selected_scheme")});
+            data.push({name:"template_guid",value:$("#template_info").attr("template_guid")});
+            data.push({name:"template_scheme",value:$("#template_info").attr("selected_scheme")});
         }
         $.ajaxSetParamsJSON("<%= setup_path %>.json", data, {success:function() {window.location.reload()}});
      });

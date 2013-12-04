@@ -12,7 +12,7 @@
     <div class="series_description"><%= raw @series.description %></div>
   </div>
   <section class="books_listing">
-    <%= render :partial=>"roxiware/books/books",  :locals=>{:display_type=>@books_display_type, :books=>@series.books.order(:series_order)} %>
+    <%= render :partial=>"roxiware/books/books",  :locals=>{:display_type=>@books_display_type, :books=>@series.books.order("book_series_joins.series_order ASC")} %>
   </section>
 </div>
 <% if can? :edit, @series %>

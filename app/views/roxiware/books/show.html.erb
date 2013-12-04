@@ -1,6 +1,6 @@
 <% if @book.present? %>
   <section>
-     <%= render :partial=>"roxiware/books/book", :locals=>{:book=>@book, :book_image_url=>@book.large_image_url, :book_description_length=>0} %>
+     <%= render :partial=>"roxiware/books/book", :locals=>{:book=>@book, :book_image_url=>@book.large_image, :book_description_length=>0} %>
   </section>
 <% end %>
 <% if can? :edit, @book %>

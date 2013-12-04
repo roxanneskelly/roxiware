@@ -34,7 +34,7 @@ Displays images of books in the authors book list
         content_tag(:div, :class=>"book_list_book") do 
             link_to(book.title, link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_book_title") +
             link_to(link_path.present? ? link_path : book_path(book.seo_index), :class=>"book_list_cover_link") do
-                tag(:img, :class=>"book_list_book_cover", :src=>book[cover_size+'_url']) 
+                tag(:img, :class=>"book_list_book_cover", :src=>book[cover_size]) 
             end +
             case show_description
                 when "excerpt"

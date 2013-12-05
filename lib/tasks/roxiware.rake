@@ -409,7 +409,7 @@ namespace :roxiware do
     desc "update a roxiware instance"
     task :update, [:instance_type]=>:environment do |t,args|
        instance_type = args[:instance_type] || :author
-       settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml")
+       settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml").to_s
        puts "Checking #{settings_file}"
        if !File.file?(settings_file)
            settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
@@ -421,7 +421,7 @@ namespace :roxiware do
        Rake::Task["widgets:import"].invoke
        Rake::Task["templates:import"].invoke
        Rake::Task["settings:update"].invoke(settings_file)
-       File.open(Rails.root.join("config", "instance_config.yml"), "w") do |f|
+       File.open(Rails.root.join("config", "instance_config.yml").to_s, "w") do |f|
            f.write("roxiware_params:\n")
            f.write("    application: #{instance_type}\n")
        end

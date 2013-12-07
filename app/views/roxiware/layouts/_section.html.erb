@@ -79,8 +79,9 @@ Globals: <%= h globals.inspect %>
      <div class="widget_drop_target"><div section="<%= section %>" order="-1"><div>&nbsp;</div></div></div>
   <% end %>
   </div>
+ <% if can? :edit, Roxiware::Layout::Layout %>
   <script>
-   <% if can? :edit, Roxiware::Layout::Layout %>
+    $(function() {
      $("#<%= section %>_section").context_menu($("#section_context_menu"));
      <% if !layout_section.page_layout.is_root? %>
         $("#<%= section %>_section").context_menu().addInstanceMenus("<li id='section_delete'><a href='#' menu_item='section_delete' class='section_delete'>Collapse Section</a></li>");
@@ -88,6 +89,7 @@ Globals: <%= h globals.inspect %>
      <% if layout_section.page_layout.get_url_identifier != @page_layout.get_url_identifier %>
         $("#<%= section %>_section").context_menu().addInstanceMenus("<li id='section_fork'><a href='#' menu_item='section_fork' class='section_fork'>Fork Section</a></li>");
      <% end %>
-    <% end %>
+   });
   </script>
+ <% end %>
 <% end %>

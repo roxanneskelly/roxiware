@@ -12,35 +12,44 @@
       <![CDATA[true]]>
     </preload>
     <render_view>
-      <![CDATA[<div id="login-strip-<%= widget_instance_id %>" style="display:inline-block;padding-left:10px;padding-right:10px;">
-   <% if user_signed_in? %>
-      <% if show_greeting %><div id="session-greeting">Welcome <%= current_user.username %>&nbsp;<% end %>
-         <% if show_links%><%= link_to_unless_current( "(Log Out)", destroy_session_path('user')) do %>Log&nbsp;Out<% end %><% end %>
-     </div>
-   <% elsif (params[:controller] != "devise/sessions") && (params[:controller] != "devise/passwords") %>
-      <% if show_links 
-             facebook_oauth_state = Roxiware::AuthHelpers::AuthState.new({:auth_kind=>"facebook", :proxy=>false, :host_with_port=>request.host_with_port}).get_state
-             twitter_oauth_state = Roxiware::AuthHelpers::AuthState.new({:auth_kind=>"twitter", :proxy=>false, :host_with_port=>request.host_with_port}).get_state %>
-            <div id="session-greeting"><a class="login_link" onclick="loginForm({twitter_oauth_state: '<%= twitter_oauth_state %>', facebook_oauth_state: '<%= facebook_oauth_state %>'});">Sign&nbsp;In</a></div><% end %>
-   <% end %>
-   <% if show_search_box %>
-      <%= form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do %>
-	 <%= search_field_tag(:query) %>
-      <% end %>
-      <script>
-	  $(function() {
-	     var search_watermark = 'Search';
-	     $('#login-strip-<%= widget_instance_id %> #query').blur(function(){
-	     if ($(this).val().length == 0)
-		$(this).val(search_watermark).addClass('search_watermark');
-	     }).focus(function(){
-	       if ($(this).val() == search_watermark)
-		$(this).val('').removeClass('search_watermark');
-	     }).val(search_watermark).addClass('search_watermark');
-	  });
-      </script>
-   <% end %>
-</div>]]>
+      <![CDATA[
+<%= content_tag(:div, :id=>"login-strip-#{ widget_instance_id }", :style=>"display:inline-block;padding-left:10px;padding-right:10px;") do
+    if user_signed_in?
+        (show_greeting ? content_tag(:div, "Welcome #{current_user.username}", :id=>"session-greeting") : "".html_safe) +
+        (show_links ? link_to("(Sign Out)", destroy_session_path("user")) : "".html_safe)
+    elsif (params[:controller] != "devise/sessions") && (params[:controller] != "devise/passwords")
+        if show_links 
+            facebook_oauth_state = Roxiware::AuthHelpers::AuthState.new({:auth_kind=>"facebook", :proxy=>false, :host_with_port=>request.host_with_port}).get_state
+	    twitter_oauth_state = Roxiware::AuthHelpers::AuthState.new({:auth_kind=>"twitter", :proxy=>false, :host_with_port=>request.host_with_port}).get_state 
+            content_tag(:div, :id=>"session-greeting") do
+	        content_tag(:a, "Sign In", :onclick=>"loginForm({twitter_oauth_state: '#{ twitter_oauth_state }', facebook_oauth_state: '#{ facebook_oauth_state }'});")
+	    end
+       end
+    else
+        "".html_safe
+    end +
+    if show_search_box 
+        form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do 
+            search_field_tag(:query)
+        end
+    end
+end %>
+<% if show_search_box %>
+<script>
+    $(function() {
+	var search_watermark = 'Search';
+	$('#login-strip-<%= widget_instance_id %> #query').blur(function(){
+	if ($(this).val().length == 0)
+	    $(this).val(search_watermark).addClass('search_watermark');
+	}).focus(function(){
+	if ($(this).val() == search_watermark){
+	    $(this).val('').removeClass('search_watermark');
+	}).val(search_watermark).addClass('search_watermark');
+    });
+</script>
+<% end %>
+
+]]>
     </render_view>
     <style>
       <![CDATA[.search_watermark
@@ -55,7 +64,8 @@
 #query
 {
    display:inline-block;
-}]]>
+}
+]]>
     </style>
     <params>
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>

@@ -5,6 +5,7 @@
 <meta name="description" content="<%= @meta_description %>"/>
 <meta name="keywords" content="<%= @meta_keywords %>"/>
 <meta property="og:type" content="<%= @og_type || 'website' %>" />
+<% if @og_video_url.present? %><meta property="og:video" content="<%= @og_video_url %>" /><% end %>
 <meta property="og:title" content="<%= @page_title || @title %>" />
 <meta property="og:url" content="<%= @og_url || request.url %>" />
 <meta property="og:description" content="<%= @meta_description %>" />

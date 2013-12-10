@@ -34,15 +34,11 @@ module Roxiware
 	  'iframe'  => %w[allowfullscreen frameborder webkitAllowFullScreen mozallowfullscreen height src width]
 	}
       })
-      puts "\n\nNODE: #{node}\n\n"
       youtube_uri = URI(node[:src])
-      puts "URI #{youtube_uri.inspect}"
       query = Rack::Utils.parse_nested_query(youtube_uri.query || "")
-      puts "QUERY #{query.inspect}"
       query["wmode"] = "opaque"
       
       youtube_uri.query = query.to_param
-      puts "URI #{youtube_uri.inspect}"
       node[:src] = youtube_uri.to_s
       # Now that we're sure that this is a valid YouTube embed and that there are
       # no unwanted elements or attributes hidden inside it, we can tell Sanitize

@@ -128,21 +128,34 @@ module Roxiware
         end
 	if self.post_content_changed?
             self.post_exerpt = self.snippet(Roxiware.blog_exerpt_length, Roxiware::Sanitizer::EXTENDED_SANITIZER){""}
-	    videos = self.post_content[/iframe.*?src="(http|https):\/\/www\.youtube\.com\/embed\/(.*?)"/i,2]
-	    if videos.present?
-                self.post_type="youtube_video"
-		self.post_image_url ||= "http://img.youtube.com/vi/#{videos}/0.jpg"
-		self.post_thumbnail_url ||= "http://img.youtube.com/vi/#{videos}/1.jpg"
-                self.post_video_url = "http://www.youtube.com/embed/#{videos}"
-	    else
-		self.post_image_url = self.post_content[/img.*?src="(.*?)"/i,1]
-		self.post_thumbnail_url = self.post_content[/img.*?src="(.*?)"/i,1]
-                if(self.post_image_url.present?)
-                    self.post_type="image"
-                else
-                    self.post_type="text"
-                end
-	    end
+            
+	    video_url = self.post_content[/iframe.*?src="((http|https):\/\/(www\.youtube\.com\/embed\/|youtu.be\/)[^\"]+)/i,1]
+	    puts "VIDEO URL #{video_url.inspect}"
+	    video_uri = URI(video_url)
+            if(video_uri.present?)
+		case video_uri.host
+		    when "youtu.be"
+			video_id = video_uri.path
+			self.post_type="youtube_video"
+			self.post_image_url ||= "http://img.youtube.com/vi/#{video_id}/0.jpg"
+			self.post_thumbnail_url ||= "http://img.youtube.com/vi/#{video_id}/1.jpg"
+			self.post_video_url = "http://www.youtube.com/embed/#{video_id}"
+		    when "www.youtube.com"
+			video_id = Pathname.new(video_uri.path).basename
+			self.post_type="youtube_video"
+			self.post_image_url ||= "http://img.youtube.com/vi/#{video_id}/0.jpg"
+			self.post_thumbnail_url ||= "http://img.youtube.com/vi/#{video_id}/1.jpg"
+			self.post_video_url = "http://www.youtube.com/embed/#{video_id}"
+		    else
+			self.post_image_url = self.post_content[/img.*?src="(.*?)"/i,1]
+			self.post_thumbnail_url = self.post_content[/img.*?src="(.*?)"/i,1]
+			if(self.post_image_url.present?)
+			    self.post_type="image"
+			else
+			    self.post_type="text"
+			end
+		end
+            end
         end
     end
 

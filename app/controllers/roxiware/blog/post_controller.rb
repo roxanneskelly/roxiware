@@ -86,6 +86,9 @@ module Roxiware
 	   @num_pages = (@num_posts_total.to_f/@num_posts.to_f).ceil.to_i
            @link_params = {}
 	   @link_params[:max] = params[:max] if params[:max].present?
+           @page_images = [@posts.first.post_image] if @posts.first.present?
+	   @og_url = @posts.first.post_link if @posts.first.present?
+	   @og_video_url = @posts.first.post_video if @posts.first.present? && @posts.first.post_video.present?
            if (@posts.length == @num_posts+1)
 	      @posts.pop
 	      @next_page_link = url_for({:page=>@page+1}.merge @link_params)
@@ -119,6 +122,8 @@ module Roxiware
 	   @enable_blog_edit = true
 	   @post = Roxiware::Blog::Post.where(:guid=>request.path).first
 	   @page_images = [@post.post_image]
+	   @og_url = @post.post_link if @post.present?
+	   @og_video_url = @post.post_video if @post.present? && @post.post_video.present?
 	   @blog_class = params[:blog_class] || "blog"
 	   @meta_description = @post.snippet(200, :sanitizer=>Sanitize::Config::DEFAULT){"..."}
 	   raise ActiveRecord::RecordNotFound if @post.nil?

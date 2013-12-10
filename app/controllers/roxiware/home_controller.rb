@@ -23,6 +23,9 @@ module Roxiware
 		        @page_images = [@posts.first.post_image] if @posts.first.present?
 			@blog_url = @posts.first.post_link if @posts.first.present?
 			@blog_class="blog"
+		        @page_images = [@posts.first.post_image] if @posts.first.present?
+			@og_url = @posts.first.post_link if @posts.first.present?
+			@og_video_url = @posts.first.post_video if @posts.first.present? && @posts.first.post_video.present?
                         @page = 1
                         @link_params = {:controller=>"roxiware/blog/post", :action=>"index_by_date"}
 			if(@posts.length == num_posts+1)
@@ -38,6 +41,7 @@ module Roxiware
 		        @posts = Roxiware::Blog::Post.where(:post_status=>"publish").order("post_date DESC").limit(1)
 		        @page_images = [@posts.first.post_image] if @posts.first.present?
 			@og_url = @posts.first.post_link if @posts.first.present?
+			@og_video_url = @posts.first.post_video if @posts.first.present? && @posts.first.post_video.present?
 			@blog_class="blog"
 			@next_page_link = send("#{@blog_class}_path")
 			format.html { render :template=>"roxiware/blog/post/index"}
@@ -52,6 +56,7 @@ module Roxiware
 
 		            @page_images = [@post.post_image]
 			    @og_url = @post.post_link
+			    @og_video_url = @post.post_video if @post.present? && @post.post_video.present?
 			    @next_post_link = posts.last.post_link if posts.length > 1
 
 			    comments = @post.comments.visible(current_user).order("comment_date DESC")
@@ -81,6 +86,7 @@ module Roxiware
 
 		            @page_images = [@post.post_image]
 			    @og_url = @post.post_link
+			    @og_video_url = @post.post_video if @post.present? && @post.post_video.present?
 			    @next_post_link = posts.last.post_link if posts.length > 1
 			    format.html { render :template=>"roxiware/blog/post/show"}
 			else

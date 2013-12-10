@@ -18,6 +18,7 @@ module Roxiware
          setting_params = Roxiware::Param::Param.application_param_hash(params[:id])
          params[params[:id]].each do |key, value|
 	     if setting_params[key] && can?(:edit, setting_params[key])
+	          puts "SETTING #{params[:id]}/#{key} to #{value}"
 	          Roxiware::Param::Param.set_application_param(params[:id], key, setting_params[key].description_guid, value)
              end
          end

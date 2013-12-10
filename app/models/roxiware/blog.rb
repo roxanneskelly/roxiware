@@ -130,8 +130,7 @@ module Roxiware
             self.post_exerpt = self.snippet(Roxiware.blog_exerpt_length, Roxiware::Sanitizer::EXTENDED_SANITIZER){""}
             
 	    video_url = self.post_content[/iframe.*?src="((http|https):\/\/(www\.youtube\.com\/embed\/|youtu.be\/)[^\"]+)/i,1]
-	    puts "VIDEO URL #{video_url.inspect}"
-	    video_uri = URI(video_url)
+            video_uri = URI(video_url) if video_url.present?
             if(video_uri.present?)
 		case video_uri.host
 		    when "youtu.be"

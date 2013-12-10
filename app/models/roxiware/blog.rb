@@ -127,6 +127,7 @@ module Roxiware
             self.guid = self.post_link = "/"+self.blog_class+"/" + self.post_date.strftime("%Y/%-m/%-d/") + seo_index
         end
 	if self.post_content_changed?
+	    puts "CONTENT CHANGED"
             self.post_exerpt = self.snippet(Roxiware.blog_exerpt_length, Roxiware::Sanitizer::EXTENDED_SANITIZER){""}
             
 	    video_url = self.post_content[/iframe.*?src="((http|https):\/\/(www\.youtube\.com\/embed\/|youtu.be\/)[^\"]+)/i,1]
@@ -136,15 +137,17 @@ module Roxiware
 		    when "youtu.be"
 			video_id = video_uri.path
 			self.post_type="youtube_video"
-			self.post_image_url ||= "http://img.youtube.com/vi/#{video_id}/0.jpg"
-			self.post_thumbnail_url ||= "http://img.youtube.com/vi/#{video_id}/1.jpg"
+			self.post_image_url = "http://img.youtube.com/vi/#{video_id}/0.jpg"
+			self.post_thumbnail_url = "http://img.youtube.com/vi/#{video_id}/1.jpg"
 			self.post_video_url = "http://www.youtube.com/embed/#{video_id}"
 		    when "www.youtube.com"
 			video_id = Pathname.new(video_uri.path).basename
+			puts "VIDEO ID #{video_id}"
 			self.post_type="youtube_video"
-			self.post_image_url ||= "http://img.youtube.com/vi/#{video_id}/0.jpg"
-			self.post_thumbnail_url ||= "http://img.youtube.com/vi/#{video_id}/1.jpg"
+			self.post_image_url = "http://img.youtube.com/vi/#{video_id}/0.jpg"
+			self.post_thumbnail_url = "http://img.youtube.com/vi/#{video_id}/1.jpg"
 			self.post_video_url = "http://www.youtube.com/embed/#{video_id}"
+			puts "SELF: #{self.post_image_url}"
 		    else
 			self.post_image_url = self.post_content[/img.*?src="(.*?)"/i,1]
 			self.post_thumbnail_url = self.post_content[/img.*?src="(.*?)"/i,1]

@@ -214,7 +214,7 @@ class Roxiware::ForumController < ApplicationController
 
           @topic_last_read = @reader_topic_info.last_read if @reader_topic_info.present?
           @topic_last_read ||= DateTime.new(0)
-          @reader_topic_info.last_read = DateTime.now()
+          @reader_topic_info.last_read = DateTime.now() 
           @reader_topic_info.save!
       elsif params["last_read"].present?
 	  @per_topic_last_read = Hash[params[:last_read].collect{|topic_id, last_read| [topic_id.to_i, Time.at(last_read.to_i).to_datetime]}]

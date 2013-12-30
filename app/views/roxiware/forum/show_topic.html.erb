@@ -56,15 +56,15 @@ end %>
 
 <script>
 $(function() {
-
+<% if @reader.present? %>
+    var logged_in = true;
+<% else %>
     var logged_in = false;
+<% end %>
     var update_topic = function(topic) {
-        console.log("TOPIC");
-        console.log(topic);
         $(".comment").removeClass("unread_comment");
         $.each(topic.unread, function(index, post_id) {
             $(".comment[comment_id="+post_id+"]").addClass("unread_comment");
-            console.log(post_id);
         });
     }
     var get_last_read = function() {
@@ -83,14 +83,13 @@ $(function() {
         if(!forum_last_read["<%= @board.id %>"]) {
             forum_last_read["<%= @board.id %>"]={};
         }
-        console.log("last read");
-        console.log(forum_last_read);
         return forum_last_read;
     }
     $("body").bind("oauth_login", function(e, auth_info) {
-        console.log("OAUTH LOGIN");
-        console.log(auth_info);
         if (auth_info) {
+            if(logged_in) {
+                return;
+            }
             logged_in = true;
             $.getJSON("<%= @topic.topic_link %>.json", function(data) {
                 update_topic(data);
@@ -100,6 +99,7 @@ $(function() {
             logged_in = false;
             var last_read_data = get_last_read();
             var forum_last_read = last_read_data["<%= @board.id %>"];
+            var url = "<%= @topic.topic_link %>.json";
             $.ajax({
                 type:"GET",
                 url: "<%= @topic.topic_link %>.json",
@@ -223,7 +223,6 @@ $(function() {
 
     /* Handle publish/hide comment */
     $(".manage_comment .publish_comment, .manage_comment .hide_comment").click(function() {
-        console.log("MANAGING");
         if($(this).parent().is(".selected_item")) {
             return;
         }

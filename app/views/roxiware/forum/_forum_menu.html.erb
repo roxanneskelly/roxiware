@@ -3,11 +3,16 @@
     end +
     if !user_signed_in?
 	content_tag(:div, :id=>"social_network_login") do
-            tag(:img, :id=>"reader_thumbnail") +
+            tag(:img, :id=>"reader_thumbnail", :src=>(@reader.present? ? @reader.get_thumbnail_url : default_image_path(:person, :thumbnail))) +
 	    content_tag(:a, "", :id=>"facebook_login", :provider=>"facebook", :class=>"login_button") +
 	    content_tag(:a, "", :id=>"twitter_login", :provider=>"twitter", :class=>"login_button") +
 	    content_tag(:a, "", :id=>"facebook_logout", :provider=>"facebook", :class=>"login_button", :style=>"display:none") +
 	    content_tag(:a, "", :id=>"twitter_logout", :provider=>"twitter", :class=>"login_button", :style=>"display:none")
+        end
+    else
+	content_tag(:div, :id=>"user_info") do
+            content_tag(:div, current_user.person.full_name, :id=>"reader_name") +
+            tag(:img, :id=>"reader_thumbnail", :src=> @reader.get_thumbnail_url)
         end
     end +
     content_tag(:nav, :id=>"forum_nav") do

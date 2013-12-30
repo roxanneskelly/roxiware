@@ -11,7 +11,13 @@ class Roxiware::ForumController < ApplicationController
         @role = "guest"
         @role = current_user.role unless current_user.nil?
 	begin
-	    @reader = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token]) if cookies[:ext_oauth_token]
+            if user_signed_in?
+                @reader = Roxiware::CommentAuthor.comment_author_from_user(current_user)
+            elsif cookies[:ext_oauth_token].present?
+	        @reader = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token])
+            else
+                @reader = nil
+            end
         rescue Exception=>e
 	    logger.error e.message
             logger.error e.backtrace.join("\n")

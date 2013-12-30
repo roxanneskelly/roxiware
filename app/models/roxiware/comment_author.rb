@@ -59,8 +59,9 @@ module Roxiware
     end
 
     def self.comment_author_from_user(user)
-        comment_author = Roxiware::CommentAuthor.where(:authtype=>"roxiware", :person_id=>current_user.person.id).first_or_initialize
-	comment_author.person = current_user.person
+        comment_author = Roxiware::CommentAuthor.where(:authtype=>"roxiware", :person_id=>user.person.id).first_or_initialize
+	comment_author.person = user.person
+        comment_author
     end
 
     def self.comment_author_from_token(token)

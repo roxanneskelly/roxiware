@@ -1120,6 +1120,7 @@ $.roxiware.oauth_login = {
         params: {}
     }
 }
+
 // assign an element to be an oauth login button.
 // on click, it'll do the appropriate login stuff, then
 // perform the callback
@@ -1134,6 +1135,10 @@ $.fn.oauthLogin = function(provider, conf) {
 
 var _get_auth_info = function(callback) {
     var auth_info = null;
+    if(!window.fbApiInit) {
+	setTimeout(function() {_get_auth_info(callback);}, 50);
+        return;
+    }
     if (localStorage.roxiwareAuthInfo) {
 	try{
             auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
@@ -1174,7 +1179,6 @@ $.extend({
     //    conf.params.provider = provider;
     //}
 
-    
     oAuthLogIn:function(provider, oauth_state) {
         _get_auth_info(function(auth_info) {
             if(auth_info) {

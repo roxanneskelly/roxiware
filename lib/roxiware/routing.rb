@@ -49,7 +49,6 @@ module ActionDispatch::Routing
 
 	    applications = Roxiware::RoutingHelpers.applications
 	    applications = applications.select{|app| Roxiware::RoutingHelpers::APP_TYPES[options[:application].to_sym].include?(app)} if options[:application].present?
-	    puts "APPLICATIONS1 #{applications.inspect}"
 	    applications = applications & options[:only] if options[:only].present?
 	    applications = applications - options[:skip] if options[:skip].present?
 	    applications = applications + options[:with].select{|app| !applications.include?(app)} if options[:with].present?
@@ -58,7 +57,6 @@ module ActionDispatch::Routing
 	        applications = applications + dependencies.select{|app| !applications.include?(app)} if applications.include?(application)
 	    end
 
-	    puts "APPLICATIONS #{applications.inspect}"
 	    Roxiware::RoutingHelpers.applications = applications
 
 	    mount Roxiware::Engine => "/", :as=>"roxiware"	    
@@ -193,6 +191,7 @@ module ActionDispatch::Routing
 
         def roxiware_comments
 	    resources :comment, :only=>[:create, :update, :destroy], :shallow=>true
+	    get "/comment/author" => "comment_author#get"
         end
 
         def roxiware_forum

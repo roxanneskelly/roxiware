@@ -1,5 +1,4 @@
 module Roxiware
-  # author of a comment
   class CommentAuthor < ActiveRecord::Base
     include ActionView::Helpers::TextHelper
     include Roxiware::BaseModel
@@ -9,6 +8,7 @@ module Roxiware
     validates_presence_of :name
     has_many :comments, :dependent=>:destroy
     belongs_to :person
+    has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo"
 
     validates :email, :length=>{:minimum=>1,
                                 :too_short => "The you must provide an email address.",
@@ -27,9 +27,9 @@ module Roxiware
 				}
 
 
-    edit_attr_accessible :person_id, :comment_object_type, :as=>[:super, :admin, nil]
-    edit_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :likes, :blocked, :comments_count, :as=>[:super, :admin, :user, :guest, nil]
-    ajax_attr_accessible :name, :email, :url, :authtype, :uid, :comment_id, :thumbnail_url, :likes, :blocked, :comments_count, :as=>[:super, :admin, :user, :guest, nil]
+    edit_attr_accessible :person_id,:as=>[:super, :admin, nil]
+    edit_attr_accessible :name, :email, :url, :authtype, :uid, :thumbnail_url, :likes, :blocked, :comments_count, :as=>[:super, :admin, :user, :guest, nil]
+    ajax_attr_accessible :name, :email, :url, :authtype, :uid, :thumbnail_url, :likes, :blocked, :comments_count, :as=>[:super, :admin, :user, :guest, nil]
 
     before_validation() do
 	 if !(self.url.nil? || self.url.empty?)
@@ -58,42 +58,29 @@ module Roxiware
         end
     end
 
-    def self.comment_author_from_params(params)
-        current_user = params[:current_user]
-	if current_user.present?
-	    comment_author = Roxiware::CommentAuthor.where(:authtype=>"roxiware", :person_id=>current_user.person.id).first_or_initialize
-	    comment_author.assign_attributes(
-	             {:name=>current_user.person.full_name,
-		      :email=>current_user.email,
-		      :person_id=>current_user.person.id,
-		      :url=>"/people/#{current_user.person.seo_index}",
-		      :comment_object=>@comment,
-		      :authtype=>"roxiware",
-		      :thumbnail_url=>current_user.person.thumbnail}, :as=>"")
-	    comment_author.person = current_user.person
+    def self.comment_author_from_user(user)
+        comment_author = Roxiware::CommentAuthor.where(:authtype=>"roxiware", :person_id=>current_user.person.id).first_or_initialize
+	comment_author.person = current_user.person
+    end
+
+    def self.comment_author_from_token(token)
+        auth_user_token = Roxiware::AuthHelpers::AuthUserToken.new(token) if token.present?
+	return nil if auth_user_token.blank?
+
+        case auth_user_token.auth_kind
+	    when "facebook","twitter"
+	        begin
+		    token_attributes = auth_user_token.token_attributes
+		    comment_author = Roxiware::CommentAuthor.where(:authtype=>token_attributes[:authtype], :uid=>token_attributes[:uid]).first_or_create
+		    comment_author.assign_attributes(token_attributes, :as=>"")
+		    comment_author.save!
+		rescue Exception => e
+		   comment_author = Roxiware::CommentAuthor.new()
+		   comment_author.errors.add("exception", e.message())
+            end
 	else
-	    case params[:comment_author_authtype]
-	        when "generic"
-	           comment_author = Roxiware::CommentAuthor.new({:name=>params[:comment_author],
-						                    :email=>params[:comment_author_email],
-								    :url=>params[:comment_author_url],
-								    :comment_object=>@comment,
-								    :authtype=>"generic",
-								    :thumbnail_url=>default_image_path(:person, "thumbnail")}, :as=>"");
-	        when "facebook","twitter"
-	           begin
-		       auth_user_token = Roxiware::AuthHelpers::AuthUserToken.new(params[:comment_author_auth_token])
-		       token_attributes = auth_user_token.token_attributes
-		       token_attributes[:comment_object]=@comment
-		       comment_author = Roxiware::CommentAuthor.where(:authtype=>token_attributes[:authtype], :uid=>token_attributes[:uid]).first_or_create!(token_attributes)
-		   rescue Exception => e
-		       comment_author = Roxiware::CommentAuthor.new()
-		       comment_author.errors.add("exception", e.message())
-		   end
-	    else
-	       comment_author = Roxiware::CommentAuthor.new()
-	       comment_author.errors.add("exception", "Unsupported authentication method")
-           end
+	    comment_author = Roxiware::CommentAuthor.new()
+	    comment_author.errors.add("exception", "Unsupported authentication method")
         end
 	comment_author
     end

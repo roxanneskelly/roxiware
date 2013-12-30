@@ -248,5 +248,9 @@ module Roxiware
  	end
 	return true
      end
+
+     def is_robot?
+         request.env["HTTP_USER_AGENT"].match(/\(.*https?:\/\/.*\)/)
+     end
   end
 end

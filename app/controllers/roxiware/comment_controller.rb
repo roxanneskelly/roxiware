@@ -33,12 +33,16 @@ module Roxiware
 		   @comment.assign_attributes(params.merge({
 						  :comment_status=>comment_status,
 						  :comment_date=>DateTime.now.utc}), :as=>"")
-
-
 		   if user_signed_in?
-		       @comment_author = Roxiware::CommentAuthor.comment_author_from_params(:current_user=>current_user)
-		   else 
-		       @comment_author = Roxiware::CommentAuthor.comment_author_from_params(params)
+		       @comment_author = Roxiware::CommentAuthor.comment_author_from_user(current_user)
+		   elsif cookies[:ext_oauth_token].present?
+		       @comment_author = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token])
+		   else
+                       @comment_author = Roxiware::CommentAuthor.new({:name=>params[:comment_author],
+                                                                      :email=>params[:comment_author_email],
+                                                                      :url=>params[:comment_author_url],
+                                                                      :authtype=>"generic",
+                                                                      :thumbnail_url=>default_image_path(:person, "thumbnail")}, :as=>"");
 		   end
 
 		   if(@comment_author.authtype == "generic")
@@ -54,8 +58,8 @@ module Roxiware
 		   end
 
                rescue Exception=>e
-	           puts e.message
-                   puts e.backtrace.join("\n")
+	           logger.error e.message
+                   logger.error e.backtrace.join("\n")
 		   @comment.errors.add("exception", e.message()) if @comment.present?
                end
 
@@ -68,7 +72,6 @@ module Roxiware
 		      format.html { redirect_to @post.post_link }
 		      format.json { render :json => @comment.ajax_attrs(@role) }
 		   else
-		      puts @comment.errors.inspect
 		      error_str = "Failure in creating blog comment:"
 		      @comment.errors.each do |error|
 			error_str << error[0].to_s + ":" + error[1] + ","

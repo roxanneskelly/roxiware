@@ -1,18 +1,18 @@
+<%= render :partial=>"forum_menu" %>
 <%= content_tag(:div, :id=>"forum_board_groups") do
     @forum_board_groups.collect do |group|
         content_tag(:div, group.name, :class=>"forum_board_group_name") +
-        content_tag(:div, :id=>group.id, :class=>"forum_board_group") do 
+        content_tag(:div, :id=>"board_group_#{group.id}", :class=>"forum_board_group") do 
             group.boards.visible(current_user).collect do |board|
-                puts "NEW #{@changed_topic_count[board.id].inspect}"
                 new_posts_class = (0 < (@changed_topic_count[board.id] || 0)) ? "forum_board_new_posts" : "forum_board_no_new_posts"
-                content_tag(:div, :id=>board.id, :class=>"forum_board #{new_posts_class}") do
+                content_tag(:div, :id=>"board_#{board.id}", :class=>"forum_board #{new_posts_class}") do
                     content_tag(:div, :class=>"forum_board_info") do 
                         link_to(board.name, forum_path(board.seo_index), :class=>"forum_board_name") +
                         (content_tag(:div, board.description, :class=>"forum_board_description") if board.description.present?)
                     end +
                     content_tag(:div, :class=>"forum_board_counters") do
-                        content_tag(:div, board.topic_count, :class=>"forum_board_topic_count") +
-                        content_tag(:div, :class=>"forum_board_post_count") do 
+                        content_tag(:div, board.topic_count, :class=>"forum_board_topic_count #{(board.topic_count == 1) ? 'topic_count_singular' : 'topic_count_plural'}") +
+                        content_tag(:div, :class=>"forum_board_post_count #{(board.post_count == 1) ? 'post_count_singular' : 'post_count_plural'}") do 
 		            content_tag(:span, board.post_count) + 
 		            (content_tag(:span, board.pending_post_count, :class=>"forum_board_pending_post_count") if can?(:edit, board))
                         end
@@ -34,3 +34,96 @@ end %>
 <% if can? :edit, Roxiware::Forum::Board %>
 <%= render :partial=>"roxiware/forum/board_manage_control" %>
 <% end %>
+<script>
+$(function() {
+
+    var logged_in = false;
+    var get_last_read_info = function() {
+        var forum_last_read;
+        if (localStorage.forumLastRead) {
+            try{
+                forum_last_read = JSON.parse(localStorage.forumLastRead)
+            }
+            catch(e) {
+                localStorage.removeItem("forumLastRead");
+            }
+        }
+        if(!forum_last_read) {
+            forum_last_read = {}
+        }
+        return forum_last_read;
+    }
+
+
+    $("#forum_controls").append("<a id='mark_all_as_read' class='icon-forum-controls' title='Mark All as Read'></a>").click(function() {
+       $.alert("Mark All As Read", {
+           onYes: function() {
+                if(logged_in) {
+		    $.ajaxSetParamsJSON("<%= forum_index_path %>.json", {mark_all_as_read:true}, {success:function() {
+                        $(".forum_board").removeClass("forum_board_new_posts").addClass("forum_board_no_new_posts");
+		    }});
+                }
+                else {
+		    localStorage.forumLastRead = '<%= raw Hash[@forum_board_groups.collect{|group| group.board_ids}.flatten().collect{|board_id| [board_id, {0=>DateTime.now().to_time.to_i}]}].to_json %>';
+                    $(".forum_board").removeClass("forum_board_new_posts").addClass("forum_board_no_new_posts");
+                }
+           },
+           onCancel: function() { }
+       });
+   });
+    // set up nav
+    $("#forum_menu").addClass("forum_menu_ready");
+
+    var update_boards = function(boards) {
+        console.log("update boards");
+        console.log(boards);
+        $(".forum_board").removeClass("forum_board_no_new_posts").addClass("forum_board_new_posts");
+        $.each(boards, function(board_id, board_data) {
+            var board = $("#board_"+board_id+".forum_board");
+            board.removeClass("forum_board_no_new_posts").addClass("forum_board_new_posts");
+            console.log("NEW POSTS " + board_data.new_topics)
+            console.log(board_data);
+            if(board_data.new_topics == 0) {
+                board.removeClass("forum_board_new_posts").addClass("forum_board_no_new_posts");
+                console.log(board.attr("class"));
+            }
+        });
+    }
+
+
+
+    // if login or logout happens, refresh the 'read' state
+    $("body").bind("oauth_login", function(e, auth_info) {
+        if (auth_info) {
+            logged_in = true;
+            $.getJSON("<%= forum_index_path %>.json", function(data) {
+                update_boards(data);
+            });
+        }
+        else {
+            logged_in = false;
+            var forum_last_read = get_last_read_info();
+            $.ajax({
+                type:"GET",
+                url: "<%= forum_index_path %>.json",
+                processData: true,
+                data: {last_read:forum_last_read},
+                dataType: "json",
+                error: function(xhr, textStatus, errorThrown) {
+                    $.error(errorThrown);
+                },
+                complete: function() {
+                },
+                success: function(data) {
+                    console.log("update boards");
+                    console.log(data);
+                    update_boards(data);
+                }
+             });
+            
+        }
+    });
+
+    $.oAuthCheckLoggedIn();
+});
+</script>

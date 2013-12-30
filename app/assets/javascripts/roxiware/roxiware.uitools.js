@@ -126,12 +126,11 @@
     });
     $.roxiware.alert = {
 	conf: {
-            alertTemplate: "<div class='settings settings_dialog settings_alert'><a class='close icon-cancel-circle'></a><div class='settings_title'>&nbsp;</div><div class='alert_content'></div></div>",
+            alertTemplate: "<div class='settings settings_dialog settings_alert'><a class='close icon-cancel-circle'></a><div class='settings_title'>&nbsp;</div><div class='alert_content'></div><div class='alert_buttons'><button id='alert_yes' style='display:none'>Yes</button><button id='alert_no' style='display:none'>No</button><button id='alert_cancel' style='display:none'>Cancel</button></div></div>",
 	    alertPopupNoticeClass: "alert_notice",
 	    alertPopupAlertClass: "alert_alert",
 	    alertPopupErrorClass: "alert_error",
             alertPopupWaitClass: "alert_wait"
-	    
 	}, 
 	popup: null
     }
@@ -177,8 +176,28 @@
     // Display an overlay popup for alert/error/notice content.
     function AlertPopup(alert_type, conf) {
 	this.alertDialog = $(conf.alertTemplate);
+        var alert_popup = this.alertDialog;
+	this.alertDialog.find("button").button();
 	$("body").append(this.alertDialog);
 	this.alertDialog.find("div.settings_title").html("<div class='alert-icon " + conf.iconClass + "'></div>&nbsp;" + alert_type);
+	if(conf.onYes) {
+	    this.alertDialog.find("button#alert_yes").css("display","inline-block").click(function() {
+		alert_popup.find(".close").click();
+	        conf.onYes();
+	    });
+        }
+	if(conf.onNo) {
+	    this.alertDialog.find("button#alert_no").css("display","inline-block").click(function() {
+		alert_popup.find(".close").click();
+	        conf.onNo();
+	    });
+        }
+	if(conf.onCancel) {
+	    this.alertDialog.find("button#alert_cancel").css("display","inline-block").click(function() {
+		alert_popup.find(".close").click();
+	        conf.onCancel();
+	    });
+        }
 	$.resume();
 	this.alertDialog.overlay({
 	    top: "center",
@@ -852,12 +871,12 @@
 	conf = $.extend(true, {}, $.roxiware.jstree_param.conf, conf);
 	var jtp_api = null;
 	this.each(function() {
-		jtp_api = $(this).data("jstree_param");
-		if(!jtp_api) {
-		    jtp_api = new JSTreeParam($(this), init_data, conf);
-		    $(this).data("jstree_param", jtp_api);
-		}
-	    });
+	    jtp_api = $(this).data("jstree_param");
+	    if(!jtp_api) {
+	        jtp_api = new JSTreeParam($(this), init_data, conf);
+	        $(this).data("jstree_param", jtp_api);
+	    }
+	});
 	return  jtp_api;
     }
 
@@ -1090,51 +1109,148 @@ $.fn.require_fields = function(fields) {
     $(fields).trigger("propertychange");
 }
 
-function do_login(data) {
-    // Bring up a 3rd party login window
-    var auth_info = {};
-    if (data.proxy && localStorage.roxiwareAuthInfo) {
-        if(localStorage.roxiwareAuthInfo) {
-	    try{
-                auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
-            }
-            catch(e) {
-                auth_info = {}
-            }
-	}
-	if (auth_info['auth_token'] == undefined) {
-	    auth_info = {}
-	}
-    }
-    if(data.check_login_state || (auth_info.auth_kind == data.params.provider)) {
-        if(new Date(auth_info.expires*1000) > new Date()) {
-            data.onSuccess(auth_info);
-	    return;
-        }
-    }
-    if(data.check_login_state) {
-        return;
-    }
-    localStorage.roxiwareAuthInfo = undefined;
 
-    var login_url = "/account/auth/authproxy?"+$.param(data.params);
-    var width=500;
-    var height=300;
-    var left = $(window).width()/2-width/2;
-    var top=$(window).height()/2-height/2;
-    var login_popup = window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
-    var timer = setInterval(function() {
-        if(login_popup.closed) {
-	    if(localStorage.roxiwareAuthInfo) {
-	        try{
-                    data.onSuccess(JSON.parse(localStorage.roxiwareAuthInfo));
-	        }
-		catch(e) {
-		}
-            }
-            clearInterval(timer);
+$.roxiware.oauth_login = {
+    conf: {
+        check_login_state:false,
+        proxy:true,
+	onSuccess:function(response) {
+	    
+        },
+        params: {}
+    }
+}
+// assign an element to be an oauth login button.
+// on click, it'll do the appropriate login stuff, then
+// perform the callback
+$.fn.oauthLogin = function(provider, conf) {
+    var conf = $.extend(true, {}, $.roxiware.oauth_login.conf, conf);
+    conf.params.provider = provider;
+    $(this).click(function() {
+        do_login(conf);
+    });
+}
+
+
+var _get_auth_info = function(callback) {
+    var auth_info = null;
+    if (localStorage.roxiwareAuthInfo) {
+	try{
+            auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
         }
-    }, 250);
+        catch(e) {
+            localStorage.removeItem("roxiwareAuthInfo");
+        }
+    }
+    if (!auth_info) {
+	return callback(null);
+    }
+    if((auth_info.expires == undefined ) || (new Date(auth_info.expires*1000) < new Date())) {
+        localStorage.removeItem("roxiwareAuthInfo");
+	return callback(null);
+    }
+
+    if (auth_info.auth_kind == "facebook") {
+        FB.getLoginStatus(function(response) {
+	    if (response.status != 'connected') {
+	        // if facebook has disconnect, reset login so we throw up the UI
+                localStorage.removeItem("roxiwareAuthInfo");
+	        callback(null);
+	    }
+            callback(auth_info);
+	});
+	callback(null);
+    }
+    else {
+        callback(auth_info);
+    }
+}
+
+
+$.extend({
+    // register for notifications of authentication
+    //onOAuthLogin:function(conf) {
+    //    var conf = $.extend(true, {}, $.roxiware.oauth_login.conf, conf);
+    //    conf.params.provider = provider;
+    //}
+
+    
+    oAuthLogIn:function(provider, oauth_state) {
+        _get_auth_info(function(auth_info) {
+            if(auth_info) {
+	        $("body").trigger("oauth_login", auth_info);
+                return;
+	    }
+	    var params = {provider:provider, oauth_state:oauth_state};
+            localStorage.removeItem("roxiwareAuthInfo");
+	    var login_url = "/account/auth/authproxy?"+$.param(params);
+	    var width=500;
+	    var height=300;
+	    var left = $(window).width()/2-width/2;
+	    var top=$(window).height()/2-height/2;
+	    var login_popup = window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+	    var timer = setInterval(function() {
+	        if(login_popup.closed) {
+		    if(localStorage.roxiwareAuthInfo) {
+		        try{
+			    var auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
+			    document.cookie = "ext_oauth_token="+escape(auth_info.auth_token) + ";Path=/;";
+	                    $("body").trigger("oauth_login", auth_info);
+		        }
+		        catch(e) {
+		        }
+		    }
+		    clearInterval(timer);
+	        }
+	    }, 250);
+	});
+    },
+
+    // check oauth login status
+    oAuthCheckLoggedIn:function() {
+        _get_auth_info(function(auth_info) {
+	    $("body").trigger("oauth_login", auth_info);
+	});
+    },
+    oAuthResetLogin:function() {
+        localStorage.removeItem("roxiwareAuthInfo");
+        document.cookie = "ext_oauth_token=;Path=/;Expires=Thu, 01-Jan-1970 00:00:01 GMT;";
+	$("body").trigger("oauth_login", null);
+    }
+
+});
+
+
+function do_login(data) {
+    _get_auth_info(function(auth_info) {
+        if(auth_info.auth_kind) {
+	    data.onSuccess(auth_info);
+            return;
+	}
+        if(data.check_login_state) {
+            return;
+	}
+	localStorage.roxiwareAuthInfo = undefined;
+
+	var login_url = "/account/auth/authproxy?"+$.param(data.params);
+	var width=500;
+	var height=300;
+	var left = $(window).width()/2-width/2;
+	var top=$(window).height()/2-height/2;
+	var login_popup = window.open(login_url, "loginProxyPopup", "height="+height+",width="+width+",left="+left+",top="+top+",resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,directories=no,status=no");
+	var timer = setInterval(function() {
+	    if(login_popup.closed) {
+		if(localStorage.roxiwareAuthInfo) {
+		    try{
+			data.onSuccess(JSON.parse(localStorage.roxiwareAuthInfo));
+		    }
+		    catch(e) {
+		    }
+		}
+		clearInterval(timer);
+	    }
+	}, 250);
+     });
 };
 
 function reset_login() {

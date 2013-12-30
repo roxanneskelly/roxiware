@@ -1,3 +1,4 @@
+<%= render :partial=>"forum_menu" %>
 <%= content_tag(:div, :id=>"forum_board_info", :class=>"forum_board_menu_target", :rel=>forum_path(@board.id), :board_permission=>@board.permissions) do 
     link_to("", forum_index_path, :class=>"forum_home_title") +
     content_tag(:div, @board.name, :class=>"forum_board_title") 
@@ -23,9 +24,9 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
             content_tag(:div, "", :class=>"forum_topic_last_post_header") 
         end +
 	@topics.collect do |topic|
-            num_new_posts = (@new_post_counts[topic.id] || 0) - 1
-            new_post_class=((num_new_posts > 0) || @topics_data[topic.id.to_s].blank? ? "forum_new_posts" : "forum_no_new_posts")
-            permissions_class= "topic_permission_"+topic.resolve_comment_permissions 
+            num_new_posts = (@unread_post_counts[topic.id] || 1) - 1
+            new_post_class=((@unread_post_counts[topic.id] > 0) ? "forum_new_posts" : "forum_no_new_posts")
+            permissions_class= "topic_permission_"+(topic.permissions != "board" ? topic.permissions : @board.permissions)
 	    content_tag(:div, :id=>topic.id, :class=>"forum_topic #{new_post_class}", :rel=>forum_update_topic_path(@board.seo_index, topic.id)) do 
 		content_tag(:div, :class=>"forum_topic_info") do
 	            content_tag(:div, "", :class=>permissions_class+" forum_topic_permissions") +
@@ -36,7 +37,7 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
 		content_tag(:div, topic.post_count, :class=>"forum_topic_post_count") do
                     content_tag(:span, topic.post_count, :class=>"forum_topic_num_posts") +
                     (content_tag(:span, topic.pending_post_count, :class=>"forum_topic_pending_post_count") if can?(:edit, @board)) +
-		    (content_tag(:span, num_new_posts, :class=>"forum_topic_num_new_posts") if num_new_posts > 0) 
+		    content_tag(:span, num_new_posts, :class=>"forum_topic_num_new_posts")
                 end +
 		content_tag(:div, :class=>"forum_topic_last_post forum_topic_menu_target", :topic_permission=>topic.permissions) do
                     if(@last_posts[topic.id].present?)
@@ -48,16 +49,142 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
         end.join("").html_safe
     end 
 end %>
+
+<script id="board_nav_template" type="text/template">
+<%= 
+    content_tag(:a, "", :id=>"prev_board", :class=>"icon-forum-nav forum_disabled_nav", :title=>"Previous Board") +
+    content_tag(:a, "", :id=>"forum_home", :href=>forum_index_path, :class=>"icon-forum-nav", :title=>"Forum Home") +
+    content_tag(:a, "", :id=>"next_board", :class=>"icon-forum-nav forum_disabled_nav", :title=>"Next Board")
+%>
+</script>
+
+<script>
+$(function() {
+    var logged_in = false;
+    var get_last_read_info = function() {
+        var forum_last_read;
+        if (localStorage.forumLastRead) {
+            try{
+                forum_last_read = JSON.parse(localStorage.forumLastRead)
+            }
+            catch(e) {
+                localStorage.removeItem("forumLastRead");
+            }
+        }
+        if(!forum_last_read) {
+            forum_last_read = {}
+        }
+        if(!forum_last_read["<%= @board.id %>"]) {
+            forum_last_read["<%= @board.id %>"]={};
+        }
+        console.log("last read");
+        console.log(forum_last_read);
+        return forum_last_read;
+    }
+
+
+    // set up nav
+    $("#forum_nav").append($($("#board_nav_template").text()));
+<% if @prev_board %>
+    $("#prev_board").removeClass("forum_disabled_nav").attr("href","<%= forum_path(@prev_board.seo_index) %>").attr("title", "<%= @prev_board.name %>");
+<% end %>
+<% if @next_board %>
+    $("#next_board").removeClass("forum_disabled_nav").attr("href","<%= forum_path(@next_board.seo_index) %>").attr("title", "<%= @next_board.name %>");
+<% end %>
+    $("#forum_menu").addClass("forum_menu_ready");
+
+    var mark_all_as_read = $("<a id='mark_all_as_read' class='icon-forum-controls' title='Mark All as Read'></a>").click(function() {
+       $.alert("Mark All As Read", {
+           onYes: function() {
+                if(logged_in) {
+		    $.ajaxSetParamsJSON("<%= forum_path(@board.id)%>.json", {mark_all_as_read:true}, {success:function() {
+                        $(".forum_topic").removeClass("forum_new_posts").addClass("forum_no_new_posts");
+                        $(".forum_topic_num_new_posts").text("");
+		    }});
+                }
+                else {
+	            var last_read_info = get_last_read_info();
+		    last_read_info["<%= @board.id %>"] = {0:(new Date).getTime()/1000};
+		    localStorage.forumLastRead = JSON.stringify(last_read_info);
+                    $(".forum_topic").removeClass("forum_new_posts").addClass("forum_no_new_posts");
+                    $(".forum_topic_num_new_posts").text("");
+                }
+           },
+           onCancel: function() { }
+       })
+   });
+
+    $("#forum_controls").append(mark_all_as_read);
+
+    var update_topics = function(topics) {
+        $(".forum_topic").removeClass("forum_no_new_posts").addClass("forum_new_posts");
+        $(".forum_topic").each(function(index, topic) {
+            $(topic).find(".forum_topic_num_new_posts").text($(topic).find(".forum_topic_num_posts").text());
+        });
+        $.each(topics, function(topic_id, topic_data) {
+            var topic = $("#"+topic_id+".forum_topic");
+            topic.find(".forum_topic_num_new_posts").text(Math.max(0,topic_data["num_new_posts"]-1));
+            if(topic_data["num_new_posts"] == 0) {
+                topic.removeClass("forum_new_posts").addClass("forum_no_new_posts");
+            }
+        });
+    }
+
+    // if login or logout happens, refresh the 'read' state
+    $("body").bind("oauth_login", function(e, auth_info) {
+        if (auth_info) {
+            logged_in = true;
+            $.getJSON("<%= forum_path(@board.seo_index) %>.json", function(data) {
+                update_topics(data);
+            });
+        }
+        else {
+            logged_in = false;
+            var forum_last_read = get_last_read_info();
+            console.log("forum last read");
+            console.log(forum_last_read);
+            $.ajax({
+                type:"GET",
+                url: "<%= forum_path(@board.seo_index) %>.json",
+                processData: true,
+                data: {last_read:forum_last_read[<%= @board.id %>]},
+                error: function(xhr, textStatus, errorThrown) {
+                    $.error(errorThrown);
+                },
+                complete: function() {
+                },
+                success: function(data) {
+                    console.log("update topics");
+                    console.log(data);
+                    update_topics(data);
+                }
+             });
+            
+        }
+    });
+    $.oAuthCheckLoggedIn();
+});
+
+
+</script>
+
+
 <% if can? :create_topic, @board %>
     <%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>content_tag(:div, :id=>"comment_form_title") {label_tag(:title) + " " + text_field_tag(:title, "", :watermark=>"Title")}} %>
-    <script>
+<script>
     $(function() {
+	$("#forum_controls").append("<a id='new_topic' class='icon-forum-controls' title='New Topic'></a>");
+	$("#forum_controls #new_topic").click(function() {
+	    $(".comment_form")[0].scrollIntoView(false);
+	    tinyMCE.get("comment_content").focus();
+	});
+
 	initCommentForm("<%= forum_create_topic_path(@board.seo_index) %>.json", 0, "Roxiware::Forum::Topic");
 	$(".forum_new_posts").first().prev().each(function(index, object) {
 	    $(object)[0].scrollIntoView(true);
 	});
     });
-    </script>
+</script>
 <% end %>
 <% if can? :edit, Roxiware::Forum::Topic %>
 <%= render :partial=>"roxiware/forum/topic_manage_control" %>

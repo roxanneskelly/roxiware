@@ -1,6 +1,5 @@
 module Roxiware
     module AuthHelpers
-
         # AuthUserToken identifies a pre-authorized user
         class AuthUserToken
 	    def initialize(auth_user_info_or_options={})
@@ -28,7 +27,7 @@ module Roxiware
 	    end
 
 	    def expires
-	        @expires || 1.hour.from_now
+	        @expires || 1.week.from_now
 	    end
 
 	    def expired?
@@ -60,7 +59,7 @@ module Roxiware
 	    end
 
 	    def get_state
-	       @expires=1.hour.from_now
+	       @expires=1.week.from_now
                @verifier.generate([@expires, @auth_kind, @uid, @full_name, @thumbnail_url, @email, @url])
 	    end
 	end

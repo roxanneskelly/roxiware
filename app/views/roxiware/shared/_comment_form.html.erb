@@ -105,29 +105,32 @@
         comment_form.find("#comment_author_name").text("");
         comment_form.find("#comment_author_image").attr("src", "<%= default_image_path(:person, :thumbnail) %>");
         comment_form.find("#comment_author_authtype").val("generic");
-        comment_form.find("#comment_author_auth_token").val("");
+        comment_form.find("#comment_auth_token").val("");
 <% end %>
     };
-    var setLoginState = function(response) {
-        console.log("set login state");
-        console.log(response);
-        /* If we're logged in to facebook or twitter, remove the 'login' buttons, as well as
-           the anonymous auth controls */
-        
-        comment_form.find("#social_network_login").css("display","block");
-        comment_form.attr("comment_author_auth", response.auth_kind);
-        comment_form.find("#comment_author_image").attr("src", response.thumbnail_url);
-        comment_form.find("#comment_author_name").text(response.full_name);
-        comment_form.find("#comment_author_authtype").val(response.auth_kind);
-        comment_form.find("#comment_author_auth_token").val(response.auth_token);
-        comment_form.find("#anonymous_author").css("display","none");
-        comment_form.find("#facebook_login,#twitter_login").css("display","none");
-        comment_form.find("#"+response.auth_kind+"_logout").css("display","block");
-        comment_form.find("#post_controls").css("display","block");
+    var setLoginState = function(auth_info) {
+        if(!auth_info) {
+            auth_controls_shown = false;
+            showAuthControls();
+        }
+        else {
+	    /* If we're logged in to facebook or twitter, remove the 'login' buttons, as well as
+	       the anonymous auth controls */
 
-        comment_form.find("button.post_comment_button").button("enable");
+	    comment_form.find("#social_network_login").css("display","block");
+	    comment_form.attr("comment_author_auth", auth_info.auth_kind);
+	    comment_form.find("#comment_author_image").attr("src", auth_info.thumbnail_url);
+	    comment_form.find("#comment_author_name").text(auth_info.full_name);
+	    comment_form.find("#comment_author_authtype").val(auth_info.auth_kind);
+	    comment_form.find("#comment_auth_token").val(auth_info.auth_token);
+	    comment_form.find("#anonymous_author").css("display","none");
+	    comment_form.find("#facebook_login,#twitter_login").css("display","none");
+	    comment_form.find("#"+auth_info.auth_kind+"_logout").css("display","block");
+	    comment_form.find("#post_controls").css("display","block");
+	    comment_form.find("button.post_comment_button").button("enable");
 
-        auth_controls_shown = true;
+	    auth_controls_shown = true;
+        }
     }
 
     var resetCommentForm = function() {
@@ -221,32 +224,10 @@
            $("a#facebook_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'facebook', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
            $("a#twitter_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'twitter', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
            $("a#facebook_login, a#twitter_login").click(function() {
-             var auth_type = $(this).attr("provider");
-	     var data = {proxy:true,
-                         params:{provider:auth_type,
-                         oauth_state:$(this).data("oauth_state")},
-                         onSuccess: function(response) {
-                             if(response) {
-                                 setLoginState(response);
-                             }
-                          }};
-
-
-
-	      if (($(this).attr("provider") == "facebook") && FB.getLoginStatus(function(response) {
-                  if (response.status != 'connected') {
-                      // if facebook has disconnect, reset login so we throw up the UI
-                      reset_login();
-		  }
-		  do_login(data);
-              })) {} 
-	      else {
-		  // do a direct facebook/twitter login to gather the auth token
-		  do_login(data);
-	      }
+               $.oAuthLogIn($(this).attr("provider"), $(this).data("oauth_state"));
 	});
        $("a#facebook_logout, a#twitter_logout").click(function() {
-           reset_login();
+           $.oAuthResetLogin();
            auth_controls_shown = false;
            showAuthControls();
        });
@@ -255,14 +236,12 @@
        $(comment_form).find("input[watermark]").watermark();
        resetCommentForm();
 
+        $("body").bind("oauth_login", function(e, auth_info) {
+            setLoginState(auth_info);
+        });
+
 <% if !user_signed_in? %>
-       do_login({
-           check_login_state:true,
-           proxy:true,
-           onSuccess: function(response) {
-           setLoginState(response);
-           }
-       });
+      $.oAuthCheckLoggedIn();
 <% end %>
        comment_form.find("button.post_comment_button").unbind("click");
        comment_form.find("button.post_comment_button").click(function() {

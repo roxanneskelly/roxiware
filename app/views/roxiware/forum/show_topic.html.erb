@@ -1,6 +1,7 @@
+<%= render :partial=>"forum_menu" %>
 <%= content_tag(:div, :id=>@topic.id, :class=>"forum_topic", :rel=>forum_update_topic_path(@topic.board.seo_index, @topic.id)) do %>
     <%= content_tag(:div, :class=>"forum_topic_header forum_topic_menu_target", :topic_permission=>@topic.permissions) do %>
-        <%= content_tag(:div, @topic.new_post_count(@topic_last_read), :class=>(@topic.new_post_count(@topic_last_read) > 0) ? "forum_topic_new_posts" : "forum_topic_no_new_posts") %>
+        <%= content_tag(:div, @topic.unread_post_count(@topic_last_read), :class=>(@topic.unread_post_count(@topic_last_read) > 0) ? "forum_topic_new_posts" : "forum_topic_no_new_posts") %>
         <%= link_to("", forum_index_path, :class=>"forum_home_title") %>
         <%= link_to(@topic.board.name, forum_path(@topic.board.seo_index), :class=>"forum_board_title") %>
         <%= content_tag(:div, @topic.title, :class=>"forum_topic_title") %>
@@ -42,10 +43,115 @@ end %>
 <%= render :partial=>"roxiware/forum/context_menus" %>
 <% end %>
 
+
+<script id="topic_nav_template" type="text/template">
+<%= 
+    content_tag(:a, "", :id=>"prev_new_topic", :class=>"icon-forum-nav forum_disabled_nav", :title=>"Previous Unread Topic") +
+    content_tag(:a, "", :id=>"prev_topic", :class=>"icon-forum-nav forum_disabled_nav", :title=>"Previous Topic") +
+    content_tag(:a, "", :id=>"forum_board_nav", :href=>forum_path(@topic.board.seo_index), :class=>"icon-forum-nav", :title=>@topic.board.name) +
+    content_tag(:a, "", :id=>"next_topic", :class=>"icon-forum-nav forum_disabled_nav", :title=>"Next Topic") +
+    content_tag(:a, "", :id=>"next_new_topic", :class=>"icon-forum-nav forum_disabled_nav", :title=>"Next Unread Topic")
+%>
+</script>
+
 <script>
 $(function() {
 
-    $(".unread_comment").first().each(function(index, object) {
+    var logged_in = false;
+    var update_topic = function(topic) {
+        console.log("TOPIC");
+        console.log(topic);
+        $(".comment").removeClass("unread_comment");
+        $.each(topic.unread, function(index, post_id) {
+            $(".comment[comment_id="+post_id+"]").addClass("unread_comment");
+            console.log(post_id);
+        });
+    }
+    var get_last_read = function() {
+        var forum_last_read;
+        if (localStorage.forumLastRead) {
+            try{
+                forum_last_read = JSON.parse(localStorage.forumLastRead);
+            }
+            catch(e) {
+                localStorage.removeItem("forumLastRead");
+            }
+        }
+        if(!forum_last_read) {
+            forum_last_read = {}
+        }
+        if(!forum_last_read["<%= @board.id %>"]) {
+            forum_last_read["<%= @board.id %>"]={};
+        }
+        console.log("last read");
+        console.log(forum_last_read);
+        return forum_last_read;
+    }
+    $("body").bind("oauth_login", function(e, auth_info) {
+        console.log("OAUTH LOGIN");
+        console.log(auth_info);
+        if (auth_info) {
+            logged_in = true;
+            $.getJSON("<%= @topic.topic_link %>.json", function(data) {
+                update_topic(data);
+            });
+        }
+        else {
+            logged_in = false;
+            var last_read_data = get_last_read();
+            var forum_last_read = last_read_data["<%= @board.id %>"];
+            $.ajax({
+                type:"GET",
+                url: "<%= @topic.topic_link %>.json",
+                processData: true,
+                data: {last_read:forum_last_read},
+                error: function(xhr, textStatus, errorThrown) {
+                    $.error(errorThrown);
+                },
+                complete: function() {
+                },
+                success: function(data) {
+                    update_topic(data);
+                    last_read_data["<%= @board.id %>"][<%= @topic.id %>] = (new Date).getTime()/1000;
+		    localStorage.forumLastRead = JSON.stringify(last_read_data);
+                }
+             });
+            
+        }
+    });
+
+
+
+<% if can? :edit, @topic %>
+<%= render :partial=>"roxiware/forum/topic_manage_control" %>
+<% end %>
+
+<% if can? :post, @topic %>
+    $("#forum_controls").append("<a id='new_response' class='icon-forum-controls' title='New Response'></a>");
+    $("#forum_controls #new_response").click(function() {
+        $(".comment_form")[0].scrollIntoView(false);
+        tinyMCE.get("comment_content").focus();
+    });
+<% end %>
+
+    // set up nav
+    $("#forum_nav").append($($("#topic_nav_template").text()));
+
+<% if @prev_new_topic %>
+    $("#prev_new_topic").removeClass("forum_disabled_nav").attr("href","<%= @prev_new_topic.topic_link %>");
+<% end %>
+<% if @next_new_topic %>
+    $("#next_new_topic").removeClass("forum_disabled_nav").attr("href","<%= @next_new_topic.topic_link %>");
+<% end %>
+<% if @prev_topic %>
+    $("#prev_topic").removeClass("forum_disabled_nav").attr("href", "<%= @prev_topic.topic_link %>");
+<% end %>
+<% if @next_topic %>
+    $("#next_topic").removeClass("forum_disabled_nav").attr("href", "<%= @next_topic.topic_link %>");
+<% end %>
+    $("#forum_menu").addClass("forum_menu_ready");
+
+    $(".unread_comment").first().prev().each(function(index, object) {
         $(object)[0].scrollIntoView(true);
     });
 
@@ -178,9 +284,6 @@ $(function() {
         });
     });
 <% end %>
-
+    $.oAuthCheckLoggedIn();
 });
 </script>
-<% if can? :edit, @topic %>
-<%= render :partial=>"roxiware/forum/topic_manage_control" %>
-<% end %>

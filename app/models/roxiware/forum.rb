@@ -5,6 +5,7 @@ module Roxiware
         include Roxiware::BaseModel
         self.table_name="forum_board_groups"
         has_many :boards
+
         default_scope { order(:display_order) }
 
 
@@ -24,6 +25,8 @@ module Roxiware
         self.table_name="forum_boards"
 	has_many :topics, :dependent=>:destroy, :autosave=>true
         has_many :posts, :through=>:topics, :source=>:comments, :class_name=>"Roxiware::Comment"
+        has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo", :as=>:comment_object
+
         belongs_to :board_group
         belongs_to :last_post, :class_name=>"Roxiware::Comment"
         default_scope { order(:display_order) }
@@ -84,9 +87,12 @@ module Roxiware
       ALLOWED_TOPIC_PERMISSIONS = %w(board open moderate closed hide)
 
       has_many :comments, :class_name=>"Roxiware::Comment", :dependent=>:destroy, :as=>:post
+      has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo", :as=>:comment_object
+
       def posts 
           self.comments
       end
+
       def posts=(post_items)
           self.comments = post_items
       end
@@ -96,6 +102,8 @@ module Roxiware
 
       has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
       has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
+      has_many :reader_comment_object_info, :as=>:comment_object
+
       default_scope { order("last_post_date DESC") }
 
       validates :title, :length=>{:minimum=>1,
@@ -107,16 +115,22 @@ module Roxiware
       validates_presence_of :permissions, :inclusion=> {:in => ALLOWED_TOPIC_PERMISSIONS}, :message=>"Invalid post permissions."
 
       edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :as=>[:super, :admin, :user, nil]
-      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :posts, :topic_link, :guid
+      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :root_post, :topic_link, :guid
 
-      scope :visible, lambda{ |user| joins(:comments).where('forum_topics.permissions != "hide" AND comments.comment_status="publish"').group("forum_topics.id") unless (user.present? && user.is_admin?) }
+      scope :visible, lambda{ |user| where('forum_topics.permissions != "hide"') unless (user.present? && user.is_admin?) }
 
       def root_post
-	  self.posts.first
+	  @root_post ||= self.posts.first
+          @root_post
       end
 
-      def new_post_count(last_read)
-          self.comments.where("comment_date > ? AND comments.id != ?", Time.at(last_read.to_i), self.root_post.id).count
+      def last_post
+	  @last_post ||= self.posts.select{|post| post.id == last_post_id}.first
+          @last_post
+      end
+
+      def unread_post_count(last_read)
+          self.posts.select{|post| post.comment_date > last_read}.count
       end
 
       def post_count
@@ -185,7 +199,7 @@ module Roxiware
          seo_index = self.title.to_seo
          self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{self.root_post.comment_date.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.root_post
 	 self.last_post = self.posts.published().last || self.root_post
-	 self.last_post_date = self.last_post.present? ? self.last_post.comment_date : 0
+	 self.last_post_date = self.last_post.present? ? self.last_post.comment_date : DateTime.new(0)
       end
     end
   end

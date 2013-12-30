@@ -1,0 +1,54 @@
+<%= content_tag(:div, :id=>"forum_menu") do
+    content_tag(:nav, :id=>"forum_controls") do
+    end +
+    if !user_signed_in?
+	content_tag(:div, :id=>"social_network_login") do
+            tag(:img, :id=>"reader_thumbnail") +
+	    content_tag(:a, "", :id=>"facebook_login", :provider=>"facebook", :class=>"login_button") +
+	    content_tag(:a, "", :id=>"twitter_login", :provider=>"twitter", :class=>"login_button") +
+	    content_tag(:a, "", :id=>"facebook_logout", :provider=>"facebook", :class=>"login_button", :style=>"display:none") +
+	    content_tag(:a, "", :id=>"twitter_logout", :provider=>"twitter", :class=>"login_button", :style=>"display:none")
+        end
+    end +
+    content_tag(:nav, :id=>"forum_nav") do
+    end
+end %>
+<script>
+$(function() {
+<% if !user_signed_in? %>
+     $("#forum_menu #facebook_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'facebook', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
+     $("#forum_menu #twitter_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'twitter', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
+    var setLoginState = function(auth_info) {
+        if(!auth_info) {
+            $("#forum_menu #facebook_login, #forum_menu #twitter_login").css("display","inline-block");
+            $("#forum_menu #facebook_logout, #forum_menu #twitter_logout").css("display","none");
+            $("#forum_menu #reader_image").attr("src", "<%= default_image_path(:person, :thumbnail) %>");
+            $("#forum_menu #reader_thumbnail").attr("src", "<%= default_image_path(:person, :thumbnail) %>");
+            $("#forum_menu #social_network_login").removeClass("forum_logged_in");
+            $("#forum_menu #social_network_login").addClass("forum_logged_out");
+        }
+        else {
+            $("#forum_menu #social_network_login").addClass("forum_logged_in");
+            $("#forum_menu #social_network_login").removeClass("forum_logged_out");
+            $("#forum_menu #facebook_login, #forum_menu #twitter_login").css("display","none");
+            $("#forum_menu #"+auth_info.auth_kind+"_logout").css("display","inline-block");
+	    $("#forum_menu #reader_thumbnail").attr("src", auth_info.thumbnail_url);
+        }
+    }
+
+    $("#social_network_login .login_button, #social_network_login #reader_thumbnail").click(function() {
+        if($("#social_network_login").is(".forum_logged_in")) {
+            $.oAuthResetLogin();
+            setLoginState();
+        }
+   });
+
+    $("body").bind("oauth_login", function(e, auth_info) {
+        setLoginState(auth_info);
+    });
+    $("a#facebook_login, a#twitter_login").click(function() {
+        $.oAuthLogIn($(this).attr("provider"), $(this).data("oauth_state"));
+    });
+<% end %>
+});
+</script>

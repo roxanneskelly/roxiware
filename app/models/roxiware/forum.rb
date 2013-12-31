@@ -114,8 +114,8 @@ module Roxiware
 
       validates_presence_of :permissions, :inclusion=> {:in => ALLOWED_TOPIC_PERMISSIONS}, :message=>"Invalid post permissions."
 
-      edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :as=>[:super, :admin, :user, nil]
-      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :root_post, :topic_link, :guid
+      edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :comment_count, :pending_comment_count, :as=>[:super, :admin, :user, nil]
+      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :root_post, :topic_link, :guid, :comment_count, :pending_comment_count
 
       scope :visible, lambda{ |user| where('forum_topics.permissions != "hide"') unless (user.present? && user.is_admin?) }
 

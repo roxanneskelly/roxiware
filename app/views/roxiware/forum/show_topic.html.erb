@@ -122,10 +122,6 @@ $(function() {
 
 
 
-<% if can? :edit, @topic %>
-<%= render :partial=>"roxiware/forum/topic_manage_control" %>
-<% end %>
-
 <% if can? :post, @topic %>
     $("#forum_controls").append("<a id='new_response' class='icon-forum-controls' title='New Response'></a>");
     $("#forum_controls #new_response").click(function() {
@@ -286,3 +282,7 @@ $(function() {
     $.oAuthCheckLoggedIn();
 });
 </script>
+<% if can? :edit, @topic %>
+<%= render :partial=>"roxiware/forum/topic_manage_control" %>
+<% end %>
+

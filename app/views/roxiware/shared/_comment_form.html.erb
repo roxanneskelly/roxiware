@@ -227,7 +227,12 @@
            $.ajaxSetParamsJSON(comment_path, jQuery.param($(this).parents("form").serializeArray()), {method:"POST",
                success:function(data) {
                    if(data["comment_status"] == "publish") {
-                       window.location.reload();
+                       if(data["completion_redirect"]) {
+                           window.location = data["completion_redirect"];
+                       }
+                       else {
+                           window.location.reload();
+                       }
                    }
                    else {
                        $.notice("Your comment will be posted after it's reviewed", {

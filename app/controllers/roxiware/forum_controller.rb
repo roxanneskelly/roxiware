@@ -317,42 +317,45 @@ class Roxiware::ForumController < ApplicationController
 	      if(@board.permissions == "moderate") 
 	          permissions = "hide"
 	      end
-	      @topic = @board.topics.create({:title=>params[:title], :permissions=>"board"}, :as=>"")
-	      params[:comment_date] = DateTime.now
-	      person_id = (current_user && current_user.person)?current_user.person.id : -1
-	      # always publish the first comment.  Whether it's shown or hidden is determined
-	      # by whether the topic is hidden
-	      @post = @topic.posts.build({:parent_id=>0,
-				          :comment_status=> ((@topic.resolve_comment_permissions == "open") ? "publish" : "moderate"),
-					  :comment_content=>params[:comment_content],
-					  :comment_date=>DateTime.now.utc}, :as=>"")
-
-	      @post_author = @reader
-	      if(@post_author.authtype == "generic")
-                  verify_recaptcha(:model=>@post_author, :attribute=>:recaptcha_response_field)
-	      end
-
-	      @post_author.comments << @post
-	      @post_author.save
-	      if (@post_author.errors.present?)
-		  @post_author.errors.each do |key, error|
-		      @post.errors.add(key, error)
+	      @topic = @board.topics.new
+	      @topic.assign_attributes({:title=>params[:title], :permissions=>"board"}, :as=>"")
+              if @topic.save
+		  puts "TOPIC #{@topic.inspect}"
+		  params[:comment_date] = DateTime.now
+		  person_id = (current_user && current_user.person)?current_user.person.id : -1
+		  # always publish the first comment.  Whether it's shown or hidden is determined
+		  # by whether the topic is hidden
+		  @post = @topic.posts.build({:parent_id=>0,
+					      :comment_status=> ((@topic.resolve_comment_permissions == "open") ? "publish" : "moderate"),
+					      :comment_content=>params[:comment_content],
+					      :comment_date=>DateTime.now.utc}, :as=>"")
+		  puts "POST #{@post.inspect}"
+		  @post_author = @reader
+		  if(@post_author.authtype == "generic")
+		      verify_recaptcha(:model=>@post_author, :attribute=>:recaptcha_response_field)
 		  end
-	      end
 
-	      if(!@post.save) 
-	          @post.errors.each do |attr,msg|
-		      @topic.errors.add(attr, msg)
+		  if(!@post.save) 
+		      @post.errors.each do |attr,msg|
+			  @topic.errors.add(attr, msg)
+		      end
 		  end
-              else
-	          @topic.save
-              end
 
-	      @reader_topic_info = Roxiware::ReaderCommentObjectInfo.new
-	      @reader_topic_info.reader_id = @reader.id
-	      @reader_topic_info.comment_object = @topic
-	      @reader_topic_info.last_read = DateTime.now();
-	      @reader_topic_info.save!
+		  @post_author.comments << @post
+		  @post_author.save
+		  if (@post_author.errors.present?)
+		      @post_author.errors.each do |key, error|
+			  @post.errors.add(key, error)
+		      end
+		  end
+
+
+		  @reader_topic_info = Roxiware::ReaderCommentObjectInfo.new
+		  @reader_topic_info.reader_id = @reader.id
+		  @reader_topic_info.comment_object = @topic
+		  @reader_topic_info.last_read = DateTime.now();
+		  @reader_topic_info.save!
+           end
 
            rescue Exception=>e
 	       logger.error e.message
@@ -371,6 +374,7 @@ class Roxiware::ForumController < ApplicationController
 	       format.json do
 	           ajax_results = @topic.ajax_attrs(@role)
 		   ajax_results[:comment_status] = @post.comment_status
+		   ajax_results[:completion_redirect] = @topic.topic_link
 	           render :json => ajax_results
 	       end
 	   else

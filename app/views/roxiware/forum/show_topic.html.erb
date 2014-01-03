@@ -85,6 +85,7 @@ $(function() {
         }
         return forum_last_read;
     }
+<% if !user_signed_in? %>
     $("body").bind("oauth_login", function(e, auth_info) {
         if (auth_info) {
             if(logged_in) {
@@ -120,7 +121,8 @@ $(function() {
         }
     });
 
-
+    $.oAuthCheckLoggedIn();
+<% end %>
 
 <% if can? :post, @topic %>
     $("#forum_controls").append("<a id='new_response' class='icon-forum-controls' title='New Response'></a>");
@@ -279,7 +281,6 @@ $(function() {
         });
     });
 <% end %>
-    $.oAuthCheckLoggedIn();
 });
 </script>
 <% if can? :edit, @topic %>

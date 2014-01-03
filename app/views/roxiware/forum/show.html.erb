@@ -21,28 +21,38 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
         content_tag(:div, :class=>"forum_topics_header") do 
             content_tag(:div, "", :class=>"forum_topic_info_header") +
             content_tag(:div, "", :class=>"forum_topic_num_posts_header") +
+            content_tag(:div, "", :class=>"forum_topic_num_views_header") +
             content_tag(:div, "", :class=>"forum_topic_last_post_header") 
         end +
 	@topics.collect do |topic|
-            num_new_posts = (@unread_post_counts[topic.id] || 1) - 1
-            new_post_class=((@unread_post_counts[topic.id] > 0) ? "forum_new_posts" : "forum_no_new_posts")
+            if(@reader.present?)
+                num_new_posts = [topic.post_count, @unread_post_counts[topic.id] || 0].min
+                new_post_class=(@unread_post_counts.include?(topic.id) ? "forum_new_posts" : "forum_no_new_posts")
+            else
+                num_new_posts = topic.post_count
+                new_post_class = "forum_new_posts"
+            end
             permissions_class= "topic_permission_"+(topic.permissions != "board" ? topic.permissions : @board.permissions)
 	    content_tag(:div, :id=>topic.id, :class=>"forum_topic #{new_post_class}", :rel=>forum_update_topic_path(@board.seo_index, topic.id)) do 
 		content_tag(:div, :class=>"forum_topic_info") do
+	            content_tag(:div, "", :class=>"forum_topic_priority_#{topic.priority} forum_topic_priority") +
 	            content_tag(:div, "", :class=>permissions_class+" forum_topic_permissions") +
 	            link_to(topic.title, topic.topic_link, :class=>"forum_topic_title") + 
-		    (@root_posts[topic.id].comment_author.present? ? link_to(@root_posts[topic.id].comment_author.name, @root_posts[topic.id].comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
-		    (content_tag(:div, @root_posts[topic.id].comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if @root_posts[topic.id].present?)
+		    ((topic.root_post.present? && topic.root_post.comment_author.present?) ? link_to(topic.root_post.comment_author.name, topic.root_post.comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
+		    (content_tag(:div, topic.root_post.comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if topic.root_post.present?)
 	        end + 
-		content_tag(:div, topic.post_count, :class=>"forum_topic_post_count") do
+		content_tag(:div, :class=>"forum_topic_post_count") do
                     content_tag(:span, topic.post_count, :class=>"forum_topic_num_posts") +
                     (content_tag(:span, topic.pending_post_count, :class=>"forum_topic_pending_post_count") if can?(:edit, @board)) +
 		    content_tag(:span, num_new_posts, :class=>"forum_topic_num_new_posts")
                 end +
-		content_tag(:div, :class=>"forum_topic_last_post forum_topic_menu_target", :topic_permission=>topic.permissions) do
-                    if(@last_posts[topic.id].present?)
-		        (@last_posts[topic.id].comment_author.present? ? link_to(@last_posts[topic.id].comment_author.name, @last_posts[topic.id].comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
-		        content_tag(:div, @last_posts[topic.id].comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date")
+		content_tag(:div, :class=>"forum_topic_num_views") do
+                    content_tag(:span, topic.views, :class=>"forum_topic_views") 
+                end +
+		content_tag(:div, :class=>"forum_topic_last_post forum_topic_menu_target", :topic_permission=>topic.permissions, :topic_priority=>topic.priority) do
+                    if(topic.last_post.present?)
+		        (topic.last_post.comment_author.present? ? link_to(topic.last_post.comment_author.name, topic.last_post.comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
+		        content_tag(:div, topic.last_post.comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date")
                     end
                 end 
 	    end
@@ -60,7 +70,11 @@ end %>
 
 <script>
 $(function() {
+<% if @reader.present? %>
+    var logged_in = true;
+<% else %>
     var logged_in = false;
+<% end %>
     var get_last_read_info = function() {
         var forum_last_read;
         if (localStorage.forumLastRead) {
@@ -77,8 +91,6 @@ $(function() {
         if(!forum_last_read["<%= @board.id %>"]) {
             forum_last_read["<%= @board.id %>"]={};
         }
-        console.log("last read");
-        console.log(forum_last_read);
         return forum_last_read;
     }
 
@@ -123,16 +135,20 @@ $(function() {
         });
         $.each(topics, function(topic_id, topic_data) {
             var topic = $("#"+topic_id+".forum_topic");
-            topic.find(".forum_topic_num_new_posts").text(Math.max(0,topic_data["num_new_posts"]-1));
-            if(topic_data["num_new_posts"] == 0) {
+            topic.find(".forum_topic_num_new_posts").text(topic_data["num_new_posts"]);
+            topic.find(".forum_topic_num_posts").text(topic_data["num_posts"]);
+            if(!topic_data["changed"]) {
                 topic.removeClass("forum_new_posts").addClass("forum_no_new_posts");
             }
         });
     }
-
+<% if !user_signed_in? %>
     // if login or logout happens, refresh the 'read' state
     $("body").bind("oauth_login", function(e, auth_info) {
         if (auth_info) {
+            if(logged_in) {
+                return;
+            }
             logged_in = true;
             $.getJSON("<%= forum_path(@board.seo_index) %>.json", function(data) {
                 update_topics(data);
@@ -141,8 +157,6 @@ $(function() {
         else {
             logged_in = false;
             var forum_last_read = get_last_read_info();
-            console.log("forum last read");
-            console.log(forum_last_read);
             $.ajax({
                 type:"GET",
                 url: "<%= forum_path(@board.seo_index) %>.json",
@@ -154,8 +168,6 @@ $(function() {
                 complete: function() {
                 },
                 success: function(data) {
-                    console.log("update topics");
-                    console.log(data);
                     update_topics(data);
                 }
              });
@@ -163,6 +175,7 @@ $(function() {
         }
     });
     $.oAuthCheckLoggedIn();
+<% end %>
 });
 
 

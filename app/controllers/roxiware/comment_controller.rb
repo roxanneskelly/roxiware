@@ -49,8 +49,10 @@ module Roxiware
 		       verify_recaptcha(:model=>@comment_author, :attribute=>:recaptcha_response_field)
 		   end
 
-		   @comment_author.comments << @comment
-		   @comment_author.save
+		   if (@comment_author.errors.blank?) 
+		       @comment_author.comments << @comment
+		       @comment_author.save
+                   end
 		   if (@comment_author.errors.present?)
 		       @comment_author.errors.each do |key, error|
 		           @comment.errors.add(key, error)

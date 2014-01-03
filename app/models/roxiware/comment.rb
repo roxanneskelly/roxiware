@@ -24,8 +24,6 @@ module Roxiware
     scope :published, -> { where(:comment_status=>"publish") }
     scope :visible, -> (user) { where((user.blank?) ? "comment_status='publish'" : ((user.is_admin?) ? "" : 'comment_status="publish"')) }
 
-    default_scope { includes(:comment_author).order("comment_date ASC") }
-
     def visible?(user) 
         (user.present? && user.is_admin?) || (comment_status == "publish")
     end

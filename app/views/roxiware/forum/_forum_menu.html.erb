@@ -7,7 +7,8 @@
 	    content_tag(:a, "", :id=>"facebook_login", :provider=>"facebook", :class=>"login_button") +
 	    content_tag(:a, "", :id=>"twitter_login", :provider=>"twitter", :class=>"login_button") +
 	    content_tag(:a, "", :id=>"facebook_logout", :provider=>"facebook", :class=>"login_button", :style=>"display:none") +
-	    content_tag(:a, "", :id=>"twitter_logout", :provider=>"twitter", :class=>"login_button", :style=>"display:none")
+	    content_tag(:a, "", :id=>"twitter_logout", :provider=>"twitter", :class=>"login_button", :style=>"display:none")+
+	    (content_tag(:a, "", :id=>"login_reset", :class=>"icon-switch-2", :style=>"display:inline-block;font-size:2em;vertical-align:middle;") if ((ENV['RAILS_ENV'] == "development") && @reader.blank?))
         end
     else
 	content_tag(:div, :id=>"user_info") do
@@ -40,6 +41,11 @@ $(function() {
 	    $("#forum_menu #reader_thumbnail").attr("src", auth_info.thumbnail_url);
         }
     }
+
+    $("#login_reset").click(function() {
+        localStorage.removeItem("forumLastRead");
+        window.location.reload();
+    });
 
     $("#social_network_login .login_button, #social_network_login #reader_thumbnail").click(function() {
         if($("#social_network_login").is(".forum_logged_in")) {

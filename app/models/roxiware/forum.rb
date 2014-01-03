@@ -98,13 +98,12 @@ module Roxiware
       end
 
       belongs_to :board, :counter_cache => :topic_count, :autosave=>true
-      belongs_to :last_post, :class_name=>"Roxiware::Comment"
+      belongs_to :last_post, :class_name=>"Roxiware::Comment", :dependent=>:destroy
+      belongs_to :root_post, :class_name=>"Roxiware::Comment", :dependent=>:destroy
 
       has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
       has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
       has_many :reader_comment_object_info, :as=>:comment_object
-
-      default_scope { order("last_post_date DESC") }
 
       validates :title, :length=>{:minimum=>1,
 					:too_short => "The title must at least  %{count} characters.",
@@ -114,20 +113,11 @@ module Roxiware
 
       validates_presence_of :permissions, :inclusion=> {:in => ALLOWED_TOPIC_PERMISSIONS}, :message=>"Invalid post permissions."
 
-      edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :comment_count, :pending_comment_count, :as=>[:super, :admin, :user, nil]
-      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :root_post, :topic_link, :guid, :comment_count, :pending_comment_count
+      edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :comment_count, :pending_comment_count, :views, :trend, :last_trend_update, :likes, :unlikes, :rating, :priority, :as=>[:super, :admin, :user, nil]
+
+      ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :root_post, :topic_link, :guid, :comment_count, :pending_comment_count, :views, :trend, :last_trend_update, :likes, :unlikes, :rating, :priority
 
       scope :visible, lambda{ |user| where('forum_topics.permissions != "hide"') unless (user.present? && user.is_admin?) }
-
-      def root_post
-	  @root_post ||= self.posts.first
-          @root_post
-      end
-
-      def last_post
-	  @last_post ||= self.posts.select{|post| post.id == last_post_id}.first
-          @last_post
-      end
 
       def unread_post_count(last_read)
           self.posts.select{|post| post.comment_date > last_read}.count
@@ -196,6 +186,7 @@ module Roxiware
       end
 
       before_validation() do
+	 self.root_post = self.posts.published().first
          seo_index = self.title.to_seo
          self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{self.root_post.comment_date.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.root_post
 	 self.last_post = self.posts.published().last || self.root_post

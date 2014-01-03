@@ -1197,11 +1197,15 @@ $.extend({
 	        if(login_popup.closed) {
 		    if(localStorage.roxiwareAuthInfo) {
 		        try{
-			    var auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
-			    document.cookie = "ext_oauth_token="+escape(auth_info.auth_token) + ";Path=/;";
+                            var auth_info = eval('('+localStorage.roxiwareAuthInfo+')');
+                            var date = new Date();
+                            date.setDate(date.getDate()+7);
+			    document.cookie = "ext_oauth_token="+escape(auth_info.auth_token) + ";Path=/;Expires="+date.toUTCString();
 	                    $("body").trigger("oauth_login", auth_info);
 		        }
 		        catch(e) {
+                            console.log(e);
+			    console.log(localStorage.roxiwareAuthInfo);
 		        }
 		    }
 		    clearInterval(timer);

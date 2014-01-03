@@ -64,6 +64,13 @@ module Roxiware
         comment_author
     end
 
+    def self.comment_author_from_params(params)
+        comment_author = Roxiware::CommentAuthor.new
+	comment_author.assign_attributes(params, :as=>"")
+        comment_author.authtype="generic"
+        comment_author
+    end
+
     def self.comment_author_from_token(token)
         auth_user_token = Roxiware::AuthHelpers::AuthUserToken.new(token) if token.present?
 	return nil if auth_user_token.blank?

@@ -37,7 +37,11 @@ end %>
 <script>
 $(function() {
 
+<% if @reader.present? %>
+    var logged_in = true;
+<% else %>
     var logged_in = false;
+<% end %>
     var get_last_read_info = function() {
         var forum_last_read;
         if (localStorage.forumLastRead) {
@@ -75,26 +79,24 @@ $(function() {
     $("#forum_menu").addClass("forum_menu_ready");
 
     var update_boards = function(boards) {
-        console.log("update boards");
-        console.log(boards);
         $(".forum_board").removeClass("forum_board_no_new_posts").addClass("forum_board_new_posts");
         $.each(boards, function(board_id, board_data) {
             var board = $("#board_"+board_id+".forum_board");
             board.removeClass("forum_board_no_new_posts").addClass("forum_board_new_posts");
-            console.log("NEW POSTS " + board_data.new_topics)
-            console.log(board_data);
             if(board_data.new_topics == 0) {
                 board.removeClass("forum_board_new_posts").addClass("forum_board_no_new_posts");
-                console.log(board.attr("class"));
             }
         });
     }
 
 
-
+<% if !user_signed_in? %>
     // if login or logout happens, refresh the 'read' state
     $("body").bind("oauth_login", function(e, auth_info) {
         if (auth_info) {
+            if(logged_in) {
+                return;
+            }
             logged_in = true;
             $.getJSON("<%= forum_index_path %>.json", function(data) {
                 update_boards(data);
@@ -115,8 +117,6 @@ $(function() {
                 complete: function() {
                 },
                 success: function(data) {
-                    console.log("update boards");
-                    console.log(data);
                     update_boards(data);
                 }
              });
@@ -125,5 +125,6 @@ $(function() {
     });
 
     $.oAuthCheckLoggedIn();
+<% end %>
 });
 </script>

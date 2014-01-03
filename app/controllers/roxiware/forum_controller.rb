@@ -35,10 +35,11 @@ class Roxiware::ForumController < ApplicationController
       topic_query = Roxiware::Forum::Topic.visible(current_user)
       @topics = Hash[topic_query.collect{|topic| [topic.id, topic]}]
       if @reader.present?
-          topics_last_read = {}
           boards_last_read = Hash[Roxiware::ReaderCommentObjectInfo.where(:reader_id=>@reader.id, :comment_object_type=>"Roxiware::Forum::Board").collect{|reader_info| [reader_info.comment_object_id, reader_info.last_read]}]
-	  #topics_last_read = Hash[_get_per_topic_reader_info(@topics.keys).collect{|topic_id, reader_info| [topic_id, reader_info.last_read]}]
-	  topics_last_read = Hash[Roxiware::ReaderCommentObjectInfo.joins("INNER JOIN forum_topics on forum_topics.id = reader_comment_object_infos.comment_object_id").where("reader_comment_object_infos.reader_id=? AND reader_comment_object_infos.comment_object_type='Roxiware::Forum::Topic'", @reader.id).select(:last_read, :comment_object_id).collect{|reader_info| [reader_info.comment_object_id, reader_info.last_read]}]
+          reader_forum_topics_join = Roxiware::ReaderCommentObjectInfo.joins("INNER JOIN forum_topics on forum_topics.id = reader_comment_object_infos.comment_object_id")
+	  topics_readers = reader_forum_topics_join.where("reader_comment_object_infos.reader_id=? AND reader_comment_object_infos.comment_object_type='Roxiware::Forum::Topic'",
+                                                          @reader.id)
+          topics_last_read = Hash[topics_readers.select(:last_read, :comment_object_id).collect{|reader_info| [reader_info.comment_object_id, reader_info.last_read]}]
 
 	  @topics.each do |topic_id, topic|
 	      @changed_topic_count[topic.board_id] ||= 0
@@ -105,62 +106,78 @@ class Roxiware::ForumController < ApplicationController
     end
 
     def _topics_sort(board)
-        board.topics.visible(current_user)    
+        board.topics.visible(current_user).order("priority DESC").order("last_post_date DESC")
     end
 
     # Show topics in a specific board
     # GET /forum/:id
     def show
-      boards = Roxiware::Forum::Board.visible(current_user)
-      boards.each do |board|
-	  @next_board = board if @board.present?
-	  break if @board.present?
-          @board = board if params[:id] == board.seo_index
-          @prev_board = board unless @board.present?
-      end
-      raise ActiveRecord::RecordNotFound if @board.nil?
-      authorize! :read, @board
-      @unread_post_counts = {}
-      @last_posts = {}
-      @root_posts = {}
-      @topics = _topics_sort(@board).includes({:comments=>:comment_author}, :reader_infos);
-      if @reader.present?
-          board_reader_info = @board.reader_infos.where(:reader_id=>@reader.id).first
-	  topics_reader_info = _get_per_topic_reader_info(@topics.collect{|topic| topic.id})
-	  topics_last_read = Hash[topics_reader_info.collect{|topic_reader_id, topic_reader| [topic_reader.comment_object_id, topic_reader.last_read]}]
-	  topics_last_read[0] = board_reader_info.last_read if board_reader_info.present?
-      elsif params[:last_read].present?
-	  topics_last_read = {}
-	  params[:last_read].each do |topic_id, topic_last_read|
-	      begin 
-	          topics_last_read[topic_id.to_i] =  Time.at(topic_last_read.to_i).to_datetime
-              rescue Exception=>e
-              end
-	  end
-      else
-          topics_last_read = {}
-      end
+	boards = Roxiware::Forum::Board.visible(current_user)
+	boards.each do |board|
+	    @next_board = board if @board.present?
+	    break if @board.present?
+	    @board = board if params[:id] == board.seo_index
+	    @prev_board = board unless @board.present?
+	end
+	raise ActiveRecord::RecordNotFound if @board.nil?
+	authorize! :read, @board
+	@unread_post_counts = {}
 
-      @topics.each do |topic|
-          @root_posts[topic.id] = topic.root_post
-	  @last_posts[topic.id] = topic.last_post
-	  reader_date = topics_last_read[topic.id] || topics_last_read[0] || DateTime.new(0)
-	  @unread_post_counts[topic.id] = topic.unread_post_count(reader_date)
-      end
-      respond_to do |format|
-          format.html 
-	  format.json do
-             topic_info=@topics.collect do |topic|
-	         topic_result = @reader.present? ? topic.ajax_attrs(@role) : {}
-		 topic_result[:post_ids] = topic.comment_ids
-		 topic_result[:num_new_posts] = @unread_post_counts[topic.id] || 0
-                 [topic.id,  topic_result]
-	     end
-	     render :json=>Hash[topic_info]
-          end
-      end
+        # get the topic last read info.  @unread_post_counts will end up with
+        # the number of unread posts for each topic, if the topic has ever been read
+	if @reader.present?
+	    board_reader_info = @board.reader_infos.where(:reader_id=>@reader.id).first
+            base_date = board_reader_info.last_read if board_reader_info
+	    base_date ||= DateTime.new(0)
+            unread_post_query = @board.topics.
+                                joins("LEFT JOIN reader_comment_object_infos on forum_topics.id = reader_comment_object_infos.comment_object_id AND reader_comment_object_infos.comment_object_type='Roxiware::Forum::Topic' AND reader_comment_object_infos.reader_id=#{@reader.id}").
+                                joins("LEFT JOIN comments ON comments.post_id=forum_topics.id AND comments.post_type='Roxiware::Forum::Topic'").
+                                where("comments.comment_status='publish'").
+                                where("reader_comment_object_infos.id IS NULL OR (comments.comment_date > MAX(reader_comment_object_infos.last_read, ?))", base_date.to_formatted_s(:db) ).
+
+                                group("forum_topics.id").select("forum_topics.id, COUNT(comments.id) as num_new_posts, reader_comment_object_infos.id as reader_info_id, forum_topics.comment_count")
+
+            # unread_post_query will list posts that haven't been read at all, but won't list any that have been fully read.
+	    @unread_post_counts = Hash[unread_post_query.collect{|topic| [topic.id, topic.num_new_posts]}]
+	else
+	    topics_last_read = {}
+	    (params[:last_read] || {}).each do |topic_id, topic_last_read|
+		begin
+		    topics_last_read[topic_id.to_i] =  Time.at(topic_last_read.to_i).to_datetime
+		rescue Exception=>e
+		end
+	    end
+            comments = Roxiware::Comment.joins("INNER JOIN forum_topics on comments.post_id=forum_topics.id AND comments.post_type='Roxiware::Forum::Topic'").
+                                          where("forum_topics.board_id=?", @board.id).
+                                          where("comments.id IS NOT NULL").
+                                          select("comments.comment_date, comments.post_id")
+            comments.each do |comment|
+               unread_date = (topics_last_read[0] || DateTime.new(0))
+               unread_date = topics_last_read[comment.post_id] if topics_last_read.include?(comment.post_id) && (topics_last_read[comment.post_id] > unread_date)
+               if  (unread_date < comment.comment_date) 
+                   @unread_post_counts[comment.post_id] ||= 0
+                   @unread_post_counts[comment.post_id] += 1 
+               end
+            end
+	end
+
+
+	respond_to do |format|
+	    format.html do
+	       @topics = _topics_sort(@board).includes({:root_post=>:comment_author, :last_post=>:comment_author})
+               render
+            end
+	    format.json do
+	       topic_info=@board.topics.select([:id, :comment_count]).collect do |topic| 
+                   [topic.id,  
+                    @unread_post_counts.include?(topic.id) ?
+                        {:num_posts=>topic.post_count, :num_new_posts=>[topic.post_count, @unread_post_counts[topic.id]].min, :changed=>(@unread_post_counts[topic.id] > 0)} :
+                        {:num_posts=>topic.post_count, :num_new_posts=>0, :changed=>false}]
+               end
+	       render :json=>Hash[topic_info]
+	    end
+	end
     end
-
 
     # Edit board settings
     # GET /forum/:id/edit
@@ -230,7 +247,8 @@ class Roxiware::ForumController < ApplicationController
           @topic_last_read = DateTime.new(0)
       end
 
-      comments = @topic.comments.visible(current_user)
+      new_comments=false
+      comments = @topic.comments.visible(current_user).order("comment_date ASC")
       # create comment hierarchy
       @comments = {}
       comments.each do |comment|
@@ -239,6 +257,7 @@ class Roxiware::ForumController < ApplicationController
           @comments[comment.parent_id][:children] << comment.id
           @comments[comment.id][:comment] = comment
           @comments[comment.id][:unread] = (Time.at(@topic_last_read) < comment.comment_date)
+          new_comments = true if (Time.at(@topic_last_read) < comment.comment_date)
       end
 
       last_posts = @topics.collect{|topic| topic.last_post_id}
@@ -258,8 +277,17 @@ class Roxiware::ForumController < ApplicationController
       end
 
       respond_to do |format|
-          format.html 
+          format.html do
+	     if( @reader.present? && new_comments) 
+		 @topic.views += 1
+		 @topic.save!
+	     end
+          end
 	  format.json do
+	     if( @reader.blank? && new_comments) 
+		 @topic.views += 1
+		 @topic.save!
+	     end
 	     topic_info = @topic.ajax_attrs(@role)
 	     topic_info[:unread] = comments.select{|comment| comment.comment_date > @topic_last_read}.collect{|comment| comment.id}
 	     render :json=>topic_info
@@ -320,7 +348,6 @@ class Roxiware::ForumController < ApplicationController
 	      @topic = @board.topics.new
 	      @topic.assign_attributes({:title=>params[:title], :permissions=>"board"}, :as=>"")
               if @topic.save
-		  puts "TOPIC #{@topic.inspect}"
 		  params[:comment_date] = DateTime.now
 		  person_id = (current_user && current_user.person)?current_user.person.id : -1
 		  # always publish the first comment.  Whether it's shown or hidden is determined
@@ -329,9 +356,13 @@ class Roxiware::ForumController < ApplicationController
 					      :comment_status=> ((@topic.resolve_comment_permissions == "open") ? "publish" : "moderate"),
 					      :comment_content=>params[:comment_content],
 					      :comment_date=>DateTime.now.utc}, :as=>"")
-		  puts "POST #{@post.inspect}"
+                  @post_author = @reader if @reader.present?
+
 		  @post_author = @reader
-		  if(@post_author.authtype == "generic")
+		  if(@post_author.blank?)
+                      @post_author= Roxiware::CommentAuthor.comment_author_from_params({:name=>params[:comment_author],
+                                                                                        :url=>params[:comment_author_url], 
+                                                                                        :email=>params[:comment_author_email]})
 		      verify_recaptcha(:model=>@post_author, :attribute=>:recaptcha_response_field)
 		  end
 
@@ -341,25 +372,28 @@ class Roxiware::ForumController < ApplicationController
 		      end
 		  end
 
-		  @post_author.comments << @post
-		  @post_author.save
+                  if(@post_author.errors.blank?)
+		      @post_author.comments << @post
+		      @post_author.save
+                  end
 		  if (@post_author.errors.present?)
 		      @post_author.errors.each do |key, error|
-			  @post.errors.add(key, error)
+			  @topic.errors.add(key, error)
 		      end
 		  end
 
-
-		  @reader_topic_info = Roxiware::ReaderCommentObjectInfo.new
-		  @reader_topic_info.reader_id = @reader.id
-		  @reader_topic_info.comment_object = @topic
-		  @reader_topic_info.last_read = DateTime.now();
-		  @reader_topic_info.save!
+                  if(@reader.present?)
+		      @reader_topic_info = Roxiware::ReaderCommentObjectInfo.new
+		      @reader_topic_info.reader_id = @reader.id
+		      @reader_topic_info.comment_object = @topic
+		      @reader_topic_info.last_read = DateTime.now();
+		      @reader_topic_info.save!
+                  end
            end
 
            rescue Exception=>e
-	       logger.error e.message
-               logger.error e.backtrace.join("\n")
+	       logger.error(e.message)
+               logger.error(e.backtrace.join("\n"))
 	       @topic.errors.add("exception", e.message)
 	       raise raise ActiveRecord::Rollback
            end

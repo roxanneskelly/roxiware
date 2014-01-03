@@ -7,7 +7,10 @@
 	        content_tag(:ul) do
 		    content_tag(:li, content_tag(:a, "Edit"), :class=>"edit_forum_topic") +
 		    tag(:hr) +
-		    content_tag(:li, content_tag(:span, "Topic"), :class=>"topic_permissions") +
+		    content_tag(:li, content_tag(:span, "Pin")) +
+                    content_tag(:li, content_tag(:a, content_tag(:div, "", :class=>"checkbox")+"Yes"), :priority=>1, :class=>"topic_priority topic_priority_1") +
+                    content_tag(:li, content_tag(:a, content_tag(:div, "", :class=>"checkbox")+"No"), :priority=>0, :class=>"topic_priority topic_priority_0") + 
+		    content_tag(:li, content_tag(:span, "Permissions"), :class=>"topic_permissions") +
 		    Roxiware::Forum::Topic::ALLOWED_TOPIC_PERMISSIONS.collect do |permission| 
                          content_tag(:li, content_tag(:a, content_tag(:div, "", :class=>"checkbox")+permission.titleize), :permission=>permission, :class=>"topic_permission permission#{permission}") 
                     end.join("").html_safe + 
@@ -25,6 +28,9 @@ $(function() {
         var manage_menu = $($("#topic_manage_menu_template").text());
         manage_menu.attr("id", "manage_"+$(item).attr("topic_id"));
         manage_menu.find("[permission="+$(item).attr("topic_permission")+"]").addClass("selected_item");
+        console.log($(item));
+        console.log("TOPIC PRI " + $(item).attr("topic_priority"));
+        manage_menu.find(".topic_priority_"+$(item).attr("topic_priority")).addClass("selected_item");
 	ddsmoothmenu.init({
 	    mainmenuid: manage_menu.attr("id"),
             rightalign: true,
@@ -72,6 +78,22 @@ $(function() {
         }
     });
 
+    $(".forum_topic_menu_target .topic_priority a").click(function(e) {
+        e.stopPropagation();
+        var self = $(this).parent();
+        if(self.is(".selected_item")) { return; }
+        var topic = self.parents(".forum_topic");
+        var upload_params = {forum_topic:{priority:self.attr("priority")}};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
+       $.ajaxSetParamsJSON($(topic).attr("rel")+".json", upload_params, {
+           success: function() {
+             self.parent().find("li.topic_priority").removeClass("selected_item");
+             self.addClass("selected_item");
+           }
+	});
+    });
     $(".forum_topic_menu_target .topic_permission a").click(function(e) {
         e.stopPropagation();
         var self = $(this).parent();

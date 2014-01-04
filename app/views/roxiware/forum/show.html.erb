@@ -37,8 +37,15 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
 		content_tag(:div, :class=>"forum_topic_info") do
 	            content_tag(:div, "", :class=>"forum_topic_priority_#{topic.priority} forum_topic_priority") +
 	            content_tag(:div, "", :class=>permissions_class+" forum_topic_permissions") +
-	            link_to(topic.title, topic.topic_link, :class=>"forum_topic_title") + 
-		    ((topic.root_post.present? && topic.root_post.comment_author.present?) ? link_to(topic.root_post.comment_author.name, topic.root_post.comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
+	            link_to(topic.title, topic.topic_link, :class=>"forum_topic_title") +
+                    if(topic.root_post.present? && topic.root_post.comment_author.present?)
+                        comment_author_url = topic.root_post.comment_author.get_author_url
+                        if(comment_author_url.present?)
+		            link_to(topic.root_post.comment_author.display_name, comment_author_url, :class=>"forum_topic_author")
+                        else
+                            content_tag(:div, topic.root_post.comment_author.display_name, :class=>"forum_topic_author")
+                        end
+                    end +
 		    (content_tag(:div, topic.root_post.comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if topic.root_post.present?)
 	        end + 
 		content_tag(:div, :class=>"forum_topic_post_count") do
@@ -50,10 +57,15 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
                     content_tag(:span, topic.views, :class=>"forum_topic_views") 
                 end +
 		content_tag(:div, :class=>"forum_topic_last_post forum_topic_menu_target", :topic_permission=>topic.permissions, :topic_priority=>topic.priority) do
-                    if(topic.last_post.present?)
-		        (topic.last_post.comment_author.present? ? link_to(topic.last_post.comment_author.name, topic.last_post.comment_author.url, :class=>"forum_topic_author") : content_tag(:div, "Unknown", :class=>"forum_topic_author")) +
-		        content_tag(:div, topic.last_post.comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date")
-                    end
+                    if(topic.last_post.present? && topic.last_post.comment_author.present?)
+                        comment_author_url = topic.last_post.comment_author.get_author_url
+                        if(comment_author_url.present?)
+		            link_to(topic.last_post.comment_author.display_name, comment_author_url, :class=>"forum_topic_author")
+                        else
+                            content_tag(:div, topic.last_post.comment_author.display_name, :class=>"forum_topic_author")
+                        end
+                    end +
+                    (content_tag(:div, topic.last_post.comment_date.localtime.strftime(comment_date_format), :class=>"forum_topic_post_date") if(topic.last_post.present?))
                 end 
 	    end
         end.join("").html_safe

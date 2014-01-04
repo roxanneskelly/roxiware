@@ -19,8 +19,15 @@
                     end +
 	            content_tag(:div, :class=>"forum_board_last_post forum_board_menu_target", :rel=>forum_path(board.id), :board_permission=>board.permissions) do 
 	                if board.last_post.present? && board.last_post.post.present? 
-		            link_to(board.last_post.post.title, board.last_post.post.topic_link, :class=>"forum_board_last_post_title") + 
-		            (board.last_post.comment_author.present? ? link_to(board.last_post.comment_author.name, board.last_post.comment_author.url, :class=>"forum_board_last_post_author") : content_tag(:div, "Unknown", :class=>"forum_board_last_post_author")) +
+		            link_to(board.last_post.post.title, board.last_post.post.topic_link, :class=>"forum_board_last_post_title") +
+                            if(board.last_post.comment_author.present?)
+                                author_url = board.last_post.comment_author.get_author_url 
+                                if(board.last_post.comment_author.present?) 
+		                    link_to(board.last_post.comment_author.display_name, author_url, :class=>"forum_board_last_post_author") 
+                                else
+                                    content_tag(:div, board.last_post.comment_author.display_name || "Unknown", :class=>"forum_board_last_post_author")
+                                end
+                            end +
 		            content_tag(:div, board.last_post.comment_date.localtime.strftime("%c"), :class=>"forum_board_last_post_date")
                         else
                             "".html_safe

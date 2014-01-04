@@ -5,7 +5,6 @@ module Roxiware
     self.table_name="comment_authors"
     ALLOWED_AUTHTYPES = %w(roxiware generic facebook twitter)
 
-    validates_presence_of :name
     has_many :comments, :dependent=>:destroy
     belongs_to :person
     has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo"
@@ -21,10 +20,11 @@ module Roxiware
 				:too_long => "Your url must be no more than ${count} characters."
 				}
 
+    validates_presence_of :name, :if=>Proc.new { |a| (a.authtype == "generic") }
     validates :name, :length=>{
 				:maximum=>256,
 				:too_long => "Your name must be no more than ${count} characters."
-				}
+				}, :if=>Proc.new { |a| (a.authtype == "generic") }
 
 
     edit_attr_accessible :person_id,:as=>[:super, :admin, nil]
@@ -45,10 +45,41 @@ module Roxiware
 	end
     end
 
+
+    def display_name
+        # name is really their display_name/nickname
+        return self.name if self.name.present?
+
+        # if they've not set a display_name, then default
+        # to semantics based on various authtypes.  for now
+        # just return full name from person if present, otherwise
+        # assume facebook/twitter/etc. would have set the name initially
+
+        case authtype
+        when "roxiware"
+           person.full_name
+        else
+           "Unknown"
+        end
+    end
+
+    def get_author_url
+        case authtype
+        when "roxiware"
+            self.person.present? ? "/people/#{self.person.seo_index}" : nil
+        when "twitter"
+            "http://www.twitter.com/#{uid}"
+        when "facebook"
+            "http://www.facebook.com/#{uid}"
+        else
+            self.url
+        end
+    end
+
     def get_thumbnail_url
         case authtype
         when "roxiware"
-           person.thumbnail || default_image_path(:person, "thumbnail")
+           (person.thumbnail if person.present?) || default_image_path(:person, "thumbnail")
         when "facebook"
            "http://graph.facebook.com/#{uid}/picture?type=square"
         when "twitter"

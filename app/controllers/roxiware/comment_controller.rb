@@ -36,7 +36,12 @@ module Roxiware
 		   if user_signed_in?
 		       @comment_author = Roxiware::CommentAuthor.comment_author_from_user(current_user)
 		   elsif cookies[:ext_oauth_token].present?
-		       @comment_author = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token])
+                       begin
+		           @comment_author = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token])
+                       rescue Exception=>e
+                           cookies.delete :ext_oauth_token
+                           @comment.errors.add("ext_oauth_token", "Your authentication token has expired, please log in again")
+                       end
 		   else
                        @comment_author = Roxiware::CommentAuthor.new({:name=>params[:comment_author],
                                                                       :email=>params[:comment_author_email],
@@ -45,23 +50,27 @@ module Roxiware
                                                                       :thumbnail_url=>default_image_path(:person, "thumbnail")}, :as=>"");
 		   end
 
-		   if(@comment_author.authtype == "generic")
-		       verify_recaptcha(:model=>@comment_author, :attribute=>:recaptcha_response_field)
-		   end
-
-		   if (@comment_author.errors.blank?) 
-		       @comment_author.comments << @comment
-		       @comment_author.save
-                   end
-		   if (@comment_author.errors.present?)
-		       @comment_author.errors.each do |key, error|
-		           @comment.errors.add(key, error)
+                   if(@comment_author.present?)
+		       if(@comment_author.authtype == "generic")
+			   verify_recaptcha(:model=>@comment_author, :attribute=>:recaptcha_response_field)
 		       end
-		   end
+
+		       if (@comment_author.errors.blank?) 
+			   @comment_author.comments << @comment
+			   @comment_author.save
+		       end
+		       if (@comment_author.errors.present?)
+			   @comment_author.errors.each do |key, error|
+			       @comment.errors.add(key, error)
+			   end
+		       end
+                   end
 
                rescue Exception=>e
 	           logger.error e.message
                    logger.error e.backtrace.join("\n")
+	           puts e.message
+                   puts e.backtrace.join("\n")
 		   @comment.errors.add("exception", e.message()) if @comment.present?
                end
 

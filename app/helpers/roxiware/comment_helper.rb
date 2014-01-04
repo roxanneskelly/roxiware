@@ -41,12 +41,12 @@ module Roxiware::CommentHelper
 	    header_content = {}
 	    header_content[:author_image] = ""
 	    if child.comment_author.present?
-	        if child.comment_author.url.present?
-		    header_content[:author_image] = link_to(tag(:img, :src=>child.comment_author.get_thumbnail_url, :class=>"comment_author_image"), child.comment_author.url, :target=>"_blank") 
-		    header_content[:author_name] = link_to(child.comment_author.name, child.comment_author.url, :class=>"comment_author_name", :target=>"_blank")
+	        if child.comment_author.get_author_url.present?
+		    header_content[:author_image] = link_to(tag(:img, :src=>child.comment_author.get_thumbnail_url, :class=>"comment_author_image"), child.comment_author.get_author_url, :target=>"_blank") 
+		    header_content[:author_name] = link_to(child.comment_author.display_name, child.comment_author.get_author_url, :class=>"comment_author_name", :target=>"_blank")
 		else
 		    header_content[:author_image] = tag(:img, :src=>child.comment_author.get_thumbnail_url, :class=>"comment_author_image")
-		    header_content[:author_name] = content_tag(:div, child.comment_author.name, :class=>"comment_author_name")
+		    header_content[:author_name] = content_tag(:div, child.comment_author.display_name, :class=>"comment_author_name")
 		end
             else
                 header_content[:author_image] = ""

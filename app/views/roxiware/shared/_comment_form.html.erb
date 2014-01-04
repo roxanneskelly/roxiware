@@ -26,8 +26,7 @@
                    end
                end +
                content_tag(:div, text_area_tag(:comment_content, nil, :class=>"settings_wysiwyg"), :id=>"comment_form_content", :class=>"settings_wysiwyg") +
-               hidden_field_tag(:comment_author_authtype, "generic") +
-               hidden_field_tag(:comment_author_auth_token, nil)
+               hidden_field_tag(:comment_author_authtype, "generic")
            end +
            content_tag(:div, :id=>"anonymous_author", :style=>"display:none") do
 	       content_tag(:div, :id=>"anonymous_author_info") do
@@ -83,10 +82,11 @@
         comment_form.find("#comment_author_name").text("");
         comment_form.find("#comment_author_image").attr("src", "<%= default_image_path(:person, :thumbnail) %>");
         comment_form.find("#comment_author_authtype").val("generic");
-        comment_form.find("#comment_auth_token").val("");
 <% end %>
     };
     var setLoginState = function(auth_info) {
+        console.log("SET LOGIN STATE");
+        console.log(auth_info);
         if(!auth_info) {
             auth_controls_shown = false;
             showAuthControls();
@@ -100,7 +100,6 @@
 	    comment_form.find("#comment_author_image").attr("src", auth_info.thumbnail_url);
 	    comment_form.find("#comment_author_name").text(auth_info.full_name);
 	    comment_form.find("#comment_author_authtype").val(auth_info.auth_kind);
-	    comment_form.find("#comment_auth_token").val(auth_info.auth_token);
 	    comment_form.find("#anonymous_author").css("display","none");
 	    comment_form.find("#facebook_login,#twitter_login").css("display","none");
 	    comment_form.find("#"+auth_info.auth_kind+"_logout").css("display","block");
@@ -225,7 +224,15 @@
        comment_form.find("button.post_comment_button").click(function() {
            comment_form.find("input.watermark").val("");
            $.ajaxSetParamsJSON(comment_path, jQuery.param($(this).parents("form").serializeArray()), {method:"POST",
+               error:function(data) {
+                   $(data).each(function(index, value) {
+                       if(value[0] == "ext_oauth_token") {
+                           $.oAuthResetLogin();
+                       }
+                  });
+               },
                success:function(data) {
+                   console.log(data);
                    if(data["comment_status"] == "publish") {
                        if(data["completion_redirect"]) {
                            window.location = data["completion_redirect"];

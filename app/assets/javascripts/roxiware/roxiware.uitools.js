@@ -41,14 +41,16 @@
     $.roxiware.ajaxSetParamsXML = {
 	conf: {
 	    method:"PUT",
-	       success:function() {}
+	    success:function() {},
+	       error:function() {}
 	}
     }
     $.roxiware.ajaxSetParamsJSON = {
 	conf: {
 	       method:"PUT",
 	       fieldPrefix:"",
-	       success:function() {}
+	       success:function() {},
+	       error:function() {}
 	}
     }
 
@@ -84,6 +86,7 @@
 					    conf.form.find("input#"+$(value).find("parameter").text()).css("background", "#ffcccc");
 					}
 				    });
+				    conf.error(data.error);
 			    }
 			    else {
 				if(conf.success) {
@@ -116,6 +119,7 @@
 				        conf.form.find("input#"+conf.fieldPrefix+value[0]).addClass("field-error");
 				    }
 				});
+				conf.error(data.error);
 			    }
 			    else {
 				conf.success(data);
@@ -993,9 +997,15 @@ function settingsForm(source, title, options) {
    $("body").append(overlay);
    if(source instanceof jQuery) {
        overlay.find(".contentWrap").append(source.css("display","block"));
-       if(source.is(".huge_form")) {
+       if(source.is(".huge_form") || (window.innerWidth <= 600)) {
            overlay.css("width", "100%");
+              top = "0%";
+              fixed = true;
+       }
+       if(source.is(".huge_form") || (window.innerHeight <= 600)) {
            overlay.css("height", "100%");
+              top = "0%";
+              fixed = true;
        }
        instantiateOverlay();
    }
@@ -1005,7 +1015,7 @@ function settingsForm(source, title, options) {
 	      $.error(xhr.statusText);
 	      return;
 	  }
-	  if(overlay.find(".huge_form").is(".huge_form")) {
+	  if(overlay.find(".huge_form").is(".huge_form") || (window.innerWidth <= 600)) {
               top = "0%";
               fixed = true;
 	      overlay.addClass("huge_settings_form");
@@ -1079,7 +1089,7 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
                               '<div id="remember_me_check" class="labeled-checkbox">' +
                                   '<input name="user[remember_me]" type="hidden" value="0" />' +
                                   '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
-                               '<div><button disabled="disabled" id="login_button" name="button" type="submit">login</button></div>' +
+                               '<button disabled="disabled" id="login_button" name="button" type="submit">login</button>' +
                                '<a id="forgot_password">Forgot your password?</a>' +
                                '<div id="social_networks_login"><a id="facebook_login" provider="facebook" class="oauth_login"></a>'+
                                '<a id="twitter_login" provider="twitter" class="oauth_login"></a></div>' +
@@ -1097,15 +1107,15 @@ var forgot_password_template = '<div class="small_form" id="forgot_password_form
 
 $.fn.require_fields = function(fields) {
     var button = $(this);
-    $(fields).bind("input blur propertychange", function() {
-	    var button_enable = "enable";
-	    $(fields).each(function(index, value) {
-		    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
-			button_enable = "disable";
-		    }
-		});
-	    button.button(button_enable);
+    $(fields).bind("input blur propertychange onchange", function() {
+        var button_enable = "enable";
+	$(fields).each(function(index, value) {
+	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+	        button_enable = "disable";
+	    }
 	});
+        button.button(button_enable);
+    });
     $(fields).trigger("propertychange");
 }
 

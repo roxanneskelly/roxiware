@@ -278,13 +278,13 @@ class Roxiware::ForumController < ApplicationController
 
       respond_to do |format|
           format.html do
-	     if( @reader.present? && new_comments) 
+	     if( !is_robot? && @reader.present? && new_comments) 
 		 @topic.views += 1
 		 @topic.save!
 	     end
           end
 	  format.json do
-	     if( @reader.blank? && new_comments) 
+	     if( !is_robot? && @reader.blank? && new_comments) 
 		 @topic.views += 1
 		 @topic.save!
 	     end

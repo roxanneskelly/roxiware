@@ -202,6 +202,7 @@ module ActionDispatch::Routing
                 get ":id/edit"=>"forum#edit_topic", :as=>:edit_topic
                 get ":id/new"=>"forum#new_topic", :as=>:new_topic
                 delete ":id"=>"forum#destroy_topic", :as=>:delete_topic
+                put ""=>"forum#update_all", :on=>:collection
 	    end
 	end
 

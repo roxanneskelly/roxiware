@@ -90,6 +90,28 @@ class Roxiware::ForumController < ApplicationController
       end
     end
 
+    # Update board settings
+    # PUT /forum
+    def update_all
+      raise ActiveRecord::RecordNotFound unless params[:mark_all_as_read].present?
+      raise ActiveRecord::RecordNotFound unless @reader.present?
+
+      # delete all reader infos where no metadata has been set
+      Roxiware::ReaderCommentObjectInfo.only_last_read.where(:comment_object_type=>'Roxiware::Forum::Topic', :reader_id=>@reader.id).destroy_all
+      Roxiware::ReaderCommentObjectInfo.update_all("last_read=datetime('now')", ["comment_object_type='Roxiware::Forum::Topic' AND reader_id=?", @reader.id])
+
+      # mark existing info object as currently read
+      Roxiware::Forum::Board.all.each do |board|
+          board_reader_info = board.reader_infos.where(:reader_id=>@reader.id).first_or_create!
+	  board_reader_info.assign_attributes({:last_read=>DateTime.now}, :as=>"")
+	  board_reader_info.save!
+      end
+      respond_to do |format|
+         format.json { render :json => {}}
+      end
+    end
+
+
     def _get_per_topic_reader_info(topic_ids)
       reader_comment_objs = {}
       begin
@@ -133,12 +155,13 @@ class Roxiware::ForumController < ApplicationController
                                 joins("LEFT JOIN reader_comment_object_infos on forum_topics.id = reader_comment_object_infos.comment_object_id AND reader_comment_object_infos.comment_object_type='Roxiware::Forum::Topic' AND reader_comment_object_infos.reader_id=#{@reader.id}").
                                 joins("LEFT JOIN comments ON comments.post_id=forum_topics.id AND comments.post_type='Roxiware::Forum::Topic'").
                                 where("comments.comment_status='publish'").
-                                where("reader_comment_object_infos.id IS NULL OR (comments.comment_date > MAX(reader_comment_object_infos.last_read, ?))", base_date.to_formatted_s(:db) ).
-
+                                where("comments.comment_date > ?", base_date.to_formatted_s(:db)).
+                                where("reader_comment_object_infos.id IS NULL OR comments.comment_date > reader_comment_object_infos.last_read").
                                 group("forum_topics.id").select("forum_topics.id, COUNT(comments.id) as num_new_posts, reader_comment_object_infos.id as reader_info_id, forum_topics.comment_count")
 
             # unread_post_query will list posts that haven't been read at all, but won't list any that have been fully read.
 	    @unread_post_counts = Hash[unread_post_query.collect{|topic| [topic.id, topic.num_new_posts]}]
+            puts "UNREAD #{@unread_post_counts.inspect}"
 	else
 	    topics_last_read = {}
 	    (params[:last_read] || {}).each do |topic_id, topic_last_read|

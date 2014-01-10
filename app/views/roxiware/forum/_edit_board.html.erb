@@ -10,7 +10,6 @@ $(function() {
       $("#board_edit_form button#save_button").click(function() {
 	 $("form input.watermark").val("");
          $.ajaxSetParamsJSON("<%= forum_path(@board.id)%>.json", $("#board_edit_form form").serializeArray(), {form:$("#board_edit_form form"), success:function(data) {
-             console.log(data.seo_index);
              window.location = "/forum/"+data.seo_index;
          }});
     });

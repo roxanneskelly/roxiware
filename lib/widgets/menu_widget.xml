@@ -215,7 +215,7 @@ div.menu_edit
 	      <% uri = URI.parse(menu_node_values["url"].conv_value) 
 	      menu_class = "menu_selected" if ((uri.path == request.path) && ( uri.host.blank? || (uri.host == request.host))) %>
 	      <%=  link_to(menu_node_values["url"].conv_value, :class=>menu_class) do %>
-                 <%= menu_node_values["name"].conv_value %>
+                 <span class="menu_text"><%= menu_node_values["name"].conv_value %></span>
               <% end %>
 	    <% if menu_node_values["children"].present? && menu_node_values["children"].conv_value.present? %>
               <ul>

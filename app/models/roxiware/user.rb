@@ -2,7 +2,7 @@ module Roxiware
   class User < ActiveRecord::Base
     include Roxiware::BaseModel
     self.table_name="users"
-    has_one :person, :autosave=>true, :dependent=>:destroy
+    has_one :person, :dependent=>:destroy
 
     has_many :auth_services, :dependent=>:destroy
 

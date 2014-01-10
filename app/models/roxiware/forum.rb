@@ -23,9 +23,9 @@ module Roxiware
     class Board < ActiveRecord::Base
         include Roxiware::BaseModel
         self.table_name="forum_boards"
-	has_many :topics, :dependent=>:destroy, :autosave=>true
-        has_many :posts, :through=>:topics, :source=>:comments, :class_name=>"Roxiware::Comment"
-        has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo", :as=>:comment_object
+	has_many :topics, :dependent=>:destroy, :autosave=>false
+        has_many :posts, :through=>:topics, :source=>:comments, :class_name=>"Roxiware::Comment", :autosave=>false
+        has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo", :as=>:comment_object, :autosave=>false
 
         belongs_to :board_group
         belongs_to :last_post, :class_name=>"Roxiware::Comment"
@@ -85,9 +85,11 @@ module Roxiware
       include Roxiware::BaseModel
       self.table_name="forum_topics"
       ALLOWED_TOPIC_PERMISSIONS = %w(board open moderate closed hide)
-
-      has_many :comments, :class_name=>"Roxiware::Comment", :dependent=>:destroy, :as=>:post
-      has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo", :as=>:comment_object
+      
+      # has_many comments...disable validation for the comments as that is taken care of on the comment
+      # objects as they are created in the controller, allowing cleaner error reporting
+      has_many :comments, :class_name=>"Roxiware::Comment", :dependent=>:destroy, :as=>:post, :validate=>false
+      has_many :reader_infos, :class_name=>"Roxiware::ReaderCommentObjectInfo", :dependent=>:destroy, :as=>:comment_object
 
       def posts 
           self.comments
@@ -97,19 +99,25 @@ module Roxiware
           self.comments = post_items
       end
 
-      belongs_to :board, :counter_cache => :topic_count, :autosave=>true
-      belongs_to :last_post, :class_name=>"Roxiware::Comment", :dependent=>:destroy
-      belongs_to :root_post, :class_name=>"Roxiware::Comment", :dependent=>:destroy
+      belongs_to :board, :counter_cache => :topic_count
+      belongs_to :last_post, :class_name=>"Roxiware::Comment"
+      belongs_to :root_post, :class_name=>"Roxiware::Comment"
 
-      has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy, :autosave=>true
+      has_many :term_relationships, :as=>:term_object, :class_name=>"Roxiware::Terms::TermRelationship", :dependent=>:destroy
       has_many :terms, :through=>:term_relationships, :class_name=>"Roxiware::Terms::Term"
-      has_many :reader_comment_object_info, :as=>:comment_object
+
+      validates_presence_of :root_post, :message=>"Missing root post"
+      validates_presence_of :last_post, :message=>"Missing last post"
+      validates_presence_of :board, :message=>"Missing board"
+      validates_flat_associated :root_post
 
       validates :title, :length=>{:minimum=>1,
 					:too_short => "The title must at least  %{count} characters.",
 					:maximum=>255,
 					:too_long => "The title can be no larger than ${count} characters."
 					}
+
+      validates_uniqueness_of :topic_link, :message=>"There is alread a post today with that title, please choose another."
 
       validates_presence_of :permissions, :inclusion=> {:in => ALLOWED_TOPIC_PERMISSIONS}, :message=>"Invalid post permissions."
 
@@ -186,7 +194,7 @@ module Roxiware
       end
 
       before_validation() do
-	 self.root_post = self.posts.published().first
+	 self.root_post = self.posts.first
          seo_index = self.title.to_seo
          self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{self.root_post.comment_date.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.root_post
 	 self.last_post = self.posts.published().last || self.root_post

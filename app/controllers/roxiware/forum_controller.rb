@@ -15,6 +15,7 @@ class Roxiware::ForumController < ApplicationController
                 @reader = Roxiware::CommentAuthor.comment_author_from_user(current_user)
             elsif cookies[:ext_oauth_token].present?
 	        @reader = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token])
+		cookies.delete(:ext_oauth_token) if @reader.authtype=="expired"
             else
                 @reader = nil
             end
@@ -149,10 +150,10 @@ class Roxiware::ForumController < ApplicationController
         # the number of unread posts for each topic, if the topic has ever been read
 	if @reader.present?
 	    board_reader_info = @board.reader_infos.where(:reader_id=>@reader.id).first
-            base_date = board_reader_info.last_read if board_reader_info
+            base_date = board_reader_info.last_read if board_reader_info.present?
 	    base_date ||= DateTime.new(0)
             unread_post_query = @board.topics.
-                                joins("LEFT JOIN reader_comment_object_infos on forum_topics.id = reader_comment_object_infos.comment_object_id AND reader_comment_object_infos.comment_object_type='Roxiware::Forum::Topic' AND reader_comment_object_infos.reader_id=#{@reader.id}").
+                                joins("LEFT JOIN reader_comment_object_infos on forum_topics.id = reader_comment_object_infos.comment_object_id AND reader_comment_object_infos.comment_object_type='Roxiware::Forum::Topic' AND reader_comment_object_infos.reader_id=#{@reader.id || 0}").
                                 joins("LEFT JOIN comments ON comments.post_id=forum_topics.id AND comments.post_type='Roxiware::Forum::Topic'").
                                 where("comments.comment_status='publish'").
                                 where("comments.comment_date > ?", base_date.to_formatted_s(:db)).
@@ -161,7 +162,6 @@ class Roxiware::ForumController < ApplicationController
 
             # unread_post_query will list posts that haven't been read at all, but won't list any that have been fully read.
 	    @unread_post_counts = Hash[unread_post_query.collect{|topic| [topic.id, topic.num_new_posts]}]
-            puts "UNREAD #{@unread_post_counts.inspect}"
 	else
 	    topics_last_read = {}
 	    (params[:last_read] || {}).each do |topic_id, topic_last_read|
@@ -183,7 +183,6 @@ class Roxiware::ForumController < ApplicationController
                end
             end
 	end
-
 
 	respond_to do |format|
 	    format.html do
@@ -251,6 +250,7 @@ class Roxiware::ForumController < ApplicationController
       @topics = _topics_sort(@board).select("forum_topics.last_post_id,forum_topics.topic_link, forum_topics.id").includes(:last_post);
 
       if @reader.present?
+          board_reader_info = @board.reader_infos.where(:reader_id=>@reader.id).first
           @per_topic_reader_info = _get_per_topic_reader_info(@topics.collect{|topic|topic.id})
 	  @per_topic_last_read = Hash[@per_topic_reader_info.collect{|topic_id, info| [topic_id, info.last_read]}]
 
@@ -260,11 +260,14 @@ class Roxiware::ForumController < ApplicationController
 
           @topic_last_read = @reader_topic_info.last_read if @reader_topic_info.present?
           @topic_last_read ||= DateTime.new(0)
+	  @topic_last_read = board_reader_info.last_read if (board_reader_info.present? && (board_reader_info.last_read > @topic_last_read))
           @reader_topic_info.last_read = DateTime.now() 
+	  @reader_topic_info.reader = @reader
           @reader_topic_info.save!
       elsif params["last_read"].present?
 	  @per_topic_last_read = Hash[params[:last_read].collect{|topic_id, last_read| [topic_id.to_i, Time.at(last_read.to_i).to_datetime]}]
-          @topic_last_read = @per_topic_last_read[@topic.id] || @per_topic_last_read[0] || DateTime.new()
+          @topic_last_read = @per_topic_last_read[@topic.id] || DateTime.new()
+	  @topic_last_read = @per_topic_last_read[0] if (@per_topic_last_read[0].present? && (@per_topic_last_read[0] > @topic_last_read))
       else
           @per_topic_last_read = {}
           @topic_last_read = DateTime.new(0)
@@ -363,62 +366,63 @@ class Roxiware::ForumController < ApplicationController
 
       ActiveRecord::Base.transaction do
           begin
-              # first, create the 
               permissions = "board"
 	      if(@board.permissions == "moderate") 
 	          permissions = "hide"
 	      end
+
 	      @topic = @board.topics.new
+             
+              # the associated comment will not increment the comment count of this post, as 
 	      @topic.assign_attributes({:title=>params[:title], :permissions=>"board"}, :as=>"")
-              if @topic.save
-		  params[:comment_date] = DateTime.now
-		  person_id = (current_user && current_user.person)?current_user.person.id : -1
-		  # always publish the first comment.  Whether it's shown or hidden is determined
-		  # by whether the topic is hidden
-		  @post = @topic.posts.build({:parent_id=>0,
-					      :comment_status=> ((@topic.resolve_comment_permissions == "open") ? "publish" : "moderate"),
-					      :comment_content=>params[:comment_content],
-					      :comment_date=>DateTime.now.utc}, :as=>"")
-                  @post_author = @reader if @reader.present?
 
-		  @post_author = @reader
-		  if(@post_author.blank?)
-                      @post_author= Roxiware::CommentAuthor.comment_author_from_params({:name=>params[:comment_author],
-                                                                                        :url=>params[:comment_author_url], 
-                                                                                        :email=>params[:comment_author_email]})
-		      verify_recaptcha(:model=>@post_author, :attribute=>:recaptcha_response_field)
-		  end
+	      params[:comment_date] = DateTime.now
+	      person_id = (current_user && current_user.person)?current_user.person.id : -1
+	      # always publish the first comment.  Whether it's shown or hidden is determined
+	      # by whether the topic is hidden
 
-		  if(!@post.save) 
-		      @post.errors.each do |attr,msg|
-			  @topic.errors.add(attr, msg)
-		      end
-		  end
+              @post = @topic.posts.new
+              oauth_expired = false
+	      comment_status = ((@topic.resolve_comment_permissions == "open") ? "publish" : "moderate")
+              @post.assign_attributes({:parent_id=>0,
+		                       :comment_status=>comment_status,
+				       :comment_content=>params[:comment_content],
+				       :comment_date=>DateTime.now.utc},
+                                      :as=>"")
 
-                  if(@post_author.errors.blank?)
-		      @post_author.comments << @post
-		      @post_author.save
-                  end
-		  if (@post_author.errors.present?)
-		      @post_author.errors.each do |key, error|
-			  @topic.errors.add(key, error)
-		      end
-		  end
+              if @reader.blank?
+	         @post.comment_author= Roxiware::CommentAuthor.comment_author_from_params({:name=>params[:comment_author],
+			                                                                      :url=>params[:comment_author_url], 
+		                                                                              :email=>params[:comment_author_email]})
+              else
+                  @post.comment_author = @reader
+              end
 
-                  if(@reader.present?)
-		      @reader_topic_info = Roxiware::ReaderCommentObjectInfo.new
-		      @reader_topic_info.reader_id = @reader.id
-		      @reader_topic_info.comment_object = @topic
-		      @reader_topic_info.last_read = DateTime.now();
-		      @reader_topic_info.save!
-                  end
-           end
+	      @topic.comment_count = ((comment_status == "publish") ? 1 : 0)
+              @topic.pending_comment_count = ((comment_status != "publish") ? 1 : 0)
+              @topic.save
 
+              @topic.errors.add(:ext_oauth_token, "Your session has expired, please log in again") if (@reader.present? && (@reader.authtype == "expired"))
+	      verify_recaptcha(:model=>@topic, :attribute=>:recaptcha_response_field) if @reader.blank? && @topic.errors.blank?
+
+
+              # if the user is logged in (not generic), generate an object to hold
+              # stats, has-read info, etc.
+              if(@topic.errors.blank? && @reader.present?)
+                  @reader_topic_info = Roxiware::ReaderCommentObjectInfo.new
+		  @reader_topic_info.reader = @reader
+		  @reader_topic_info.comment_object = @topic
+		  @reader_topic_info.last_read = DateTime.now();
+                  raise Exception.new("Couldn't create reader info") unless @reader_topic_info.save
+              end
            rescue Exception=>e
 	       logger.error(e.message)
                logger.error(e.backtrace.join("\n"))
 	       @topic.errors.add("exception", e.message)
-	       raise raise ActiveRecord::Rollback
+	       raise ActiveRecord::Rollback
+           end
+           if(@topic.errors.present?)
+               raise ActiveRecord::Rollback
            end
        end
        respond_to do |format|
@@ -426,7 +430,6 @@ class Roxiware::ForumController < ApplicationController
 	       if(@post.comment_status == "publish")
 		   flash[:notice] = "Your topic has been published."
 	       end		  
-	       @topic.save
 	       format.html { redirect_to @topic.topic_link }
 	       format.json do
 	           ajax_results = @topic.ajax_attrs(@role)

@@ -12,86 +12,71 @@ module Roxiware
 	 end
 
 	 def create
-          ActiveRecord::Base.transaction do
-               begin
-                   @post_class = params[:root_type].split('::').inject(Object) do |mod, class_name|
-                       mod.const_get(class_name)
-                   end
-		   raise ActiveRecord::RecordNotFound if @post_class.nil?
+	    ActiveRecord::Base.transaction do
+		 begin
+		     @post_class = params[:root_type].split('::').inject(Object) do |mod, class_name|
+			 mod.const_get(class_name)
+		     end
+		     raise ActiveRecord::RecordNotFound if @post_class.nil?
 
-	           @post=@post_class.find(params[:root_id])
-		   raise ActiveRecord::RecordNotFound if @post.nil?
+		     @post=@post_class.find(params[:root_id])
+		     raise ActiveRecord::RecordNotFound if @post.nil?
 
-		   params[:comment_date] = DateTime.now
-		   person_id = (current_user && current_user.person)?current_user.person.id : -1
-		   comment_status = "moderate"
-		   comment_status= "publish" if ((@post.resolve_comment_permissions=="open") || (@role=="super" || @role=="admin"))
+		     params[:comment_date] = DateTime.now
+		     person_id = (current_user && current_user.person)?current_user.person.id : -1
+		     comment_status = "moderate"
+		     comment_status= "publish" if ((@post.resolve_comment_permissions=="open") || (@role=="super" || @role=="admin"))
 
-		   params[:comment_content] = Sanitize.clean(params[:comment_content], Roxiware::Sanitizer::BASIC_SANITIZER)
+		     params[:comment_content] = Sanitize.clean(params[:comment_content], Roxiware::Sanitizer::BASIC_SANITIZER)
 
-		   @comment = @post.comments.new
-		   @comment.assign_attributes(params.merge({
-						  :comment_status=>comment_status,
-						  :comment_date=>DateTime.now.utc}), :as=>"")
-		   if user_signed_in?
-		       @comment_author = Roxiware::CommentAuthor.comment_author_from_user(current_user)
-		   elsif cookies[:ext_oauth_token].present?
-                       begin
-		           @comment_author = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token])
-                       rescue Exception=>e
-                           cookies.delete :ext_oauth_token
-                           @comment.errors.add("ext_oauth_token", "Your authentication token has expired, please log in again")
-                       end
-		   else
-                       @comment_author = Roxiware::CommentAuthor.new({:name=>params[:comment_author],
-                                                                      :email=>params[:comment_author_email],
-                                                                      :url=>params[:comment_author_url],
-                                                                      :authtype=>"generic",
-                                                                      :thumbnail_url=>default_image_path(:person, "thumbnail")}, :as=>"");
-		   end
+		     oauth_expired = false
+		     @comment = @post.comments.new
+		     @comment.assign_attributes(params.merge({
+						    :comment_status=>comment_status,
+						    :comment_date=>DateTime.now.utc}), :as=>"")
+		     if user_signed_in?
+			 @comment.comment_author = Roxiware::CommentAuthor.comment_author_from_user(current_user)
+		     elsif cookies[:ext_oauth_token].present?
+			 @comment.comment_author = Roxiware::CommentAuthor.comment_author_from_token(cookies[:ext_oauth_token])
+			 if @comment.comment_author.authtype=="expired"
+			     cookies.delete(:ext_oauth_token)
+			     oauth_expiry = true
+			 end
+		     else
+			@comment.comment_author= Roxiware::CommentAuthor.comment_author_from_params({:name=>params[:comment_author],
+											  :url=>params[:comment_author_url], 
+											  :email=>params[:comment_author_email]})
+		     end
 
-                   if(@comment_author.present?)
-		       if(@comment_author.authtype == "generic")
-			   verify_recaptcha(:model=>@comment_author, :attribute=>:recaptcha_response_field)
-		       end
+		     @comment.save
+		     @comment.errors.add(:ext_oauth_token, "Your session has expired, please log in again") if oauth_expired
+		     verify_recaptcha(:model=>@comment, :attribute=>:recaptcha_response_field) if @comment.errors.blank? && @comment.comment_author.authtype == "generic"
 
-		       if (@comment_author.errors.blank?) 
-			   @comment_author.comments << @comment
-			   @comment_author.save
-		       end
-		       if (@comment_author.errors.present?)
-			   @comment_author.errors.each do |key, error|
-			       @comment.errors.add(key, error)
-			   end
-		       end
-                   end
-
-               rescue Exception=>e
-	           logger.error e.message
-                   logger.error e.backtrace.join("\n")
-	           puts e.message
-                   puts e.backtrace.join("\n")
-		   @comment.errors.add("exception", e.message()) if @comment.present?
-               end
-
-	       respond_to do |format|
-		   if (@comment.errors.blank?)
-		      if(@comment.comment_status == "publish")
-			 flash[:notice] = "Your comment has been published."
-		      end	  
-		      @post.save
-		      format.html { redirect_to @post.post_link }
-		      format.json { render :json => @comment.ajax_attrs(@role) }
-		   else
-		      error_str = "Failure in creating blog comment:"
-		      @comment.errors.each do |error|
-			error_str << error[0].to_s + ":" + error[1] + ","
-		      end
-		      format.html { redirect_to @post.post_link, :alert => error_str }
-		      format.json { render :json=>report_error(@comment)}
-		   end
-	       end
-           end
+		 rescue Exception=>e
+		     logger.error e.message
+		     logger.error e.backtrace.join("\n")
+		     puts e.message
+		     puts e.backtrace.join("\n")
+		     @comment.errors.add("exception", e.message()) if @comment.present?
+		 end
+             end
+             respond_to do |format|
+	         if (@comment.errors.blank?)
+		    if(@comment.comment_status == "publish")
+		        flash[:notice] = "Your comment has been published."
+		    end
+		    @post.save
+		    format.html { redirect_to @post.post_link }
+		    format.json { render :json => @comment.ajax_attrs(@role) }
+		 else
+		     error_str = "Failure in creating blog comment:"
+		     @comment.errors.each do |error|
+		         error_str << error[0].to_s + ":" + error[1] + ","
+		     end
+		     format.html { redirect_to @post.post_link, :alert => error_str }
+		     format.json { render :json=>report_error(@comment)}
+		 end
+             end
 	 end
 
 

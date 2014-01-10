@@ -1,5 +1,29 @@
 require 'set'
 require 'sanitize'
+
+module ActiveRecord
+  module Validations
+    class AssociatedFlatValidator < ActiveModel::EachValidator
+      def validate_each(record, attribute, value)
+        (value.is_a?(Array) ? value : [value]).each do |v|
+          next if v.blank?
+          unless v.valid?
+            v.errors.each do |key, msg|
+              record.errors.add(key, msg, options.merge(:value => value))
+            end
+          end
+        end
+      end
+    end
+
+    module ClassMethods
+      def validates_flat_associated(*attr_names)
+        validates_with AssociatedFlatValidator, _merge_attributes(attr_names)
+      end
+    end
+  end
+end
+
 module Roxiware
   module BaseModel 
 

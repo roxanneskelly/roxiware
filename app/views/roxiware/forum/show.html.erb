@@ -57,6 +57,7 @@ content_tag(:div, :id=>@board.id, :class=>"forum_board") do
                     content_tag(:span, topic.views, :class=>"forum_topic_views") 
                 end +
 		content_tag(:div, :class=>"forum_topic_last_post forum_topic_menu_target", :topic_permission=>topic.permissions, :topic_priority=>topic.priority) do
+                    "".html_safe + 
                     if(topic.last_post.present? && topic.last_post.comment_author.present?)
                         comment_author_url = topic.last_post.comment_author.get_author_url
                         if(comment_author_url.present?)

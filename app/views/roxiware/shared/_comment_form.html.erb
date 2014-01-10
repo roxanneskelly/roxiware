@@ -60,8 +60,6 @@
     </form>
 </div>
 <script>
-
-
     var initialized = false;
     var comment_form=$(".comment_form");
     var auth_controls_shown = false;
@@ -85,8 +83,6 @@
 <% end %>
     };
     var setLoginState = function(auth_info) {
-        console.log("SET LOGIN STATE");
-        console.log(auth_info);
         if(!auth_info) {
             auth_controls_shown = false;
             showAuthControls();
@@ -232,7 +228,6 @@
                   });
                },
                success:function(data) {
-                   console.log(data);
                    if(data["comment_status"] == "publish") {
                        if(data["completion_redirect"]) {
                            window.location = data["completion_redirect"];

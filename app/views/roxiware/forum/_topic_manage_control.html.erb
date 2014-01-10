@@ -28,8 +28,6 @@ $(function() {
         var manage_menu = $($("#topic_manage_menu_template").text());
         manage_menu.attr("id", "manage_"+$(item).attr("topic_id"));
         manage_menu.find("[permission="+$(item).attr("topic_permission")+"]").addClass("selected_item");
-        console.log($(item));
-        console.log("TOPIC PRI " + $(item).attr("topic_priority"));
         manage_menu.find(".topic_priority_"+$(item).attr("topic_priority")).addClass("selected_item");
 	ddsmoothmenu.init({
 	    mainmenuid: manage_menu.attr("id"),

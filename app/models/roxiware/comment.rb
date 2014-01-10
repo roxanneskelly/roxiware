@@ -7,14 +7,21 @@ module Roxiware
     include Roxiware::BaseModel
     self.table_name="comments"
     ALLOWED_STATUS = %w(moderate publish)
-    belongs_to :parent, :polymorphic=>true, :autosave=>true
-    belongs_to :post, :polymorphic=>true, :autosave=>true
-    belongs_to :comment_author, :counter_cache=>true, :autosave=>true
+    belongs_to :parent, :polymorphic=>true
+    belongs_to :post, :polymorphic=>true
+    belongs_to :comment_author, :counter_cache=>true
     acts_as_tree :foreign_key => "parent_id"
 
+    validates_presence_of :comment_author, :message=>"Missing comment author information."
     validates_presence_of :comment_date, :message=>"The comment date is missing."
     validates_presence_of :comment_status, :inclusion=> {:in => ALLOWED_STATUS}, :message=>"Invalid comment status."
-    validates_presence_of :post_type, :inclusion=>{:in=> %w(Roxiware::Forum::Topic Roxiware::Blog::Post)}
+
+    validates_flat_associated :comment_author
+    validates :comment_content, :length=>{:minimum=>5,
+                               :too_short => "The comment must contain at least  %{count} characters.",
+                               :maximum=>8192,
+                               :too_long => "The comment can be no larger than ${count} characters."
+                              }
 
     edit_attr_accessible :comment_status, :as=>[:super, :admin, :user, nil]
     edit_attr_accessible :parent_id, :parent_type, :comment_author_id, :as=>[nil]
@@ -53,21 +60,19 @@ module Roxiware
 	comment_author.save!
     end
 
-    def unread?(last_read)
-        
-    end
-
     before_validation() do
        self.comment_content = Sanitize.clean(self.comment_content, Sanitize::Config::RELAXED.merge({:add_attributes => {'a' => {'rel' => 'nofollow'}}}))
     end
 
     # handle count caching.  We don't use the built in count_cache on the belongs_to as we have
     # multiple counters depending on comment_status
-    before_create do
-        count_column = ((comment_status == "publish") ? :comment_count : :pending_comment_count)
-        self.post.class.increment_counter(count_column, self.post_id)
-        self.post.reload
-        self.post.touch
+    after_create do
+        if(self.post.present?)
+	    count_column = ((comment_status == "publish") ? :comment_count : :pending_comment_count)
+	    self.post.class.increment_counter(count_column, self.post_id)
+	    self.post.reload
+	    self.post.touch
+        end
     end
 
     before_destroy do 

@@ -884,10 +884,9 @@
 	return  jtp_api;
     }
 
-
     $.fn.watermark =  function() {
 	this.each(function() {
-            if($(this).val() == "") {
+		if(($(this).val() == "") || ($(this).val() == $(this).attr("watermark"))) {
                 $(this).val($(this).attr("watermark"));
                 $(this).addClass("watermark");
              }
@@ -1145,6 +1144,11 @@ $.fn.oauthLogin = function(provider, conf) {
 
 var _get_auth_info = function(callback) {
     var auth_info = null;
+
+    if (document.cookie.indexOf("ext_oauth_token") < 0) {
+        localStorage.removeItem("roxiwareAuthInfo");
+    }
+
     if(!window.fbApiInit) {
 	setTimeout(function() {_get_auth_info(callback);}, 50);
         return;
@@ -1191,7 +1195,7 @@ $.extend({
 
     oAuthLogIn:function(provider, oauth_state) {
         _get_auth_info(function(auth_info) {
-            if(auth_info) {
+            if(auth_info ) {
 	        $("body").trigger("oauth_login", auth_info);
                 return;
 	    }
@@ -1344,4 +1348,3 @@ function forgotPassword() {
         });
     settingsForm(template, "Forgot Password");
 }
-

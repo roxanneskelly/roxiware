@@ -1,45 +1,59 @@
 <%= render :partial=>"forum_menu" %>
 <%= content_tag(:div, :id=>"forum_board_groups") do
     @forum_board_groups.collect do |group|
-        content_tag(:div, group.name, :class=>"forum_board_group_name") +
-        content_tag(:div, :id=>"board_group_#{group.id}", :class=>"forum_board_group") do 
-            group.boards.visible(current_user).collect do |board|
-                new_posts_class = (0 < (@changed_topic_count[board.id] || 0)) ? "forum_board_new_posts" : "forum_board_no_new_posts"
-                content_tag(:div, :id=>"board_#{board.id}", :class=>"forum_board #{new_posts_class}") do
-                    content_tag(:div, :class=>"forum_board_info") do 
-                        link_to(board.name, forum_path(board.seo_index), :class=>"forum_board_name") +
-                        (content_tag(:div, board.description, :class=>"forum_board_description") if board.description.present?)
-                    end +
-                    content_tag(:div, :class=>"forum_board_counters") do
-                        content_tag(:div, board.topic_count, :class=>"forum_board_topic_count #{(board.topic_count == 1) ? 'topic_count_singular' : 'topic_count_plural'}") +
-                        content_tag(:div, :class=>"forum_board_post_count #{(board.post_count == 1) ? 'post_count_singular' : 'post_count_plural'}") do 
-		            content_tag(:span, board.post_count) + 
-		            (content_tag(:span, board.pending_post_count, :class=>"forum_board_pending_post_count") if can?(:edit, board))
-                        end
-                    end +
-	            content_tag(:div, :class=>"forum_board_last_post forum_board_menu_target", :rel=>forum_path(board.id), :board_permission=>board.permissions) do 
-	                if board.last_post.present? && board.last_post.post.present? 
-		            link_to(board.last_post.post.title, board.last_post.post.topic_link, :class=>"forum_board_last_post_title") +
-                            if(board.last_post.comment_author.present?)
-                                author_url = board.last_post.comment_author.get_author_url 
-                                if(board.last_post.comment_author.present?) 
-		                    link_to(board.last_post.comment_author.display_name, author_url, :class=>"forum_board_last_post_author") 
-                                else
-                                    content_tag(:div, board.last_post.comment_author.display_name || "Unknown", :class=>"forum_board_last_post_author")
-                                end
-                            end +
-		            content_tag(:div, board.last_post.comment_date.localtime.strftime("%c"), :class=>"forum_board_last_post_date")
-                        else
-                            "".html_safe
-		        end
-                    end
-                end 
-            end.join("").html_safe 
+        content_tag(:div, :id=>"board_group_#{group.id}", :class=>"forum_board_group", :board_group_id=>group.id) do 
+            content_tag(:div, group.name, :class=>"forum_board_group_name") +
+            content_tag(:div, :class=>"forum_board_group_boards") do 
+		group.boards.order(:display_order).visible(current_user).collect do |board|
+		    new_posts_class = (0 < (@changed_topic_count[board.id] || 0)) ? "forum_board_new_posts" : "forum_board_no_new_posts"
+		    content_tag(:div, :id=>"board_#{board.id}", :class=>"forum_board #{new_posts_class}", :forum_board=>board.id) do
+			content_tag(:div, :class=>"forum_board_info") do 
+			    link_to(board.name, forum_path(board.seo_index), :class=>"forum_board_name") +
+			    (content_tag(:div, board.description, :class=>"forum_board_description") if board.description.present?)
+			end +
+			content_tag(:div, :class=>"forum_board_counters") do
+			    content_tag(:div, board.topic_count, :class=>"forum_board_topic_count #{(board.topic_count == 1) ? 'topic_count_singular' : 'topic_count_plural'}") +
+			    content_tag(:div, :class=>"forum_board_post_count #{(board.post_count == 1) ? 'post_count_singular' : 'post_count_plural'}") do 
+				content_tag(:span, board.post_count) + 
+				(content_tag(:span, board.pending_post_count, :class=>"forum_board_pending_post_count") if can?(:edit, board))
+			    end
+			end +
+			content_tag(:div, :class=>"forum_board_last_post forum_board_menu_target", :rel=>forum_path(board.id), :board_permission=>board.permissions) do 
+			    if board.last_post.present? && board.last_post.post.present? 
+				link_to(board.last_post.post.title, board.last_post.post.topic_link, :class=>"forum_board_last_post_title") +
+				if(board.last_post.comment_author.present?)
+				    author_url = board.last_post.comment_author.get_author_url 
+				    if(board.last_post.comment_author.present?) 
+					link_to(board.last_post.comment_author.display_name, author_url, :class=>"forum_board_last_post_author") 
+				    else
+					content_tag(:div, board.last_post.comment_author.display_name || "Unknown", :class=>"forum_board_last_post_author")
+				    end
+				end +
+				content_tag(:div, board.last_post.comment_date.localtime.strftime("%c"), :class=>"forum_board_last_post_date")
+			    else
+				"".html_safe
+			    end
+			end
+		    end 
+		end.join("").html_safe 
+            end
         end 
     end.join("").html_safe
 end %>
 <% if can? :edit, Roxiware::Forum::Board %>
 <%= render :partial=>"roxiware/forum/board_manage_control" %>
+<%= content_tag(:ul, :id=>"forum_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=>forum_index_path, :form=>"New Board Group") do
+            content_tag(:span, "+", "aria-hidden"=>"true", :class=>"menu-icon icon-bubbles")+content_tag(:span, "New Board Group", :class=>"top_menu_text")
+        end 
+    end +
+    content_tag(:li) do
+        content_tag(:a, :rel=>new_forum_path, :form=>"New Board") do
+            content_tag(:span, "+", "aria-hidden"=>"true", :class=>"menu-icon icon-bubble")+content_tag(:span, "New Board", :class=>"top_menu_text")
+        end
+    end
+end %>
 <% end %>
 <script>
 $(function() {
@@ -132,6 +146,40 @@ $(function() {
     });
 
     $.oAuthCheckLoggedIn();
+<% end %>
+<% if current_user.present? && current_user.is_admin? %>
+    $("div.forum_board_group_boards").sortable({
+                                helper:function() {
+                                    return $("<div style='outline:dotted 2px rgb(128,128,128);width:100%;height:3em;'>&nbsp;</div>");
+                                },
+                                dropOnEmpty:true,
+                                axis:"y",
+                                items: ".forum_board",
+                                connectWith: "div.forum_board_group_boards",
+                                appendTo: $("div#forum_board_groups"),
+                                forceSize: true,
+                                containment:$("div#forum_board_groups"),
+                                delay:100,
+                                distance:5,
+                                scroll:true,
+                                scrollSensitivity:20,
+                                zIndex:9999,
+                                cursor:"move",
+                                stop:function(event, ui) {
+                                    $.alert("Move Board?", {
+                                        onYes: function () {
+					    $.ajaxSetParamsJSON("<%= forum_index_path %>/"+ui.item.attr("forum_board")+".json", 
+								{ forum_board:{display_order:ui.item.index(), 
+								  board_group_id:ui.item.parents(".forum_board_group").first().attr("board_group_id")}}, 
+								{ success:function() { },
+                                                                  error:function() {$("div.forum_board_group_boards").sortable("cancel");}});
+                                        },
+                                        onCancel: function() { $("div.forum_board_group_boards").sortable("cancel");}
+                                   });
+
+                                }
+}).disableSelection();
+
 <% end %>
 });
 </script>

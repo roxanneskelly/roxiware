@@ -135,7 +135,7 @@ class Roxiware::ForumController < ApplicationController
     # Show topics in a specific board
     # GET /forum/:id
     def show
-	boards = Roxiware::Forum::Board.visible(current_user)
+	boards = Roxiware::Forum::Board.ordered().visible(current_user)
 	boards.each do |board|
 	    @next_board = board if @board.present?
 	    break if @board.present?
@@ -212,26 +212,85 @@ class Roxiware::ForumController < ApplicationController
       end
     end
 
+    # Edit board settings
+    # GET /forum/:id/edit
+    def new
+      @board = Roxiware::Forum::Board.new
+      authorize! :create, @board
+      respond_to do |format|
+	format.html { render :partial =>"roxiware/forum/edit_board" }
+      end
+    end
+
+
+    # Create a board
+    # POST /forum
+    def create
+        @board = Roxiware::Forum::BoardGroup.order(:display_order).last.boards.build
+        @board.assign_attributes(params[:forum_board], :as=>@role)
+	@board.display_order = Roxiware::Forum::Board.maximum('display_order')+1;
+	respond_to do |format|
+	    if @board.save
+	        format.html { redirect_to @board, :notice => 'Forum Board was successfully created.' }
+		format.json { render :json => @board.ajax_attrs(@role) }
+	    else
+                format.html { redirect_to @board, :alert => 'Failure in creating forum board.' }
+		format.json { render :json=>report_error(@board)}
+	    end
+	 end
+    end
+
     # Update board settings
     # PUT /forum/:id
     def update
       @board = Roxiware::Forum::Board.where(:id=>params[:id]).first
       raise ActiveRecord::RecordNotFound if @board.nil?
-      authorize! :update, @board unless params[:mark_all_as_read] 
-      respond_to do |format|
-	  if params[:mark_all_as_read] && @reader.present?
-              # delete all reader infos where no metadata has been set
-              Roxiware::ReaderCommentObjectInfo.only_last_read.where(:comment_object_id=>@board.topic_ids, :comment_object_type=>'Roxiware::Forum::Topic', :reader_id=>@reader.id).destroy_all
+      authorize! :update, @board unless (params[:mark_all_as_read] && params[:forum_board].blank?)
+      ActiveRecord::Base.transaction do
+          begin
+	      if params[:mark_all_as_read] && @reader.present?
+		  # delete all reader infos where no metadata has been set
+		  Roxiware::ReaderCommentObjectInfo.only_last_read.where(:comment_object_id=>@board.topic_ids, :comment_object_type=>'Roxiware::Forum::Topic', :reader_id=>@reader.id).destroy_all
 
-	      # mark existing info object as currently read
-              Roxiware::ReaderCommentObjectInfo.update_all("last_read=datetime('now')", ["comment_object_id IN (?) AND comment_object_type='Roxiware::Forum::Topic' AND reader_id=?", @board.topic_ids, @reader.id])
-              board_reader_info = @board.reader_infos.where(:reader_id=>@reader.id).first_or_create!
-	      board_reader_info.assign_attributes({:last_read=>DateTime.now}, :as=>"")
-	      board_reader_info.save!
-	  else
-              @board.assign_attributes(params[:forum_board], :as=>@role)
-	  end
-          if @board.save
+		  # mark existing info object as currently read
+		  Roxiware::ReaderCommentObjectInfo.update_all("last_read=datetime('now')", ["comment_object_id IN (?) AND comment_object_type='Roxiware::Forum::Topic' AND reader_id=?", @board.topic_ids, @reader.id])
+		  board_reader_info = @board.reader_infos.where(:reader_id=>@reader.id).first_or_create!
+		  board_reader_info.assign_attributes({:last_read=>DateTime.now}, :as=>"")
+		  board_reader_info.save!
+              end
+
+	      if params[:forum_board].present?
+		  @board.assign_attributes(params[:forum_board], :as=>@role)
+                  @board.save
+
+		  if(params[:forum_board][:display_order].present? && params[:forum_board][:board_group_id].present?)
+		      Roxiware::Forum::BoardGroup.all.each do |board_group|
+		          boards = board_group.boards.order(:display_order).select{|board| board.id != @board.id}.collect{|board| board}
+                          if(params[:forum_board][:board_group_id].to_i == board_group.id)
+			      boards.insert(params[:forum_board][:display_order].to_i, @board)
+                          end
+			  order = 0
+			  boards.each do |board|
+			      board.display_order = order
+			      order += 1
+			      board.save!
+			  end
+			  board_group.boards = boards
+		      end
+		  end
+	      end
+          rescue Exception=>e
+	       logger.error(e.message)
+               logger.error(e.backtrace.join("\n"))
+	       @board.errors.add("exception", e.message)
+	       raise ActiveRecord::Rollback
+          end
+          if(@board.errors.present?)
+               raise ActiveRecord::Rollback
+          end
+      end
+      respond_to do |format|
+          unless @board.errors.present?
 	      format.json { render :json => @board.ajax_attrs(@role) }
 	  else
 	      format.json { render :json=>report_error(@board)}
@@ -384,6 +443,7 @@ class Roxiware::ForumController < ApplicationController
               @post = @topic.posts.new
               oauth_expired = false
 	      comment_status = ((@topic.resolve_comment_permissions == "open") ? "publish" : "moderate")
+	      comment_status = "publish" if current_user.present? && current_user.is_admin?
               @post.assign_attributes({:parent_id=>0,
 		                       :comment_status=>comment_status,
 				       :comment_content=>params[:comment_content],

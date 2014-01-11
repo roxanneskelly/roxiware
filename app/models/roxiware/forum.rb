@@ -29,7 +29,7 @@ module Roxiware
 
         belongs_to :board_group
         belongs_to :last_post, :class_name=>"Roxiware::Comment"
-        default_scope { order(:display_order) }
+        scope :ordered, -> { joins(:board_group).order("forum_board_groups.display_order ASC").order("forum_boards.display_order ASC") }
         ALLOWED_TOPIC_PERMISSIONS = %w(open moderate closed hide)
 
         validates :description, :length=>{:maximum=>255,
@@ -44,7 +44,6 @@ module Roxiware
 	ajax_attr_accessible :name, :permissions, :seo_index, :description, :display_order, :board_group_id
 
         scope :visible, ->(user) {where((user.present? && user.is_admin?) ? "" : 'permissions != "hide"')}
-
 
 	def resolve_permissions
 	    if permissions != "default"
@@ -73,10 +72,6 @@ module Roxiware
 
             self.last_post = last_topic.last_post if last_topic.present?
 	    self.seo_index = self.name.to_seo
-	    if self.name_changed?
-	        # if we changed the name, then we need to update the links and guids for the topics
-	        self.topics.each{|topic| topic.guid = ""; topic.topic_link = ""}
-	    end
         end
      end
 
@@ -120,6 +115,9 @@ module Roxiware
       validates_uniqueness_of :topic_link, :message=>"There is alread a post today with that title, please choose another."
 
       validates_presence_of :permissions, :inclusion=> {:in => ALLOWED_TOPIC_PERMISSIONS}, :message=>"Invalid post permissions."
+
+      validates_presence_of :topic_link, :message=>"The topic link could not be generated."
+      validates_presence_of :guid, :message=>"The topic identifier could not be generated."
 
       edit_attr_accessible :title, :permissions, :category_name, :tag_csv, :comment_count, :pending_comment_count, :views, :trend, :last_trend_update, :likes, :unlikes, :rating, :priority, :as=>[:super, :admin, :user, nil]
 
@@ -195,8 +193,10 @@ module Roxiware
 
       before_validation() do
 	 self.root_post = self.posts.first
+	 topic_post_time = self.root_post.comment_date if self.root_post
+	 topic_post_time ||= DateTime.now()
          seo_index = self.title.to_seo
-         self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{self.root_post.comment_date.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.root_post
+         self.guid = self.topic_link = "/forum/#{self.board.seo_index}/#{topic_post_time.strftime('%Y/%-m/%-d')}/#{seo_index}" if self.guid.blank?
 	 self.last_post = self.posts.published().last || self.root_post
 	 self.last_post_date = self.last_post.present? ? self.last_post.comment_date : DateTime.new(0)
       end

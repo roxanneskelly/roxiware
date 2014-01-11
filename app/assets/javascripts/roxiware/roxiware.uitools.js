@@ -108,6 +108,7 @@
 			data: data,
 			error: function(xhr, textStatus, errorThrown) {
 			    $.error(errorThrown);
+			    conf.error(errorThrown);
 			},
 			complete: function() {
 			},

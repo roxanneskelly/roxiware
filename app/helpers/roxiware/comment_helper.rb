@@ -57,8 +57,8 @@ module Roxiware::CommentHelper
 
             comment_result += content_tag(:div, 
 	         (comment_header_format % header_content).html_safe, 
-		 :class=>"comment_header", 
-		 :comment_author_auth=> (child.comment_author.present? ? child.comment_author.authtype : "unknown"))
+		 :class=>"comment_header " +
+		     ("#{child.comment_author.authtype}_user" if child.comment_author.present?))
 	    comment_result += content_tag(:div, child.comment_content.html_safe, :class=>"comment_content")
 	    comment_result += content_tag(:div, :class=>"comment_footer") do 
 	        allow_reply ? content_tag(:a, "", :class=>"comment_reply", :id=>"reply-to-#{child_id}") : ""

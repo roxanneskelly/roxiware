@@ -47,46 +47,29 @@ div#colors_pane > div {
 }
 #param_header_background_image {
     position:absolute;
-    bottom:4em;
+    top:2em;
     left:4em;
-    width:475px;
-    height:50px;
+    width:180px;
+    height:45px;
     margin-left:auto;
     margin-right:auto;
 }
+
+#param_body_background_image {
+    position:absolute;
+    bottom:4em;
+    width:180px;
+    height:240px;
+    left:4em;
+}
+
 #param_background_image {
     position:absolute;
     top:2em;
     width:480px;
     height:300px;
-    left:4em;
-}
-#param_body_background_image {
-    position:absolute;
-    top:2em;
-    width:240px;
-    height:300px;
     right:4em;
 }
-
-#param_body_background_color {
-    position:absolute;
-    bottom:10.5em;
-    right:4em;    
-}
-
-#param_background_color {
-    position:absolute;
-    bottom:7em;
-    right:4em;    
-}
-
-#param_header_background_color {
-    position:absolute;
-    bottom:3.5em;
-    right:4em;    
-}
-
 </style>
 <div class="template_customize_form large_form" id="template_customize_form">
    <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
@@ -100,10 +83,7 @@ div#colors_pane > div {
            content_tag(:div, :id=>"background_pane") do
 	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>100, :id=>"header_background_image") + " " +
 	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
-	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) +
-	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
-	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
-	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200)
            end +
            content_tag(:div, :id=>"colors_pane") do
                content_tag(:div, :id=>"title_fields") do
@@ -111,6 +91,14 @@ div#colors_pane > div {
 	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
 	           param_field(customize_form, custom_params.delete("subtitle_font"), :id=>"subtitle_font") +
 	           param_field(customize_form, custom_params.delete("subtitle_color"), :id=>"subtitle_color")
+               end +
+               content_tag(:div, :id=>"center_fields") do
+		   param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
+		   param_field(customize_form, custom_params.delete("secondary_text_color"), :id=>"secondary_text_color") +
+		   param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") +
+		   param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
+		   param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
+		   param_field(customize_form, custom_params.delete("link_active_color"), :id=>"link_active_color")
                end +
                content_tag(:div, :id=>"color_fields") do
 		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
@@ -172,21 +160,12 @@ body.application_body
 /* Sizing for various devices */
 div#mainBody {
      font-size:12px;
-     width:950px;
-}
-
-/* for all mobile devices, set width to 100% */
-@media all and (max-device-width: 1024px) {
-      div#mainBody {
-          position:absolute;
-          right:0px;
-          left:0px;
-          width:auto;
-      }
+     max-width:950px;
+     width:100%;
 }
 
 /* Various mobile portrait guesses */
-@media all and (min-device-height: 320px) and (orientation:portrait) {
+@media all and (min-device-height: 320px) and (orientation:portrait), all and (min-device-width: 320px) and (orientation:landscape) {
       div#mainBody {
            font-size:8px;
            #content_section {
@@ -195,19 +174,22 @@ div#mainBody {
       }
 }
 
-@media all and (min-device-height: 480px) and (orientation:portrait) {
+@media all and (min-device-height: 480px) and (orientation:portrait), all and (min-device-width: 480px) and (orientation:landscape) {
       div#mainBody #content_section {
            min-height:370px;
        }
 }
 
-@media all and (min-device-height: 640px) and (orientation:portrait) {
+@media all and (min-device-height: 640px) and (orientation:portrait), all and (min-device-width: 640px) and (orientation:landscape) {
+      div#mainBody {
+          font-size:12px;
+      }
       div#mainBody {
           min-height:600px;
       }
 }
 
-@media all and (device-height: 800px) and (orientation:portrait) {
+@media all and (device-height: 800px) and (orientation:portrait), all and (min-device-width: 800px) and (orientation:landscape) {
       div#mainBody {
            font-size:10px;
       }
@@ -216,7 +198,7 @@ div#mainBody {
        }
 }
 
-@media all and (min-device-height: 1024px) and (orientation:portrait) {
+@media all and (min-device-height: 1024px) and (orientation:portrait), all and (min-device-width: 1024px) and (orientation:landscape) {
       div#mainBody {
            font-size:11px;
       }
@@ -225,7 +207,7 @@ div#mainBody {
        }
 }
 
-@media all and (min-device-height: 1280px) and (orientation:portrait) {
+@media all and (min-device-height: 1280px) and (orientation:portrait), all and (device-width: 1280px) and (device-height:800px) and (orientation:landscape) {
       div#mainBody {
           font-size:12px;
       }
@@ -233,71 +215,6 @@ div#mainBody {
            min-height:1000px;
        }
 }
-
-/* Landscape */
-@media all and (min-device-width: 320px) and (orientation:landscape) {
-      div#mainBody {
-          font-size:8px;
-      }
-      div#mainBody #content_section {
-           min-height:220px;
-       }
-}
-
-@media all and (min-device-width: 480px) and (orientation:landscape) {
-      div#mainBody #content_section {
-           min-height:370px;
-       }
-}
-
-
-@media all and (min-device-width: 640px) and (orientation:landscape) {
-      div#mainBody {
-          font-size:12px;
-      }
-      div#mainBody #content_section {
-           min-height:540px;
-       }
-}
-
-@media all and (min-device-width: 768px) and (orientation:landscape) {
-      div#mainBody {
-          min-height:680px;
-      }
-      div#mainBody #content_section {
-           min-height:480px;
-       }
-}
-
-@media all and (min-device-width: 800px) and (orientation:landscape) {
-      div#mainBody {
-          font-size:12px;
-      }
-      div#mainBody #content_section {
-           min-height:550px;
-       }
-}
-
-@media all and (min-device-width: 1024px) and (orientation:landscape) {
-      div#mainBody {
-          min-height:940px;
-          font-size:12px;
-      }
-      div#mainBody #content_section {
-           min-height:740px;
-       }
-}
-
-@media all and (device-width: 1280px) and (device-height:800px) and (orientation:landscape) {
-      div#mainBody {
-          min-height:1200px;
-          font-size:12px;
-      }
-      div#mainBody #content_section {
-           min-height:1000px;
-       }
-}
-
 
 /* Fonts and text */
 div#mainBody
@@ -445,7 +362,7 @@ div#mainBody .post {
     position:relative;
     margin: 0;
     width:100%;
-    padding:0.5em 0em 2em 0em;
+    padding:0.5em 1em 2em 1em;
 
     .post_header {
         margin-bottom:0.5em;
@@ -474,6 +391,9 @@ div#mainBody .post {
         padding-top:1em;
         margin-left:0em;
         overflow:hidden;
+        padding-left:1em;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
         width:100%;
         img {
             padding:1em;
@@ -587,6 +507,12 @@ div#mainBody .post {
 	    .comment_content {
 		clear:both;
 		padding-left:6em;
+                img, iframe {
+                    max-width:100%;
+                }
+                img {
+                    height:auto;
+                }
 	    }
 
 	    .comment_header {
@@ -699,17 +625,6 @@ div#mainBody .post {
     position:relative;
     width:100%;
     margin:2em 0 3em 0;
-    #comment_form_core {
-        img#comment_author_image {
-	    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-	     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
-        }
-
-    }
     .comment_recaptcha {
          .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
              color: <%= link_color %>;
@@ -717,6 +632,71 @@ div#mainBody .post {
          .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
              color: <%= link_hover_color %>;
          }
+    }
+}
+
+
+
+.widget#recent_posts {
+    .recent_posts {
+	.recent_post_entry {
+	    vertical-align:top;
+
+	    iframe {
+		display:none;
+	    }
+
+	    .post_snippet {
+                padding:0 0.5em 0 0.5em;
+		margin-top:0.5em;
+		img {
+		    display:none;
+		}
+		iframe {
+		    display:none;
+		}
+	    }
+	    .post_header {
+		.margin-bottom:0.5em;
+		.post_image {
+		    float:left;
+		    width:30%;
+		    margin:0 1em 1em 0;
+		}
+		.post_date {
+		    padding-left:1em;
+		    color:<%= secondary_text_color %>;
+		    font-style:italic;
+		    display:inline-block;
+		}
+	        .comments_link {
+		    float:right;
+		    padding-right:1em;
+		    display:inline-block;
+		}
+
+		.post_title {
+		    clear:both;
+		    font-size: 1.5em;
+		    display:block;
+		    text-align:center;
+		    border-bottom:solid 3px <%= graphic_element_color %>;
+		    margin-bottom:0.3em;
+		    padding-left:0.5em;
+		}
+		.post_title:hover {
+		    border-bottom:solid 3px <%= link_hover_color %>;
+		}
+            }
+	    .post_more {
+	        padding-right:2em;
+	        margin-left:1em;
+	    }
+	    .post_more:before {
+	        content:"More...";
+	        padding-left:2em;
+	    }
+	}
     }
 }
 
@@ -749,6 +729,7 @@ div#mainBody .post {
     line-height:1em;
     width:10%;
     display:inline-block;
+    padding-left:0.5em;
 }
 .series_link:before {
     content:'\e00b';
@@ -931,9 +912,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 
 /* Various mobile portrait guesses */
 @media all and (max-width 2000px)  {
-    div#mainBody {
-        background:red;
-    }
     div#mainBody article.post {
         .post_title {
             font-size:12px;
@@ -949,8 +927,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     }
 }
 
-@media all and (max-width: 640px) and (orientation:portrait)  {
+@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
     div#mainBody {
+        width:100%;
+        #left_bar_section {
+            display:none ;
+        }
+        #right_bar_section {
+            display:none;
+        }
+        #content_section #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px 0px 0px 0px !important;
+        }
         .post {
             .post_title {
                 font-size:8px;
@@ -965,24 +954,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
          }
     }
 }
-
-@media all and (max-width: 640px)  {
-    div#mainBody {
-
-        width:100%;
-
-        #left_bar_section {
-            display:none;
-        }
-        #right_bar_section {
-            display:none;
-        }
-        #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 20px 0px 10px !important;
-        }
-    }
-}]]>
+]]>
   </style>
   <params>
     <param description="67BFE233-F4D1-400B-855F-393BF53B05A4" class="local" name="asset_theme">clear</param>
@@ -1214,15 +1186,38 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         display:inline-block;
     }
     .scribaroo_site {
-         padding-left:2em;
+        padding-right:2em;
+        padding-left:2em;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
     }
-}]]>
+
+}
+#scribaroo_copyright {
+    text-align:right;
+    padding-right:2em;
+    padding-left:2em;
+    float:left;
+    display:inline-block;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+]]>
           </style>
           <params>
           </params>
           <widget_instances>
             <instance widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66" order="1">
               <params>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">scribaroo_copyright</param>
               </params>
             </instance>
           </widget_instances>
@@ -1240,10 +1235,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 #mainBody #header_bar_section {
     position:relative;
     margin:0em;
+    border-bottom: solid 2px <%= graphic_element_color %>;
 
     .widget#logo_bar {
         border-top: solid 1px <%= graphic_element_color %>;
-        border-bottom: solid 2px <%= graphic_element_color %>;
         position:relative;
         width:100%;
         height:6em;
@@ -1287,6 +1282,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         .widget_content {
            text-align:right;
            color:<%= link_color %>;
+	    #session-greeting {
+                margin-right:0.5em;
+	    }
        }
     }
 
@@ -1313,6 +1311,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         right:0px;
         bottom:0px;
         padding-bottom:0.3em;
+        a {
+           font-size:1.2em;
+        }
 
         .ddsmoothmenu_widget {
             font: Verdana;
@@ -1337,7 +1338,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                        padding:0 0.5em 0 0.5em;
                        text-decoration:none;
                        width:auto;
-                       font-size:1.2em;
                        line-height:1.5em;
                        border-bottom:solid 3px  rgba(0,0,0,0);
                    }
@@ -1388,7 +1388,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 display:none;
             }
            .widget#main_menu a {
-                font-size:12px !important;
+                font-size:12px;
             }
             .widget#logo_bar {
                 .site_title {
@@ -1408,7 +1408,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     div#mainBody {
         #header_bar_section {
            .widget#main_menu a {
-                font-size:8px !important;
+                font-size:10px;
             }
         }
     }
@@ -1515,57 +1515,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             margin-top:2em;
             .recent_posts {
 	        .recent_post_entry {
-		    vertical-align:top;
 		    display:block;
 		    margin-bottom:3em;
-
-		    .post_snippet {
-		        margin-top:0.5em;
-		        img {
-			    display:none;
-		        }
-			iframe {
-			   display:none;
-			}
-		     }
-		     .post_header {
-			.margin-bottom:0.5em;
-
-			.post_image {
-			    float:left;
-			    width:30%;
-			    margin:0 1em 1em 0;
-			}
-			.post_date {
-			    color:<%= secondary_text_color %>;
-			    font-style:italic;
-			    display:inline-block;
-			}
-			.comments_link {
-			    float:right;
-			    display:inline-block;
-			}
-
-			.post_title {
-			    clear:both;
-			    font-size: 1.5em;
-			    display:block;
-			    text-align:center;
-			    border-bottom:solid 3px <%= graphic_element_color %>;
-			    margin-bottom:0.3em;
-			}
-			.post_title:hover {
-			    border-bottom:solid 3px <%= link_hover_color %>;
-			}
-		    }
-		    .post_more {
-			padding-right:2em;
-			margin-left:1em;
-		    }
-		    .post_more:before {
-			content:"More...";
-			padding-left:2em;
-		    }
 		}
 	    }
 	    .recent_posts:after {
@@ -1582,9 +1533,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
     #mainBody #content_section #left_bar_section  {
-        width:0px;
+        display:none;
      }
 }]]>
           </style>
@@ -1688,7 +1639,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
     div#mainBody  #top_bar_section {
          .share_bar {
               > div {
@@ -1801,7 +1752,13 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                   padding:0px 200px 0px 220px;
             }
      }
-}]]>
+}
+@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
+    div#mainBody #content_section #center_bar {
+        padding:0px;
+    }
+}
+]]>
       </style>
       <params>
       </params>
@@ -1859,57 +1816,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                 margin-top:2em;
 		.recent_posts {
 		    .recent_post_entry {
-			vertical-align:top;
 			display:block;
 			margin-bottom:3em;
-
-			.post_snippet {
-			    margin-top:0.5em;
-			    img {
-				display:none;
-			    }
-			    iframe {
-			       display:none;
-			    }
-			}
-			.post_header {
-			    .margin-bottom:0.5em;
-
-			    .post_image {
-				float:left;
-				width:30%;
-				margin:0 1em 1em 0;
-			    }
-			    .post_date {
-				color:<%= secondary_text_color %>;
-				font-style:italic;
-				display:inline-block;
-			    }
-			    .comments_link {
-				float:right;
-				display:inline-block;
-			    }
-
-			    .post_title {
-				clear:both;
-				font-size: 1.5em;
-				display:block;
-				text-align:center;
-				border-bottom:solid 3px <%= graphic_element_color %>;
-				margin-bottom:0.3em;
-			    }
-			    .post_title:hover {
-				border-bottom:solid 3px <%= link_hover_color %>;
-			    }
-			}
-			.post_more {
-			    padding-right:2em;
-			    margin-left:1em;
-			}
-			.post_more:before {
-			    content:"More...";
-			    padding-left:2em;
-			}
 		    }
 		}
 		.recent_posts:after {
@@ -1956,7 +1864,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
     #mainBody #content_section #left_bar_section  {
         width:20px;
         .widget#social_networks_header {
@@ -2170,12 +2078,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     }
 }
 
-@media all and (max-width: 767px) {
-      div#mainBody #content_section #center_bar #top_bar_section {
-           left:2em;
-           right:60px;
-      }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2197,7 +2100,13 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
                   padding:0px 200px 0px 220px;
             }
      }
-}]]>
+}
+@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
+    div#mainBody #content_section #center_bar {
+        padding:0;
+    }
+}
+]]>
       </style>
       <params>
       </params>
@@ -2254,12 +2163,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     }
 }
 
-@media all and (max-width: 767px) {
-      div#mainBody #content_section #center_bar #top_bar_section {
-           left:2em;
-           right:60px;
-      }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2284,7 +2188,13 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             padding:0px 200px 0px 220px;
         }
     }
-}]]>
+}
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
+    div#mainBody #content_section #center_bar {
+        padding:0;
+    }
+}
+]]>
       </style>
       <params>
       </params>
@@ -2310,7 +2220,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 
-@media all and (max-width: 640px)  {
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
     div#mainBody  #top_bar_section {
          .share_bar {
               > div {
@@ -2364,11 +2274,14 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 
              img {
                  float:left;
-                 margin:1em 2em 4em 0;
+                 margin:1em 2em 4em 0.5em;
                  max-width:25%;
                  height:auto;
                  padding:5px;
                  background: <%= link_color %>;
+             }
+             .book_description {
+                padding:0 1em 0 1em;
              }
          }
         .series_listing:hover, .book_listing:hover {
@@ -2483,7 +2396,7 @@ div#mainBody {
     }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
     div#mainBody  #bottom_bar_section {
          .share_bar {
               > div {
@@ -2632,23 +2545,7 @@ div#mainBody {
        }
     }
 }
-.comment_form {
-     margin-top:1em;
-     label {
-         width:10%;
-     }
-     #comment_form_title {
-            width:100%;
-            label {
-                width:10%;
-                display:inline-block;
-            }
-            input {
-                display:inline-block;
-                width:85%;
-            }
-        }
-}]]>
+]]>
       </style>
       <params>
       </params>
@@ -2687,7 +2584,7 @@ div#mainBody {
             #center_bar {
                   padding:0px 20px 0em 200px;
                   .content_background_container {
-                      padding:1em;
+                      padding:0em;
                       margin-top:0em;
                       box-sizing:border-box;
                       -moz-box-sizing:border-box;
@@ -2708,15 +2605,13 @@ div#mainBody {
 {
     min-height:40px;
 }
-@media all and (max-width: 640px)  {
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
     div#mainBody {
-        width:100%;
         #left_bar_section {
             display:none;
         }
-        #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 20px 0px 0px !important;
+        #content_section #center_bar {
+            padding:0px;
         }
     }
 }]]>
@@ -2734,64 +2629,16 @@ div#mainBody {
             text-align:justify;
             .recent_post_entry {
                 vertical-align:top;
-                display:inline-block;
                 width:32%;
                 margin-bottom:3em;
-
-                .post_snippet {
-                    margin-top:0.5em;
-                    img {
-                        display:none;
-                    }
-                    iframe {
-                       display:none;
-                    }
-                }
-                .post_header {
-                    .margin-bottom:0.5em;
-
-                    .post_image {
-                        float:left;
-                        width:30%;
-                        margin:0 1em 1em 0;
-                    }
-                    .post_date {
-                        color:<%= secondary_text_color %>;
-                        font-style:italic;
-                        display:inline-block;
-                    }
-                    .comments_link {
-                        float:right;
-                        display:inline-block;
-                    }
-
-                    .post_title {
-                        clear:both;
-                        font-size: 1.5em;
-                        display:block;
-                        text-align:center;
-                        border-bottom:solid 3px <%= graphic_element_color %>;
-                        margin-bottom:0.3em;
-                    }
-                    .post_title:hover {
-                        border-bottom:solid 3px <%= link_hover_color %>;
-                    }
-                }
-                .post_more {
-                    padding-right:2em;
-                    margin-left:1em;
-                }
-                .post_more:before {
-                    content:"More...";
-                    padding-left:2em;
-                }
             }
         }
-        .recent_posts:after {
-            width:100%;
-            content:" ";
-            display:inline-block;
-        }
+    }
+
+}
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:landscape)  {
+    #mainBody #bottom_bar_section .widget#recent_posts .recent_posts .recent_post_entry {
+        width:49%;
     }
 }
 
@@ -2839,9 +2686,9 @@ div#mainBody {
     }
 }
 
-@media all and (max-width: 640px)  {
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
     #mainBody #content_section #left_bar_section  {
-        width:0px;
+        display:none;
      }
 }]]>
           </style>
@@ -2939,12 +2786,13 @@ div#mainBody {
     }
 }
 
-@media all and (max-width: 767px) {
-      div#mainBody #content_section #center_bar #top_bar_section {
-           left:2em;
-           right:60px;
-      }
-}]]>
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
+    div#mainBody #top_bar_section .widget#front_page_bio {
+        top:0;
+        right:0;
+    }
+}
+]]>
           </style>
           <params>
           </params>
@@ -2991,7 +2839,13 @@ div#mainBody {
             padding:1em;
         }
     }
-}]]>
+}
+@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
+    .person_listing .person_portrait {
+        right:0;
+    }
+}
+]]>
       </style>
       <params>
       </params>

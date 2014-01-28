@@ -1,10 +1,19 @@
 require 'uri'
 module Roxiware
   module Helpers
+
+      def search_field_helper(id, value, options={})
+          content_tag(:div, :id=>id.to_s+"search_field", :class=>"search_field") do
+	      text_field_tag(id, value, options) +
+              button_tag(:id=>id, :type=>"button", :class=>"search_button", :tabindex=>-1) do
+	          content_tag(:span, "", :class=>"icon-search")
+	      end
+ 	  end
+      end
+
       def date_field_tag(name, value = nil, options = {})
         text_field_tag(name, value, options.stringify_keys.update("type" => "date"))
       end
-
 
       def image_upload_tag(field_group, param, options = {})
           tag(:img, :src=>options[:value]) +

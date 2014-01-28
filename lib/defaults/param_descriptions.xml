@@ -761,6 +761,13 @@
     <permissions>super</permissions>
     <meta/>
   </param_description>
+  <param_description guid="915A729E-D8D9-423B-ACCC-E910558B20F3">
+    <name>Google Analytics ID</name>
+    <description>ID for Google Analytics.</description>
+    <field_type>string</field_type>
+    <permissions>super</permissions>
+    <meta/>
+  </param_description>
   <param_description guid="F751356B-CB02-4891-9B56-BC9B163D3D00">
     <name>Amazon Associate ID</name>
     <description>Associate ID used for amazon revenue.</description>

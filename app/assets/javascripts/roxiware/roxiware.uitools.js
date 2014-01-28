@@ -899,6 +899,18 @@
 		if ($(this).hasClass("watermark")) {
 		   $(this).val('').removeClass("watermark");
 		}
+	      }).change(function() {
+		      if(!$(this).is(":focus")) {
+			  if($(this).val().length > 0) {
+			      if($(this).hasClass("watermark")) {
+				  $(this).removeClass("watermark");
+			      }
+			  }
+			  else {
+			      console.log("adding watermark");
+			      $(this).addClass("watermark").val($(this).attr("watermark"));
+			  }
+                      }
 	      });
 	});
 
@@ -917,10 +929,25 @@ function settingsForm(source, title, options) {
                    "<div class='settings_title'>"+title+"</div>" + 
                    "<div class='contentWrap'> </div></div>");
 
-    var top = "5%";
-    var fixed=false;
     var instantiateOverlay = function() {
-        overlay.find(".contentWrap > div").data("settings_form", conf);
+
+        var top = "5%";
+        var fixed=true;
+        var source = overlay.find(".contentWrap > div");
+	source.data("settings_form", conf);
+	if(source.is(".huge_form")) { overlay.addClass("huge_settings_form"); }
+	if(source.is(".large_form")) { overlay.addClass("large_settings_form"); }
+	if(source.is(".medium_form")) { overlay.addClass("medium_settings_form"); }
+	if(source.is(".small_form")) { overlay.addClass("small_settings_form"); }
+	if(source.is(".tiny_form")) { overlay.addClass("tiny_settings_form"); }
+
+	console.log(window.innerWidth);
+	console.log(overlay.attr("class"));
+	if(overlay.innerWidth() >= window.innerWidth) {
+	    top="0%";
+	    fixed=false;
+	    overlay.css("min-height","100%");
+        }
         overlay.overlay({
 		top: top,
 		left: "center",
@@ -945,45 +972,58 @@ function settingsForm(source, title, options) {
 			 $("body").css("overflow", "");
 	         },
 		 onLoad: function(event) {
-                  $("body").css("overflow", "hidden");
-		  overlay.find("button").button();
-		  overlay.find("input[alt_type=color]").colorpicker();
-		  overlay.find(".param-field-image").bind("click", function() {
-		      var param_field = $(this);
-		      var params = {};
-		      params = {url:encodeURI($(this).find("img").attr("src"))};
-		      if(param_field.find("input").attr("width") && param_field.find("input").attr("height")) {
-			  params.width = param_field.find("input").attr("width");
-			  params.height = param_field.find("input").attr("height");
-                      }
-		      settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
-				  success: function(image_url) {
-				      param_field.find("img").attr("src", image_url);
-				      param_field.find("input").val(image_url);
-				  }
-			  });
-		      });
-		  overlay.find("input[watermark]").watermark();
-                  overlay.find("div.settings_wysiwyg textarea").tinymce({
-		      script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
-		      theme: "modern",
-		      skin: "light",
-		      menubar: false,
-		      browser_spellcheck:true,
-		      relative_urls: false,
-		      remove_script_host:true,
-		      document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
-		      plugins: [
-		          "autolink lists link image charmap anchor",
-			  "visualblocks code",
-                          "media table contextmenu paste"
-		      ],
-		      height: overlay.find("div.settings_wysiwyg").height() - 30,
-		      statusbar:false,
-		      resize:false,
-		      schema: "html5",
-		      toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code",
-			      });
+		    $("body").css("overflow", "hidden");
+		    overlay.find("button").button();
+		    overlay.find("input[alt_type=color]").colorpicker();
+		    overlay.find(".param-field-image").bind("click", function() {
+			var param_field = $(this);
+			var params = {};
+			params = {url:encodeURI($(this).find("img").attr("src"))};
+			if(param_field.find("input").attr("width") && param_field.find("input").attr("height")) {
+			    params.width = param_field.find("input").attr("width");
+			    params.height = param_field.find("input").attr("height");
+			}
+			settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+				    success: function(image_url) {
+					param_field.find("img").attr("src", image_url);
+					param_field.find("input").val(image_url);
+				    }
+			    });
+			});
+		    overlay.find("input[watermark]").watermark();
+		    var toolbar = "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code";
+		    if(overlay.find("div.settings_wysiwyg").attr("toolbar") != undefined) {
+			toolbar = overlay.find("div.settings_wysiwyg").attr("toolbar");
+		    }
+		    overlay.find("div.settings_wysiwyg textarea").tinymce({
+			script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+			theme: "modern",
+			skin: "light",
+			menubar: false,
+			browser_spellcheck:true,
+			relative_urls: false,
+			remove_script_host:true,
+			document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
+			plugins: [
+			    "autolink lists link image charmap anchor",
+			    "visualblocks code",
+			    "media table contextmenu paste"
+			],
+			height: "100%",
+			init_instance_callback : function(ed) {
+			    var timer=setInterval(function() {
+				var panel_height = $(ed.getContainer()).find(".mce-toolbar").height();
+				if(panel_height > 0) {
+				    $(ed.getContentAreaContainer()).css("top", panel_height+"px");
+				    clearInterval(timer);
+				}
+			    }, 100);
+			},
+			statusbar:false,
+			resize:false,
+			schema: "html5",
+			toolbar: toolbar,
+				});
 		}
 	 });
 
@@ -997,16 +1037,6 @@ function settingsForm(source, title, options) {
    $("body").append(overlay);
    if(source instanceof jQuery) {
        overlay.find(".contentWrap").append(source.css("display","block"));
-       if(source.is(".huge_form") || (window.innerWidth <= 600)) {
-           overlay.css("width", "100%");
-              top = "0%";
-              fixed = true;
-       }
-       if(source.is(".huge_form") || (window.innerHeight <= 600)) {
-           overlay.css("height", "100%");
-              top = "0%";
-              fixed = true;
-       }
        instantiateOverlay();
    }
    else {
@@ -1015,13 +1045,8 @@ function settingsForm(source, title, options) {
 	      $.error(xhr.statusText);
 	      return;
 	  }
-	  if(overlay.find(".huge_form").is(".huge_form") || (window.innerWidth <= 600)) {
-              top = "0%";
-              fixed = true;
-	      overlay.addClass("huge_settings_form");
-	  }
-	  instantiateOverlay();
-	   });
+          instantiateOverlay();
+	});
    }
 }
 

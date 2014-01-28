@@ -41,46 +41,31 @@ div#colors_pane > div {
     margin-right:2em;
     vertical-align:top;
 }
+
 #param_header_background_image {
     position:absolute;
-    bottom:4em;
-    left:4em;
-    width:512px;
-    height:55px;
+    top:2em;
+    left:2em;
+    width:256px;
+    height:27px;
     margin-left:auto;
     margin-right:auto;
 }
+
+#param_body_background_image {
+    position:absolute;
+    bottom:2em;
+    width:256px;
+    height:300px;
+    left:2em;
+}
+
 #param_background_image {
     position:absolute;
     top:2em;
     width:480px;
     height:300px;
-    left:4em;
-}
-#param_body_background_image {
-    position:absolute;
-    top:2em;
-    width:240px;
-    height:300px;
-    right:4em;
-}
-
-#param_body_background_color {
-    position:absolute;
-    bottom:10.5em;
-    right:4em;    
-}
-
-#param_background_color {
-    position:absolute;
-    bottom:7em;
-    right:4em;    
-}
-
-#param_header_background_color {
-    position:absolute;
-    bottom:3.5em;
-    right:4em;    
+    right:2em;
 }
 
 </style>
@@ -96,12 +81,14 @@ div#colors_pane > div {
            content_tag(:div, :id=>"background_pane") do
 	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>1024, :height=>110, :id=>"header_background_image") + " " +
 	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
-	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1024, :height=>1200) +
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1024, :height=>1200)
+           end +
+           content_tag(:div, :id=>"colors_pane") do
+               content_tag(:div, :id=>"background_fields") do
 	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
 	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
 	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
-           end +
-           content_tag(:div, :id=>"colors_pane") do
+               end +
                content_tag(:div, :id=>"title_fields") do
 	           param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font") +
 	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
@@ -112,7 +99,7 @@ div#colors_pane > div {
 	           param_field(customize_form, custom_params.delete("menu_background_color"), :id=>"menu_background_color") +
 	           param_field(customize_form, custom_params.delete("menu_background_hover_color"), :id=>"menu_background_hover_color")
                end +
-               content_tag(:div, :id=>"title_fields") do
+               content_tag(:div, :id=>"color_fields") do
 	           param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
 	           param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
 	           param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
@@ -1033,9 +1020,9 @@ div#mainBody .post_listing {
 }
 
 .comment_form {
-    position:relative;
-    width:100%;
+    clear:both;
     margin:2em 0 3em 0;
+    padding:1em;
     -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     -khtml-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -1044,7 +1031,11 @@ div#mainBody .post_listing {
     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     background:<%= background_highlight_color %>;
     color:<%= post_text_color %>;
+
+
     #comment_form_core {
+        text-align:justify;
+        width:100%;
         img#comment_author_image {
 	    -o-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 	    -icab-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
@@ -1053,7 +1044,6 @@ div#mainBody .post_listing {
 	    -webkit-box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 	     box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
         }
-
     }
     .comment_recaptcha {
          .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
@@ -1606,10 +1596,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         margin:0em auto 0em auto;
         text-align:right;
         width:100%;
+        max-width:1024px;
 
 	/* Main Menu layout */
 	.widget#main_menu {
-            margin-left:2em;
+            margin-left:1em;
 	    display:inline-block;
 	    text-align:left;
 	    float:left;
@@ -1702,7 +1693,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 	.widget#login_bar {
 	    display:inline-block;
 	    width:auto;
-            margin-right:2em;
+            margin-right:1em;
 
 	    border-left: groove 3px <%= menu_background_color %>;
             padding: 0.5em;
@@ -1838,7 +1829,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 		    font-family:<%= title_font %>;
 		    left:0.0em;
 		    top:0em;
-		    font-size:5em;
+		    font-size:3em;
 		    font-weight:300;
 		    width:auto;
 		}

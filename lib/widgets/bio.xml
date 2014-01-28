@@ -23,7 +23,7 @@
       <![CDATA[<div class="biography">
            <a href="<%= biography_link %>"><div class="bio_title"></div>
            <div class="bio_name"><%= person_bio.full_name %></div>
-           <img class="bio_portrait" src='<%= person_bio.send(portrait_size + "_url") %>'/></a>
+           <img class="bio_portrait" src='<%= person_bio.send(portrait_size) %>'/></a>
       </div>]]>
     </render_view>
     <style>

@@ -44,7 +44,7 @@ class Roxiware::EventsController < ApplicationController
   def new
     @robots="noindex,nofollow"
     authorize! :create, Roxiware::Event
-    @event = Roxiware::Event.new({:start_date=>Time.now.utc.strftime("%F"), :start_time=>"8:00 AM", :description=>"Description", :location=>"", :location_url=>"", :duration_units=>"hours", :duration=>"1"}, :as=>@role)
+    @event = Roxiware::Event.new({:start_date=>Time.now.utc.strftime("%F"), :start_time=>"8:00 AM", :description=>"", :location=>"", :location_url=>"", :duration_units=>"hours", :duration=>"1"}, :as=>@role)
     respond_to do |format|
       format.html { render :partial =>"roxiware/events/editform" }
       format.json { render :json => @event.ajax_attrs(@role) }

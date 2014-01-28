@@ -1,9 +1,9 @@
-<% if ((!::AppConfig.google_analytics_id.nil?) && (!::AppConfig.google_analytics_domain.nil?)) %>
+<% if @google_analytics_id.present? %>
 <script type="text/javascript">
 
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', '<%= ::AppConfig.google_analytics_id %>']);
-  _gaq.push(['_setDomainName', '<%= ::AppConfig.google_analytics_domain%>']);
+  _gaq.push(['_setAccount', '<%= @google_analytics_id %>']);
+  _gaq.push(['_setDomainName', '<%= @hostname %>']);
   _gaq.push(['_setAllowLinker', true]);
   _gaq.push(['_trackPageview']);
 

@@ -53,48 +53,33 @@ div#colors_pane > div {
     margin-right:2em;
     vertical-align:top;
 }
+
+
 #param_header_background_image {
     position:absolute;
-    bottom:4em;
-    left:4em;
-    width:475px;
-    height:95px;
+    top:2em;
+    left:2em;
+    width:260px;
+    height:38px;
     margin-left:auto;
     margin-right:auto;
 }
+
+#param_body_background_image {
+    position:absolute;
+    bottom:2em;
+    width:260px;
+    height:300px;
+    left:2em;
+}
+
 #param_background_image {
     position:absolute;
     top:2em;
     width:480px;
     height:300px;
-    left:4em;
+    right:2em;
 }
-#param_body_background_image {
-    position:absolute;
-    top:2em;
-    width:240px;
-    height:300px;
-    right:4em;
-}
-
-#param_body_background_color {
-    position:absolute;
-    bottom:10.5em;
-    right:4em;    
-}
-
-#param_background_color {
-    position:absolute;
-    bottom:7em;
-    right:4em;    
-}
-
-#param_header_background_color {
-    position:absolute;
-    bottom:3.5em;
-    right:4em;    
-}
-
 </style>
 <div class="template_customize_form large_form" id="template_customize_form">
    <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
@@ -108,10 +93,7 @@ div#colors_pane > div {
            content_tag(:div, :id=>"background_pane") do
 	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>170, :id=>"header_background_image") + " " +
 	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
-	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) +
-	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
-	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
-	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200)
            end +
            content_tag(:div, :id=>"colors_pane") do
                content_tag(:div, :id=>"title_fields") do
@@ -481,7 +463,7 @@ div.widget_background, div.content_background
     }
     .post_snippet {
         margin-top:0.5em;
-        img { max-width:33%; margin:0.5em;}
+        img { max-width:33%; height:auto; margin:0.5em;}
         iframe { display:none; }
     }
 }
@@ -539,11 +521,15 @@ div#mainBody .post {
     }
     .content {
         margin-top:1em;
-        margin-left:0em;
+        margin-left:0.5em;
         overflow:hidden;
         width:100%;
-        img {
+        img, iframe {
             margin:1em;
+            max-width:100%;
+        }
+        img {
+            height:auto;
         }
     }
 
@@ -565,6 +551,7 @@ div#mainBody .post {
 }
 .comments_link {
     display:inline-block;
+    margin-left:1em;
     .comments_count, .pending_comments_count {
         margin-right:0.1em;
         padding-left:0.1em;
@@ -654,6 +641,12 @@ div#mainBody .post {
 		margin-top:1em;    
 		margin-bottom:2em;
 		margin-left:12%;
+                img, iframe {
+                    max-width:100%;
+                }
+                img {
+                    height:auto;
+                }
 	    }
 	    .comment_footer {
 		clear:both;
@@ -716,12 +709,11 @@ div#mainBody .post {
 }
 
 .comment_form {
+    clear:both;
     position:relative;
-    width:100%;
     margin:2em 0 3em 0;
     #comment_form_core {
         text-align:justify;
-        width:100%;
     }
     .comment_recaptcha {
          .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
@@ -976,7 +968,23 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             padding:0px 10px 0px 50px !important;
         }
     }
-}]]>
+}
+@media all and (max-width: 480px)  {
+    div#mainBody {
+        width:100%;
+        .share_bar > div {
+            padding-left:0em;
+        }
+        #right_bar_section {
+            display:none;
+        }
+        #content_section #center_bar {
+            margin:0px 0px 0px 0px;
+            padding:0px 0px 0px 0px !important;
+        }
+    }
+}
+]]>
   </style>
   <params>
     <param class="local" name="asset_theme" description="67BFE233-F4D1-400B-855F-393BF53B05A4">clear</param>
@@ -1166,6 +1174,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <section name="footer_bar">
           <style>
             <![CDATA[#copyright.widget {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
     text-align:right;
     padding:1em;
     div {
@@ -1237,7 +1247,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         float:right;
         .widget_content {
            text-align:right;
-       }
+	   #session-greeting {
+               margin-right:0.5em;
+	   }
+        }
     }
 
     .widget#book_bar {
@@ -1457,7 +1470,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
         <section name="left_bar">
           <style>
-            <![CDATA[#mainBody #content_section {
+            <![CDATA[
+#mainBody #content_section {
         #left_bar_section {
             position:absolute;
             left: 2em;
@@ -1509,7 +1523,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             display:none;
         }
     }
-}]]>
+}
+@media all and (max-width: 480px)  {
+    #mainBody #content_section #left_bar_section  { display:none; }
+}
+]]>
           </style>
           <params>
           </params>
@@ -1827,7 +1845,11 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             display:none;
         }
     }
-}]]>
+}
+@media all and (max-width: 480px)  {
+    #mainBody #content_section #left_bar_section  { display:none; }
+}
+]]>
           </style>
           <params>
           </params>
@@ -2309,6 +2331,7 @@ div#mainBody .post .post_tags {
         }
 }
 
+
 @media all and (max-width: 768px)  {
     #mainBody #content_section #left_bar_section  {
         width:30px;
@@ -2329,7 +2352,11 @@ div#mainBody .post .post_tags {
             }
         }
     }
-}]]>
+}
+@media all and (max-width: 480px)  {
+    #mainBody #content_section #left_bar_section  { display:none; }
+}
+]]>
           </style>
           <params>
           </params>
@@ -2412,7 +2439,9 @@ div#mainBody .post .post_tags {
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[
-        
+.person_listing {
+    padding-left:0.5em;
+}
       ]]>
       </style>
       <params>

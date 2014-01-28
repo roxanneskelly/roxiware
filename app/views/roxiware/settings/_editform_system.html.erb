@@ -1,7 +1,7 @@
 <div class="medium_form" id="system_settings_edit">
    <% site_params = @settings.values_at("title", "subtitle", "webmaster_email","site_copyright_first_year","site_copyright","hosting_package").compact %>
    <% advertising_params = @settings.values_at("google_ad_client").compact %>
-   <% seo_params = @settings.values_at("meta_description", "meta_keywords", "google_site_verification_key").compact %>
+   <% seo_params = @settings.values_at("meta_description", "meta_keywords", "google_site_verification_key", "google_analytics_id").compact %>
    <%= form_tag(setting_path("system"), :method=>"put") do %>
        <%= fields_for :system do |system_fields| %>
 	  <ul class="tabs">

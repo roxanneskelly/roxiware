@@ -2,7 +2,7 @@
 <div class="wizard_instructions">
 Let's see if we can find your biography information online.<br/><br/>
 Paste or type your name, a link to your authors page on goodreads, or the link, ISBN, or ISBN13 of one of your books, and we'll search for your biography.</div>
-<div id="import_search_field"><%= text_field_tag(:import_search, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN", :class=>"search_field") %><%= button_tag :id=>"import_search", :type=>"button", :class=>"search_button" do %><span class="icon-search"></span>&nbsp;Search<% end %></div>
+<%= search_field_helper(:import, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN") %>
 <div id="import_search_status"></div>
 <div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
 
@@ -39,6 +39,7 @@ Paste or type your name, a link to your authors page on goodreads, or the link, 
     });
 
     $("button#import_search").click(function() {
+         console.log("CLICK");
          var search_val = $("input#import_search").val();
          var endpoint = "<%= setup_import_path %>.json?type=author&search="+escape(search_val);
          $("#import_search_status").html("Searching...");

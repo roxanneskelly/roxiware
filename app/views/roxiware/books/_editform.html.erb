@@ -9,7 +9,7 @@
      <div id="import_pane">
 	<div class="wizard_step">Import your book.</div>
 	<div class="wizard_instructions">Paste or type your book's title, ISBN, or ISBN13 into the search box, or paste in the Goodreads or Amazon link, and we'll find your book.</div>
-        <div id="import_search_field" class="search_field"><%= text_field_tag(:import_search, "", {:watermark=>"ISBN, Book Title, Goodreads Link, Amazon Link", :class=>"search_field"}) %></div>
+	<%= search_field_helper(:import, "", :watermark=>"ISBN, Book Title, Goodreads Link, Amazon Link", :class=>"search_field") %>
 	<div id="import_search_status"></div>
 	<div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
      </div>
@@ -111,11 +111,13 @@
         }
       });
 
-     $('#book_edit_form input#import_search').bind("keypress", function(event) {
-         if(event.keyCode != 13) {
-             return;
+     $("#book_edit_form input#import").bind("keypress", function(event) {
+         if(event.keyCode == 13) {
+             $("#book_edit_form button#import").click();
          }
-         var search_val = $("input#import_search").val();
+     });
+     $("#book_edit_form button#import").click(function(event) {
+         var search_val = $("#book_edit_form input#import").val();
          var endpoint = "<%= import_books_path %>.json?search="+escape(search_val);
          $("#import_search_status").html("Searching...");
          $.getJSON(endpoint,
@@ -141,7 +143,6 @@
                                var endpoint = "<%= new_book_path %>.json?goodreads_id="+goodreads_id;
                                $.getJSON(endpoint,
                                   function(data) {
-                                     console.log(data);
                                      var publish_date = new Date(data.publish_date);
                                      $("#book_description_form input#book_publish_date").val(publish_date.toLocaleDateString());
                                      $("#book_description_form input#book_isbn").val(data.isbn);
@@ -158,7 +159,6 @@
        
                                      $(jstree).jstree_param().reload(data["bookstores[]"]);
                                      $("ul.tabs").data("tabs").next();
-                                     console.log("done setting up");
                                 });
                            });
                        }

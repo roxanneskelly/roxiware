@@ -205,8 +205,8 @@ module Roxiware
 	   @post = Roxiware::Blog::Post.new({:person_id=>current_user.person.id, 
 	                                     :blog_class=>(params[:blog_class] || "blog"),
 					     :post_date=>DateTime.now.utc, 
-					     :post_content=>"Content",
-					     :post_title=>"Title",
+					     :post_content=>"",
+					     :post_title=>"",
 					     :post_status=>"publish"}, :as=>"")
 
 	   # We need to pass the post category in separately as on new post creation, the

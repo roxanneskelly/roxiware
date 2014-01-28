@@ -9,7 +9,7 @@
 	      <div id="import_pane">
 		  <div class="wizard_step">Import your series.</div>
 		  <div class="wizard_instructions">Paste or type the title, ISBN, or ISBN13 of a book in the series, a Goodreads or Amazon link to the book, the series title, the author name, or a Goodreads link to the series.</div>
-		  <div id="import_search_field" class="search_field"><%= text_field_tag(:import_search, "", {:watermark=>"Member ISBN, Member Book Title, Goodreads Book or Series Link, Amazon Link", :class=>"search_field"}) %></div>
+	          <%= search_field_helper(:import, "", :watermark=>"ISBN, Book Title, Goodreads Link, Amazon Link", :class=>"search_field") %>
 		  <div id="import_search_status"></div>
 		  <div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
 	      </div>
@@ -44,11 +44,14 @@
 	      }
 	 });
 
-	$("#series_edit_form input#import_search").bind("keypress", function(event) {
-             if(event.keyCode != 13) {
-                 return;
-             }
-	     var search_val = $("input#import_search").val();
+     $("#series_edit_form input#import").bind("keypress", function(event) {
+         if(event.keyCode == 13) {
+             $("#series_edit_form button#import").click();
+         }
+     });
+
+	$("#series_edit_form button#import").click(function(event) {
+	     var search_val = $("#series_edit_form input#import").val();
 	     var endpoint = "<%= import_book_series_index_path %>.json?search="+escape(search_val);
 	     $("#import_search_status").html("Searching...");
 	     $.getJSON(endpoint,

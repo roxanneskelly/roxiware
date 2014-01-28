@@ -577,10 +577,6 @@ $.imgAreaSelect = function (img, options) {
 
         scaleX = options.imageWidth / imgWidth || 1;
         scaleY = options.imageHeight / imgHeight || 1;
-	console.log("SCALEX : " + scaleX);
-	console.log("SCALEY : " + scaleY);
-	console.log("imgWidth : " + imgWidth);
-	console.log("imgHeight : " + imgHeight);
 
         if (newOptions.x1 != null) {
             setSelection(newOptions.x1, newOptions.y1, newOptions.x2,
@@ -674,8 +670,10 @@ $.imgAreaSelect = function (img, options) {
     while ($p.length) {
         zIndex = max(zIndex,
             !isNaN($p.css('z-index')) ? $p.css('z-index') : zIndex);
-        if ($p.css('position') == 'fixed')
+	/* um why we do this? 
+        if ($p.css('position') == 'fixed') 
             position = 'fixed';
+	*/
 
         $p = $p.parent(':not(body)');
     }

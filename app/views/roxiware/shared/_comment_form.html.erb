@@ -61,6 +61,7 @@
 end 
 %>
 <script>
+
     var initialized = false;
     var comment_form=$(".comment_form");
     var auth_controls_shown = false;
@@ -206,21 +207,21 @@ end
            $("a#twitter_login").data("oauth_state", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'twitter', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
            $("a#facebook_login, a#twitter_login").click(function() {
                $.oAuthLogIn($(this).attr("provider"), $(this).data("oauth_state"));
-	});
-       $("a#social_network_logout").click(function() {
-           $.oAuthResetLogin();
-       });
+	   });
+           $("a#social_network_logout").click(function() {
+               $.oAuthResetLogin();
+           });
        <% end %>
 
        $(comment_form).find("input[watermark]").watermark();
        resetCommentForm();
 
-        $("body").bind("oauth_login", function(e, auth_info) {
+       $("body").bind("oauth_login", function(e, auth_info) {
             setLoginState(auth_info);
-        });
+       });
 
 <% if !user_signed_in? %>
-      $.oAuthCheckLoggedIn();
+       $.oAuthCheckLoggedIn();
 <% end %>
        comment_form.find("button.post_comment_button").unbind("click");
        comment_form.find("button.post_comment_button").click(function() {

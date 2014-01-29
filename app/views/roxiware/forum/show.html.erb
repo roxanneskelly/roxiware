@@ -194,9 +194,9 @@ $(function() {
 
 </script>
 
-
 <% if can? :create_topic, @board %>
     <%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>content_tag(:div, :id=>"comment_form_title") {label_tag(:title) + " " + text_field_tag(:title, "", :watermark=>"Title")}} %>
+
 <script>
     $(function() {
 	$("#forum_controls").append("<a id='new_topic' class='icon-forum-controls' title='New Topic'></a>");
@@ -212,8 +212,11 @@ $(function() {
     });
 </script>
 <% end %>
+<% if false %>
+<% # problems with topic manage control performance, so disable %>
 <% if can? :edit, Roxiware::Forum::Topic %>
 <%= render :partial=>"roxiware/forum/topic_manage_control" %>
+<% end %>
 <% end %>
 <% if can? :edit, @board %>
 <%= render :partial=>"roxiware/forum/board_manage_control" %>

@@ -160,9 +160,15 @@ body.application_body
 /* Sizing for various devices */
 div#mainBody {
      font-size:12px;
-     max-width:950px;
-     width:100%;
+     width:950px;
 }
+
+@media all and (min-device-height: 950px) and (orientation:portrait), all and (min-device-width: 950px) and (orientation:landscape) {
+    div#mainBody {
+        width:100%;
+    }
+}
+
 
 /* Various mobile portrait guesses */
 @media all and (min-device-height: 320px) and (orientation:portrait), all and (min-device-width: 320px) and (orientation:landscape) {

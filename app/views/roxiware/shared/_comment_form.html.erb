@@ -14,7 +14,7 @@
        (raw(additional_fields) if additional_fields.present?) +
        content_tag(:div,  :id=>"comment_form_core") do 
            content_tag(:div, :id=>"comment_form_core_left") do
-               tag(:img, :id=>"comment_author_image", :class=>"comment_author_image", :src=>(user_signed_in? ? current_user.person.thumbnail : default_image_path(:person, :thumbnail))) +
+               content_tag(:div, tag(:img, :id=>"comment_author_image", :class=>"comment_author_image", :src=>(user_signed_in? ? current_user.person.thumbnail : default_image_path(:person, :thumbnail))), :id=>"comment_author_image_container") +
                if !user_signed_in?
                    content_tag(:div, "", :id=>"comment_author_name") +
 		   content_tag(:div, :id=>"social_network_login", :style=>"display:none") do

@@ -363,16 +363,22 @@ class Roxiware::ForumController < ApplicationController
 
       respond_to do |format|
           format.html do
-	     if( !is_robot? && @reader.present? && new_comments) 
-		 @topic.views += 1
-		 @topic.save!
-	     end
+	      begin
+	          if( !is_robot? && @reader.present? && new_comments) 
+		      @topic.views += 1
+		      @topic.save!
+	          end
+              rescue Exception=>e
+              end
           end
 	  format.json do
-	     if( !is_robot? && @reader.blank? && new_comments) 
-		 @topic.views += 1
-		 @topic.save!
-	     end
+	      begin
+	          if( !is_robot? && @reader.present? && new_comments) 
+		      @topic.views += 1
+		      @topic.save!
+	          end
+              rescue Exception=>e
+              end
 	     topic_info = @topic.ajax_attrs(@role)
 	     topic_info[:unread] = comments.select{|comment| comment.comment_date > @topic_last_read}.collect{|comment| comment.id}
 	     render :json=>topic_info

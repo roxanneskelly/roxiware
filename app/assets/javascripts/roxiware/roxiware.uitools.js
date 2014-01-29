@@ -1195,10 +1195,15 @@ var _get_auth_info = function(callback) {
 	return callback(null);
     }
 
+    callback(auth_info);
+    /*
+    Should do a verification that facebook is currently logged in, but FBapi 
+    changed and verifies the domain via the request url domain, which
+    won't work as we've authenticated against scribaroo */
+    /*
     if (auth_info.auth_kind == "facebook") {
         FB.getLoginStatus(function(response) {
 	    if (response.status != 'connected') {
-	        // if facebook has disconnect, reset login so we throw up the UI
                 localStorage.removeItem("roxiwareAuthInfo");
 	        callback(null);
 	    }
@@ -1207,8 +1212,8 @@ var _get_auth_info = function(callback) {
 	callback(null);
     }
     else {
-        callback(auth_info);
     }
+    */
 }
 
 

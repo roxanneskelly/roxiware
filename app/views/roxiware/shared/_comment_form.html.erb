@@ -65,11 +65,11 @@ end
     var comment_form=$(".comment_form");
     var auth_controls_shown = false;
     var showAuthControls = function() {
+        comment_form.find("#post_controls").css("display","block");
         if(auth_controls_shown) {
             return;
         }
         auth_controls_shown = true;
-        comment_form.find("#post_controls").css("display","block");
 <% if user_signed_in? %>
         comment_form.find("button.post_comment_button").button("enable");
 <% else %>

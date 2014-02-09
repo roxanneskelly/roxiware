@@ -1,10 +1,7 @@
 module Roxiware
   module JQueryPopupForm
     def report_error(object)
-      error_out = []
-      object.errors.each do |attribute, error|
-        error_out << [attribute.to_s().split('.')[-1], error.to_s()]
-      end
+      error_out = object.errors.collect{|attribute, error| [attribute.to_s().split('.')[-1], error.to_s()]}
       return {:error=>error_out}
     end
   end

@@ -1,0 +1,10 @@
+<section class="reset_password">
+<h2>Reset Password</h2>
+<div id="form_section">
+</div>
+</section>
+<script>
+$(function() {
+    settingsForm("<%= account_update_password_url(:only_path=>true, :reset_password_token=>resource.reset_password_token) %>", "Reset Password");
+});
+</script>

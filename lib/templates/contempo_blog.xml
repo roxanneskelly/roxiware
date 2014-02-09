@@ -1144,6 +1144,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="title_font">Tahoma,sans-serif</param>
           <param description="FEF4B0C8-C449-4A50-84FF-3E7EC96287C0" class="style" name="subtitle_font">Tahoma,sans-serif</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_highlight_color">rgba(226,120,16,1)</param>
+          <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="title_color">#777777</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="subtitle_color">rgba(227,160,95,1)</param>
         </param>
         <param description="620EE4B4-2615-4B03-ADCB-FCC7198455AC" class="scheme" name="name">Orange Creme</param>

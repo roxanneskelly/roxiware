@@ -907,7 +907,6 @@
 			      }
 			  }
 			  else {
-			      console.log("adding watermark");
 			      $(this).addClass("watermark").val($(this).attr("watermark"));
 			  }
                       }
@@ -941,8 +940,6 @@ function settingsForm(source, title, options) {
 	if(source.is(".small_form")) { overlay.addClass("small_settings_form"); }
 	if(source.is(".tiny_form")) { overlay.addClass("tiny_settings_form"); }
 
-	console.log(window.innerWidth);
-	console.log(overlay.attr("class"));
 	if(overlay.innerWidth() >= window.innerWidth) {
 	    top="0%";
 	    fixed=false;
@@ -964,12 +961,12 @@ function settingsForm(source, title, options) {
 		      },
 		onClose: function (event) {
 		    overlay.find("div.settings_wysiwyg textarea").tinymce().remove();
-		         $.roxiware.alert.popup = null;
-			 if(conf.onClose) {
-			     conf.onClose(overlay);
-			 }
-		         overlay.remove();
-			 $("body").css("overflow", "");
+		    $.roxiware.alert.popup = null;
+		    if(conf.onClose) {
+		         conf.onClose(overlay);
+		    }
+		    overlay.remove();
+		    $("body").css("overflow", "");
 	         },
 		 onLoad: function(event) {
 		    $("body").css("overflow", "hidden");
@@ -1127,6 +1124,7 @@ var forgot_password_template = '<div class="small_form" id="forgot_password_form
                               '<label for="user_email">Email</label>' +
                               '<input id="user_email" name="user[email]" size="255" type="email" watermark="my@email.com" /></div>' +
                                '<div><button disabled="disabled" id="forgot_password_button" name="commit" type="submit">Submit</button></div>' +
+                               "<div class='wizard_text'>Check your email.  We've sent you password reset instructions.</div><br/><br/>" + 
                                '</form></div>';
 
 
@@ -1326,8 +1324,19 @@ function get_login_form_template(options) {
 	do_login($.extend(data, options));
     });
     template.find("button#login_button").require_fields(template.find("#user_username, #user_password"));
+
+    if(localStorage.roxiwareLoginUsername) {
+        template.find("input#user_username").val(localStorage.roxiwareLoginUsername);
+        template.find("input#user_remember_me").attr("checked", true);
+    }
     template.submit(function(e) {
 	e.preventDefault();
+	if(template.find("input#user_remember_me:").attr("checked")) {
+	    localStorage.roxiwareLoginUsername = template.find("input#user_username").val();
+        }
+	else {
+	    localStorage.removeItem("roxiwareLoginUsername");
+	}
         $.ajax({
                 type:"POST",
 		url: "/account/auth/roxiware/callback",
@@ -1362,20 +1371,17 @@ function forgotPassword() {
     template.find("button").require_fields(template.find("input#user_email"));
     template.submit(function(e) {
 	e.preventDefault();
-        $.ajax({
-                type:"POST",
-		url: "/account/password",
-                processData: true,
-		    data: template.find("form").serializeArray(),
-                error: function(xhr, textStatus, errorThrown) {
-                     $.error(errorThrown);
-                },
-                complete: function() {
-                },
-                success: function(data) {
-                    window.location.reload();
-                }});
-	    return false;
+        $.ajaxSetParamsJSON("/account/reset_password.json", template.find("form").serializeArray(), 
+	    {method:"POST",
+		success: function() {
+		    $.notice("Password reset instructions have been sent to your email address",
+			     {
+				 onClose: function() {
+				     window.location.reload();
+				 }
+			     })
+		}
+	    })
         });
     settingsForm(template, "Forgot Password");
 }

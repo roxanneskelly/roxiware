@@ -1,54 +1,68 @@
-<% if ((current_user.role == "super") || (current_user.role == "admin")) %> 
-<div class="account_edit_form medium_form" id="account_edit_form">
-<% else %>
-<div class="account_edit_form small_form" id="account_edit_form">
-<% end %>
-<% if @user.id.blank?
-   endpoint = account_index_path
-   method = :post
+<%= if current_user.is_admin?
+    form_class="medium_form"
 else
-   endpoint = account_path + "/#{@user.id}"
-   method = :put
+    form_class="small_form"
+end 
+if @user.id.blank?
+    endpoint = account_index_path
+    method = :post
+else
+    endpoint = account_path + "/#{@user.id}"
+    method = :put
+end
+content_tag(:div, :class=>"account_edit_form #{form_class}", :id=>"account_edit_form") do
+    form_for(@user, :url=>endpoint) do |user| 
+	content_tag(:div) do
+	  content_tag(:div, :id=>"username_entry") do
+	      username_edit_enabled = current_user.is_admin? && @user.auth_services.find_by_provider('roxiware').blank? 
+	      user.label(:username, "Username") +
+	      user.text_field(:username, :watermark=>"username", :disabled=>!username_edit_enabled)
+	  end + " " +
+	  if (current_user.is_admin? && (@user != current_user))
+	      content_tag(:div, :id=>"role_entry") do
+		  role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} 
+		  role_options["Super"] = :super if current_user.role == "super"
+		  user.label(:role, "Role") +
+		  user.select(:role, options_for_select(role_options, @user.role), {:disabled=>"disabled"})
+              end 
+	  end + " " +
+	  content_tag(:div, :id=>"name_entry", :class=>"justify_inputs") do
+	      user.label(:name, "Name") + " " +
+	      user.text_field(:first_name, :altname=>:seo_index, :watermark=>"First") + " " +
+	      user.text_field(:middle_name, :altname=>:seo_index, :watermark=>"Middle") + " " +
+	      user.text_field(:last_name, :altname=>:seo_index, :watermark=>"Last")
+	  end + " " +
+	  content_tag(:div, :id=>"email_entry") do
+	      user.label(:email, "Email") +
+	      user.email_field(:email, :watermark=>"email")
+	  end + " " +
+	  if(@role != "self")
+	      content_tag(:div, :id=>"password_entry") do
+		  user.label(:password, "Password") +
+		  user.password_field(:password, :autocomplete=>"off", :watermark=>"*******")
+	      end + " " +
+	      content_tag(:div, :id=>"password_confirmation_entry") do
+		  user.label(:password_confirmation, "Confirm") +
+		  user.password_field(:password_confirmation, :watermark=>"*******")
+	      end
+	  end + " " +
+          if (current_user.present? && current_user.role == "super")
+              auth_services = Hash[@user.auth_services.collect{|auth_service| [auth_service.provider, auth_service.uid]}]
+              Roxiware::AuthService::ALLOWED_PROVIDERS.collect do |provider|
+                  content_tag(:div, :id=>"provider_#{provider}", :class=>"auth_provider") do
+                      content_tag(:div, :class=>"labeled-checkbox") do
+                          user.check_box("auth_services[#{provider}][present]", {:checked=>auth_services.keys.include?(provider.to_s)}) +
+                          content_tag(:span, "", :class=>"control-icon checkbox-icon") +
+                          label_tag(provider) 
+                      end +
+                      user.text_field("auth_services[#{provider}][uid]", :value=>auth_services[provider.to_s])
+                  end
+              end.join(" ").html_safe
+          end
+       end +
+       button_tag("Save", :id=>"save_account", :value=>"save", :type=>"submit", :class=>"save_button")
+    end
 end %>
-  <%= form_for(@user, :url=>endpoint) do |user| %>
-    <div>
-      <% if ((current_user.role == "super") || (current_user.role == "admin")) && (@user != current_user) %> 
-          <div id="role_entry"><%= user.label :role, "Role"%>
-          <% role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} %>
-          <% role_options["Super"] = :super if current_user.role == "super" %>
-          <%= user.select :role, options_for_select(role_options, @user.role), {:disabled=>"disabled"}%></div>
-      <% end %>
-          <div id="username_entry"><%= user.label :username, "Username" %>
-              <% username_edit_enabled = %w(super admin).include?(current_user.role) && @user.auth_services.find_by_provider('roxiware').blank? %>
-              <%= user.text_field :username, :watermark=>"username", :disabled=>!username_edit_enabled %>
-          </div>
-
-      <div id="name_entry" class="justify_inputs"><%= user.label :name, "Name"%>
-          <%= user.text_field :first_name, :altname=>:seo_index, :watermark=>"First" %>
-          <%= user.text_field :middle_name, :altname=>:seo_index, :watermark=>"Middle" %>
-          <%= user.text_field :last_name, :altname=>:seo_index, :watermark=>"Last" %>
-      </div>
-
-      <div id="email_entry">
-	<%= user.label :email, "Email"%>
-        <%= user.email_field :email, :watermark=>"email" %>
-      </div>
-
-      <% if(@role != "self") %>
-         <div id="password_entry">
-	     <%= user.label :password, "Password"%>
-	     <%= user.password_field :password, :autocomplete=>"off", :watermark=>"*******" %>
-	 </div>
-
-	 <div id="password_confirmation_entry">
-	     <%= user.label :password_confirmation, "Confirm"%>
-	     <%= user.password_field :password_confirmation, :watermark=>"*******"  %>
-	 </div>
-      <% end %>
-      </div>
-      <%= button_tag "Save", :id=>"save_account", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
-  <% end %>
-</div>
 <script>
 $(function() {
     $("input[watermark]").watermark();

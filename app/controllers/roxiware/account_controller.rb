@@ -1,6 +1,6 @@
 class Roxiware::AccountController < ApplicationController
-  before_filter :authenticate_user!, :except=>[:authenticate, :edit_password, :reset_password]
-  load_and_authorize_resource :except=>[:proxy_login, :edit, :edit_password, :update, :show, :new, :authenticate, :reset_password], :class=>"Roxiware::User"
+  before_filter :authenticate_user!, :except=>[:authenticate, :edit_password, :send_reset_password, :do_reset_password]
+  load_and_authorize_resource :except=>[:proxy_login, :edit, :edit_password, :update, :show, :new, :authenticate, :send_reset_password, :do_reset_password], :class=>"Roxiware::User"
 
   before_filter do
     @role = current_user.role if current_user.present?
@@ -148,7 +148,7 @@ class Roxiware::AccountController < ApplicationController
   end
 
   # POST - send password reset request
-  def reset_password
+  def send_reset_password
       errors = []
       find_params = Hash[params[:user].collect{|key, value| [key.to_sym, value]}].slice(*Devise.reset_password_keys)
       
@@ -204,6 +204,24 @@ class Roxiware::AccountController < ApplicationController
           end
       end
   end
+
+
+  # PUT 
+  def do_reset_password
+      errors = []
+      @user = Roxiware::User.reset_password_by_token(params[:user].slice(:password, :password_confirmation).merge({:reset_password_token=>params[:reset_password_token]}))
+      @role = "self"
+      errors.concat(@user.errors.collect{|attribute, error| [attribute.to_s().split('.')[-1], error.to_s()]})
+      respond_to do |format|
+	  if errors.present?
+	      format.json { render :json=>{:error=>errors }}
+	  else
+	      sign_in(:user, @user)
+	      format.json { render :json=>@user.ajax_attrs(@role)}
+	  end
+       end
+  end
+  
 
   # GET - return form for editing the current users password
   def edit_password
@@ -280,6 +298,7 @@ class Roxiware::AccountController < ApplicationController
         if params.has_key?(:user)
             update_params=Hash[params[:user].collect{|name, value| [name.to_sym, value]}]
         end
+
         errors << ["current_password", "Current password is invalid."] unless@user.valid_password?(update_params[:current_password])
 	if errors.blank?
             @user.update_attributes(update_params, :as=>@role)

@@ -79,7 +79,8 @@ module ActionDispatch::Routing
 	        put "/edit" => "account#update", :id => 0
 	        get "/update_password" => "account#edit_password"
 	        put "/update_password" => "account#update_password"
-                post "/reset_password" => "account#reset_password"
+	        put "/reset_password" => "account#do_reset_password"
+                post "/reset_password" => "account#send_reset_password"
 	        get "/sign_in" => "account#show_sign_in"
 	        get "/authenticate" => "account#authenticate"
             end

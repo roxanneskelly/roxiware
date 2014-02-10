@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
+  <param class="system" description="9311CEF8-86CE-44C0-B3DD-126B718A26C2" name="hostname"></param>
   <param class="system" description="B8A73EF2-9C65-4022-ABD3-2D4063827108" name="current_template">00000000-0000-0000-0000-000000000000</param>
   <param class="system" description="99FA5423-147C-4929-A432-268BDED6DE44" name="layout_scheme">00000000-0000-0000-0000-00000000</param>
   <param class="system" description="9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270" name="webmaster_email">admin@roxiware.com</param>

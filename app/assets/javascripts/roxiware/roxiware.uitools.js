@@ -160,7 +160,7 @@
 	    },
             alertWait: function(alert_string, conf) {
 		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Please Wait", $.extend(true, {iconClass:"spinner-icon"}, $.roxiware.alert.conf, conf));
+		    $.roxiware.alert.popup = new AlertPopup("Please Wait", $.extend(true, {iconClass:"icon-spinner-2"}, $.roxiware.alert.conf, conf));
 		}
 		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupWaitClass);
 	    },

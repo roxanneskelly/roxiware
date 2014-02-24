@@ -241,9 +241,9 @@ class Roxiware::SetupController < ApplicationController
 		   author = goodreads.search_author({:goodreads_id=>params[:goodreads_id]}).first;
 		   if(author.present?)
 		       current_user.person.bio = author[:about]
-		       current_user.person.thumbnail = author[:thumbnail_url]
-		       current_user.person.image = author[:image_url]
-		       current_user.person.large_image = author[:large_image_url]
+		       current_user.person.thumbnail = author[:thumbnail]
+		       current_user.person.image = author[:image]
+		       current_user.person.large_image = author[:large_image]
 		       # import image here
 		       current_user.person.save!
 		   end

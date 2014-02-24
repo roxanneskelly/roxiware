@@ -994,10 +994,6 @@ function settingsForm(source, title, options) {
 		    }
 
 		    // make sure you match this against the ruby sanitizer in lib/roxiware/sanitizer.rb
-		    var extended_valid_elements = overlay.find("div.settings_wysiwyg").attr("extended_valid_elements");
-		    if(!extended_valid_elements) {
-			extended_valid_elements = "*[*]"
-		    }
 		    overlay.find("div.settings_wysiwyg textarea").tinymce({
 			script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
 			theme: "modern",
@@ -1005,8 +1001,7 @@ function settingsForm(source, title, options) {
 			menubar: false,
 			browser_spellcheck:true,
 			relative_urls: false,
-			valid_extended_elements:"style[#text]",
-			valid_children:"+a[div]",
+                        verify_html:false,
 			remove_script_host:true,
 			document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
 			plugins: [

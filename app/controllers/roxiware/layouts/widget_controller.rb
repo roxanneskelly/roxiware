@@ -193,14 +193,16 @@ module Roxiware
 	   order = @widget_instance.section_order
 	   respond_to do |format|
 	      if @widget_instance.destroy
-	         @page_layout.refresh_styles
-                 @layout_section.widget_instances.where("section_order > #{order}").each do |instance|
-                     Roxiware::Layout::WidgetInstance.increment_counter(:section_order, instance.id)
-		     moved_instances[instance.id] = {:section=>@layout_section, :position=>instance.section_order}
-	         end
-	         @layout_section.refresh
-		 format.html { redirect_to return_to_location("/"), :notice => 'Widget was successfully deleted.' }
-		 format.json { render :json => moved_instances }
+	          section_order=0
+                  @layout_section.widget_instances.order(:section_order).each do |instance|
+                      instance.section_order = section_order
+		      instance.save!
+		      moved_instances[instance.id] = {:section=>@layout_section, :position=>section_order}
+		      section_order += 1
+	          end
+		  refresh_layout
+		  format.html { redirect_to return_to_location("/"), :notice => 'Widget was successfully deleted.' }
+		  format.json { render :json => moved_instances }
 	      else
 		 format.html { redirect_to return_to_location("/"), :alert => 'Failure updating widget settings.' }
 		 format.json { render :json=>report_error(@widget_instance)}

@@ -98,7 +98,7 @@ module Roxiware
       ],
 
       :attributes => {
-        :all         => ['dir', 'lang', 'title', 'style'],
+        :all         => ['dir', 'lang', 'title', 'style','id'],
         'a'          => ['href', 'target'],
         'blockquote' => ['cite'],
         'col'        => ['span', 'width'],

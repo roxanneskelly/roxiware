@@ -1,4 +1,4 @@
-<div class="large_form" id="page_edit_form">
+<div class="huge_form" id="page_edit_form">
     <%= form_for @page, :method=>:put, :url=>page_path(@page.page_identifier) do |page| %> 
       <%= page.hidden_field :page_type %>
       <div class="content_pos"><div class="settings_wysiwyg"><%= page.text_area :content, :class=>"settings_wysiwyg" %></div></div>

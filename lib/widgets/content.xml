@@ -37,9 +37,9 @@ div.settings_wysiwyg {
 
 </style>
 <% page_content = Roxiware::Page.where(:page_type=>"widget", :page_identifier=>widget_instance_id).first || Roxiware::Page.new({:page_type=>"widget", :page_identifier=>widget_instance_id, :content=>""}, :as=>"") %>
-  <%= form_tag(layout_page_section_widget_path(layout.guid, url_encode(page_layout.get_url_identifier()), layout_section.name, widget_instance.id), :method=>"put") do%>
 
-<div class="medium_form" id="content_widget_instance_edit">
+<div class="large_form" id="content_widget_instance_edit">
+  <%= form_tag(layout_page_section_widget_path(layout.guid, url_encode(page_layout.get_url_identifier()), layout_section.name, widget_instance.id), :method=>"put") do%>
    <div class="tab_form">
      <ul class="tabs">
        <li><a>Content</a></li>
@@ -60,8 +60,8 @@ div.settings_wysiwyg {
      </div>
    </div>
    <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
-</div>
 <% end %>
+</div>
 <script>
   $(function() {
     $("#content_widget_instance_edit").find("ul.tabs").tabs($("div.panes > div"));

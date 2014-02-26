@@ -1,4 +1,4 @@
-
+require 'nokogiri'
 class Roxiware::SetupController < ApplicationController
    application_name = 'setup'
 
@@ -428,32 +428,49 @@ class Roxiware::SetupController < ApplicationController
 	    begin
 		@books = []
 		if params[:setup_action] == "back_button"
-		  destroy_books = Roxiware::Book.all
-		  destroy_books.each do |book|
-		     book.destroy
-		  end
-		  result = _set_setup_step("social_networks")
-		elsif params[:setup_action] == "save"
+		    # back button, delete all existing series and go to social networks
+		    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::Book")
+		    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::BookSeries")
+		    Roxiware::Book.delete_all
+		    Roxiware::BookSeriesJoin.delete_all
+		    Roxiware::BookSeries.delete_all
+		    result = _set_setup_step("social_networks")
 
-		    Roxiware::Book.all.each do |book|
-		       book.destroy
-		    end
-		    @books = []
-		    books = params[:books][:book] if params[:books]
-		    books ||= []
-		    if books.class != Array
-		       books = [books]
-		    end
-		    books.each do |book|
-		       new_book = Roxiware::Book.new(book, :as=>@role)
+		elsif params[:setup_action] == "save"
+		    # delete all existing series so we don't accidentally overwrite them
+		    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::Book")
+		    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::BookSeries")
+		    Roxiware::BookSeriesJoin.delete_all
+		    Roxiware::BookSeries.delete_all
+		    Roxiware::Book.delete_all
+		    books_doc = Nokogiri::XML(request.body)
+		    books = []
+		    book_nodes = books_doc.xpath("//books/book")
+		    book_nodes.each do |book_node|
+		       new_book = Roxiware::Book.new
+		       new_book.goodreads_id=book_node["goodreads_id"]
+		       new_book.isbn=book_node["isbn"]
+		       new_book.isbn13=book_node["isbn13"]
+		       begin
+		           new_book.publish_date = Date.strptime(book_node['publish_date'], "%m/%d/%Y") if book_node["publish_date"]
+		       rescue Exception=>e
+		           # On date parse errors, just leave a blank date
+		       end
+		       new_book.description = book_node.search('description').children.find{|e| e.cdata?}.text
+		       new_book.title = book_node.search('title').text
+		       new_book.image = book_node.search('image').text
+		       new_book.large_image = book_node.search('large_image').text
+		       new_book.thumbnail = book_node.search('thumbnail').text
 		       new_book.init_sales_links
 		       new_book.save!
-		       @books << new_book
+		       books << new_book
 		    end
-		    if @books.present?
-		       result = _set_setup_step("series")
+		    if books.present?
+		        # ask the author if they want to set their books up in a series
+		        result = _set_setup_step("series")
 		    else
-		       result = _set_setup_step("choose_template")
+		        # no books, so just let them choose their template
+		        result = _set_setup_step("choose_template")
 		    end
 		end
 	    rescue Exception => e
@@ -470,9 +487,6 @@ class Roxiware::SetupController < ApplicationController
 
     def _author_series
 	result = nil
-	Roxiware::Book.all.each do |book|
-	    puts "#{book.goodreads_id} : #{book.title}"
-        end
 	ActiveRecord::Base.transaction do
 	    begin
 		if params[:setup_action] == "back_button"
@@ -527,38 +541,38 @@ class Roxiware::SetupController < ApplicationController
 	ActiveRecord::Base.transaction do
 	    begin
 		if params[:setup_action] == "back_button"
+		    # when we get a 'back' within the series UI, make sure we delete all series
+		    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::BookSeries")
+		    Roxiware::BookSeriesJoin.delete_all
+		    Roxiware::BookSeries.delete_all
 		    result = _set_setup_step("series")
 		elsif params[:setup_action] == "save"
-		    series_list = []
-		    series_list = params[:series][:series] if params[:series]
-		    if(series_list.class != Array)
-			series_list = [series_list]
-		    end
-		    series_list.each do |series|
-		       book_series = Roxiware::BookSeries.new
-		       book_series.assign_attributes(series, :as=>@role)
-		       if book_series.save
-		           # create joins, linking books to the series
-		           order = 1
-		           books = series[:books][:book]
-			   books = [books] if books.class != Array
-			   
-			   books.sort! {|x, y| x[:order].to_i <=> y[:order].to_i}
-			   books.each do |book|
-			       book_obj = Roxiware::Book.find(book[:id].to_i)
-			       if(book_obj.present?) 
-				  Roxiware::BookSeriesJoin.create({:book=>book_obj, :book_series=>book_series, :series_order=>order}, :as=>@role)
-				  order = order + 1
-			       end
-		           end
-		       else
-			   result ||= {}
-			   result[:error] ||= []
-			   result[:error].merge(report_error(@book_series)[:error])
+		    # we're getting a save from the series UI.  Go ahead and delete any 
+		    # series that are already there.
+		    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::BookSeries")
+		    Roxiware::BookSeriesJoin.delete_all
+		    Roxiware::BookSeries.delete_all
+		    series_doc = Nokogiri::XML(request.body)
+		    series_nodes = series_doc.xpath("//series/series")
+		    series_nodes.each do |series_node|
+		       new_series = Roxiware::BookSeries.new
+		       new_series.goodreads_id=series_node["goodreads_id"]
+		       new_series.title = series_node.search('title').text
+		       new_series.description = series_node.search('description').children.find{|e| e.cdata?}.text
+		       new_series.image = series_node.search('image').text
+		       new_series.large_image = series_node.search('large_image').text
+		       new_series.thumbnail = series_node.search('thumbnail').text
+	               order = 1
+		       new_series.save!
+		       series_node.search('books/book').each do |book_node|
+	                   book_obj = Roxiware::Book.find(book_node["id"].to_i)
+		           new_series.book_series_joins.create({:book=>book_obj, :series_order=>order}, :as=>@role)
+			   order += 1
 		       end
-		   end
-		   result = _set_setup_step("choose_template")
-               end
+		       new_series.save!
+		    end
+		    result = _set_setup_step("choose_template")
+                end
 	    rescue Exception => e
 		result ||= {}
 		result[:error] ||= []

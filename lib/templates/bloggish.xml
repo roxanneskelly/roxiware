@@ -3,7 +3,7 @@
   <!-- Roxiware Web Engine Template: Bloggish -->
   <name>Bloggish</name>
   <description>
-    <![CDATA[A blog oriented template.  If you have something to say, often, then this is a great template for you.  It's simple, with minimal graphics, so your readers can focus on what you write.]]>
+    <![CDATA[All the blog space you want and more. Giving the the avid blogger all the pages needed for veracious posting. Minimal graphics allows bloggers to express themselves while keeping layouts clean.]]>
   </description>
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")

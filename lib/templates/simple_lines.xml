@@ -3,7 +3,7 @@
   <!-- Roxiware Web Engine Template: Simple Lines -->
   <name>Simple Lines</name>
   <description>
-    <![CDATA[<p><b>Minimalist.  Clean.  Zero Distractions.</b> Simple Lines has very few graphic elements to distract your readers.</p>]]>
+    <![CDATA[Zero distractions. A minimalist layout with subtle graphics.</p>]]>
   </description>
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")

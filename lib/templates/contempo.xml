@@ -3,7 +3,7 @@
   <!-- Roxiware Web Engine Template: Contempo -->
   <name>Contempo</name>
   <description>
-    <![CDATA[<b>Clean.  Modern.  Professional.</b> <br>  Contempo's streamlined design features your latest book on the front page, ready for your readers to find.  With it's subtle graphics and color schemes, your content come first.  Also included are a blog, a calendar, and a biography.]]>
+    <![CDATA[<b>Clean. Modern. Professional.</b> <br>Streamlined design features puts your words front and center.]]>
   </description>
   <setup>
     <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")

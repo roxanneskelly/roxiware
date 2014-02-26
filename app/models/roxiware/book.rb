@@ -35,7 +35,7 @@ class Roxiware::Book < ActiveRecord::Base
   }
 
   def description_excerpt(description_length, &block)
-      Sanitize.clean(truncate(description || "", :length => description_length, :omission=>""), Sanitize::Config::RELAXED) + block.call
+      Sanitize.clean(truncate(description || "", :length => description_length, :escape=>false, :separator=>" ", :omission=>""), Sanitize::Config::RELAXED) + block.call
   end
 
   def goodreads_id

@@ -74,7 +74,13 @@
 		        contentType: "application/xml",
 			data: data,
 			error: function(xhr, textStatus, errorThrown) {
-			    $.error(errorThrown);
+			    if(xhr.status == 0) {
+    			        $.error("The server is not available.  Please try again.");
+			    }
+			    else {
+				$.error(errorThrown);
+			    }
+			    conf.error(errorThrown);
 			},
 			complete: function() {
 			},
@@ -107,7 +113,12 @@
 			processData: true,
 			data: data,
 			error: function(xhr, textStatus, errorThrown) {
-			    $.error(errorThrown);
+			    if(xhr.status == 0) {
+    			        $.error("The server is not available.  Please try again.");
+			    }
+			    else {
+				$.error(errorThrown);
+			    }
 			    conf.error(errorThrown);
 			},
 			complete: function() {
@@ -1042,7 +1053,12 @@ function settingsForm(source, title, options) {
    else {
        overlay.find(".contentWrap").load(source, function(responseText, textStatus, xhr) {
 	  if(xhr.status != 200) {
-	      $.error(xhr.statusText);
+	      if(xhr.status == 0) {
+                  $.error("The server is not available.  Please try again.");
+	      }
+	      else {
+	          $.error(xhr.statusText);
+	      }
 	      return;
 	  }
           instantiateOverlay();
@@ -1350,6 +1366,9 @@ function get_login_form_template(options) {
                         if(xhr.status == 401) {
                             template.find("#login_status").text("Invalid username or password, please try again.");
                             template.find("input#user_username, input#user_password").addClass("field-error");
+                        }
+			else if (xhr.status == 0) {
+			    $.error("The server is not available.  Please try again.");
                         }
                         else {
                             $.error(errorThrown);

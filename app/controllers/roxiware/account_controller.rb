@@ -208,10 +208,15 @@ class Roxiware::AccountController < ApplicationController
 
   # PUT 
   def do_reset_password
-      errors = []
       @user = Roxiware::User.reset_password_by_token(params[:user].slice(:password, :password_confirmation).merge({:reset_password_token=>params[:reset_password_token]}))
       @role = "self"
-      errors.concat(@user.errors.collect{|attribute, error| [attribute.to_s().split('.')[-1], error.to_s()]})
+      errors = @user.errors.collect{|attribute, error| [attribute.to_s().split('.')[-1], error.to_s()]}
+      
+      # override the devise generated error to be something more friendly
+      errors.each do |error|
+          error[1] = "Your password reset request has expired.  Please try again." if(error == ["reset_password_token", "is invalid"])
+      end
+      
       respond_to do |format|
 	  if errors.present?
 	      format.json { render :json=>{:error=>errors }}

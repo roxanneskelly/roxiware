@@ -95,7 +95,7 @@ module Roxiware
 
 	   respond_to do |format|
 	       if success
-		  @widget_instance.clear_globals
+	          @layout.clear_instance_globals(@widget_instance.id)
                   @layout_section.refresh
 	          @page_layout.refresh_styles
 		  format.json { render :json => moved_instances }
@@ -130,7 +130,7 @@ module Roxiware
        end
 
        def update
-           @widget_instance = Roxiware::Layout::WidgetInstance.where(:id=>params[:id]).first
+           @widget_instance = @layout_section.widget_instance_by_id(params[:id].to_i)
 	   raise ActiveRecord::RecordNotFound if @widget_instance.nil?
 	   authorize! :update, @widget_instance
 	   success = true
@@ -171,7 +171,7 @@ module Roxiware
            end
 	   respond_to do |format|
 	       if success
-		  @widget_instance.clear_globals
+	          @layout.clear_instance_globals(@widget_instance.id)
                   @layout_section.refresh
 	          @page_layout.refresh_styles
 		  format.xml  { render :xml => {:success=>true} }

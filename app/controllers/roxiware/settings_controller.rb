@@ -1,6 +1,9 @@
 module Roxiware
   class SettingsController < ApplicationController
        skip_after_filter :store_location
+       before_filter do
+           raise raise CanCan::AccessDenied.new("Not authorized!") unless current_user.present? && current_user.is_admin?
+       end
 
        # settings edit page
        def show

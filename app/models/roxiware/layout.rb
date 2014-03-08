@@ -599,12 +599,33 @@ module Roxiware
 	     end
           end
 
+          # Widget Instance Caching
+          # Widget instance objects are cached on the layout_section to reduce
+          # database lookouts of these very common objects.
+          # they're maintained in an ordered list
+
+          # clear out the ordered list.  It'll automatically be reloaded on next access
+	  def refresh
+	    @ordered_instances = nil
+	  end
+
+
+	  # retrieve the ordered list. Load it from the database if needed
+          # Each instance also contains a cached refrerence to the layout_section, 
+	  # so set that as well
+          #
 	  def get_widget_instances
 	     @ordered_instances ||= self.widget_instances
 	     @ordered_instances.each{|instance| instance.layout_section = self}
 	     @ordered_instances
 	  end
 
+	  
+          # delete a widget instance from the layout section...both the cache and the actual 
+	  # active record association
+          # This will renumber the widget instances currently in the section
+	  # saving the new order
+          #
 	  def widget_instance_delete(instance_to_delete)
 	      widget_instances.delete(instance_to_delete)
 	      order = 0
@@ -618,6 +639,10 @@ module Roxiware
 	      instance_to_delete
 	  end
 
+	  
+	  # insert a widget into the layout section, both into the cache
+	  # and the active record association.  The widget instances will be renumbered
+          #
 	  def widget_instance_insert(index, insert_instance)
 	      instance_array = get_widget_instances.collect{|instance| instance}
 	      instance_array.insert(index, insert_instance)
@@ -633,17 +658,17 @@ module Roxiware
 	      insert_instance
 	  end
 
+	  # get a widget instance from the instance cache by it's activerecord id
+          #
 	  def widget_instance_by_id(instance_id)
 	      instances = get_widget_instances.collect{|instance|}
 	      get_widget_instances.select{|instance| instance.id = instance_id}.first
 	  end
 	  
+	  # get a widget instance by it's 'widget_instance_id' property.
+	  #
           def get_widget_instance(widget_id)
 	     get_widget_instances.select{|instance| widget_id == (instance.get_param("widget_instance_id").to_s)}.first
-	  end
-
-	  def refresh
-	    @ordered_instances = nil
 	  end
 
 	  def get_styles(params)

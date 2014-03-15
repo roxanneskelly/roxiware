@@ -1293,7 +1293,7 @@ $.extend({
 
 function do_login(data) {
     _get_auth_info(function(auth_info) {
-        if(auth_info.auth_kind) {
+        if(auth_info && auth_info.auth_kind) {
 	    data.onSuccess(auth_info);
             return;
 	}

@@ -48,6 +48,8 @@ module Roxiware
           include Roxiware::Param::ParamClientBase
 
 	  self.table_name= "layouts"
+          PUBLIC_PACKAGES = %w(basic-blog premium-blog basic-author premium-author basic-form premium-forum)
+          ADMIN_PACKAGES = %w(custom basic-blog premium-blog basic-author premium-author basic-form premium-forum)
 
           after_initialize :init_layout
           after_find :init_layout
@@ -68,13 +70,13 @@ module Roxiware
 				      :too_long => "The layout name can be no larger than ${count} characters."
 				      }
 
-         validates :description, :length=>{
+          validates :description, :length=>{
 				      :maximum=>100000,
 				      :too_long => "The description can be no larger than ${count} characters."
 				      }
 
-	  edit_attr_accessible :description, :style, :setup, :name, :category_csv, :settings_form, :as=>[:super, nil]
-	  ajax_attr_accessible :guid, :category_csv, :as=>[:super, :admin, nil]
+	  edit_attr_accessible :description, :thumbnail_url, :preview_url, :style, :setup, :name, :category_csv, :settings_form, :as=>[:super, nil]
+	  ajax_attr_accessible :guid, :name, :description, :category_csv, :thumbnail_url, :preview_url, :as=>[:super, :admin, :guest, nil]
 
 	  def get_by_path(path)
 	     path_components = path.split("/", 2)
@@ -179,6 +181,8 @@ module Roxiware
 	     self.guid = layout_node["guid"]
              # import layout chooser information
 	     self.name = layout_node.find_first("name").content
+	     self.thumbnail_url = layout_node.find_first("thumbnail_url").content
+	     self.preview_url = layout_node.find_first("preview_url").content
 	     self.description = child_cdata_content(layout_node.find_first("description"))
 	     self.settings_form = child_cdata_content(layout_node.find_first("settings_form"))
              layout_category_nodes = layout_node.find("categories/category")
@@ -217,6 +221,8 @@ module Roxiware
 	    xml_layouts.layout(:version=>"1.0", :guid=>self.guid) do |xml_layout|
 	       xml_layout.comment!("Roxiware Web Engine Template: #{self.name}")
 	       xml_layout.name self.name
+	       xml_layout.thumbnail_url self.thumbnail_url
+	       xml_layout.preview_url self.preview_url
 	       xml_layout.description {xml_layout.cdata!(self.description)}
 	       xml_layout.setup {xml_layout.cdata!(self.setup || "")}
 	       xml_layout.settings_form {xml_layout.cdata!(self.settings_form || "")}

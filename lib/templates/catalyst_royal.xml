@@ -145,6 +145,8 @@ div#colors_pane > div {
     <package>basic_blog</package>
     <package>premium_blog</package>
   </packages>
+  <thumbnail_url>http://cdn.roxiware.com/templates/catalyst-royal/chooser_image.jpg</thumbnail_url>
+  <preview_url>http://blogdemo.scribaroo.com/</preview_url>
   <style>
     <![CDATA[/* Document layout */
 /* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
@@ -1066,6 +1068,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{title}%{categories}%{comments}%{date}</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="25DC87D1-F2A9-41B6-9561-9A0B6C166F06">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(138,141,147,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,15,15,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(138,141,147,1)</param>
@@ -1087,6 +1091,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/catalyst-royal/cloudburst.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="1A6CCF07-2996-4A30-B934-7385C530A0EC">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(62,50,36,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,0,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(62,50,36,1)</param>
@@ -1108,6 +1114,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/catalyst-royal/old-fashioned.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="F0CC81E4-74CC-41D3-AA58-21BA3C92A4FC">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(29,175,185,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(16,16,16,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(29,175,185,1)</param>
@@ -1129,6 +1137,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/catalyst-royal/lightning.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="E352E31C-4315-485B-A297-B40F4CBBD2CC">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(221,200,38,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(16,16,16,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(219,219,219,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(221,200,38,1)</param>
@@ -1150,6 +1160,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/catalyst-royal/bumblebee.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="39943BC1-8DF7-4837-BAEB-B807A1564740">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(200,100,32,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(16,16,16,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="text_color">rgba(240,240,240,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="highlight_color">rgba(200,100,32,1.0)</param>

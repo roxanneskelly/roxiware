@@ -41,6 +41,8 @@ books_menu_permission.save!]]>
     <package>basic_author_dev</package>
     <package>premium_author_dev</package>
   </packages>
+  <thumbnail_url>http://cdn.roxiware.com/templates/simple-lines/thumbnail.jpg</thumbnail_url>
+  <preview_url>http://blogdemo.roxiware.com/</preview_url>
   <style>
     <![CDATA[/* Document layout */
 /* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.

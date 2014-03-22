@@ -141,6 +141,8 @@ div#colors_pane > div {
     <package>premium_author</package>
     <package>premium_blog</package>
   </packages>
+  <thumbnail_url>http://cdn.roxiware.com/templates/bloggish/chooser_image.jpg</thumbnail_url>
+  <preview_url>http://blogdemo.scribaroo.com/</preview_url>
   <style>
     <![CDATA[/* Document layout */
 /* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
@@ -999,6 +1001,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{author_image}%{title}%{date}%{author_name}%{comments}</param>
     <param class="scheme" name="schemes" description="62275C2A-29F9-4BAA-9893-BB0417917807">
       <param class="scheme" name="437FC854-D219-49AD-8C69-456F480C657C" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(102,144,199,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(215,234,255,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(102,144,199,1)</param>
           <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(60,84,116,1)</param>
@@ -1019,6 +1023,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/sky.jpg</param>
       </param>
       <param class="scheme" name="04FF6B29-DFE7-48F6-B70D-261BA402BA5C" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(239,142,16,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#232b2b</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(239,142,16,1)</param>
           <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,201,116,1)</param>
@@ -1039,6 +1045,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/orange-gray.jpg</param>
       </param>
       <param class="scheme" name="C385EF86-FCE4-4476-8AD5-9D942C324C3B" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#F5F4EB</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
           <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#893667</param>
@@ -1059,6 +1067,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/garden.jpg</param>
       </param>
       <param class="scheme" name="A4421F67-3B48-40B9-9A6C-6C3867A15067" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
           <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#e3ae57</param>
@@ -1079,6 +1089,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/orange-creme.jpg</param>
       </param>
       <param class="scheme" name="1A79C1DE-4E30-4A09-A36D-C70B983C1DE2" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,28.42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#475f77</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,28,42,1)</param>
           <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,28,42,0.7)</param>
@@ -1099,6 +1111,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/navy.jpg</param>
       </param>
       <param class="scheme" name="B169220A-A52C-4373-BE35-A0A2A3D9C039" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#7e7e7e</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#7e7e7e</param>
           <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#b3b3b3</param>
@@ -1119,6 +1133,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/bloggish/white.jpg</param>
       </param>
       <param class="scheme" name="8227E766-97C5-4227-BE3C-9CF4293936F1" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#7e7e7e</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#000000</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#7e7e7e</param>
           <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#b3b3b3</param>

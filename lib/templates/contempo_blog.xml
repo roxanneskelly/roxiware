@@ -139,6 +139,8 @@ div#colors_pane > div {
     <package>basic_blog</package>
     <package>premium_blog</package>
   </packages>
+  <thumbnail_url>http://cdn.roxiware.com/templates/contempo-blog/chooser_image.jpg</thumbnail_url>
+  <preview_url>http://blogdemo.scribaroo.com/</preview_url>
   <style>
     <![CDATA[/* Document layout */
 /* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
@@ -975,6 +977,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param description="D009D4B0-5428-4A04-82AC-5A846EC12379" class="local" name="post_header_format">%{title}%{date}%{comments}</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="43A9E526-7466-4F68-93AA-2621F4A7A741">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(114,114,114,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(225,225,225,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(108,108,108,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(199,199,199,1)</param>
@@ -1000,6 +1004,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/greys.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="6D166CC5-5404-4BD2-8643-791C09E17F13">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(92,131,73,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#f5f4eb</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(69,81,62,0.7)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#893667</param>
@@ -1025,6 +1031,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/garden.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="37F5D41C-AADD-4364-8D95-7403188F6B9C">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(227,61,61,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(#ffffff)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(255,156,156,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,186,186,1)</param>
@@ -1050,6 +1058,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/white-red.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="F75B5C68-D70E-4396-A53E-F48C238B514E">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(239,168,86,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#232b2b</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(244,192,111,0.7)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(255,201,116,1)</param>
@@ -1075,6 +1085,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/orange-grey.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="C63F8FBF-06E0-48D1-8064-AB4125B039D2">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(193,212,230,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(29,41,52,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(108,140,170,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(250,28,42,1)</param>
@@ -1100,6 +1112,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/navy.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="CBF16A81-6F5F-40D1-8740-46F09B6C8683">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(102,144,199,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(215,234,255,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(143,179,227,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">rgba(60,84,116,1)</param>
@@ -1125,6 +1139,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" class="scheme" name="thumbnail_image">http://cdn.roxiware.com/templates/contempo-blog/sky.jpg</param>
       </param>
       <param description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53" class="scheme" name="EB346E36-24BD-450D-B22A-3F5D4E0A14DA">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(226,120,16,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(244,243,234,1)</param>
         <param description="2124E080-D791-4784-A89D-B1984DB73657" class="scheme" name="params">
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="secondary_text_color">rgba(227,160,95,1)</param>
           <param description="A8AC4FA7-9574-49B0-A38A-AE067C607745" class="style" name="link_hover_color">#e3ae57</param>

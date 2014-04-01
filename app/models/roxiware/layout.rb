@@ -754,7 +754,7 @@ module Roxiware
 
 	  attr_accessor :layout_section
 
-          default_scope {order(:section_order)}
+          default_scope ->{order(:section_order)}
 	  def deep_dup
 	      new_widget_instance = dup
 	      new_widget_instance.params = params.collect{|p| p.deep_dup}

@@ -7,23 +7,22 @@ module Roxiware
     has_many :auth_services, :dependent=>:destroy
 
     validates :username, :length=>{:minimum=>3,
-                                   :too_short => "The username must be at least %{count} characters.", 
-                                   :maximum=>32,
-                                   :too_long => "The username must be no more than %{count} characters." 
-				   }
+          :too_short => "The username must be at least %{count} characters.",
+          :maximum=>32,
+          :too_long => "The username must be no more than %{count} characters."
+      }
     validates :password, :length=>{:minimum=>6,
-                                   :too_short => "The password must be at least %{count} characters.", 
-                                   :maximum=>64,
-                                   :too_long => "The password must be no more than %{count} characters.", 
-				   :allow_blank=>true}
+          :too_short => "The password must be at least %{count} characters.",
+          :maximum=>64,
+          :too_long => "The password must be no more than %{count} characters.",
+          :allow_blank=>true}
+
     validates_confirmation_of :password, :message=>"The confirmation does not match the password."
-    validates_uniqueness_of :email, :message=>"The email address is not unique."
-    validates_presence_of   :email, :message => "An email address is required."
 
-    validates_uniqueness_of :username, :message=>"The username has already been taken."
-    validates_presence_of :role, :inclusion => {:in => %w(guest super admin user)}, :message=>"Invalid role."
-
-    validates_format_of     :email, :with  => Devise.email_regexp, :message=>"The email address is invalid."
+    validates_uniqueness_of   :username, :message=>"The username has already been taken."
+    validates_presence_of     :role,     :inclusion => {:in => %w(guest super admin user)}, :message=>"Invalid role."
+    validates_presence_of     :email,    :if=>lambda{ |user_obj| user_obj.auth_services.count > 0 }
+    validates_format_of       :email,    :with => Devise.email_regexp, :allow_blank => true, :message=>"The email address is invalid."
 
 
 
@@ -62,7 +61,7 @@ module Roxiware
  
     def full_name
        self.person.full_name unless self.person.nil?
-    end    
+    end
 
     # Setup accessible (or protected) attributes for your model
 

@@ -1,4 +1,4 @@
-<div class="page_layout_edit large_form" id="page_layout_edit_form">
+<div class="page_layout_edit huge_form" id="page_layout_edit_form">
    <%= form_tag(layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)), :method=>"put") do%>
    <div class="tab_form">
      <ul class="tabs">
@@ -33,7 +33,7 @@
                               {form:$("#page_layout_edit_form form"),
                                method:"put",
                                success: function() {
-                                   window.location.reload();
+                                   //window.location.reload();
                                }}); 
       });
    });

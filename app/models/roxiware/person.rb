@@ -70,6 +70,11 @@ class Roxiware::Person < ActiveRecord::Base
 
     before_validation do
        self.seo_index = self.full_name.to_seo
+       index = 1
+       while Roxiware::Person.find_by_seo_index(self.seo_index).present?
+           self.seo_index = "#{self.full_name.to_seo}-#{index}"
+           index += 1
+       end
        self.bio = Sanitize.clean(self.bio, Roxiware::Sanitizer::BASIC_SANITIZER)
        if(self.large_image.present?)
            image_uri = URI(self.large_image)

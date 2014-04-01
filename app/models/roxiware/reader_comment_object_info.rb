@@ -4,7 +4,7 @@ module Roxiware
     self.table_name="reader_comment_object_infos"
 
     # return only those comment objects that are last_read, with no additional metadata such as ratings, notify indications, etc.
-    scope :only_last_read, -> { where(:rating=>nil, :notify=>nil) }
+    scope :only_last_read, ->{ where(:rating=>nil, :notify=>nil) }
 
     belongs_to :reader, :class_name=>"Roxiware::CommentAuthor"
     belongs_to :comment_object, :polymorphic=>true

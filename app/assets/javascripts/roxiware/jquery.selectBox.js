@@ -225,8 +225,8 @@ if (jQuery)(function($) {
 					var borderBottomWidth = isNaN(control.css('borderBottomWidth')) ? 0 : parseInt(control.css('borderBottomWidth'));
 					// Menu position
 					options.width(control.innerWidth()).css({
-						top: control.offset().top + control.outerHeight() - borderBottomWidth,
-						left: control.offset().left
+						top: control.offset().top + control.outerHeight() - borderBottomWidth - $(window).scrollTop(),
+						    left: control.offset().left - $(window).scrollLeft()
 					});
 					if (select.triggerHandler('beforeopen')) return false;
 					var dispatchOpenEvent = function() {

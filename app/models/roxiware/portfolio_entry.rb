@@ -11,8 +11,8 @@ module Roxiware
     validates_uniqueness_of :seo_index, :message=>"Name not sufficiently unique"
     before_validation do
        self.seo_index = self.name.to_seo
-       
-       if !(self.url.nil? || self.url.empty?) 
+
+       if !(self.url.nil? || self.url.empty?)
          parsed_uri = URI::parse(self.url)
          parsed_uri.scheme = 'http' if parsed_uri.scheme.nil?
          if parsed_uri.host.nil?

@@ -6,7 +6,7 @@ module Roxiware
         self.table_name="forum_board_groups"
         has_many :boards
 
-        default_scope { order(:display_order) }
+        default_scope ->{ order(:display_order) }
 
 
         validates_presence_of :name
@@ -29,7 +29,7 @@ module Roxiware
 
         belongs_to :board_group
         belongs_to :last_post, :class_name=>"Roxiware::Comment"
-        scope :ordered, -> { joins(:board_group).order("forum_board_groups.display_order ASC").order("forum_boards.display_order ASC") }
+        scope :ordered, ->{ joins(:board_group).order("forum_board_groups.display_order ASC").order("forum_boards.display_order ASC") }
         ALLOWED_TOPIC_PERMISSIONS = %w(open moderate closed hide)
 
         validates :description, :length=>{:maximum=>255,
@@ -123,7 +123,7 @@ module Roxiware
 
       ajax_attr_accessible :title, :permissions, :tag_csv, :category_name, :last_post, :root_post, :topic_link, :guid, :comment_count, :pending_comment_count, :views, :trend, :last_trend_update, :likes, :unlikes, :rating, :priority
 
-      scope :visible, lambda{ |user| where('forum_topics.permissions != "hide"') unless (user.present? && user.is_admin?) }
+      scope :visible, ->(user){where('forum_topics.permissions != "hide"') unless (user.present? && user.is_admin?) }
 
       def unread_post_count(last_read)
           self.posts.select{|post| post.comment_date > last_read}.count

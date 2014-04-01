@@ -28,7 +28,7 @@ module Roxiware
     validates_uniqueness_of :post_link, :message=>"Duplicate post title for this date."
 
     validates_presence_of :post_date, :message=>"The post must have a post date"
-    default_scope { includes(:terms)}
+    default_scope ->{ includes(:terms)}
 
     validates :post_content, :length=>{:minimum=>5,
                                       :too_short => "The post must contain at least  %{count} characters.",
@@ -50,7 +50,7 @@ module Roxiware
     edit_attr_accessible :post_exerpt, :as=>[nil]
     ajax_attr_accessible :guid, :blog_class, :post_date, :post_exerpt, :post_link, :post_title, :post_content, :person_id, :post_status, :comment_permissions, :tag_csv, :category_name
     
-    scope :published, -> { where(:post_status=>"publish") }
+    scope :published, ->{ where(:post_status=>"publish") }
     scope :visible, ->(user) {where((user.blank?) ? "post_status='publish'" : ((user.is_admin?) ? "" : "person_id = #{user.person_id || 0} OR post_status='publish'")) }
 
     after_save do

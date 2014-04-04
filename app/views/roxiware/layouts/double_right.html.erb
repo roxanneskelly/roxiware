@@ -3,7 +3,7 @@
 <head>
 <%= render :partial=>'roxiware/shared/head' %>
 </head>
-<body class="application_body <%= @page_identifier">
+<body class="application_body <%= @page_identifier %>" application="<%= application_name %>" app_path="<%= application_path(params) %>">
   <%= render :partial=>'roxiware/shared/body_head' %>
   <div id="mainBody">
     <header class="main_header">

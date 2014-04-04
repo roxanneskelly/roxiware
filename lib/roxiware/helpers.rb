@@ -41,7 +41,7 @@ module Roxiware
 	       when "bool"
                  result += field_group.check_box(param.name.to_sym, options.merge({:checked=>param.conv_value, :param_name=>param.name, :title=>nil}), "true", "false") + content_tag(:span, "", :class=>"control-icon checkbox-icon")+label
 	       when "text"
-                 result += label + text_area_tag(param.name.to_sym, param.to_s, options.merge({:param_name=>param.name}))
+                 result += label + field_group.text_area(param.name.to_sym, options.merge({:value=>param.to_s, :param_name=>param.name}))
 	       when "image"
                  result += label + image_upload_tag(field_group, param, options.merge({:value=>param.value, :param_name=>param.name}))
                else

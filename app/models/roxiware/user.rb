@@ -4,7 +4,7 @@ module Roxiware
     self.table_name="users"
     has_one :person, :dependent=>:destroy
 
-    has_many :auth_services, :dependent=>:destroy
+    has_many :auth_services, :dependent=>:destroy, :autosave=>true
 
     validates :username, :length=>{:minimum=>3,
           :too_short => "The username must be at least %{count} characters.",
@@ -21,7 +21,7 @@ module Roxiware
 
     validates_uniqueness_of   :username, :message=>"The username has already been taken."
     validates_presence_of     :role,     :inclusion => {:in => %w(guest super admin user)}, :message=>"Invalid role."
-    validates_presence_of     :email,    :if=>lambda{ |user_obj| user_obj.auth_services.count > 0 }
+    validates_presence_of     :email,    :if=>lambda{ |user_obj| user_obj.auth_services.length == 0 }
     validates_format_of       :email,    :with => Devise.email_regexp, :allow_blank => true, :message=>"The email address is invalid."
 
 

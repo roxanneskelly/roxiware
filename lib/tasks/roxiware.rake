@@ -82,6 +82,7 @@ namespace :widgets do
              files = [args[:widget_file]]
 	 else
 	     files = Dir.glob("#{Roxiware::Engine.root}/lib/widgets/*.xml")
+	     files = files + Dir.glob(Rails.root.join("lib","widgets","*.xml"))
 	 end
 	 files.each do |filename|
 	     puts "IMPORTING WIDGET FILE #{filename}"

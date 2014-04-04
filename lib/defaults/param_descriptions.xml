@@ -908,4 +908,11 @@
     <permissions>admin</permissions>
     <meta/>
   </param_description>
+  <param_description guid="563E376C-FD86-4CFF-A821-67E713358259">
+    <name>Generic URL</name>
+    <description>Generic URL</description>
+    <field_type>string</field_type>
+    <permissions>admin</permissions>
+    <meta/>
+  </param_description>
 </param_descriptions>

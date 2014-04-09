@@ -1,4 +1,4 @@
-/* roxiware.uitools.js 
+/* roxiware.uitools.js
    Various UI tools, including an alert popup dialog,
    a wait spinner,
    and a progress bar control.
@@ -33,7 +33,7 @@
 		     }
 		  }
 		 */
-		
+
 	    }
         }
     };
@@ -65,7 +65,7 @@
 		if(conf.form) {
 		    conf.form.find("input").removeClass("field-error");
                 }
-		
+
 		$.ajax({
 			type:conf.method,
 			url: endpoint,
@@ -147,7 +147,7 @@
 	    alertPopupAlertClass: "alert_alert",
 	    alertPopupErrorClass: "alert_error",
             alertPopupWaitClass: "alert_wait"
-	}, 
+	},
 	popup: null
     }
     $.extend({
@@ -262,7 +262,7 @@
 		opacity:0.8
 	    }
 	}
-	
+
     }
 
     // Bring up a wait spinner and mask out the rest of the screen
@@ -307,7 +307,7 @@
 	    },
 	    progressRemoveTimeout: 2000
 	}
-	
+
     }
 
 
@@ -353,7 +353,7 @@
 	this.finished = function(id) {
 	    this.progressBarDialog.find("div#progressbar_"+id).remove();
 	}
-	
+
 	this.close = function() {
 	    this.progressBarDialog.find("a.close").click();
 	}
@@ -367,7 +367,7 @@
 	    }
 	});
 
-    
+
     $.roxiware.selectable_table = {
         conf: {
 	    multi:false,
@@ -382,23 +382,23 @@
 	$.extend(self, {
 		anchor:null,
 		select:function(row) {
-		    $(row).addClass(conf.selectClass); 
+		    $(row).addClass(conf.selectClass);
 		    conf.onSelect(self.getSelected());
 		},
                 deselect: function(row) {
-		    $(row).removeClass(conf.selectClass); 
+		    $(row).removeClass(conf.selectClass);
 		    conf.onSelect(self.getSelected());
 		},
                 toggle: function(row) {
-		    $(row).toggleClass(conf.selectClass); 
+		    $(row).toggleClass(conf.selectClass);
 		    conf.onSelect(self.getSelected());
 		},
 	        clearAll: function() {
-		    $(target).find("tr").removeClass(conf.selectClass); 
+		    $(target).find("tr").removeClass(conf.selectClass);
 		    conf.onSelect(self.getSelected());
                 },
 	        selectAll: function() {
-		    $(target).find("tr").addClass(conf.selectClass); 
+		    $(target).find("tr").addClass(conf.selectClass);
 		    conf.onSelect(self.getSelected());
                 },
 		setAnchor: function(row) {
@@ -509,7 +509,7 @@
 		var menu_item = $(this).attr("menu_item");
 		target.trigger("context_menu", [menu_item, e]);
 	      });
-	     
+
 	     $(document).on("click.contextMenu keyup.contextMenu contextmenu.contextMenu", function(event) {
 		if (event.type == "keyup" && (event.which != 27)) return;
 		if (current_menu) {
@@ -541,7 +541,7 @@
 			      cm_api.setMenu(menu_or_api);
 			  }
 		      }
-			  
+
 		  });
 	      return  cm_api;
     };
@@ -608,7 +608,7 @@
 	$.extend(self, {
                 reload: function(data) {
 		    jQuery.jstree._reference($(jstree)).delete_node($(jstree).find("> ul > li"));
-		    
+
 		    var update_tree = function(node, data) {
 			$.each(data, function(index, value) {
 			    self.new_node(value.description_guid,
@@ -636,7 +636,7 @@
 			var title = "";
 			var init_object = conf.objects[obj_type];
 			var init_params = {};
-	
+
 			$.extend(init_params, init_object.init_params, params);
 			if($.isFunction(init_object.title)) {
 			    title = init_object.title(init_params);
@@ -682,7 +682,7 @@
 			    }
 			    var object_info = conf.objects[node.attr("rel")];
 
-			    var node_xml_result = "<param class='local' name='" + node_name + "' description='"+node.attr("rel")+"'>" + 
+			    var node_xml_result = "<param class='local' name='" + node_name + "' description='"+node.attr("rel")+"'>" +
 			    export_params(node.data().params);
 			    var children = node.find("> ul > li");
 
@@ -698,7 +698,7 @@
 			};
 
 
-			var xml_result = "<param name='"+param_name+"' class='local' description='"+conf.description_guid+"'>"; 
+			var xml_result = "<param name='"+param_name+"' class='local' description='"+conf.description_guid+"'>";
 			$(jstree).find("> ul > li").each(function(index, node) {
 				xml_result = xml_result + export_jstree_node("child_"+index, $(node), $(jstree));
 			    });
@@ -759,14 +759,14 @@
 	  } else if(drop_target_obj) {
 	     valid_children = drop_target_obj.valid_children;
 	  }
-	  return ((valid_children == "all") || 
+	  return ((valid_children == "all") ||
 		  ($.isArray(valid_children) && ($.inArray(dragee.attr("rel"), valid_children) >= 0)));
       }
       $(jstree).jstree({
           "core" : {"html_titles" : true, "animation":200},
-	  "types" : { 
-		      "max_depth":conf.max_depth, 
-		      "valid_children":conf.valid_children, 
+	  "types" : {
+		      "max_depth":conf.max_depth,
+		      "valid_children":conf.valid_children,
 		      "max_children":conf.max_depth,
 		      "types":conf.objects
 		     },
@@ -774,7 +774,7 @@
           "dnd" : {
 		  "drag_check" : function(data) {
 		      if (!$(data.o).attr("rel")) {
-			  
+
 			  return {after:false, before:false, inside:false};
 		      }
 		      var parent = jQuery.jstree._reference($(jstree))._get_parent($(data.r));
@@ -801,9 +801,9 @@
           "themes" : {"no_load" : true, url:"/assets/themes/apple/style.css", theme:"apple", "icons":true, "dots":true},
           "ui" : { "initially_select":$(jstree).find("li:first").attr("id")},
           "hotkeys" : { "backspace" : function(e) {
-                           e.preventDefault(); 
+                           e.preventDefault();
                            this.remove();
-                          }, 
+                          },
                         "down" : function(e) {
                                 var o = this.data.ui.last_selected || -1;
                                 var n = this._get_next(o);
@@ -811,7 +811,7 @@
 				   this.deselect_all();
 				   this.select_node(n);
                                 }
-                                return false; 
+                                return false;
                         },
                         "up" : function(e) {
                                 var o = this.data.ui.last_selected || -1;
@@ -820,36 +820,36 @@
                                    this.deselect_all();
                                    this.select_node(n);
                                 }
-                                return false; 
+                                return false;
                          },
                         "space" : false, "ctrl+up" : false, "ctrl+down" : false, "shift+up" : false, "shift+down" : false,
                         "shift-space" : false, "ctrl+space" : false, "f2" : false, "del" : false,
                         "left" : function(e) {
                                 var o = this.data.ui.last_selected;
                                 if(o) {
-                                   if(!o.hasClass("jstree-open")) { 
+                                   if(!o.hasClass("jstree-open")) {
                                       var n = this._get_prev(o);
                                       if (n.length > 0) {
                                         this.deselect_all();
-                                        this.select_node(n); 
+                                        this.select_node(n);
                                       }
                                    }
                                 }
-                                return false; 
+                                return false;
                            },
                         "right" : function(e) {
                                 var o = this.data.ui.last_selected;
                                 if(o && o.length) {
                                         if(o.hasClass("jstree-closed")) { this.open_node(o); }
-                                        else if(o.hasClass("jstree-open")){ 
+                                        else if(o.hasClass("jstree-open")){
                                           var n = this._get_next(o);
                                           if (n.length > 0) {
                                              this.deselect_all();
-                                             this.select_node(n); 
+                                             this.select_node(n);
                                           }
                                         }
                                 }
-                                return false; 
+                                return false;
                            },
                         "ctrl+left" : false, "ctrl+right" : false, "shift+left" : false, "shift+right" : false
           },
@@ -858,7 +858,7 @@
       $(jstree).bind("loaded.jstree", function(event, data) {
 	      $(jstree).jstree("open_all");
 	      $(jstree).jstree("select_node","li:first");
-	      $(jstree).bind("select_node.jstree", function(event, data) { 
+	      $(jstree).bind("select_node.jstree", function(event, data) {
 		      $(jstree).focus();
 		  });
 	      $(jstree).jstree("disable_hotkeys");
@@ -936,7 +936,7 @@ function settingsForm(source, title, options) {
     title = typeof title  != 'undefined' ? title : "&nbsp;";
     var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close icon-cancel-circle'></a>" +
 		   "<div class='settings_title_reflect'>"+title+"</div>"+
-                   "<div class='settings_title'>"+title+"</div>" + 
+                   "<div class='settings_title'>"+title+"</div>" +
                    "<div class='contentWrap'> </div></div>");
 
     var instantiateOverlay = function() {
@@ -963,7 +963,7 @@ function settingsForm(source, title, options) {
 		load: true,
 		zIndex: 2000,
                 closeOnClick: false,
-                fixed:fixed, 
+                fixed:fixed,
 		mask: {
 		     zIndex: 1999,
 		     color: "#222",
@@ -1072,11 +1072,11 @@ function colorToHex(color) {
 	   return color;
     }
     var digits = /(.*?)rgb\((\d+), (\d+), (\d+)\)/.exec(color);
-    
+
     var red = parseInt(digits[2]);
     var green = parseInt(digits[3]);
     var blue = parseInt(digits[4]);
-    
+
     var rgb = blue | (green << 8) | (red << 16);
     return digits[1] + '#' + rgb.toString(16);
 };
@@ -1121,44 +1121,46 @@ $(document).bind("ajaxStop", function(event) {
 		$.resume();
 	    });
 
-var login_form_template = '<form accept-charset="UTF-8" action="/account/login" method="post">' + 
-                              '<div id="login_status"></div>' + 
+var login_form_template = '<form accept-charset="UTF-8" action="/account/login" method="post">' +
+                              '<div id="login_status"></div>' +
                               '<div id="username_entry">' +
                               '<label for="user_username">Username</label>' +
                               '<input id="user_username" name="user[username]" size="255" type="text" watermark="username" /></div>' +
                               '<div id="password_entry"><label for="user_password">Password</label><input id="user_password" name="user[password]" size="30" type="password" watermark="password" /></div>' +
                               '<div id="remember_me_check" class="labeled-checkbox">' +
-                                  '<input name="user[remember_me]" type="hidden" value="0" />' +
-                                  '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
-                               '<button disabled="disabled" id="login_button" name="button" type="submit">login</button>' +
-                               '<a id="forgot_password">Forgot your password?</a>' +
-                               '<div id="social_networks_login"><a id="facebook_login" provider="facebook" class="oauth_login"></a>'+
-                               '<a id="twitter_login" provider="twitter" class="oauth_login"></a></div>' +
-                               '</form>';
+                              '<input name="user[remember_me]" type="hidden" value="0" />' +
+                              '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
+                              //Trying a method where the  submit button is enabled at all times,
+                              //but still validates per Andrew's suggestion
+                              '<button enabled="enabled" id="login_button" name="button" type="submit">login</button>' +
+                              '<a id="forgot_password">Forgot your password?</a>' +
+                              '<div id="social_networks_login"><a id="facebook_login" provider="facebook" class="oauth_login"></a>'+
+                              '<a id="twitter_login" provider="twitter" class="oauth_login"></a></div>' +
+                              '</form>';
 
 
-var forgot_password_template = '<div class="small_form" id="forgot_password_form"><form accept-charset="UTF-8" action="/account/password" method="POST">' + 
-                              "<div class='wizard_text'>We'll send you an email containing information on how to reset your password.</div><br/><br/>" + 
+var forgot_password_template = '<div class="small_form" id="forgot_password_form"><form accept-charset="UTF-8" action="/account/password" method="POST">' +
+                              "<div class='wizard_text'>We'll send you an email containing information on how to reset your password.</div><br/><br/>" +
                               '<div id="email_entry">' +
                               '<label for="user_email">Email</label>' +
                               '<input id="user_email" name="user[email]" size="255" type="email" watermark="my@email.com" /></div>' +
-                               '<div><button disabled="disabled" id="forgot_password_button" name="commit" type="submit">Submit</button></div>' +
-                               "<div class='wizard_text'>Check your email.  We've sent you password reset instructions.</div><br/><br/>" + 
-                               '</form></div>';
+                              '<div><button disabled="disabled" id="forgot_password_button" name="commit" type="submit">Submit</button></div>' +
+                              "<div class='wizard_text'>Check your email.  We've sent you password reset instructions.</div><br/><br/>" +
+                              '</form></div>';
 
 
 $.fn.require_fields = function(fields) {
-    var button = $(this);
-    $(fields).bind("input blur propertychange onchange", function() {
-        var button_enable = "enable";
-	$(fields).each(function(index, value) {
-	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
-	        button_enable = "disable";
-	    }
+  var button = $(this);
+  $(fields).bind("input blur propertychange onchange", function() {
+	  var button_enable = "enable";
+		$(fields).each(function(index, value) {
+		  if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+		    button_enable = "disable";
+		  }
+		});
+	  button.button(button_enable);
 	});
-        button.button(button_enable);
-    });
-    $(fields).trigger("propertychange");
+	$(fields).trigger("propertychange");
 }
 
 
@@ -1167,7 +1169,7 @@ $.roxiware.oauth_login = {
         check_login_state:false,
         proxy:true,
 	onSuccess:function(response) {
-	    
+
         },
         params: {}
     }
@@ -1214,7 +1216,7 @@ var _get_auth_info = function(callback) {
 
     callback(auth_info);
     /*
-    Should do a verification that facebook is currently logged in, but FBapi 
+    Should do a verification that facebook is currently logged in, but FBapi
     changed and verifies the domain via the request url domain, which
     won't work as we've authenticated against scribaroo */
     /*
@@ -1393,7 +1395,7 @@ function forgotPassword() {
     template.find("button").require_fields(template.find("input#user_email"));
     template.submit(function(e) {
 	e.preventDefault();
-        $.ajaxSetParamsJSON("/account/reset_password.json", template.find("form").serializeArray(), 
+        $.ajaxSetParamsJSON("/account/reset_password.json", template.find("form").serializeArray(),
 	    {method:"POST",
 		success: function() {
 		    $.notice("Password reset instructions have been sent to your email address",

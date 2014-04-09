@@ -386,7 +386,7 @@ namespace :roxiware do
  
     desc "Initialize a cold deployed package"
     task :package_init, [:instance_type]=>:environment do |t,args|
-       instance_type = args[:instance_type] || :author
+       instance_type = args[:instance_type] || :basic
        settings_file = Rails.root.join("lib","defaults","#{instance_type}_settings.xml")
        if !File.file?(settings_file)
            settings_file = "#{Roxiware::Engine.root}/lib/defaults/#{instance_type}_settings.xml"
@@ -396,6 +396,7 @@ namespace :roxiware do
            f.write("roxiware_params:\n")
            f.write("    application: #{instance_type}\n")
        end
+       Dir.mkdir Rails.root.join("tmp") if !(File.directory? Rails.root.join("tmp"))
        FileUtils.touch Rails.root.join("tmp","restart.txt")
     end
 
@@ -404,7 +405,7 @@ namespace :roxiware do
        Rake::Task["roxiware:backup"].invoke
        Rake::Task["db:drop"].invoke
        Rake::Task["roxiware:base_init"].invoke
-       Rake::Task["roxiware:package_init"].invoke(args[:instance_type] || :basic_author)
+       Rake::Task["roxiware:package_init"].invoke(args[:instance_type] || :basic)
     end
 
     desc "update a roxiware instance"
@@ -448,7 +449,7 @@ namespace :roxiware do
     end
 
     desc "Init Webserver Config"
-    task :config_web, [:host, :domain_name,:aliases]=>:environment do |t,args|
+    task :config_web, [:host,:domain_name,:aliases]=>:environment do |t,args|
         domain_name=args[:domain_name]
 	aliases=args[:aliases]
         conf_file_data = <<-EOF

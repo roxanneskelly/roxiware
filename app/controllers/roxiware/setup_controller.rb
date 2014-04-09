@@ -58,7 +58,7 @@ class Roxiware::SetupController < ApplicationController
 
                         # generate a random password as for this user we'll do an oauth to www.scribaroo.com
                         password = password = Devise.friendly_token.first(20)
-                        @user = Roxiware::User.create({:username=>@verified_params['username'],
+                        @user = Roxiware::User.new({:username=>@verified_params['username'],
                                                           :email=>@verified_params['email'],
                                                           :password=>password,
                                                           :password_confirmation=>password,
@@ -68,14 +68,37 @@ class Roxiware::SetupController < ApplicationController
                         Roxiware::Param::Param.set_application_param("sysntem", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", @verified_params['hostname'])
                         Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", @verified_params['template_guid'])
                         Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", @verified_params['scheme_guid'])
-                        @user.create_person({:first_name=>@verified_params['first_name'],
+                        Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", @verified_params['email']) if @verified_params['email'].present?
+                        Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", @verified_params['email']) if @verified_params['email'].present?
+
+
+                        # set the features based on the site type
+                        Roxiware::Param::Param.set_application_param("blog", "enable_blog", "DAAC4690-FF6A-480B-B157-D71CB4A085DA", true)
+                        Roxiware::Param::Param.set_application_param("people", "enable_people", "D1DBD840-3D0A-4F3A-A45E-719B4DF67F66", true)
+                        Roxiware::Param::Param.set_application_param("events", "enable_events", "48C77594-AA7C-4424-90F8-BCA2EFFF7546", true)
+                        Roxiware::Param::Param.set_application_param("gallery", "enable_gallery", "98E7A520-2A28-4521-9AA7-33E3EDB104DA", true)
+                        case @verified_params['site_type']
+                        when 'author'
+                            Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", true)
+                            Roxiware::Param::Param.set_application_param("system", "google_ad_client", "289108C9-5CFA-4599-BC54-B4E3593E4FC5", "")
+                        when 'basic_blog'
+                            Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", false)
+                        when 'premium_blog'
+                            Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", false)
+                            Roxiware::Param::Param.set_application_param("system", "google_ad_client", "289108C9-5CFA-4599-BC54-B4E3593E4FC5", "")
+                        else
+                            Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", false)
+                        end
+
+                        @user.build_person({:first_name=>@verified_params['first_name'],
                                                 :last_name=>@verified_params['last_name'],
                                                 :email=>@verified_params['email'],
                                                 :role=>"", :bio=>""}, :as=>"")
-                        @user.auth_services.create({:provider=>"roxiware", :uid=>"username"}, :as=>"")
+                        @user.auth_services.build({:provider=>"roxiware", :uid=>"username"}, :as=>"")
                         (@verified_params['auth_ services'] || []).each do |auth_service|
-                            @user.auth_services.create(auth_service, :as=>"")
+                            @user.auth_services.build(auth_service, :as=>"")
                         end
+                        @user.save!
                         sign_in(:user, @user)
                     rescue Exception=>e
                         Rails.logger.error(e.message)
@@ -87,6 +110,7 @@ class Roxiware::SetupController < ApplicationController
                 end
             else
                 @user = Roxiware::User.where(:username=>@verified_params['username']).first
+                raise Exception.new("user not found") if @user.nil?
                 sign_in(:user, @user)
             end
         elsif @setup_step != "welcome"

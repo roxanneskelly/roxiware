@@ -65,7 +65,7 @@ class Roxiware::SetupController < ApplicationController
                                                           :role=>"admin"}, :as=>"")
                         Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", @setup_type)
                         Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", @verified_params['site_type'])
-                        Roxiware::Param::Param.set_application_param("sysntem", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", @verified_params['hostname'])
+                        Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", @verified_params['hostname'])
                         Roxiware::Param::Param.set_application_param("system", "current_template", "B8A73EF2-9C65-4022-ABD3-2D4063827108", @verified_params['template_guid'])
                         Roxiware::Param::Param.set_application_param("system", "layout_scheme", "99FA5423-147C-4929-A432-268BDED6DE44", @verified_params['scheme_guid'])
                         Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", @verified_params['email']) if @verified_params['email'].present?

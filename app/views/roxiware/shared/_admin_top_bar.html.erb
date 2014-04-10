@@ -1,169 +1,169 @@
 <% if current_user.present? && ["admin", "super"].include?(current_user.role) %>
    <%= content_tag(:div, :id=>"settings_bar", :class=>"settings", :style=>"display:none") do
-       content_tag(:div, :id=>"settings_menu", :class=>"ddsmoothmenu") do
-           content_tag(:ul) do
-	       content_tag(:li, :id=>"expand_collapse") do
-		    content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-expandcontract") + content_tag(:span, "Hide", :class=>"top_menu_text"))
-	       end +
-               tag(:hr, :id=>"application_menus") +
-               
-               tag(:hr) +
-	       content_tag(:li, :id=>"expand_collapse_admin") do
-		    content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-expandcontract-admin") + content_tag(:span, "", :class=>"admin_expander_text top_menu_text"))
-	       end +
-               content_tag(:li, :class=>"admin_menu") do
-                   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-user")+content_tag(:span, "Self", :class=>"top_menu_text") +
-                   content_tag(:ul) do
-	               content_tag(:li, content_tag(:a, "Account", :rel=>edit_account_path(current_user.id), :form=>"Edit Account")) +
-	               content_tag(:li, content_tag(:a, "Profile", :rel=>edit_person_path(current_user.person.id), :form=>"Edit Biography")) +
-	               content_tag(:li, content_tag(:a, "Password", :rel=>account_update_password_path, :form=>"Change Password")) 
-                   end
-               end +
-	       if ((["custom","forum"].include?(@setup_type) || (current_user.role == "super")) && can?(:create, Roxiware::User)) 
-                   content_tag(:li, :class=>"admin_menu") do
-                       content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-users")+content_tag(:span, "Users", :class=>"top_menu_text") +
-                       content_tag(:ul) do
-	                   content_tag(:li, content_tag(:a, "Accounts", :rel=>setting_path('accounts'), :form=>"Manage Accounts")) +
-	                   content_tag(:li, content_tag(:a, "Profiles", :rel=>setting_path('people'), :form=>"Manage Profiles"))
-                       end
-                   end
-	       end +
-	       content_tag(:li, :class=>"admin_menu") do
-                   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-image")+content_tag(:span, "Customize", :class=>"top_menu_text") +
-                   content_tag(:ul) do
-	              content_tag(:li, content_tag(:a, "Template", :rel=>layout_index_path, :form=>"Choose Template")) +
-	              content_tag(:li, content_tag(:a, "Appearance", :rel=>customize_layout_path(@current_layout.guid), :form=>"Customize Template")) +
-	              if (can? :edit, @current_layout) 
-                          tag(:hr) +
-                          content_tag(:li, content_tag(:a, "Edit", :rel=>edit_layout_path(@current_layout.guid), :form=>"Edit Template")) +
-                          content_tag(:li, content_tag(:a, "New", :rel=>new_layout_path+"?clone="+@current_layout.guid, :form=>"New Template")) +
-                          content_tag(:li, content_tag(:a, "Export", :href=>layout_path(@current_layout.guid)+".xml", :target=>"_blank"))
-                      end
-                  end
-               end +
-               if ((current_user.role == "super") || Roxiware::Param::Param.application_param_val("blog", "enable_blog"))
+	   content_tag(:div, :id=>"settings_menu", :class=>"ddsmoothmenu") do
+		   content_tag(:ul) do
+		   content_tag(:li, :id=>"expand_collapse") do
+			content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-expandcontract") + content_tag(:span, "Hide", :class=>"top_menu_text"))
+		   end +
+			   tag(:hr, :id=>"application_menus") +
+			   
+			   tag(:hr) +
+		   content_tag(:li, :id=>"expand_collapse_admin") do
+			content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-expandcontract-admin") + content_tag(:span, "", :class=>"admin_expander_text top_menu_text"))
+		   end +
+			   content_tag(:li, :class=>"admin_menu") do
+				   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-user")+content_tag(:span, "Self", :class=>"top_menu_text") +
+				   content_tag(:ul) do
+				   content_tag(:li, content_tag(:a, "Account", :rel=>edit_account_path(current_user.id), :form=>"Edit Account")) +
+				   content_tag(:li, content_tag(:a, "Profile", :rel=>edit_person_path(current_user.person.id), :form=>"Edit Biography")) +
+				   content_tag(:li, content_tag(:a, "Password", :rel=>account_update_password_path, :form=>"Change Password")) 
+				   end
+			   end +
+		   if ((["custom","forum"].include?(@setup_type) || (current_user.role == "super")) && can?(:create, Roxiware::User)) 
+				   content_tag(:li, :class=>"admin_menu") do
+					   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-users")+content_tag(:span, "Users", :class=>"top_menu_text") +
+					   content_tag(:ul) do
+					   content_tag(:li, content_tag(:a, "Accounts", :rel=>setting_path('accounts'), :form=>"Manage Accounts")) +
+					   content_tag(:li, content_tag(:a, "Profiles", :rel=>setting_path('people'), :form=>"Manage Profiles"))
+					   end
+				   end
+		   end +
 		   content_tag(:li, :class=>"admin_menu") do
-		       content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-feed")+content_tag(:span, "Blog", :class=>"top_menu_text") +
-		       content_tag(:ul) do
-                          ["blog"].collect do |blog_class|
-			      content_tag(:li, content_tag(:a, "New #{blog_class.titleize} Post", :rel=>new_blog_post_path + '?blog_class=' + blog_class, :form=>"New #{blog_class.titleize} Post"))
-                          end.join("").html_safe + 
-                          tag(:hr) + 
-	                  content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('blog'), :form=>"Blog Settings"))
-		      end
+				   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-image")+content_tag(:span, "Customize", :class=>"top_menu_text") +
+				   content_tag(:ul) do
+				  content_tag(:li, content_tag(:a, "Template", :rel=>layout_index_path, :form=>"Choose Template")) +
+				  content_tag(:li, content_tag(:a, "Appearance", :rel=>customize_layout_path(@current_layout.guid), :form=>"Customize Template")) +
+				  if (can? :edit, @current_layout) 
+						  tag(:hr) +
+						  content_tag(:li, content_tag(:a, "Edit", :rel=>edit_layout_path(@current_layout.guid), :form=>"Edit Template")) +
+						  content_tag(:li, content_tag(:a, "New", :rel=>new_layout_path+"?clone="+@current_layout.guid, :form=>"New Template")) +
+						  content_tag(:li, content_tag(:a, "Export", :href=>layout_path(@current_layout.guid)+".xml", :target=>"_blank"))
+					  end
+				  end
+			   end +
+			   if ((current_user.role == "super") || Roxiware::Param::Param.application_param_val("blog", "enable_blog"))
+		   content_tag(:li, :class=>"admin_menu") do
+			   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-feed")+content_tag(:span, "Blog", :class=>"top_menu_text") +
+			   content_tag(:ul) do
+						  ["blog"].collect do |blog_class|
+				  content_tag(:li, content_tag(:a, "New #{blog_class.titleize} Post", :rel=>new_blog_post_path + '?blog_class=' + blog_class, :form=>"New #{blog_class.titleize} Post"))
+						  end.join("").html_safe + 
+						  tag(:hr) + 
+					  content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('blog'), :form=>"Blog Settings"))
+			  end
 		   end 
-               end +
-               if ((current_user.role == "super") || Roxiware::Param::Param.application_param_val("events", "enable_events"))
+			   end +
+			   if ((current_user.role == "super") || Roxiware::Param::Param.application_param_val("events", "enable_events"))
 		   content_tag(:li, :class=>"admin_menu") do
-		       content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-calendar")+content_tag(:span, "Calendar", :class=>"top_menu_text") +
-		       content_tag(:ul) do
+			   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-calendar")+content_tag(:span, "Calendar", :class=>"top_menu_text") +
+			   content_tag(:ul) do
 			  content_tag(:li, content_tag(:a, "New Event", :rel=>new_event_path, :form=>"New Event")) +
-                          if (current_user.role == "super") 
-                              tag(:hr) + 
-	                      content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('events'), :form=>"Calendar Settings"))
-                          end
-		      end
+						  if (current_user.role == "super") 
+							  tag(:hr) + 
+						  content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('events'), :form=>"Calendar Settings"))
+						  end
+			  end
 		   end 
-               end +
-               if ((current_user.role == "super") || Roxiware::Param::Param.application_param_val("books", "enable_books"))
+			   end +
+			   if ((current_user.role == "super") || Roxiware::Param::Param.application_param_val("books", "enable_books"))
 		   content_tag(:li, :class=>"admin_menu") do
-		       content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-books")+content_tag(:span, "Books", :class=>"top_menu_text") +
-		       content_tag(:ul) do
+			   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-books")+content_tag(:span, "Books", :class=>"top_menu_text") +
+			   content_tag(:ul) do
 			  content_tag(:li, content_tag(:a, "New Book", :rel=>new_book_path, :form=>"New Book")) +
 			  content_tag(:li, content_tag(:a, "New Series", :rel=>new_book_series_path, :form=>"New Series")) +
-                          if (current_user.role == "super") 
-			      tag(:hr) + 
-			      content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('books'), :form=>"Books Settings"))
-                          end
-		      end
+						  if (current_user.role == "super") 
+				  tag(:hr) + 
+				  content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('books'), :form=>"Books Settings"))
+						  end
+			  end
 		   end 
-               end +
-               content_tag(:li, :class=>"admin_menu") do
-                   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-wrench")+content_tag(:span, "System", :class=>"top_menu_text") +
-                   content_tag(:ul) do
-	               content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path("system"), :form=>"System Settings")) +
-	               content_tag(:li, content_tag(:a, "Import", :rel=>setting_path('import'), :form=>"Import"))
-                   end
-               end +
-               content_tag(:li) do
-                   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-scribaroo")+content_tag(:span, "Support", :class=>"top_menu_text") +
-                   content_tag(:ul) do
-	               content_tag(:li, content_tag(:a, "scribaroo.com", :target=>"_blank",:href=>"http://www.scribaroo.com")) +
-	               content_tag(:li, content_tag(:a, "Help", :target=>"_blank", :href=>"http://wiki.scribaroo.com")) +
-	               content_tag(:li, content_tag(:a, "Forums", :target=>"_blank", :href=>"http://www.scribaroo.com/forum")) +
-	               content_tag(:li, content_tag(:a, "Report Bug", :target=>"_top", :href=>"mailto:bugs@roxiware.com?Subject="+(u "Bug Report - #{request.host}")))
-                   end
-               end +
-               tag(:hr) +
-               content_tag(:li) do
-	           content_tag(:a, :href=>destroy_session_path('user')) do
-                       content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-switch-2")+content_tag(:span, "Sign Out", :class=>"top_menu_text")
-                   end
-               end 
-           end
-       end
+			   end +
+			   content_tag(:li, :class=>"admin_menu") do
+				   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-wrench")+content_tag(:span, "System", :class=>"top_menu_text") +
+				   content_tag(:ul) do
+				   content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path("system"), :form=>"System Settings")) +
+				   content_tag(:li, content_tag(:a, "Import", :rel=>setting_path('import'), :form=>"Import"))
+				   end
+			   end +
+			   content_tag(:li) do
+				   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-scribaroo")+content_tag(:span, "Support", :class=>"top_menu_text") +
+				   content_tag(:ul) do
+				   content_tag(:li, content_tag(:a, "scribaroo.com", :target=>"_blank",:href=>"http://www.scribaroo.com")) +
+				   content_tag(:li, content_tag(:a, "Help", :target=>"_blank", :href=>"http://wiki.scribaroo.com")) +
+				   content_tag(:li, content_tag(:a, "Forums", :target=>"_blank", :href=>"http://www.scribaroo.com/forum")) +
+				   content_tag(:li, content_tag(:a, "Report Bug", :target=>"_top", :href=>"mailto:bugs@roxiware.com?Subject="+(u "Bug Report - #{request.host}")))
+				   end
+			   end +
+			   tag(:hr) +
+			   content_tag(:li) do
+			   content_tag(:a, :href=>destroy_session_path('user')) do
+					   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-switch-2")+content_tag(:span, "Sign Out", :class=>"top_menu_text")
+				   end
+			   end 
+		   end
+	   end
    end %>
-    <script>
+	<script>
 $(function() {
-        $("div#settings_menu hr#application_menus").after($("ul.application_menu > li"));
-	$("div#settings_menu a[form]").click(function() {
-	   settingsForm($(this).attr("rel"), $(this).attr("form"));
-	});
-        $("div#settings_menu li#page_fork, div#settings_menu li#page_delete").click(function() {
-           $("#mainBody").trigger("context_menu", $(this).attr("id"));
-        });
+    $("div#settings_menu hr#application_menus").after($("ul.application_menu > *"));
+    $("div#settings_menu a[form]").click(function() {
+        settingsForm($(this).attr("rel"), $(this).attr("form"));
+    });
+    $("div#settings_menu li#page_fork, div#settings_menu li#page_delete").click(function() {
+	    $("#mainBody").trigger("context_menu", $(this).attr("id"));
+    });
 
 
-        $("#expand_collapse_admin").click(function() {
-            if($("#settings_bar").toggleClass("enable_admin").is(".enable_admin")) {
-                sessionStorage.admin_menu_class = "enable_admin";
-            }
-            else {
-                sessionStorage.admin_menu_class = "";
-            }
-	    ddsmoothmenu.init({
+    $("#expand_collapse_admin").click(function() {
+        if($("#settings_bar").toggleClass("enable_admin").is(".enable_admin")) {
+            sessionStorage.admin_menu_class = "enable_admin";
+        }
+    else {
+        sessionStorage.admin_menu_class = "";
+    }
+    ddsmoothmenu.init({
+        noarrow: false,
+        mainmenuid: "settings_menu",
+        orientation: 'v',
+        classname: 'ddsmoothmenu_settings',
+		contentsource: "markup",
+		zIndex:1000
+		});
+		});
+
+		$("#expand_collapse").click(function() {
+			sessionStorage.menu_collapsed = $("#settings_bar").toggleClass("menu_expanded").is(".menu_expanded");
+		ddsmoothmenu.init({
 		noarrow: false,
 		mainmenuid: "settings_menu",
 		orientation: 'v',
 		classname: 'ddsmoothmenu_settings',
 		contentsource: "markup",
 		zIndex:1000
-	    });
-        });
+		});
 
-        $("#expand_collapse").click(function() {
-            sessionStorage.menu_collapsed = $("#settings_bar").toggleClass("menu_expanded").is(".menu_expanded");
-	    ddsmoothmenu.init({
-		noarrow: false,
-		mainmenuid: "settings_menu",
-		orientation: 'v',
-		classname: 'ddsmoothmenu_settings',
-		contentsource: "markup",
-		zIndex:1000
-	    });
+		});
 
-        });
+		$("#settings_bar").addClass(sessionStorage.admin_menu_class);
+		$("#settings_bar").addClass(sessionStorage.menu_collapsed ? "" : "menu_expanded");
 
-        $("#settings_bar").addClass(sessionStorage.admin_menu_class);
-        $("#settings_bar").addClass(sessionStorage.menu_collapsed ? "" : "menu_expanded");
+		ddsmoothmenu.init({
+			noarrow: false,
+			mainmenuid: "settings_menu",
+			orientation: 'v',
+			classname: 'ddsmoothmenu_settings',
+			contentsource: "markup",
+			zIndex:1000
+		});
 
-        ddsmoothmenu.init({
-            noarrow: false,
-            mainmenuid: "settings_menu",
-            orientation: 'v',
-            classname: 'ddsmoothmenu_settings',
-            contentsource: "markup",
-            zIndex:1000
-        });
-
-        $("div#help_bar_items").append($(".help_bar_entry").css("display", "inline-block"));
-        $("div#help_bar").scrollable({circular:true, vertical:false}).autoscroll({interval:10000});
+		$("div#help_bar_items").append($(".help_bar_entry").css("display", "inline-block"));
+		$("div#help_bar").scrollable({circular:true, vertical:false}).autoscroll({interval:10000});
 
 
-        $("div#application_buttons").append($(".application_button"));
-        $("div#settings_bar").fadeIn(100);
+		$("div#application_buttons").append($(".application_button"));
+		$("div#settings_bar").fadeIn(100);
 
-     });
+	 });
 
    </script>
 <% end %>

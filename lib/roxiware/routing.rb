@@ -66,6 +66,7 @@ module ActionDispatch::Routing
 	    get "/setup" => "setup#show"
 	    put "/setup" => "setup#update"
 	    get "/setup/import" => "setup#import"
+	    get "/setup/books" => "setup#books"
         end
 
 	def roxiware_page

@@ -15,47 +15,41 @@ class Roxiware::SetupController < ApplicationController
         params[:key].present?
     end
 
-   before_filter do
+
+    before_filter do
       @role = "guest"
       @role = current_user.role unless current_user.nil?
       @setup_step ||= "welcome"
       @setup_type = nil if @setup_step == "welcome"
-
-      verifier = ActiveSupport::MessageVerifier.new(AppConfig.host_setup_verify_key)
-      verified_result = verifier.verify(params[:key]) if params[:key].present?
-      verified_result = nil if verified_result.present? && (verified_result.shift < Time.now)
-      if(verified_result.nil? && params[:key].present?)
-          raise ActiveResource::UnauthorizedAccess
-      end
-      @verified_params = ActiveSupport::JSON.decode(verified_result.first)
    end
 
     # GET /setup
     def show
+        verifier = ActiveSupport::MessageVerifier.new(AppConfig.host_setup_verify_key)
+        verified_result = verifier.verify(params[:key]) if params[:key].present?
+        #verified_result = nil if verified_result.present? && (verified_result.shift < Time.now)
+        verified_result.shift
+        if(verified_result.nil? && params[:key].present?)
+            redirect_to "http://www.scribaroo.com/"
+            return;
+        end
+        @verified_params = ActiveSupport::JSON.decode(verified_result.first)
+
         Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", "basic_author") if @setup_step == "welcome"
         Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", request.host) if @setup_step == "welcome"
 
+        @setup_type ||= @verified_params['site_type']
+        puts "SETUP type #{@setup_type}"
         if @verified_params.present?
             puts "SETUP STEP #{@setup_step}"
             puts "VERIFIED #{@verified_params.inspect}"
+            @person = current_user.person if current_user.present?
             if @setup_step == "welcome"
                 ActiveRecord::Base.transaction do
                     begin
                         #we're just starting so initialize some paramters and create our user
-                        case @verified_params["site_type"]
-                        when "author"
-                            @setup_type = "author"
-                            _set_setup_step("import_biography")
-                        when "basic_blog"
-                            @setup_type = "blog"
-                            _set_setup_step("edit_biography")
-                        when "premium_blog"
-                            @setup_type = "blog"
-                            _set_setup_step("edit_biography")
-                        else
-                            @setup_type = "custom"
-                        end
-
+                        _set_setup_step("edit_biography")
+                        @setup_step = "edit_biography"
                         # generate a random password as for this user we'll do an oauth to www.scribaroo.com
                         password = password = Devise.friendly_token.first(20)
                         @user = Roxiware::User.new({:username=>@verified_params['username'],
@@ -81,23 +75,30 @@ class Roxiware::SetupController < ApplicationController
                         when 'author'
                             Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", true)
                             Roxiware::Param::Param.set_application_param("system", "google_ad_client", "289108C9-5CFA-4599-BC54-B4E3593E4FC5", "")
+                            Roxiware::Param::Param.set_application_param("system", "subtitle", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", "Author")
                         when 'basic_blog'
                             Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", false)
+                            Roxiware::Param::Param.set_application_param("system", "subtitle", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", "Blogger")
                         when 'premium_blog'
                             Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", false)
                             Roxiware::Param::Param.set_application_param("system", "google_ad_client", "289108C9-5CFA-4599-BC54-B4E3593E4FC5", "")
+                            Roxiware::Param::Param.set_application_param("system", "subtitle", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", "Blogger")
                         else
                             Roxiware::Param::Param.set_application_param("books", "enable_books", "F9373A7F-EFCE-4FFF-9055-B7BFA6D61B63", false)
                         end
 
-                        @user.build_person({:first_name=>@verified_params['first_name'],
+                        @person = @user.build_person({:first_name=>@verified_params['first_name'],
                                                 :last_name=>@verified_params['last_name'],
                                                 :email=>@verified_params['email'],
                                                 :role=>"", :bio=>""}, :as=>"")
                         @user.auth_services.build({:provider=>"roxiware", :uid=>"username"}, :as=>"")
-                        (@verified_params['auth_ services'] || []).each do |auth_service|
-                            @user.auth_services.build(auth_service, :as=>"")
+                        social_networks = @person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
+                        (@verified_params['social_networks'] || {}).each do |provider, uid|
+                            @user.auth_services.build({ :provider=>provider, :uid=>uid }, :as=>"")
+                            social_network = social_networks.set_param(provider, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
+                            social_network.set_param("uid", uid, "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
                         end
+                        @person.save!
                         @user.save!
                         sign_in(:user, @user)
                     rescue Exception=>e
@@ -120,14 +121,14 @@ class Roxiware::SetupController < ApplicationController
         setup_function = "_show_"+[@setup_type, @setup_step].compact.join("_")
         send("_show_"+[@setup_type, @setup_step].compact.join("_")) if respond_to?(setup_function, true)
         respond_to do |format|
-            format.html {render :template=>"roxiware/setup/#{template}"}
+            format.html {render}
         end
     end
 
 
     # PUT /setup
     def update
-        result = send("_"+[@setup_type, @setup_step].compact.join("_")) || {}
+        result = send("_#{@setup_step}") || {}
         @setup_type = Roxiware::Param::Param.application_param_val('setup', 'setup_type')
         @setup_step = Roxiware::Param::Param.application_param_val('setup', 'setup_step') || 'welcome'
         @setup_type = nil if(@setup_type.blank?)
@@ -143,7 +144,7 @@ class Roxiware::SetupController < ApplicationController
         end
     end
 
-    # import books for an author/amazon link/goodreads link
+    # import author information
     def import
         result = {}
         if(params[:type] == "author")
@@ -179,12 +180,39 @@ class Roxiware::SetupController < ApplicationController
                 search_params[:title] = params[:search]
                 result = goodreads.search_author(search_params)
                 result.each do |author|
-                    author[:bio] = Sanitize.clean(author[:about][0..300], Roxiware::Sanitizer::BASIC_SANITIZER)+"..."
+                    author[:bio] = (Sanitize.clean(author[:about][0..300], Roxiware::Sanitizer::BASIC_SANITIZER)+"...")
                 end
             end
         end
         respond_to do |format|
             format.json { render :json => result }
+        end
+    end
+
+    # get books for an author
+    def books
+        @books = Roxiware::Book.order("publish_date ASC")
+        if @books.blank? && current_user.person.goodreads_id
+            seo_books = {}
+            grid_books = []
+            _get_goodreads_author_books.each do |book|
+                next if grid_books.include?(book.goodreads_id)
+                grid_books << book.goodreads_id
+                seo_title = book.title.to_seo
+                init_title = book.title
+                title_add = 1
+                while(seo_books[seo_title].present?)
+                    book.title = "#{init_title} (#{title_add})"
+                    seo_title = book.title.to_seo
+                    title_add += 1
+                end
+                seo_books[book.title.to_seo] = book
+                book.save!
+            end
+            @books = seo_books.values.sort{|x, y| x.publish_date <=> y.publish_date}.collect{|book| book.ajax_attrs(@role)}
+        end
+        respond_to do |format|
+            format.json { render :json => @books }
         end
     end
 
@@ -228,111 +256,25 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
-    def _author_name
-        result = nil
-        ActiveRecord::Base.transaction do
-            begin
-                if ((params[:setup_action] == "back_button") || (params[:setup_step] == "welcome"))
-                    Roxiware::Param::Param.set_application_param("setup", "setup_type", "5C5D2A03-F90E-4F81-AF44-8C182EB338FB", nil)
-                    if (current_user.present?)
-                        user = current_user
-                        sign_out
-                        user.destroy
-                    end
-                    result = _set_setup_step("welcome")
-                else
-                    current_user.build_person({:first_name=>params[:first_name],
-                                                  :last_name=>params[:last_name],
-                                                  :middle_name=>params[:middle_name],
-                                                  :role=>"",
-                                                  :bio=>"",
-                                                  :email=>current_user.email}, :as=>"")
-                    if(!current_user.save)
-                        result = report_error(current_user)
-                    else
-                        if params[:setup_action] == "skip_import"
-                            result = _set_setup_step("edit_biography")
-                        elsif params[:setup_action] == "import"
-                            result = _set_setup_step("import_biography")
-                        end
-                    end
-                end
-            rescue Exception => e
-                result ||= {}
-                result[:error] ||= []
-                result[:error] << ["exception", e.message]
-                puts "FAILURE setting author name: #{e.message}"
-                puts e.backtrace.join("\n")
-                raise ActiveRecord::Rollback
-            end
-        end
-        result
-    end
-
-    def _author_import_biography
-        result = nil
-        ActiveRecord::Base.transaction do
-            begin
-                if params[:setup_action] == "back_button"
-                    if (current_user.present?)
-                        current_user.person.delete
-                    end
-                    result = _set_setup_step("name")
-                elsif params[:setup_action] == "skip_import"
-                    current_user.person.assign_attributes({:role=>"", :bio=>"", :email=>current_user.email, :thumbnail=>"", :image=>"", :large_image=>""}, :as=>"")
-                    if current_user.person.save
-                        result = _set_setup_step("edit_biography")
-                    else
-                        result = report_error(current_user.person)
-                    end
-                elsif params[:goodreads_id].present?
-                    current_user.person.goodreads_id=params[:goodreads_id]
-                    goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)
-                    author = goodreads.search_author({:goodreads_id=>params[:goodreads_id]}).first;
-                    if(author.present?)
-                        current_user.person.bio = author[:about]
-                        current_user.person.thumbnail = author[:thumbnail]
-                        current_user.person.image = author[:image]
-                        current_user.person.large_image = author[:large_image]
-                        # import image here
-                        current_user.person.save!
-                    end
-                    result = _set_setup_step("edit_biography")
-                end
-            rescue Exception => e
-                result ||= {}
-                result[:error] ||= []
-                result[:error] << ["exception", e.message]
-                puts "FAILURE importing author biography: #{e.message}"
-                puts e.backtrace.join("\n")
-                raise ActiveRecord::Rollback
-            end
-        end
-        result
-    end
 
     def _edit_biography
         result = nil
         ActiveRecord::Base.transaction do
             begin
-                @books = []
-                if params[:setup_action] == "back_button"
-                    if current_user.person.goodreads_id_join.present?
-                        result = _set_setup_step("import_biography")
-                        current_user.person.goodreads_id_join.destroy
-                    else
-                        result = _set_setup_step("name")
+                current_user.person.show_in_directory = true;
+                current_user.person.assign_attributes(params[:person], :as=>@role)
+                if(!current_user.person.save)
+                    result = report_error(current_user.person)
+                else
+                    Roxiware::Param::Param.set_application_param("system", "title", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", params[:person][:full_name])
+                    Roxiware::Param::Param.set_application_param("people", "default_biography", "B908FDB5-A0B5-48AC-8BAE-48741485CC06", current_user.person.id)
+                    Roxiware::Param::Param.set_application_param("system", "site_copyright_first_year", "7D815EDA-93DA-411B-9B09-91BA774D6CE2", Time.now.strftime("%Y"))
+                    social_networks = current_user.person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
+                    (params[:social_networks] || []).each do |name, value|
+                        social_network = social_networks.set_param(name, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
+                        social_network.set_param("uid", value, "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
                     end
-                elsif params[:setup_action] == "save"
-                    current_user.person.show_in_directory = true;
-                    current_user.person.assign_attributes(params[:person], :as=>@role)
-                    if(!current_user.person.save)
-                        result = report_error(current_user.person)
-                    else
-                        Roxiware::Param::Param.set_application_param("people", "default_biography", "B908FDB5-A0B5-48AC-8BAE-48741485CC06", current_user.person.id)
-                        Roxiware::Param::Param.set_application_param("system", "site_copyright_first_year", "7D815EDA-93DA-411B-9B09-91BA774D6CE2", Time.now.strftime("%Y"))
-                        result = _set_setup_step("social_networks")
-                    end
+                    result = _set_setup_step("site_setup")
                 end
             rescue Exception => e
                 result ||= {}
@@ -346,68 +288,24 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
-    def _author_edit_biography
-        _edit_biography
-    end
-
-    def _blog_edit_biography
-        _edit_biography
-    end
-
-    def _show_social_networks
-        @person = current_user.person
-    end
-
-    def _show_author_social_networks
-        _show_social_networks
-    end
-
-    def _show_blog_social_networks
-        _show_social_networks
-    end
-
-    def _set_social_networks
-        if(params[:person][:params].present? && params[:person][:params][:social_networks].present?)
-            social_networks = current_user.person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
-            params[:person][:params][:social_networks].each do |name, value|
-                social_network = social_networks.set_param(name, {}, "5CC121A6-AB23-49B4-BB14-0E03119F00E6", "local")
-                social_network.set_param("uid", value[:uid], "FB528C00-8510-4876-BD82-EF694FEAC06D", "local")
-                if(current_user.present? && can?(:edit, current_user))
-                    social_network.set_param("allow_login", value[:allow_login], "CCD842C8-F516-49DD-A8C3-FF32750124D2", "local")
-                    if value[:allow_login]
-                        current_user.auth_services.create({:provider=>name, :uid=>value[:uid]}, :as=>@role)
-                    end
-                end
-            end
-        end
-    end
-
-    def _author_social_networks
+    def _site_setup
         result = nil
         ActiveRecord::Base.transaction do
             begin
-                @books = []
-                if params[:setup_action] == "back_button"
-                    result = _set_setup_step("edit_biography")
-                elsif params[:setup_action] == "save"
-                    ActiveRecord::Base.transaction do
-                        begin
-                            _set_social_networks
-                            result = _set_setup_step("manage_books")
-                            # preload the list of books
-                            _show_author_manage_books
-                        rescue Exception => e
-                            print e.message
-                            puts e.backtrace.join("\n")
-                            raise e
-                        end
-                    end
+                Roxiware::Param::Param.set_application_param("system", "title", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", params[:settings][:title])
+                Roxiware::Param::Param.set_application_param("system", "subtitle", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", params[:settings][:subtitle])
+                Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", params[:settings][:meta_description])
+                Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", params[:settings][:meta_keywords])
+                if(@setup_type="author")
+                    result = _set_setup_step("manage_books")
+                else
+                    result = _set_setup_step("first_blog_post")
                 end
             rescue Exception => e
                 result ||= {}
                 result[:error] ||= []
                 result[:error] << ["exception", e.message]
-                puts "FAILURE setting social networks: #{e.message}"
+                puts "FAILURE editing setting system settings: #{e.message}"
                 puts e.backtrace.join("\n")
                 raise ActiveRecord::Rollback
             end
@@ -416,113 +314,46 @@ class Roxiware::SetupController < ApplicationController
     end
 
 
-    def _blog_social_networks
-        result = nil
-        ActiveRecord::Base.transaction do
-            begin
-                if params[:setup_action] == "back_button"
-                    result = _set_setup_step("edit_biography")
-                elsif params[:setup_action] == "save"
-                    ActiveRecord::Base.transaction do
-                        begin
-                            _set_social_networks
-                            result = _set_setup_step("choose_template")
-                            # preload the list of books
-                            _show_blog_choose_template
-                        rescue Exception => e
-                            print e.message
-                            puts e.backtrace.join("\n")
-                            raise e
-                        end
-                    end
-                end
-            rescue Exception => e
-                result ||= {}
-                result[:error] ||= []
-                result[:error] << ["exception", e.message]
-                puts "FAILURE setting social networks: #{e.message}"
-                puts e.backtrace.join("\n")
-                raise ActiveRecord::Rollback
-            end
-        end
-        result
-    end
 
-    def _show_author_manage_books
-        @books = Roxiware::Book.order("publish_date DESC")
-        if @books.blank? && current_user.person.goodreads_id
-            seo_books = {}
-            grid_books = []
-            _get_goodreads_author_books.each do |book|
-                next if grid_books.include?(book.goodreads_id)
-                grid_books << book.goodreads_id
-                seo_title = book.title.to_seo
-                init_title = book.title
-                title_add = 1
-                while(seo_books[seo_title].present?)
-                    book.title = "#{init_title} (#{title_add})"
-                    seo_title = book.title.to_seo
-                    title_add += 1
-                end
-                seo_books[book.title.to_seo] = book
-                book.save!
-            end
-            @books = seo_books.values.sort{|x, y| y.publish_date <=> x.publish_date}
-        end
-    end
-
-
-    def _author_manage_books
+    def _manage_books
         result = nil
         ActiveRecord::Base.transaction do
             begin
                 @books = []
-                if params[:setup_action] == "back_button"
-                    # back button, delete all existing series and go to social networks
-                    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::Book")
-                    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::BookSeries")
-                    Roxiware::Book.delete_all
-                    Roxiware::BookSeriesJoin.delete_all
-                    Roxiware::BookSeries.delete_all
-                    result = _set_setup_step("social_networks")
-
-                elsif params[:setup_action] == "save"
-                    # delete all existing series so we don't accidentally overwrite them
-                    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::Book")
-                    Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::BookSeries")
-                    Roxiware::BookSeriesJoin.delete_all
-                    Roxiware::BookSeries.delete_all
-                    Roxiware::Book.delete_all
-                    books_doc = Nokogiri::XML(request.body)
-                    books = []
-                    book_nodes = books_doc.xpath("//books/book")
-                    book_nodes.each do |book_node|
-                        new_book = Roxiware::Book.new
-                        new_book.goodreads_id=book_node["goodreads_id"]
-                        new_book.isbn=book_node["isbn"]
-                        new_book.isbn13=book_node["isbn13"]
-                        begin
-                            new_book.publish_date = Date.strptime(book_node['publish_date'], "%m/%d/%Y") if book_node["publish_date"]
-                        rescue Exception=>e
-                            # On date parse errors, just leave a blank date
-                        end
-                        new_book.description = book_node.search('description').children.find{|e| e.cdata?}.text
-                        new_book.title = book_node.search('title').text
-                        new_book.image = book_node.search('image').text
-                        new_book.large_image = book_node.search('large_image').text
-                        new_book.thumbnail = book_node.search('thumbnail').text
-                        new_book.init_sales_links
-                        new_book.save!
-                        books << new_book
+                # delete all existing books and series so we don't accidentally overwrite them
+                Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::Book")
+                Roxiware::GoodreadsIdJoin.delete_all(:grent_type=>"Roxiware::BookSeries")
+                Roxiware::BookSeriesJoin.delete_all
+                Roxiware::BookSeries.delete_all
+                Roxiware::Book.delete_all
+                books_doc = Nokogiri::XML(request.body)
+                books = []
+                result = {}
+                book_nodes = books_doc.xpath("//books/book")
+                book_nodes.each do |book_node|
+                    new_book = Roxiware::Book.new
+                    new_book.goodreads_id=book_node["goodreads_id"]
+                    new_book.isbn=book_node["isbn"]
+                    new_book.isbn13=book_node["isbn13"]
+                    begin
+                        new_book.publish_date = Date.strptime(book_node['publish_date'], "%m/%d/%Y") if book_node["publish_date"]
+                    rescue Exception=>e
+                        # On date parse errors, just leave a blank date
                     end
-                    if books.present?
-                        # ask the author if they want to set their books up in a series
-                        result = _set_setup_step("series")
-                    else
-                        # no books, so just let them choose their template
-                        result = _set_setup_step("choose_template")
+                    new_book.description = book_node.search('description').children.find{|e| e.cdata?}.text
+                    new_book.title = book_node.search('title').text
+                    new_book.image = book_node.search('image').text
+                    new_book.large_image = book_node.search('large_image').text
+                    new_book.thumbnail = book_node.search('thumbnail').text
+                    new_book.init_sales_links
+                    new_book.save!
+                    if(new_book.errors.present?)
+                        result = report_error(new_book)
+                        break
                     end
+                    books << new_book
                 end
+                result = _set_setup_step("first_post") unless result[:errors].present?
             rescue Exception => e
                 result ||= {}
                 result[:error] ||= []
@@ -533,6 +364,31 @@ class Roxiware::SetupController < ApplicationController
             end
         end
         result
+    end
+
+    def _first_post
+        ActiveRecord::Base.transaction do
+            begin
+                @post = Roxiware::Blog::Post.new
+                @post.update_attributes({ :person_id=>current_user.person.id,
+                                                        :post_date=>DateTime.now.utc,
+                                                        :blog_class=>(params[:blog_class] || "blog"),
+                                                        :post_content=>params[:first_post][:content],
+                                                        :post_title=>params[:first_post][:title],
+                                                        :comment_permissions=>"default",
+                                                        :post_status=>"publish"}, :as=>"")
+                @post.save
+                result = report_error(@post) if @post.errors.present
+                result = _set_setup_step("complete") unless result[:errors].present?
+            rescue Exception => e
+                result ||= {}
+                result[:error] ||= []
+                result[:error] << ["exception", e.message]
+                puts "FAILURE managing author books: #{e.message}"
+                puts e.backtrace.join("\n")
+                raise ActiveRecord::Rollback
+            end
+        end
     end
 
     def _author_series
@@ -805,59 +661,20 @@ class Roxiware::SetupController < ApplicationController
             flash[:error] = e.message
             goodreads_books = []
         end
-        books = []
+        books = {}
         goodreads_books.each do |goodreads_book|
+            puts goodreads_book[:title]
+            continue if goodreads_book[:title].blank?
             book = Roxiware::Book.new
             book.from_goodreads_book(goodreads_book)
-            books << book
+            books[book.title.to_seo] ||= book
+            books[book.title.to_seo] = book if (book.description.length > books[book.title.to_seo].description.length)
         end
-        books
+        books.values.sort{ |a,b| a.publish_date <=> b.publish_date }
     end
 
     def _get_goodreads_author_series
         goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)
         goodreads.search_series({:goodreads_author_id=>current_user.person.goodreads_id})
-    end
-
-    def _author_gen_initial_blog_post
-        latest_book = Roxiware::Book.where(:publish_date=>(DateTime.new()..DateTime.now())).order("publish_date DESC").limit(1).first
-        if latest_book.present?
-            book_post = <<EOF
-<p>Welcome to my website!</p>
-<p>Be sure to check out my <a href="/books">books</a>, and if you'd like to find out more about me, take a look at my <a href="/biography">biography</a>.</p>
-<p>And definitely enjoy my latest</p></br>
-<a href="#{book_path(latest_book.seo_index)}" style="font-size:2em">#{ latest_book.title}</a><p style="clear:both"><a href="#{book_path(latest_book.seo_index)}"><img src="#{latest_book.image}" style="float:left;"/></a>#{latest_book.description}<br></p>
-<p><br/>
-<br/>
-- #{current_user.person.full_name}
-</p>
-EOF
-            @post = Roxiware::Blog::Post.create({:person_id=>current_user.person.id,
-                                                    :post_date=>DateTime.now.utc,
-                                                    :blog_class=>(params[:blog_class] || "blog"),
-                                                    :post_content=>book_post,
-                                                    :post_title=>"Welcome!",
-                                                    :comment_permissions=>"default",
-                                                    :post_status=>"publish"}, :as=>"")
-        else
-            _blog_gen_initial_blog_post
-        end
-    end
-
-
-    def _blog_gen_initial_blog_post
-        blog_post = <<EOF
-<p>You can find out a bit about me <a href="/biography">here</a>!</p>
-- #{current_user.person.full_name}
-</p>
-EOF
-
-        @post = Roxiware::Blog::Post.create({:person_id=>current_user.person.id,
-                                                :post_date=>DateTime.now.utc,
-                                                :blog_class=>(params[:blog_class] || "blog"),
-                                                :post_content=>blog_post,
-                                                :post_title=>"Welcome!",
-                                                :comment_permissions=>"default",
-                                                :post_status=>"publish"}, :as=>"")
     end
 end

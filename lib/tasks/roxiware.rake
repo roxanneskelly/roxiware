@@ -398,10 +398,17 @@ namespace :roxiware do
 
     desc "Initialize a roxiware instance"
     task :init, [:instance_type]=>:environment do |t,args|
+        instance_type = args[:instance_type] || :basic
         Rake::Task["roxiware:backup"].invoke
+        if ENV['RAILS_ENV'] == "development"
+            FileUtils.rm_rf(Dir.glob(Rails.root.join("app", "assets", "images", "uploads", "*")))
+        else
+            FileUtils.rm_rf(Dir.glob(Rails.root.join("public", "assets", "uploads", "*")))
+        end
+        FileUtils.rm_rf(Dir.glob(Rails.root.join("logs", "*")))
         Rake::Task["db:drop"].invoke
         Rake::Task["roxiware:base_init"].invoke
-        Rake::Task["roxiware:package_init"].invoke(args[:instance_type] || :basic)
+        Rake::Task["roxiware:package_init"].invoke(instance_type)
     end
 
     desc "update a roxiware instance"

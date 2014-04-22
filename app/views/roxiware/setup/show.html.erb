@@ -1,0 +1,79 @@
+<%=
+"".html_safe + 
+content_tag(:div, :id=>"first_post_page", :class=>"setup_page", :style=>"display:none") do
+    render(:partial=>"first_post") 
+end +
+if %w(site_setup edit_biography manage_books).include?(@setup_step)
+    content_tag(:div, :id=>"manage_books_page", :class=>"setup_page", :style=>"display:none") do
+        render(:partial=>"manage_books") 
+    end
+end +
+if %w(site_setup edit_biography).include?(@setup_step)
+    content_tag(:div, :id=>"site_setup_page", :class=>"setup_page", :style=>"display:none") do
+        render(:partial=>"site_setup") 
+    end
+end +
+if @setup_step == "edit_biography"
+    content_tag(:div, :id=>"edit_biography_page", :class=>"setup_page", :style=>"display:none") do
+        "".html_safe +
+        (render(:partial=>"import_biography") if @setup_type == "author") +
+        render(:partial=>"roxiware/people/edit_biography") 
+    end
+end
+ %>
+<script>
+$(function() {
+     $("button#save_biography").click(function() {
+         // Once done with biography, show the site setup page
+         console.log("save");
+         $(".watermark").val("");
+         var biography_data = $("#biography input").serializeArray();
+         biography_data.push({name:"person[bio]",value:$("#person_bio").html()});
+         console.log(biography_data);
+         $.ajaxSetParamsJSON("<%= setup_path %>.json", biography_data, { 
+             success:function() {
+                  $("#site_setup_page #settings_title").val($("#biography input#person_full_name").val()).change();
+                  $("#site_setup_page").focus();
+
+             }
+         });
+
+     });
+
+     $("button#save_post").click(function() {
+         // Submit first post
+         $(".watermark").val("");
+         var post_data = $("#biography input").serializeArray();
+         post_data.push({name:"first_post[content]",value:$("#post_content").html()});
+         $.ajaxSetParamsJSON("<%= setup_path %>.json", post_data, { 
+             success:function() {
+                  window.location = "/";
+             }
+         });
+
+     });
+
+    $("#edit_biography_page").focus(function() {
+console.log("bio setup page focus")
+        $("#edit_biography_page").show().animate({width:"100%"},200);
+        $("#site_setup_page,#manage_books_page").fadeOut(200, function(){$("#site_setup_page,#manage_books_page").css("width","")});
+    });
+    $("#site_setup_page").focus(function() {
+console.log("site setup page focus")
+        $("#edit_biography_page").animate({width:0},200);
+        $("#site_setup_page").css("width","").fadeIn(200);
+        $("#manage_books").fadeOut(200, function(){$("#manage_books").css("width","")});
+    });
+    $("#manage_books_page").focus(function() {
+        $("#biography_setup_page,#site_setup_page").animate({width:0},200);
+        $("#manage_books_page").css("width","").fadeIn(200);
+        $("#first_post_page").css("width","").fadeOut(200);
+    });
+    $("#first_post_page").focus(function() {
+        $("#biography_setup_page,#site_setup_page,#manage_books_page").animate({width:0},200);
+        $("#first_post_page").css("width","").fadeIn(200);
+    });
+console.log("focusing on #<%= @setup_step %>_page");
+    $("#<%= @setup_step %>_page").focus();
+});
+</script>

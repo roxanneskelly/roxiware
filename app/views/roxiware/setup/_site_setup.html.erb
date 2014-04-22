@@ -1,0 +1,61 @@
+<%= 
+fields_for :settings do |settings_fields|
+    content_tag(:div, :id=>"site_name", :class=>"settings_section") do
+        content_tag(:h1, "Name Your Site.") +
+        content_tag(:div, :id=>"site_name_holder") do
+            content_tag(:div, :id=>"title", :class=>"param-field") do
+                settings_fields.label(:title, "Site Title") +
+                settings_fields.text_field(:title, :size=>50, :watermark=>"Site Title", :value=>Roxiware::Param::Param.application_param_val("system", "title"))
+            end +
+            content_tag(:div, :id=>"subtitle", :class=>"param-field") do
+                settings_fields.label(:subtitle, "Subtitle Title") +
+                settings_fields.text_field(:subtitle, :size=>50, :watermark=>"Subtitle", :value=>Roxiware::Param::Param.application_param_val("system", "subtitle"))
+            end +
+            content_tag(:div, :class=>"setup_buttons") do
+                button_tag(:id=>"save_name") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-down-2")}
+            end
+        end
+    end +
+    content_tag(:div, :id=>"search_settings", :class=>"settings_section") do
+        content_tag(:h1, "Help People Find Your Site.") +
+        content_tag(:div, :id=>"search_settings_holder", :style=>"display:none") do
+            content_tag(:div, "You want people to find you, right?  Google, Bing, Yahoo, and other sites need a short description about your site.  Every word counts, so show off your word-crafting skills.  Each word should be unique and special.") +
+            content_tag(:div, :id=>"meta_description", :class=>"param-field") do
+                settings_fields.label(:meta_description, "Site Description") +
+                settings_fields.text_field(:meta_description, :size=>150, :watermark=>"Site Description")
+            end +
+            content_tag(:div, "Let us know about your interests, and we'll tell the world.  Each word will introduce a whole new set of readers to your writing.") +        content_tag(:div, :id=>"meta_keywords", :class=>"param-field") do
+                settings_fields.label(:meta_description, "Interests") +
+                settings_fields.text_field(:meta_keywords, :size=>150, :watermark=>"Politics, Beekeeping, Painting...")
+            end +
+            content_tag(:div, :class=>"setup_buttons") do
+                button_tag(:id=>"save_site_settings") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
+            end
+        end
+    end
+end %>
+<script>
+$(function(){
+    $("#save_name").click(function() {
+        $("#search_settings_holder").slideDown();
+        $("#site_name_holder").slideUp();
+    });
+
+    $("button#save_site_settings").click(function() {
+         // Once done with biography, show the site setup page
+         $(".watermark").val("");
+         var biography_data = $("#site_name input,#search_settings input").serializeArray();
+         $.ajaxSetParamsJSON("<%= setup_path %>.json", biography_data, { 
+             success:function() {
+                 $("#site_setup_page").blur();
+<% if @setup_type == "author" %>
+                 $("#manage_books_page").focus();
+<% else %>
+                 $("#first_post_page").focus();
+<% end %>
+             }
+         });
+
+     });
+});
+</script>

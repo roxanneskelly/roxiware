@@ -89,6 +89,7 @@ class Roxiware::Book < ActiveRecord::Base
       self.description=goodreads_result[:description]
       self.goodreads_id = goodreads_result[:goodreads_id]
       self.publish_date = DateTime.new(goodreads_result[:publication_year], goodreads_result[:publication_month], goodreads_result[:publication_day])
+      self.init_sales_links
    end
 
   def init_sales_links

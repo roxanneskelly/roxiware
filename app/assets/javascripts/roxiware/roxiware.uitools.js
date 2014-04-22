@@ -998,7 +998,10 @@ function settingsForm(source, title, options) {
 				    }
 			    });
 			});
-		    overlay.find("input[watermark]").watermark();
+            overlay.find("input[watermark]").watermark();
+            overlay.find("button[require_fields]").each(function(index, button) {
+                $(button).require_fields($(button).attr("require_fields"));
+            });
 		    var toolbar = "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code";
 		    if(overlay.find("div.settings_wysiwyg").attr("toolbar") != undefined) {
 			toolbar = overlay.find("div.settings_wysiwyg").attr("toolbar");
@@ -1130,9 +1133,7 @@ var login_form_template = '<form accept-charset="UTF-8" action="/account/login" 
                               '<div id="remember_me_check" class="labeled-checkbox">' +
                               '<input name="user[remember_me]" type="hidden" value="0" />' +
                               '<input id="user_remember_me" name="user[remember_me]" type="checkbox" value="1" /><span class="control-icon checkbox-icon"></span><label for="user_remember_me">Remember me</label></div>' +
-                              //Trying a method where the  submit button is enabled at all times,
-                              //but still validates per Andrew's suggestion
-                              '<button enabled="enabled" id="login_button" name="button" type="submit">login</button>' +
+                              '<button disabled="disabled" id="login_button" name="button" type="submit" require_fields="input#user_username,input#user_password">login</button>' +
                               '<a id="forgot_password">Forgot your password?</a>' +
                               '<div id="social_networks_login"><a id="facebook_login" provider="facebook" class="oauth_login"></a>'+
                               '<a id="twitter_login" provider="twitter" class="oauth_login"></a></div>' +
@@ -1144,23 +1145,26 @@ var forgot_password_template = '<div class="small_form" id="forgot_password_form
                               '<div id="email_entry">' +
                               '<label for="user_email">Email</label>' +
                               '<input id="user_email" name="user[email]" size="255" type="email" watermark="my@email.com" /></div>' +
-                              '<div><button disabled="disabled" id="forgot_password_button" name="commit" type="submit">Submit</button></div>' +
+                              '<div><button disabled="disabled" id="forgot_password_button" name="commit" type="submit" require_fields="input#user_email">Submit</button></div>' +
                               "<div class='wizard_text'>Check your email.  We've sent you password reset instructions.</div><br/><br/>" +
                               '</form></div>';
 
 
 $.fn.require_fields = function(fields) {
-  var button = $(this);
-  $(fields).bind("input blur propertychange onchange", function() {
-	  var button_enable = "enable";
-		$(fields).each(function(index, value) {
-		  if ($(this).is(".watermark") || ($(this).val().length == 0)) {
-		    button_enable = "disable";
-		  }
-		});
-	  button.button(button_enable);
+    var button = $(this);
+    var checkFields = function() {
+        var button_enable = "enable";
+	$(fields).each(function(index, value) {
+	    if ($(this).is(".watermark") || ($(this).val().length == 0)) {
+	        button_enable = "disable";
+	    }
 	});
-	$(fields).trigger("propertychange");
+        button.button(button_enable);
+    }
+    checkFields();
+    $(fields).bind("input blur propertychange onchange", function() {
+        checkFields();
+    });
 }
 
 
@@ -1344,8 +1348,6 @@ function get_login_form_template(options) {
 	// do a direct facebook login to gather the auth token
 	do_login($.extend(data, options));
     });
-    template.find("button#login_button").require_fields(template.find("#user_username, #user_password"));
-
     if(localStorage.roxiwareLoginUsername) {
         template.find("input#user_username").val(localStorage.roxiwareLoginUsername);
         template.find("input#user_remember_me").attr("checked", true);
@@ -1392,7 +1394,6 @@ function loginForm(options) {
 
 function forgotPassword() {
     var template = $(forgot_password_template);
-    template.find("button").require_fields(template.find("input#user_email"));
     template.submit(function(e) {
 	e.preventDefault();
         $.ajaxSetParamsJSON("/account/reset_password.json", template.find("form").serializeArray(),

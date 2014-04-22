@@ -1,79 +1,27 @@
-<div class="author_import_biography">
-<div class="wizard_instructions">
-Let's see if we can find your biography information online.<br/><br/>
-Paste or type your name, a link to your authors page on goodreads, or the link, ISBN, or ISBN13 of one of your books, and we'll search for your biography.</div>
-<%= search_field_helper(:import, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN", :class=>"search_field") %>
-<div id="import_search_status"></div>
-<div id="import_search_results" class="list_box"><div class="list_box_content"></div></div>
-
-<%= form_tag '/setup', :method=>"put" do %>
-<%= hidden_field_tag :goodreads_id, nil %>
-<%= hidden_field_tag :setup_action, "import" %>
-<%= hidden_field_tag :setup_step, @setup_step %>
-<% end %>
-</div>
-<div class="setup_buttons">
-<%= button_tag :id=>"back_button", :value=>"back", :type=>"button" do %><span class="icon-arrow-left-2"></span>&nbsp;Back<% end %>
-<%= button_tag :id=>"skip_import", :value=>"skip", :type=>"button" do %>Skip&nbsp;<span class="icon-arrow-right-2"></span><% end %>
-</div>
+<%= 
+content_tag(:div, :id=>"site_setup", :class=>"setup_page") do
+    render(:partial=>"site_setup") 
+end +
+content_tag(:div, :id=>"biography_setup", :class=>"setup_page") do
+    "".html_safe +
+    (render(:partial=>"import_biography") if @setup_type == "author") +
+    render(:partial=>"roxiware/people/edit_biography") 
+end 
+ %>
 <script>
-  $(function() {
-  
-    $("button#back_button,button#skip_import").click(function() {
-        $(".watermark").val("");
-        $("input#setup_action").val($(this).attr("id"));
-        $.ajaxSetParamsJSON("<%= setup_path %>.json", $("form").serializeArray(), {form:$("form"), success:function() {window.location.reload()}});
+$(function() {
+     $("button#save_biography").click(function() {
+         // Once done with biography, show the site setup page
+         $("#site_setup").focus();
      });
 
-     $('input#import').bind("input propertychange", function() {
-        if ($(this).val().length == 0) {
-            $("button#import").button("disable");
-        }
-        else {
-            $("button#import").button("enable");
-        }
+     $("button#save_biography").click(function() {
+         // Once done with biography, show the site setup page
+         $("#site_setup").focus();
      });
-    $('input#import').bind("keypress", function(event) {
-         if(event.keyCode == 13) {
-           $("button#import").click();
-         }
+
+    $("#biography_setup").blur(function() {
+        $("#biography_setup").animate({width:0},200);
     });
-
-    $("button#import").click(function() {
-         var search_val = $("input#import").val();
-         var endpoint = "<%= setup_import_path %>.json?type=author&search="+escape(search_val);
-         $("#import_search_status").html("Searching...");
-         $.getJSON(endpoint,
-              function(data) {
-                  $("div#import_search_results div.list_box_content").html("");
-                  $("#import_search_status").html("Click on your bio.  If it's not there, try another search.");
-                       
-                  if(data.length > 0) {
-		      $.each(data, function(index, author) {
-                          var author_html = $("<div class='author_search_result list_box_item' goodreads_id='"+author["goodreads_id"]+"'>"+
-                                              "<img src='"+author["thumbnail"]+"'/><div class='author_info'>"+
-                                              "<h2 class='author_name'>"+author["name"]+"</h2>"+
-                                              "<div class='author_about'>"+author["bio"]+"</div>"+
-                                              "</div>");
-			  author_html.data().author_data = author;
-			  $("div#import_search_results div.list_box_content").append(author_html);
-		      });
-
-                      $(".list_box_item").click(function() {
-			    $(".watermark").val("");
-                            $("input[type=hidden]#goodreads_id").val($(this).attr("goodreads_id"));
-
-                            $.ajaxSetParamsJSON("<%= setup_path %>.json", $("form").serializeArray(), {form:$("form"), success:function() {window.location.reload()}});
-
-			 });
-                  }
-                  else {
-                      $("div#import_search_status").html("<div class='no_results'>No author found.  Try another ISBN, Name, or Link.</div>");
-                  }
-              }
-         );
-    });
-    $("button#import").click();
- });
-
+});
 </script>

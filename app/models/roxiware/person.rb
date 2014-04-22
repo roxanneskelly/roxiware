@@ -4,6 +4,7 @@ class Roxiware::Person < ActiveRecord::Base
    include Roxiware::Param::ParamClientBase
    include ActionView::Helpers::AssetTagHelper
    self.table_name=  "people"
+   SOCIAL_NETWORKS = %w(twitter facebook google youtube pinterest)
 
 
    self.default_image = "unknown_person"
@@ -44,7 +45,7 @@ class Roxiware::Person < ActiveRecord::Base
                                  :too_long => "The bio must be no more than %{count} characters." 
 				 }
 
-   edit_attr_accessible :first_name, :middle_name, :last_name, :show_in_directory, :role, :email, :image, :thumbnail, :large_image, :bio, :goodreads_id, :as=>[:super, :admin, :self, nil]
+   edit_attr_accessible :first_name, :middle_name, :last_name, :show_in_directory, :role, :email, :image, :thumbnail, :large_image, :bio, :full_name, :goodreads_id, :as=>[:super, :admin, :self, nil]
    ajax_attr_accessible :first_name, :middle_name, :last_name, :role, :email, :image, :thumbnail, :large_image, :bio, :show_in_directory, :full_name, :seo_index, :goodreads_id
 
    before_destroy :destroy_images
@@ -66,6 +67,12 @@ class Roxiware::Person < ActiveRecord::Base
       return_full_name = (return_full_name + " "+ self.middle_name) unless self.middle_name.blank?
       return_full_name = (return_full_name + " "+ self.last_name) unless self.last_name.blank?
       return_full_name
+   end
+   def full_name=(name)
+       split_name = name.split(" ")
+       self.first_name = split_name.shift
+       self.last_name = split_name.pop if(split_name.present?)
+       self.middle_name = split_name.join(" ")
    end
 
     before_validation do

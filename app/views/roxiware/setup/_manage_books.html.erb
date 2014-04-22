@@ -7,7 +7,10 @@
         end +
         content_tag(:div, "", :class=>"icon-arrow-left-9", :id=>"next_book") +
         content_tag(:div, "", :id=>"book_list", :class=>"roundabout-holder") +
-        content_tag(:div, "", :class=>"icon-arrow-right-9", :id=>"prev_book")
+        content_tag(:div, "", :class=>"icon-arrow-right-9", :id=>"prev_book") +
+        content_tag(:div, :class=>"setup_buttons") do
+            button_tag(:id=>"save_books") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
+        end
     end +
     content_tag(:div, :id=>"book_edit_form", :class=>"settings_section") do
 	    fields_for :book do |book_fields|
@@ -45,46 +48,41 @@ end %>
 </script>
 <script>
 $(function() {
-    $("button#back_button").click(function() {
-        $("input#setup_action").val($(this).attr("id"));
-        $.ajaxSetParamsJSON("<%= setup_path %>.json", $("form").serializeArray(), {form:$("form"), success:function() {window.location.reload()}});
-    });
-
-    $.each(<%= raw @books.collect{|book| {:description=>book.description || "", 
-                                          :title=>book.title || "",
-                                          :isbn=>book.isbn || "", 
-                                          :isbn13=>book.isbn13 || "",
-                                          :publish_date=>book.publish_date.strftime("%-m/%-d/%Y") ||  "1/1/0",
-                                          :goodreads_id=>book.goodreads_id || "",
-                                          :image=>book.large_image || ""}}.to_json %>,
-                                          function(index, book) {
-               var book_html = $($("#book_template").text());
-               book_html.find(".book_image").attr("src", book.image);
-               book_html.data().book = book;
-               $("div#book_list").append(book_html);
-            });
+    var import_books = function(books) {
+        var endpoint = "<%= setup_books_path %>.json"
+        $.getJSON(endpoint, function(books) {
+            $.each(books, function(index, book) {
+                   var book_html = $($("#book_template").text());
+                   book_html.find(".book_image").attr("src", book.image);
+                   book_html.data().book = book;
+                   $("div#book_list").append(book_html);
+console.log(book_html.data().book);
+                });
    
-   //$("#book_list").css("width", <%= @books.count*50 %>);
-   $("#book_list").roundabout({childSelector:".book", 
-                               minOpacity:0.9, 
-                               minScale:0.0,
-                               triggerBlurEvents:true, 
-                               shape:'roxiwareBooks', 
-                               btnNext:$('#prev_book'),
-                               btnPrev:$('#next_book'),
-                               responsive:true});
-
+             $("#book_list").roundabout({childSelector:".book", 
+                                   minOpacity:0.9, 
+                                   minScale:0.0,
+                                   triggerBlurEvents:true,
+                                   triggerFocusEvents:true, 
+                                   shape:'roxiwareBooks', 
+                                   btnNext:$('#prev_book'),
+                                   btnPrev:$('#next_book'),
+                                   responsive:true});
+             $("#book_list .book").bind("focus", function() {
+console.log($(this).data().book);
+                 updateForm($(this));
+             }).blur(function() {
+                  //updateBook($(this));
+              });
+             $("#book_list .book").first().focus();
+         });
+   }
+   $("#manage_books_page").focus(function() {
+       import_books();
+   });
    $("#book_list").bind("animationStart", function() {
-       console.log("fading out start");
        $("#book_edit_form").fadeOut(100, function(){console.log("fading out end");});
     });
-    $(".book").blur(function() {
-        updateBook($(this));
-    });
-   $("#book_list .book").bind("focus", function() {
-       updateForm($(this));
-   });
-    $("#book_list .book").first().focus();
     $("#book_title").autosize();
 
    function updateBook(book) {
@@ -100,9 +98,7 @@ $(function() {
      $(book).find(".book_title").text($("#book_edit_form #book_title").html());
      $(book).find("img").attr("src", $("#book_edit_form input#book_thumbnail").val());
    }
-   console.log("fade in start");
    $("#book_edit_form #book_upload_image").on("load,error", function() {
-       console.log("fade in end");
        $(this).fadeIn(100);
    });
 
@@ -127,8 +123,6 @@ $(function() {
       $("#book_edit_form input#book_raw_image").val($(book).data().book.image);
       $("#book_edit_form img#book_upload_image").attr("src","").attr("src", $(book).data().book.image);
       $("[watermark]").trigger("change");
-      console.log("book edit fade");
-      console.log($("#book_edit_form"));
       $("#book_edit_form").fadeIn(200, function() { console.log($("#book_edit_form"));console.log("edit fade in 2");});
    }
    $("#book_edit_form div#book_description").tinymce({
@@ -172,15 +166,12 @@ $(function() {
       }
    });
    
-   $("button#save").click(function() {
+   $("button#save_books").click(function() {
       $("input#setup_action").val($(this).attr("id"));
 
       $.alertWait("We're saving your books.");
 
-      var current_selected_book = $(".list_box_item_selected");
-      if(current_selected_book.length != 0) {
-        updateBook(current_selected_book);
-      }
+      updateBook($("#book_list .book").eq($("#book_list").roundabout("getChildInFocus")));
 
       var xml_data = '<?xml version="1.0" encoding="UTF-8"?><books>';
       $(".book").each(function(index, book_node) {
@@ -199,7 +190,11 @@ $(function() {
               '</book>';
       });
       xml_data = xml_data + '</books>';
-      $.ajaxSetParamsXML("<%= setup_path %>.xml", xml_data, {additionalData: {setup_step:"<%= @setup_step %>", setup_action:"save"}, success:function() {window.location.reload()}});
+      $.ajaxSetParamsXML("<%= setup_path %>.xml", 
+                         xml_data, 
+                         {success:function() {
+                             window.location.reload();
+                         }});
    });
 
    $("div#new_book").click(function() {
@@ -258,6 +253,7 @@ $(function() {
       });
    });
     $("#book_description").blur();
+
 });
 
 

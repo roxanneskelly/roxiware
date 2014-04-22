@@ -1,0 +1,85 @@
+<%= content_tag(:div, :id=>"import_biography", :class=>"settings_section") do
+    content_tag(:h1, "Import Biography") +
+    content_tag(:div, :id=>"import_biography_holder") do
+        search_field_helper(:import, current_user.person.full_name, :watermark=>"Author Name, goodreads author or book link, book ISBN") +
+        content_tag(:div, "", :id=>"import_search_status") +
+        list_box_helper(:import_search_results, "") +
+        content_tag(:div, :class=>"setup_buttons") do
+            button_tag(:id=>"skip_import") {"Skip&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-down-2")}
+        end
+    end
+end %>
+
+<script type="text/template" id="author_info_template">
+<div class="author_search_result list_box_item">
+<img class="author_image"/><div class="author_info"><h2 class="author_name"></h2><div class="author_about"></div>
+</div>
+</script>
+<script>
+  $(function() {
+     $("button#skip_import").click(function() {
+         $("#import_biography").blur();
+         $("#biography").focus();
+     });
+
+     $('input#import').bind("input propertychange", function() {
+        if ($(this).val().length == 0) {
+            $("button#import").button("disable");
+        }
+        else {
+            $("button#import").button("enable");
+        }
+     });
+    $('input#import').bind("keypress", function(event) {
+         if(event.keyCode == 13) {
+           $("button#import").click();
+         }
+    });
+
+    $("button#import").click(function() {
+        var search_val = $("input#import").val();
+        var endpoint = "<%= setup_import_path %>.json?type=author&search="+escape(search_val);
+        $("#import_search_status").html("Searching...");
+        $("#import_biography").blur(function() {
+            $("div#import_biography_holder").animate({opacity:0,height:0}, 500);
+           
+        });
+        $.getJSON(endpoint,
+            function(data) {
+                $("div#import_search_results div.list_box_content").html("");
+                $("#import_search_status").html("Click on your bio.  If it's not there, try another search.");
+                       
+                if(data.length > 0) {
+                    $.each(data, function(index, author) {
+                        var author_html=$($("#author_info_template").html());
+                        author_html.attr("goodreads_id", author.goodreads_id);
+                        author_html.find(".author_image").attr("src",author.thumbnail);
+                        author_html.find(".author_name").text(author.name);
+                        author_html.find(".author_about").html(author.bio);
+                        author_html.data("author_data", author);
+                        $("div#import_search_results div.list_box_content").append(author_html);
+
+                    });
+                    $("div#import_search_results").show().animate({opacity:1.0,height:$("#import_search_results div.list_box_content").height()});
+                    $(".list_box_item").click(function() {
+                        var author = $(this).data("author_data");
+                        $("#biography input[type=hidden]#person_goodreads_id").val(author.goodreads_id);
+                        $("#biography input[type=hidden]#person_large_image").val(author.large_image);
+                        $("#biography #person_image #person_upload_image").attr("src", author.large_image);
+                        $("#biography #person_bio").html(author.about);
+                        $("#biography input#person_full_name").val(author.name).change();
+                        $("#import_biography").blur();
+                        $("#biography").focus();
+                    });
+                }
+                else {
+                    $("div#import_search_status").text("No author found.  Try another ISBN, Name, or Link.");
+                }
+            }
+        );
+    });
+    $("#import_search_results").hide();
+    $("button#import").click();
+ });
+
+</script>

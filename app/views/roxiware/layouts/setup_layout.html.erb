@@ -15,16 +15,11 @@
 <!--[if lt IE 9]> 
 <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script> 
 <![endif]-->
-
 <%= csrf_meta_tags %>
 <%= favicon_link_tag "/assets/icons/favicon.ico"%>
 </head>
 <body class="setup_body">
   <div class="settings setup_content_wrap">
-    <header>
-    </header>
-    <div class="settings_title_reflect"><%= @setup_step.gsub('_',' ').titleize %></div>
-    <div class="settings_title"><%= @setup_step.gsub('_',' ').titleize %></div>
     <% if flash[:notice].present? || flash[:alert].present? || flash[:error].present? %>
       <div class="flash_section">
 	<% if flash[:notice].present? %>
@@ -48,6 +43,10 @@
       $("button").button();
       $("input[watermark]").watermark();
    });
+   // fade in the window once everything is shown.  Especially important for fonts
+   $(window).bind("load", function() {
+   $('body').hide().css("visibility","visible").fadeIn(200);
+});
 </script>
 
 </body>

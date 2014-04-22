@@ -1,49 +1,92 @@
-<div id="biography">
-    <div id="left_section">
-        <div id="name_entry" class="justify_inputs"><%= person_form.label :name, "Name"%>
-	<%= person_form.text_field :first_name, :size=>25, :watermark=>"First"  %>
-	<%= person_form.text_field :middle_name, :size=>25, :watermark=>"Middle" %>
-	<%= person_form.text_field :last_name, :size=>25, :watermark=>"Last" %></div>
-	<% if ["forum","custom"].include?(@setup_type) %>
-	    <div id="role_entry"><%= person_form.label :role, "Role"%><%= person_form.text_field :role, :size=>50 %></div>
-	<% end %>
-	<div id="email_entry"><%= person_form.label :email, "Email" %>
-	<%= person_form.email_field :email, :size=>255 %></div>
-	<% if @setup_step == "complete" && ["forum","custom"].include?(@setup_type) %> 
-	   <%  website = nil
-	       if @person.get_param("social_networks").present? && @person.get_param("social_networks").h["website"].present?
-	           website = @person.get_param("social_networks").h["website"].to_s
-	       end %>
-	   
-	   <%= person_form.fields_for :params do |params| %>
-	      <%= params.fields_for :social_networks do |social_networks| %>
-		    <div id="website_entry"><%= social_networks.label :website, "Website"%>
-		    <%= social_networks.text_field :website, :watermark=>"http://www.mywebsite.com/", :value=>website %></div>
-	      <% end %>
-	   <% end %>
-        <% end %>
-    </div>
-    <div id="right_section">
-	<span class="popup_help_text">Click to change</span><br/>
-	<img id="person_portrait" class="upload_target" src="<%= person.large_image %>" ></img>
-        <%= person_form.hidden_field :large_image %>
-    </div>
-   <%= person_form.label :bio, "Biography" %>
-   <div id="bottom_section"><div class="settings_wysiwyg"><%= person_form.text_area :bio, :class=>"settings_wysiwyg" %></div></div>
-</div>
+<%= content_tag(:div, :id=>"biography", :class=>"settings_section") do
+    fields_for :person do |person_fields|
+        content_tag(:h1, "Tell Us About Yourself.") +
+        person_fields.hidden_field(:goodreads_id) +
+        person_fields.hidden_field(:large_image) +
+        content_tag(:div, :id=>:edit_section, :style=>"display:none") do
+            content_tag(:div, :id=>:biography_table) do
+                content_tag(:div, :id=>:biography_row) do
+                    content_tag(:div, :id=>"left_section") do
+                        content_tag(:div, person_fields.text_field(:full_name, :size=>255, :watermark=>"Name"), :id=>"full_name_field", :class=>"param-field") + 
+                        (if ["forum","custom"].include?(@setup_type)
+                            content_tag(:div, :id=>"role_field", :class=>"param-field") do
+                                person_fields.label(:role) +
+                                person_fields.text_field(:role, :size=>50)
+                            end 
+                        end || "".html_safe) +
+                        content_tag(:div, :id=>"biography_field", :class=>"param-field") do
+                            person_fields.label(:biography) +
+                            content_tag(:div, @person.bio.html_safe, :id=>:person_bio, :contenteditable=>"true")
+                        end
+                    end +
+                    content_tag(:div, :id=>"right_section") do
+                        content_tag(:div, :id=>:person_image, :class=>"upload_target") do 
+                            tag(:img, :src=>@person.large_image, :id=>:person_upload_image)
+                        end +
+                        content_tag(:div, :id=>:social_networks) do
+                            person_fields.fields_for :social_networks do |social_network_fields|
+                                Roxiware::Person::SOCIAL_NETWORKS.collect do |social_network|
+                                    content_tag(:div, :class=>"social_network") do
+                                        social_network_param = @person.get_param("social_networks").h[social_network]
+                                        uid = social_network_param.h["uid"] if social_network_param.present?
+                                        content_tag(:div, social_network_fields.text_field(social_network, :value=>uid, :watermark=>social_network.titleize), :class=>"param-field") +
+                                        content_tag(:span, "", :class=>"icon-#{social_network}") 
+                                    end
+                                end.join("").html_safe
+                            end
+                        end +
+                        button_tag(:id=>"save_biography") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
+                    end
+                end
+            end
+        end 
+	end
+end %>
+ 
 <script>
  $(function() {
-     $("div#biography img.upload_target").bind("click", function() {
-	 var params = {};
+   $("#person_bio").tinymce({
+          script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+          theme: "modern",
+          selector:"#person_bio",
+          inline:true,
+          skin: "light",
+          menubar: false,
+          browser_spellcheck:true,
+          relative_urls: false,
+          verify_html:false,
+          remove_script_host:true,
+          document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
+          plugins: [
+              "autolink lists link image charmap anchor",
+              "visualblocks code media",
+              "table contextmenu paste autoresize"
+          ],
+          height: $("div.settings_wysiwyg").height() - 30,
+          autoresize_min_height:140,
+	      statusbar:false,
+          schema: "html5",
+          toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code",
+          setup: function(ed){ed.on('LoadContent', function() {
+                 tinymce.ui.FloatPanel.zIndex = 10;  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
+          })}
+   });
+
+    $("#biography").focus(function() {
+        $("#biography #edit_section").slideDown(200);
+    });
+     $("#save_biography").require_fields("#person_full_name");
+
+     $("div#biography #person_image").bind("click", function() {
+	     var params = {};
          var url = $("div#biography input#person_large_image").val() || "";
-	 params = {url:encodeURI(url), width:400, height:450};
+         params = {url:encodeURI(url), width:400, height:450};
          settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
 	     success: function(image) {
-                 $("div#biography img.upload_target").attr("src", image);
-                 $("div#biography input#person_large_image").val(image);
+             $("div#biography #person_upload_image").attr("src", image);
+             $("div#biography input#person_large_image").val(image);
 	     }
 	 });
     });
-
  });
 </script>

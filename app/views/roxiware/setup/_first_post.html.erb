@@ -1,0 +1,50 @@
+<%= content_tag(:div, :id=>"first_post", :class=>"settings_section") do
+    fields_for :first_post do |first_post_fields|
+        content_tag(:h1, "Write Your First Post.") +
+        content_tag(:div, :id=>"title", :class=>"param-field") do
+            first_post_fields.label(:title) +
+            first_post_fields.text_field(:title, :size=>255, :value=>"Welcome!")
+        end +
+        content_tag(:div, :id=>"content_field", :class=>"param-field") do
+            first_post_fields.label(:content) +
+            content_tag(:div, "", :id=>"post_content", :contenteditable=>"true") do
+                render(:partial=>"first_post_content")
+            end
+        end +
+        content_tag(:div, :class=>"setup_buttons") do
+            button_tag(:id=>"save_post") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
+        end
+    end
+end %>
+<script>
+ $(function() {
+   $("#post_content").tinymce({
+          script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+          theme: "modern",
+          selector:"#post_content",
+          inline:true,
+          skin: "light",
+          menubar: false,
+          browser_spellcheck:true,
+          relative_urls: false,
+          verify_html:false,
+          remove_script_host:true,
+          document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
+          plugins: [
+              "autolink lists link image charmap anchor",
+              "visualblocks code media",
+              "table contextmenu paste autoresize"
+          ],
+          height: $("div.settings_wysiwyg").height() - 30,
+          autoresize_min_height:140,
+	      statusbar:false,
+          schema: "html5",
+          toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code",
+          setup: function(ed){ed.on('LoadContent', function() {
+                    $("#manage_books").css("display","block").animate({opacity:1},100);
+                 });
+          }
+
+   });
+});
+</script>

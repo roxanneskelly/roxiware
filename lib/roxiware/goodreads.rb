@@ -321,6 +321,7 @@ module Roxiware
 	    goodreads_options.merge!({:key=>@goodreads_key, :v=>2})
 	    goodreads_options[:format] = "xml"
 	    goodreads_options[:page] = page
+        puts "GEt GOODREADS http://www.goodreads.com/author/list/#{goodreads_id}.xml?"+goodreads_options.to_query
 	    response = self.class.get("/author/list/#{goodreads_id}.xml", :query=>goodreads_options)
 	    raise ::Roxiware::Goodreads::GoodreadsServerException.new("Our book dataservice is currently offine.  Please try again later.") if response.blank? || response["GoodreadsResponse"].blank? || response["GoodreadsResponse"]["author"].blank? || response["GoodreadsResponse"]["author"]["books"].blank?
 	    books = response["GoodreadsResponse"]["author"]["books"]["book"]

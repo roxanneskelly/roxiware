@@ -3,7 +3,7 @@
         content_tag(:h1, "Write Your First Post.") +
         content_tag(:div, :id=>"title", :class=>"param-field") do
             first_post_fields.label(:title) +
-            first_post_fields.text_field(:title, :size=>255, :value=>"Welcome!")
+            first_post_fields.text_field(:post_title, :size=>255, :value=>"Welcome!")
         end +
         content_tag(:div, :id=>"content_field", :class=>"param-field") do
             first_post_fields.label(:content) +

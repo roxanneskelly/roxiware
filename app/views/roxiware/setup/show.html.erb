@@ -43,8 +43,8 @@ $(function() {
      $("button#save_post").click(function() {
          // Submit first post
          $(".watermark").val("");
-         var post_data = $("#biography input").serializeArray();
-         post_data.push({name:"first_post[content]",value:$("#post_content").html()});
+         var post_data = $("#first_post input").serializeArray();
+         post_data.push({name:"first_post[post_content]",value:$("#post_content").html()});
          $.ajaxSetParamsJSON("<%= setup_path %>.json", post_data, { 
              success:function() {
                   window.location = "/";
@@ -55,6 +55,9 @@ $(function() {
 
     $("#edit_biography_page").focus(function() {
 console.log("bio setup page focus")
+<% if (@site_type != "author") %>
+       $("#biography").focus();
+<% end %>
         $("#edit_biography_page").show().animate({width:"100%"},200);
         $("#site_setup_page,#manage_books_page").fadeOut(200, function(){$("#site_setup_page,#manage_books_page").css("width","")});
     });

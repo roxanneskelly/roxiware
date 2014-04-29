@@ -39,10 +39,7 @@ class Roxiware::SetupController < ApplicationController
         Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", request.host) if @setup_step == "welcome"
 
         @setup_type ||= @verified_params['site_type']
-        puts "SETUP type #{@setup_type}"
         if @verified_params.present?
-            puts "SETUP STEP #{@setup_step}"
-            puts "VERIFIED #{@verified_params.inspect}"
             @person = current_user.person if current_user.present?
             if @setup_step == "welcome"
                 ActiveRecord::Base.transaction do
@@ -217,6 +214,7 @@ class Roxiware::SetupController < ApplicationController
     end
 
     def _set_setup_step(setup_step)
+        result = {}
         begin
             Roxiware::Param::Param.set_application_param("setup", "setup_step", "317C7D1C-7316-4B00-9E1F-931E2867B436", setup_step)
             @setup_step = setup_step
@@ -296,7 +294,7 @@ class Roxiware::SetupController < ApplicationController
                 Roxiware::Param::Param.set_application_param("system", "subtitle", "0B8CFD7C-39AA-4E61-A4F2-9E7212EF9415", params[:settings][:subtitle])
                 Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", params[:settings][:meta_description])
                 Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", params[:settings][:meta_keywords])
-                if(@setup_type="author")
+                if(@setup_type=="author")
                     result = _set_setup_step("manage_books")
                 else
                     result = _set_setup_step("first_blog_post")
@@ -343,7 +341,7 @@ class Roxiware::SetupController < ApplicationController
                     new_book.description = book_node.search('description').children.find{|e| e.cdata?}.text
                     new_book.title = book_node.search('title').text
                     new_book.image = book_node.search('image').text
-                    new_book.large_image = book_node.search('large_image').text
+                    new_book.large_image = book_node.search('image').text
                     new_book.thumbnail = book_node.search('thumbnail').text
                     new_book.init_sales_links
                     new_book.save!
@@ -353,7 +351,7 @@ class Roxiware::SetupController < ApplicationController
                     end
                     books << new_book
                 end
-                result = _set_setup_step("first_post") unless result[:errors].present?
+                result = _set_setup_step("first_blog_post") unless result[:errors].present?
             rescue Exception => e
                 result ||= {}
                 result[:error] ||= []
@@ -366,19 +364,18 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
-    def _first_post
+    def _first_blog_post
+        result = {}
         ActiveRecord::Base.transaction do
             begin
                 @post = Roxiware::Blog::Post.new
-                @post.update_attributes({ :person_id=>current_user.person.id,
-                                                        :post_date=>DateTime.now.utc,
-                                                        :blog_class=>(params[:blog_class] || "blog"),
-                                                        :post_content=>params[:first_post][:content],
-                                                        :post_title=>params[:first_post][:title],
-                                                        :comment_permissions=>"default",
-                                                        :post_status=>"publish"}, :as=>"")
-                @post.save
-                result = report_error(@post) if @post.errors.present
+                @post.update_attributes(params[:first_post].merge({ :person_id=>current_user.person.id,
+                                                                    :post_date=>DateTime.now.utc,
+                                                                    :blog_class=>"blog",
+                                                                    :comment_permissions=>"default",
+                                                                    :post_status=>"publish"}), :as=>"")
+                @post.save!
+                result = report_error(@post) if @post.errors.present?
                 result = _set_setup_step("complete") unless result[:errors].present?
             rescue Exception => e
                 result ||= {}
@@ -389,6 +386,7 @@ class Roxiware::SetupController < ApplicationController
                 raise ActiveRecord::Rollback
             end
         end
+        result
     end
 
     def _author_series
@@ -663,7 +661,6 @@ class Roxiware::SetupController < ApplicationController
         end
         books = {}
         goodreads_books.each do |goodreads_book|
-            puts goodreads_book[:title]
             continue if goodreads_book[:title].blank?
             book = Roxiware::Book.new
             book.from_goodreads_book(goodreads_book)

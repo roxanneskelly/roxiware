@@ -69,7 +69,6 @@ console.log(book_html.data().book);
                                    btnPrev:$('#next_book'),
                                    responsive:true});
              $("#book_list .book").bind("focus", function() {
-console.log($(this).data().book);
                  updateForm($(this));
              }).blur(function() {
                   //updateBook($(this));
@@ -184,8 +183,6 @@ console.log($(this).data().book);
              '<book ' + goodreads_id + ' isbn="'+book.isbn+'" isbn13="' + book.isbn13+'" publish_date="' + book.publish_date + '">' +
                  '<title '+goodreads_id+'>'+xmlEscape(book.title)+'</title>' +
                  '<image>'+book.image+'</image>' +
-                 '<large_image>'+book.large_image+'</large_image>' +
-                 '<thumbnail>'+book.thumbnail+'</thumbnail>' +
                  '<description><![CDATA[ '+ book.description+']]></description>' +
               '</book>';
       });

@@ -269,7 +269,7 @@ module Roxiware
 	       when "float"
 	         value.to_f
 	       when "bool"
-	         return (value == "true")
+	         return %w(true t).include?(value)
 	       when "asset"
 	         value
 	       else

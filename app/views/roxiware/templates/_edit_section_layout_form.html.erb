@@ -1,40 +1,109 @@
-<div class="section_layout_edit large_form" id="section_layout_form">
-   <%= form_for @section, :as=>:layout_section, :url=>(layout_page_section_path(@layout.guid, url_encode(@page.get_url_identifier), @section.name)), :method=>"put" do |layout_section_form|%>
-   <div class="tab_form">
-     <ul class="tabs">
-       <% if @section.get_param_objs.present? %> 
-          <li><a href="#">Settings</a></li>
-       <% end %>
-       <li><a href="#">Style</a></li>
-     </ul>
-     <div class="panes">
-       <% if @section.get_param_objs.present? %> 
-	  <div id="settings_pane">
-	     <%= fields_for :params do |param_field_block| %>
-		<%= param_fields(layout_section_form, @section.get_param_objs.values) %>
-	     <% end %>
-	  </div>
-       <% end %>
-       <div id="style_pane">
-          <%= layout_section_form.text_area :style, :class=>"section_layout_style" %>
-       </div>
-     </div>
-   </div>      
-    <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
-   <% end %>
-</div>
+<%= content_tag(:div, :id=>"section_layout_edit_form", :class=>"section_layout_edit_form huge_form") do
+    form_for(@section, :as=>:layout_section, :url=>(layout_page_section_path(@layout.guid, url_encode(@page.get_url_identifier), @section.name)), :method=>"put") do |layout_section_form|
+        content_tag(:div, :class=>"tab_form") do
+             content_tag(:ul, :class=>"tabs") do
+                 content_tag(:li, content_tag(:a, "Settings", :href=>"#")) +
+                 content_tag(:li, content_tag(:a, "Style", :href=>"#"))
+             end +
+             content_tag(:div, :class=>"panes") do
+                 content_tag(:div, :id=>"settings_pane") do
+                     layout_section_form.fields_for(:params) do |param_field_block|
+                         param_fields(param_field_block, @page.get_param_objs)
+                     end
+                 end +
+                 content_tag(:div, :id=>"style_pane") do
+                     layout_section_form.text_area(:style, :class=>"section_layout_style")
+                 end
+             end
+         end +
+         content_tag(:div, :class=>"dialog_buttons") do
+             button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button") +
+             button_tag("Save and Close", :id=>"save_and_close_button", :type=>"button", :class=>"save_button")
+         end
+     end
+end %>
 <script>
    $(function() {
-      $("#section_layout_form").find("ul.tabs").tabs($("div.panes > div"));
-      $("button#save_button").click(function(e) {
-          e.preventDefault();
+      var styleEditor;
+      var styleErrors = [];
+      // css editing
+      $.loadScripts([
+        "http://cdn.roxiware.com/tools/codemirror/lib/codemirror.js",
+        "http://cdn.roxiware.com/tools/codemirror/mode/css/css.js",
+        "http://cdn.roxiware.com/tools/codemirror/mode/ruby/ruby.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/matchbrackets.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/trailingspace.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/closebrackets.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/comment/comment.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/comment/continuecomment.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/foldcode.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/foldgutter.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/brace-fold.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/hint/css-hint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/lint/lint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/lint/css-lint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/selection/mark-selection.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/selection/active-line.js",
+        "http://cdn.roxiware.com/tools/codemirror/keymap/emacs.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/dialog/dialog.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/search/searchcursor.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/search/search.js"
+      ], true, function() {
+          styleEditor = CodeMirror.fromTextArea($("#layout_section_style").get(0),
+            {
+                mode:"text/x-scss",
+                lineNumbers:true,
+                lineWrapping: true,
+                keyMap:"emacs",
+                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                foldGutter: true,
+                lint: {
+                    getAnnotations: function(cm, options) {
+                        return styleErrors;
+                    }
+                },
+                gutters: ["CodeMirror-lint-markers","CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+            });
+          CodeMirror.commands.save = function(cm) {
+              $("#save_button").click();
+          }
+          $("#section_layout_edit_form ul.tabs").tabs($("div.panes > div"));
+          $("#section_layout_edit_form ul.tabs").data("tabs").onClick( function(ev, index) {
+          if (styleEditor) {
+              styleEditor.refresh();
+          } 
+      });
+   });
+
+      $("button#save_button,button#save_and_close").click(function(e) {
+          var button = $(this);
+           if(styleEditor) {
+               styleEditor.save();
+           }
+           styleErrors=[];
           $.ajaxSetParamsJSON("<%= (layout_page_section_path(@layout.guid, url_encode(@page.get_url_identifier), @section.name)) %>.json", 
-                              $("#section_layout_form form").serializeArray(), 
-                              {form:$("#section_layout_form form"),
+                              $("#section_layout_edit_form form").serializeArray(), 
+                              {form:$("#section_layout_edit_form form"),
                                method:"put",
+                                error: function(errors, data) {
+                                    if(data.style_errors) {
+                                        $.each(data.style_errors, function(index, error_info) {
+                                            styleErrors.push({from:    CodeMirror.Pos(error_info[0]-1, 0), 
+                                                              to:      CodeMirror.Pos(error_info[0]-1, 100), 
+                                                              message: error_info[1]});
+                                        });
+                                        styleEditor.setCursor(styleErrors[0].from);
+                                        styleEditor.scrollIntoView();
+                                        styleEditor.execCommand("indentMore");
+                                        styleEditor.execCommand("undo");
+                                    }
+                                },
                                success: function() {
-                                   window.location.reload();
-                               }}); 
+                                    styleEditor.execCommand("indentMore");
+                                    styleEditor.execCommand("undo");
+                                   if(button.is("#save_and_close_button")) {
+                                       window.location.reload();
+                                   }}});
       });
    });
 </script>

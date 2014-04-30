@@ -132,7 +132,7 @@
 				        conf.form.find("input#"+conf.fieldPrefix+value[0]).addClass("field-error");
 				    }
 				});
-				conf.error(data.error);
+				conf.error(data.error, data);
 			    }
 			    else {
 				conf.success(data);
@@ -940,133 +940,134 @@ function settingsForm(source, title, options) {
                    "<div class='contentWrap'> </div></div>");
 
     var instantiateOverlay = function() {
-
         var top = "5%";
         var fixed=true;
         var source = overlay.find(".contentWrap > div");
-	source.data("settings_form", conf);
-	if(source.is(".huge_form")) { overlay.addClass("huge_settings_form"); }
-	if(source.is(".large_form")) { overlay.addClass("large_settings_form"); }
-	if(source.is(".medium_form")) { overlay.addClass("medium_settings_form"); }
-	if(source.is(".small_form")) { overlay.addClass("small_settings_form"); }
-	if(source.is(".tiny_form")) { overlay.addClass("tiny_settings_form"); }
+        source.data("settings_form", conf);
+        if(source.is(".huge_form")) { 
+            top="0%";
+            overlay.addClass("huge_settings_form"); 
+        }
+        if(source.is(".large_form")) { overlay.addClass("large_settings_form"); }
+        if(source.is(".medium_form")) { overlay.addClass("medium_settings_form"); }
+        if(source.is(".small_form")) { overlay.addClass("small_settings_form"); }
+        if(source.is(".tiny_form")) { overlay.addClass("tiny_settings_form"); }
 
-	if(overlay.innerWidth() >= window.innerWidth) {
-	    top="0%";
-	    fixed=false;
-	    overlay.css("min-height","100%");
+        if(overlay.innerWidth() >= window.innerWidth) {
+            top="0%";
+            fixed=false;
         }
         overlay.overlay({
-		top: top,
-		left: "center",
-                oneInstance: false,
-		load: true,
-		zIndex: 2000,
-                closeOnClick: false,
-                fixed:fixed,
-		mask: {
-		     zIndex: 1999,
-		     color: "#222",
-	             loadSpeed: 200,
-		     opacity: 0.6
-		      },
-		onClose: function (event) {
-		    overlay.find("div.settings_wysiwyg textarea").tinymce().remove();
-		    $.roxiware.alert.popup = null;
-		    if(conf.onClose) {
-		         conf.onClose(overlay);
-		    }
-		    overlay.remove();
-		    $("body").css("overflow", "");
-	         },
-		 onLoad: function(event) {
-		    $("body").css("overflow", "hidden");
-		    overlay.find("button").button();
-		    overlay.find("input[alt_type=color]").colorpicker();
-		    overlay.find(".param-field-image").bind("click", function() {
-			var param_field = $(this);
-			var params = {};
-			params = {url:encodeURI($(this).find("img").attr("src"))};
-			if(param_field.find("input").attr("width") && param_field.find("input").attr("height")) {
-			    params.width = param_field.find("input").attr("width");
-			    params.height = param_field.find("input").attr("height");
-			}
-			settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
-				    success: function(image_url) {
-					param_field.find("img").attr("src", image_url);
-					param_field.find("input").val(image_url);
-				    }
-			    });
-			});
-            overlay.find("input[watermark]").watermark();
-            overlay.find("button[require_fields]").each(function(index, button) {
-                $(button).require_fields($(button).attr("require_fields"));
-            });
-		    var toolbar = "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code";
-		    if(overlay.find("div.settings_wysiwyg").attr("toolbar") != undefined) {
-			toolbar = overlay.find("div.settings_wysiwyg").attr("toolbar");
-		    }
+            top: top,
+            left: "center",
+            oneInstance: false,
+            load: true,
+            zIndex: 2000,
+            closeOnClick: false,
+            fixed:fixed,
+            mask: {
+                zIndex: 1999,
+                color: "#222",
+                loadSpeed: 200,
+                opacity: 0.6
+            },
+            onClose: function (event) {
+                overlay.find("div.settings_wysiwyg textarea").tinymce().remove();
+                $.roxiware.alert.popup = null;
+                if(conf.onClose) {
+                    conf.onClose(overlay);
+                }
+                overlay.remove();
+                $("body").css("overflow", "");
+            },
+            onLoad: function(event) {
+                 $("body").css("overflow", "hidden");
+                 overlay.find("button").button();
+                 overlay.find("input[alt_type=color]").colorpicker();
+                 overlay.find(".param-field-image").bind("click", function() {
+                     var param_field = $(this);
+                     var params = {};
+                     params = {url:encodeURI($(this).find("img").attr("src"))};
+                     if(param_field.find("input").attr("width") && param_field.find("input").attr("height")) {
+                         params.width = param_field.find("input").attr("width");
+                         params.height = param_field.find("input").attr("height");
+                     }
+                     settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+                         success: function(image_url) {
+                             param_field.find("img").attr("src", image_url);
+                             param_field.find("input").val(image_url);
+                         }
+                     });
+                 });
+                 overlay.find("input[watermark]").watermark();
+                 overlay.find("button[require_fields]").each(function(index, button) {
+                     $(button).require_fields($(button).attr("require_fields"));
+                 });
+                 var toolbar = "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | code";
+                 if(overlay.find("div.settings_wysiwyg").attr("toolbar") != undefined) {
+                     toolbar = overlay.find("div.settings_wysiwyg").attr("toolbar");
+                 }
 
-		    // make sure you match this against the ruby sanitizer in lib/roxiware/sanitizer.rb
-		    overlay.find("div.settings_wysiwyg textarea").tinymce({
-			script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
-			theme: "modern",
-			skin: "light",
-			menubar: false,
-			browser_spellcheck:true,
-			relative_urls: false,
-                        verify_html:false,
-			remove_script_host:true,
-			document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
-			plugins: [
-			    "autolink lists link image charmap anchor",
-			    "visualblocks code",
-			    "media table contextmenu paste"
-			],
-			height: "100%",
-			init_instance_callback : function(ed) {
-			    var timer=setInterval(function() {
-				var panel_height = $(ed.getContainer()).find(".mce-toolbar").height();
-				if(panel_height > 0) {
-				    $(ed.getContentAreaContainer()).css("top", panel_height+"px");
-				    clearInterval(timer);
-				}
-			    }, 100);
-			},
-			statusbar:false,
-			resize:false,
-			schema: "html5",
-			toolbar: toolbar,
-				});
-		}
-	 });
+                 // make sure you match this against the ruby sanitizer in lib/roxiware/sanitizer.rb
+                 overlay.find("div.settings_wysiwyg textarea").tinymce({
+                     script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+                     theme: "modern",
+                     skin: "light",
+                     menubar: false,
+                     browser_spellcheck:true,
+                     relative_urls: false,
+                     verify_html:false,
+                     remove_script_host:true,
+                     document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
+                     plugins: [
+                         "autolink lists link image charmap anchor",
+                         "visualblocks code",
+                         "media table contextmenu paste"
+                     ],
+                     height: "100%",
+                     init_instance_callback : function(ed) {
+                         var timer=setInterval(function() {
+                             var panel_height = $(ed.getContainer()).find(".mce-toolbar").height();
+                             if(panel_height > 0) {
+                                 $(ed.getContentAreaContainer()).css("top", panel_height+"px");
+                                 clearInterval(timer);
+                             }
+                         }, 100);
+                     },
+                     statusbar:false,
+                     resize:false,
+                     schema: "html5",
+                     toolbar: toolbar,
+                 });
+            }
+        });
 
-      overlay.find(".contentWrap [title]").tooltip({
-	  predelay:1000,
-	  effect:'fade',
-	  position: "top right",
-	  offset: [10, -20]
-	});
-   };
-   $("body").append(overlay);
-   if(source instanceof jQuery) {
-       overlay.find(".contentWrap").append(source.css("display","block"));
-       instantiateOverlay();
-   }
-   else {
-       overlay.find(".contentWrap").load(source, function(responseText, textStatus, xhr) {
-	  if(xhr.status != 200) {
-	      if(xhr.status == 0) {
-                  $.error("The server is not available.  Please try again.");
-	      }
-	      else {
-	          $.error(xhr.statusText);
-	      }
-	      return;
-	  }
-          instantiateOverlay();
-	});
-   }
+        overlay.find(".contentWrap [title]").tooltip({
+            predelay:1000,
+            effect:'fade',
+            position: "top right",
+            offset: [10, -20]
+        });
+    };
+    $("body").append(overlay);
+    if(source instanceof jQuery) {
+        overlay.find(".contentWrap").append(source.css("display","block"));
+        instantiateOverlay();
+    }
+    else {
+        overlay.find(".contentWrap").load(source, function(responseText, textStatus, xhr) {
+            if(xhr.status != 200) {
+                if(xhr.status == 0) {
+                    $.error("The server is not available.  Please try again.");
+                }
+                else {
+                    $.error(xhr.statusText);
+                }
+                return;
+            }
+            instantiateOverlay();
+        });
+    }
 }
 
 
@@ -1130,5 +1131,61 @@ function inIframe () {
         return window.self !== window.top;
     } catch (e) {
         return true;
+    }
+}
+
+jQuery.loadScript = function (url, arg1, arg2) {
+    var cache = false, callback = null;
+    //arg1 and arg2 can be interchangable
+    if ($.isFunction(arg1)){
+        callback = arg1;
+        cache = arg2 || cache;
+    } else {
+        cache = arg1 || cache;
+        callback = arg2 || callback;
+    }
+               
+    var load = true;
+    //check all existing script tags in the page for the url
+    jQuery('script[type="text/javascript"]')
+    .each(function () { 
+            return load = (url != $(this).attr('src')); 
+        });
+    if (load){
+        //didn't find it in the page, so load it
+        jQuery.ajax({
+                type: 'GET',
+                    url: url,
+                    success: callback,
+                    dataType: 'script',
+                    cache: cache
+                    });
+    } else {
+        //already loaded so just call the callback
+        if (jQuery.isFunction(callback)) {
+            callback.call(this);
+        };
+    };
+};
+jQuery.loadScripts = function(urls, arg1, arg2) {
+    var cache = false, callback = null;
+    //arg1 and arg2 can be interchangable
+    if ($.isFunction(arg1)){
+        callback = arg1;
+        cache = arg2 || cache;
+    } else {
+        cache = arg1 || cache;
+        callback = arg2 || callback;
+    }
+    var new_urls = urls;
+    var url = new_urls.shift();
+    console.log("loading url :"+url);
+    if(url) {
+        $.loadScript(url, cache, function() {
+            $.loadScripts(urls, cache, callback);
+        });
+    }
+    else {
+        callback();
     }
 }

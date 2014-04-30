@@ -1,40 +1,118 @@
-<div class="page_layout_edit huge_form" id="page_layout_edit_form">
-   <%= form_tag(layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)), :method=>"put") do%>
-   <div class="tab_form">
-     <ul class="tabs">
-       <li><a href="#">Settings</a></li>
-       <li><a href="#">Style</a></li>
-     </ul>
-     <div class="panes">
-       <div id="settings_pane">
-          <div title="Select the form of layout for the page" style="display:inline-block">
-	    <%= label_tag :render_layout, "Page Layout" %>
-	    <%=  select_tag :render_layout, options_for_select({"Widget|Content|Widget"=> "roxiware/layouts/threecolumn", "Content|Widget"=>"roxiware/layouts/twocolumn_left", "Widget|Content"=>"roxiware/layouts/twocolumn_right", "One Column"=>"roxiware/layouts/onecolumn", "Widget|Widget|Content"=>"roxiware/layouts/double_left", "Content|Widget|Widget"=>"roxiware/layouts/double_right"}, @page.render_layout) %>
-	  </div>
-	  <%= fields_for :params do |param_field_block| %>
-	     <%= param_fields(param_field_block, @page.get_param_objs) %>
-	  <% end %>
-       </div>
-       <div id="style_pane">
-          <%= text_area_tag :style, @page.style, :class=>"page_layout_style" %>
-       </div>
-     </div>
-    </div>
-     <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"submit" %>
-   <% end %>
-</div>
+<%= content_tag(:div, :id=>"page_layout_edit_form", :class=>"page_layout_edit_form huge_form") do
+    form_for(@page, :as=>:page_layout, :url=>layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)), :method=>"put") do |page_layout_form|
+        content_tag(:div, :class=>"tab_form") do
+             content_tag(:ul, :class=>"tabs") do
+                 content_tag(:li, content_tag(:a, "Settings", :href=>"#")) +
+                 content_tag(:li, content_tag(:a, "Style", :href=>"#"))
+             end +
+             content_tag(:div, :class=>"panes") do
+                 content_tag(:div, :id=>"settings_pane") do
+                     content_tag(:div, :title=>"Select the form of layout for the page", :style=>"display:inline-block") do
+                         label_tag(:render_layout, "Page Layout") +
+                         page_layout_form.select(:render_layout, 
+                                    options_for_select({"Widget|Content|Widget"=> "roxiware/layouts/threecolumn",
+                                                        "Content|Widget"=>"roxiware/layouts/twocolumn_left",
+                                                        "Widget|Content"=>"roxiware/layouts/twocolumn_right",
+                                                        "One Column"=>"roxiware/layouts/onecolumn",
+                                                        "Widget|Widget|Content"=>"roxiware/layouts/double_left",
+                                                        "Content|Widget|Widget"=>"roxiware/layouts/double_right"}, @page.render_layout))
+                     end +
+                     page_layout_form.fields_for(:params) do |param_field_block|
+                         param_fields(param_field_block, @page.get_param_objs)
+                     end
+                 end +
+                 content_tag(:div, :id=>"style_pane") do
+                     page_layout_form.text_area(:style, :class=>"page_layout_style")
+                 end
+             end
+         end +
+         content_tag(:div, :class=>"dialog_buttons") do
+             button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button") +
+             button_tag("Save and Close", :id=>"save_and_close_button", :type=>"button", :class=>"save_button")
+         end
+     end
+end %>
 <script>
    $(function() {
+      var styleEditor;
+      var styleErrors = [];
+      // css editing
+      $.loadScripts([
+        "http://cdn.roxiware.com/tools/codemirror/lib/codemirror.js",
+        "http://cdn.roxiware.com/tools/codemirror/mode/css/css.js",
+        "http://cdn.roxiware.com/tools/codemirror/mode/ruby/ruby.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/matchbrackets.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/trailingspace.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/closebrackets.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/comment/comment.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/comment/continuecomment.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/foldcode.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/foldgutter.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/brace-fold.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/hint/css-hint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/lint/lint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/lint/css-lint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/selection/mark-selection.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/selection/active-line.js",
+        "http://cdn.roxiware.com/tools/codemirror/keymap/emacs.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/dialog/dialog.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/search/searchcursor.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/search/search.js"
+      ], true, function() {
+          styleEditor = CodeMirror.fromTextArea($("#page_layout_style").get(0),
+            {
+                mode:"text/x-scss",
+                lineNumbers:true,
+                lineWrapping: true,
+                keyMap:"emacs",
+                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                foldGutter: true,
+                lint: {
+                    getAnnotations: function(cm, options) {
+                        return styleErrors;
+                    }
+                },
+                gutters: ["CodeMirror-lint-markers","CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+            });
+          CodeMirror.commands.save = function(cm) {
+              $("#save_button").click();
+          }
       $("#page_layout_edit_form").find("ul.tabs").tabs($("div.panes > div"));
-      $("button#save_button").click(function(e) {
-          e.preventDefault();
-          $.ajaxSetParamsJSON("<%= layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)) %>.json", 
+      $("#page_layout_edit_form ul.tabs").data("tabs").onClick( function(ev, index) {
+          if ((index == 1) && styleEditor) {
+              styleEditor.refresh();
+          } 
+      });
+   });
+      $("button#save_button,button#save_and_close").click(function(e) {
+          var button = $(this);
+           if(styleEditor) {
+               styleEditor.save();
+           }
+           styleErrors=[];
+           $.ajaxSetParamsJSON("<%= layout_page_path(@layout.guid, url_encode(@page.get_url_identifier)) %>.json", 
                               $("#page_layout_edit_form form").serializeArray(), 
                               {form:$("#page_layout_edit_form form"),
                                method:"put",
+                                error: function(errors, data) {
+                                    if(data.style_errors) {
+                                        $.each(data.style_errors, function(index, error_info) {
+                                            styleErrors.push({from:    CodeMirror.Pos(error_info[0]-1, 0), 
+                                                              to:      CodeMirror.Pos(error_info[0]-1, 100), 
+                                                              message: error_info[1]});
+                                        });
+                                        styleEditor.setCursor(styleErrors[0].from);
+                                        styleEditor.scrollIntoView();
+                                        styleEditor.execCommand("indentMore");
+                                        styleEditor.execCommand("undo");
+                                    }
+                                },
                                success: function() {
-                                   //window.location.reload();
-                               }}); 
+                                    styleEditor.execCommand("indentMore");
+                                    styleEditor.execCommand("undo");
+                                   if(button.is("#save_and_close_button")) {
+                                       window.location.reload();
+                                   }}});
       });
    });
 </script>

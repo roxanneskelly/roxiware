@@ -1862,8 +1862,6 @@
 		_create: function () {
 			var that = this,
 				text;
-			console.log("that");
-			console.log($(that));
 			++_colorpicker_index;
 
 			that.widgetEventPrefix = 'colorpicker';

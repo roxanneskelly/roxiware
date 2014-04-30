@@ -103,8 +103,6 @@ module Roxiware
 
         attrs = {}
         valid_read_keys.each do |key|
-              puts "SELF KEY #{key}"
-              puts send(key)
 	  value = eval("self.#{key}")
 	  if value.class == Array
 	     attrs[key+"[]"] = value

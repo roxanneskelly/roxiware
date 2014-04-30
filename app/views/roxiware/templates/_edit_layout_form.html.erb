@@ -6,119 +6,109 @@
    endpoint = "#{layout_index_path}.json?clone=#{@clone_id}";
 end %>
 
-<div class="layout_edit_form huge_form" id="layout_edit_form">
-   <%= form_for @layout, :as=>:layout, :url=> endpoint, :method=>method do |layout_form|%>   
-     <%= layout_form.hidden_field :guid %>
-     <div class="tab_form">
-       <ul class="tabs">
-	 <li><a href="#">General</a></li>
-	 <li><a href="#">Schemes</a></li>
-	 <li><a href="#">Style</a></li>
-	 <li><a href="#">Setup</a></li>
-       </ul>
-       <div class="panes">
-	 <div id="general_pane">
-	   <div id="layout_name"><%= layout_form.label :name, "Name"%><%= layout_form.text_field :name %></div>
-	   <%= layout_form.fields_for :params do |fields_for_params| %>
-	     <div id="layout_chooser_image">
-		 <span class="popup_help_text" style="float:right;">Click to change image</span><br/>
-		 <img id="layout_image_upload" class="upload_target" src="<%= @layout.get_param('chooser_image').to_s %>" />
-	     </div>
-	     <div class="description_pos"><div class="settings_wysiwyg"><%= layout_form.text_area :description %></div></div>
-	     <div id="template_settings_box" class="list_box"><div id="template_settings" class="list_box_content">
-	          <%= layout_form.label :category_csv, "Categories"%><%= layout_form.text_field :category_csv %>
-		  <% @params.each do |param| %>
-		      <%= param_field(fields_for_params, param) %>
-		  <% end %>
-		  <%= layout_form.fields_for :param_descriptions do |param_description_fields| %>
-		      <% @param_descriptions.each do |param_name, param_description| %>
-		         <%= param_description_fields.hidden_field param_name, :value=>param_description %>
-		      <% end %>
-		  <% end %>
-		  <%= layout_form.fields_for :param_classes do |param_class_fields| %>
-		      <% @params.each do |param| %>
-		         <%= param_class_fields.hidden_field param.name, :value=>param.param_class %>
-		      <% end %>
-		  <% end %>
-	     </div></div>
-	   <% end %>
-	 </div>
-	 <div id="schemes_pane">
-	   <div id="scheme_list_box" class="list_box">
-	       <div id="scheme_list" class="list_box_content">
-		 <% (@schemes || {}).each do |scheme_id, scheme| %>
-		     <div class="layout_scheme list_box_item" id="<%= scheme_id %>">
-		       <img class="scheme_thumbnail" src="<%= scheme[:thumbnail_image] %>" scheme_id="<%= scheme_id %>">
-		       <div class="layout_scheme_title"><%= scheme[:name] %></div>
-		     </div>
-		 <% end %>
-	       </div>
-               <div class="edit_bar"><div id="clone_scheme" class="edit_bar_button" title="Clone a Scheme">+</div><div id="delete_scheme" class="edit_bar_button" title="Remove a Scheme">-</div></div>
-	   </div>
-	   <div id="scheme_forms">
-	      <%= layout_form.fields_for :template_params do |template_param_fields| %>
-	          <%= template_param_fields.hidden_field :chooser_image, :value=>@layout.get_param("chooser_image").to_s %>
-	      <% end %>
-		  <%= layout_form.fields_for :schemes do |schemes_fields| %>
-		     <% (@schemes || {}).each do |scheme_id, scheme| %>
-			<div class="scheme_form" id="<%=scheme_id %>">
-			   <%= schemes_fields.fields_for scheme_id.to_sym do |fields_for_scheme| %>
-			      <div class="scheme_top_block">
-				<div id="scheme_name"><%= fields_for_scheme.label :name, "Name"%><%= fields_for_scheme.text_field :name, :value=>scheme[:name], :class=>"scheme_name_field", :scheme_id=>scheme[:id] %></div> 
-				<img class="upload_target scheme_thumbnail" src="<%= scheme[:thumbnail_image] %>" scheme_id="<%= scheme_id %>"/>
-			      <%= fields_for_scheme.hidden_field :thumbnail_image, :value=>scheme[:thumbnail_image], :class=>"thumbnail_url" %></div>
-
-			      <br/>
-			      <div class="scheme_params list_box">
-	                        <div id="scheme_list" class="list_box_content">
-				  <%= fields_for_scheme.fields_for :params do |param_fields| %>
-				      <% scheme[:params].sort().collect{|scheme_dup| scheme_dup[1]}.each do |param| %>
-					 <%= param_field(param_fields, param ) %>
-				      <% end %>
-				  <% end %>
-				  <%= layout_form.fields_for :param_descriptions do |param_description_fields| %>
-				      <% scheme[:params].collect{|scheme_dup| scheme_dup[1]}.each do |param| %>
-					 <%= param_description_fields.hidden_field param.name, :value=>param.description_guid %>
-				      <% end %>
-				  <% end %>
-				</div>
-			      </div>
-			      <div class="scheme_large_images">
-				<div class="scheme_large_image_panes">
-				  <% (scheme[:large_images] || []).each do |large_image_pair| %>
-				     <div><img src="<%=large_image_pair[:thumbnail] %>"/><div class="scheme_large_image_delete">x</div></div>
-				  <% end %>
-				</div>
-				<div class="scheme_large_image_tabs">
-				  <% if scheme[:large_images].present? %>
-				     <% for index in 1..(scheme[:large_images].length) %>
-					 <a class="layout_image_block_tab"><%=index%></a>
-				     <% end %>
-				  <% end %>
-				</div>
-			      </div>
-			   <% end %>
-		       </div>
-	         <% end %>
-	      <% end %>
-	   </div>
-	 </div>
-	 <div id="style_pane">
-	    <%= layout_form.text_area :style, :class=>"layout_style" %>
-	 </div>
-	 <div id="setup_pane">
-	    <%= layout_form.text_area :setup, :class=>"layout_setup" %>
-	 </div>
-       </div>
-       </div>
-	<% if @layout.id.present? %>
-           <%= button_tag "Save", :id=>"save_button", :type=>"button" %>
-	<% end %>
-       <%= button_tag "Save and Close", :id=>"save_and_close_button", :type=>"button", :class=>"save_button" %>
-   <% end %>
-</div>
+<%= content_tag(:div, :id=>"layout_edit_form", :class=>"layout_edit_form huge_form") do
+    form_for(@layout, :as=>:layout, :url=> endpoint, :method=>method) do |layout_form|
+         layout_form.hidden_field(:guid) +
+         content_tag(:div, :class=>"tab_form") do
+             content_tag(:ul, :class=>"tabs") do
+                 content_tag(:li, content_tag(:a, "General", :href=>"#")) +
+                 content_tag(:li, content_tag(:a, "Schemes", :href=>"#")) +
+                 content_tag(:li, content_tag(:a, "Style", :href=>"#")) +
+                 content_tag(:li, content_tag(:a, "Setup", :href=>"#"))
+             end +
+             content_tag(:div, :class=>"panes") do
+                 content_tag(:div, :id=>"general_pane") do
+                     content_tag(:div, layout_form.label(:name, "Name") + layout_form.text_field(:name), :id=>"layout_name") +
+                     layout_form.fields_for(:params) do |fields_for_params|
+                         content_tag(:div, :id=>"layout_chooser_image") do
+                             content_tag(:span, "Click to change image", :class=>"popup_help_text", :style=>"float:right;") + tag(:br) +
+		                     tag(:img, :id=>"layout_image_upload", :class=>"upload_target", :src=>@layout.get_param('chooser_image').to_s)
+                         end +
+	                     content_tag(:div, content_tag(:div, layout_form.text_area(:description), :class=>"settings_wysiwyg"), :class=>"description_pos") +
+                         content_tag(:div, :id=>"template_settings_box", :class=>"list_box") do
+                             content_tag(:div, :id=>"template_settings", :class=>"list_box_content") do
+	                             layout_form.label(:category_csv, "Categories") + layout_form.text_field(:category_csv) +
+		                         @params.collect do |param| 
+                                     param_field(fields_for_params, param)
+                                 end.join("").html_safe
+                             end
+		                 end +
+		                 layout_form.fields_for(:param_descriptions) do |param_description_fields|
+		                     @param_descriptions.collect do |param_name, param_description|
+                                 param_description_fields.hidden_field(param_name, :value=>param_description)
+                             end.join("").html_safe
+                         end +
+                         layout_form.fields_for(:param_classes) do |param_class_fields|
+                              @params.collect do |param|
+                                  param_class_fields.hidden_field(param.name, :value=>param.param_class)
+                              end.join("").html_safe
+		                 end
+                     end
+                 end +
+                 content_tag(:div, :id=>"schemes_pane") do
+                     content_tag(:div, :class=>"list_box", :id=>"scheme_list_box") do
+                         content_tag(:div, :id=>"scheme_list", :class=>"list_box_content") do
+                             (@schemes || {}).collect do |scheme_id, scheme|
+                                 content_tag(:div, content_tag(:div, scheme[:name], :class=>"layout_scheme_title"), :class=>"layout_scheme list_box_item", :id=>scheme_id)
+                             end.join("").html_safe
+                         end
+                     end +
+                     content_tag(:div,:class=>"edit_bar") do
+                         content_tag(:div, "+", :id=>"clone_scheme", :class=>"edit_bar_button", :title=>"Clone a Scheme") +
+                         content_tag(:div, "-", :id=>"delete_scheme", :class=>"edit_bar_button", :title=>"Delete a Scheme") 
+                     end +
+                     content_tag(:div, :id=>"scheme_forms") do
+                         layout_form.fields_for(:template_params) do |template_param_fields|
+                             template_param_fields.hidden_field(:chooser_image, :value=>@layout.get_param("chooser_image").to_s)
+                         end +
+                         layout_form.fields_for(:schemes) do |schemes_fields|
+                             (@schemes || {}).collect do |scheme_id, scheme| 
+                                 content_tag(:div, :class=>"scheme_form", :id=>scheme_id) do
+                                     schemes_fields.fields_for(scheme_id.to_sym) do |fields_for_scheme|
+                                         content_tag(:div, :class=>"scheme_top_block") do
+                                             content_tag(:div, :id=>"scheme_name") do
+                                                 fields_for_scheme.label(:name) +
+                                                 fields_for_scheme.text_field(:name, :value=>scheme[:name], :class=>"scheme_name_field", :scheme_id=>scheme[:id])
+                                             end
+                                         end +
+                                         content_tag(:div, :class=>"scheme_params list_box") do
+                                             content_tag(:div, :id=>"scheme_list", :class=>"list_box_content") do
+                                                 fields_for_scheme.fields_for(:params) do |param_fields| 
+                                                     scheme[:params].sort().collect do |scheme_dup| 
+                                                         param_field(param_fields, scheme_dup[1])
+                                                     end.join("").html_safe
+                                                 end 
+                                             end
+                                         end +
+                                         layout_form.fields_for(:param_descriptions) do |param_description_fields| 
+                                             scheme[:params].collect{|scheme_dup| scheme_dup[1]}.collect do |param|
+                                                 param_description_fields.hidden_field(param.name, :value=>param.description_guid)
+                                             end.join("").html_safe
+                                         end
+                                     end
+                                 end
+                             end.join("").html_safe
+                         end
+                     end
+                 end +
+                 content_tag(:div, :id=>"style_pane") do
+                     layout_form.text_area(:style, :class=>"layout_style")
+                 end +
+                 content_tag(:div, :id=>"setup_pane") do
+                     layout_form.text_area(:setup, :class=>"layout_setup")
+                 end
+             end
+         end +
+         content_tag(:div, :class=>"dialog_buttons") do
+             button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button") +
+             button_tag("Save and Close", :id=>"save_and_close_button", :type=>"button", :class=>"save_button")
+         end
+     end
+end %>
 <script>
    $(function() {
+      var styleEditor, setupEditor;
+      var styleErrors = [];
       var config_large_image_tabs = function(self) {
           var tabs_api = self.find(".scheme_large_image_tabs").data("tabs");
           if(tabs_api) {
@@ -137,7 +127,6 @@ end %>
               self.find(".scheme_large_image_tabs").append(input_template);
 	   });
      }
-      $("#layout_edit_form ul.tabs").tabs($("div.panes > div"));
 
       /* setup schemes.  This is done on start, or when we add or delete a scheme */
       var initSchemes = function() {
@@ -209,15 +198,101 @@ end %>
 
        $("#save_button,#save_and_close_button").click(function() {
            var button = $(this);
+           if(styleEditor) {
+               styleEditor.save();
+           }
+           if(setupEditor) {
+               setupEditor.save();
+           }
            $("input.template_large_image").remove();
+           styleErrors=[];
            $.ajaxSetParamsJSON("<%= endpoint %>", $("form").serializeArray(), {
                                 method:"<%= method %>",
-                                success: function() {
+                                error: function(errors, data) {
+                                    if(data.style_errors) {
+                                        $.each(data.style_errors, function(index, error_info) {
+                                            styleErrors.push({from:    CodeMirror.Pos(error_info[0]-1, 0), 
+                                                              to:      CodeMirror.Pos(error_info[0]-1, 100), 
+                                                              message: error_info[1]});
+                                        });
+                                        styleEditor.setCursor(styleErrors[0].from);
+                                        styleEditor.scrollIntoView();
+                                        styleEditor.execCommand("indentMore");
+                                        styleEditor.execCommand("undo");
+                                    }
+                                },
+                                success: function(data) {
+                                    styleEditor.execCommand("indentMore");
+                                    styleEditor.execCommand("undo");
                                    if(button.is("#save_and_close_button")) {
                                        window.location.reload();
                                    }}});
        });
 
        initSchemes();
+
+      // css editing
+      $.loadScripts([
+        "http://cdn.roxiware.com/tools/codemirror/lib/codemirror.js",
+        "http://cdn.roxiware.com/tools/codemirror/mode/css/css.js",
+        "http://cdn.roxiware.com/tools/codemirror/mode/ruby/ruby.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/matchbrackets.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/trailingspace.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/edit/closebrackets.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/comment/comment.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/comment/continuecomment.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/foldcode.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/foldgutter.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/fold/brace-fold.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/hint/css-hint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/lint/lint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/lint/css-lint.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/selection/mark-selection.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/selection/active-line.js",
+        "http://cdn.roxiware.com/tools/codemirror/keymap/emacs.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/dialog/dialog.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/search/searchcursor.js",
+        "http://cdn.roxiware.com/tools/codemirror/addon/search/search.js"
+      ], true, function() {
+          styleEditor = CodeMirror.fromTextArea($("#layout_style").get(0),
+            {
+                mode:"text/x-scss",
+                lineNumbers:true,
+                lineWrapping: true,
+                keyMap:"emacs",
+                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                foldGutter: true,
+                lint: {
+                    getAnnotations: function(cm, options) {
+                        return styleErrors;
+                    }
+                },
+                gutters: ["CodeMirror-lint-markers","CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+            });
+          setupEditor = CodeMirror.fromTextArea($("#layout_setup").get(0),
+            {
+                mode:"text/x-ruby",
+                matchBrackets:true,
+                lineNumbers:true,
+                lineWrapping: true,
+                autoCloseBrackets: true,
+                keyMap:"emacs",
+                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+            });
+          CodeMirror.commands.save = function(cm) {
+              $("#save_button").click();
+          }
+      $("#layout_edit_form ul.tabs").tabs($("div.panes > div"));
+      $("#layout_edit_form ul.tabs").data("tabs").onClick( function(ev, index) {
+          if ((index == 2) && styleEditor) {
+              styleEditor.refresh();
+          } 
+          if ((index == 3) && setupEditor) {
+              setupEditor.refresh();
+          } 
+      });
    });
+});
 </script>

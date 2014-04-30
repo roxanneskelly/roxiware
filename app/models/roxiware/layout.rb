@@ -36,6 +36,25 @@ module Roxiware
                 style_class = StyleRenderClass.new(params_in)
                 ERB.new(self.style).result(style_class.get_binding)
             end
+
+            # validate_style
+            def validate_style(syntax_check_params)
+                validate_errors = []
+                begin
+                    style_params = {}
+                    Sass::Engine.new(eval_style(syntax_check_params).strip, {
+                                         :style=>:expanded,
+                                         :syntax=>:scss,
+                                         :cache=>false
+                                     }).render()
+                rescue Sass::SyntaxError => e
+                    puts "#{e.message}  on line #{e.sass_line}"
+                    puts e.inspect
+                    puts e.sass_backtrace.inspect
+                    validate_errors << [e.sass_line, e.message]
+                end
+                validate_errors
+            end
         end
 
 

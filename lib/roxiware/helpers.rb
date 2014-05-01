@@ -40,7 +40,7 @@ module Roxiware
 
         def param_field(field_group, param, options={})
             title = param.param_description.description
-            result = "<div id='param_#{options[:id]}' class='param-field param-field-#{param.param_description.field_type}'>"
+            result = "<div id='param_#{options[:id] || param.name}' class='param-field param-field-#{param.param_description.field_type}'>"
             label = field_group.label(param.name.to_sym, param.name.titleize, {:title=>title})
             options[:title] = title
             case param.param_description.field_type
@@ -70,7 +70,7 @@ module Roxiware
         end
 
         def param_fields(field_group, params, options = {})
-            raw params.collect {|param| param_field(field_group, param, options)}.join(" ")
+            (params.collect {|param| param_field(field_group, param, options)}.join(" ") + " ").html_safe
         end
 
         def flash_from_object_errors(object, *params)

@@ -1,4 +1,4 @@
-<div id="event_edit_form" class="medium_form">
+<div id="event_edit_form" class="large_form">
 <%= form_for @event do |event|%>
   <div id="left_section">
     <div id="start_entry"><%= event.label :start_time, "Start" %>
@@ -27,7 +27,7 @@
       <%= event.label :description, "Description" %>
       <div id="description"><div class="settings_wysiwyg" toolbar="styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"><%= event.text_area :description, :class=>"event_description settings_wysiwyg" %></div></div>
   </div>
-    <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
+    <%= content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons") %>
 <% end %>
 </div>
 <script>

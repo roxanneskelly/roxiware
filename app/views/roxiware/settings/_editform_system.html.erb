@@ -1,36 +1,28 @@
-<div class="medium_form" id="system_settings_edit">
-   <% site_params = @settings.values_at("title", "subtitle", "webmaster_email","site_copyright_first_year","site_copyright","hostname","hosting_package").compact %>
-   <% advertising_params = @settings.values_at("google_ad_client").compact %>
-   <% seo_params = @settings.values_at("meta_description", "meta_keywords", "google_site_verification_key", "google_analytics_id").compact %>
-   <%= form_tag(setting_path("system"), :method=>"put") do %>
-       <%= fields_for :system do |system_fields| %>
-	  <ul class="tabs">
-	      <% if site_params.present? %><li><a>Site</a></li><% end %>
-	      <% if advertising_params.present? %><li><a>Advertising</a></li><% end %>
-	      <% if seo_params.present? %><li><a>Search Optimization</a></li><% end %>
-	  </ul>
-          <div class="panes">
-	      <% if site_params.present? %>
-		<div id="site_pane">
-		   <%= param_fields(system_fields, site_params) %>
-		</div>
-              <% end %>
-	      <% if advertising_params.present? %>
-		<div id="site_pane">
-		   <%= param_fields(system_fields, advertising_params) %>
-		</div>
-              <% end %>
-	      <% if seo_params.present? %>
-		<div id="site_pane">
-		   <%= param_fields(system_fields, seo_params) %>
-		</div>
-              <% end %>
-          </div>
-      <% end %>
-      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
-   <% end %>
-</div>
-
+<%= 
+content_tag(:div, :id=>"system_settings_edit", :class=>"large_form") do
+    site_params = @settings.values_at("title", "subtitle", "webmaster_email","site_copyright_first_year","site_copyright","hostname","hosting_package").compact
+    advertising_params = @settings.values_at("google_ad_client").compact
+    seo_params = @settings.values_at("meta_description", "meta_keywords", "google_site_verification_key", "google_analytics_id").compact
+    form_tag(setting_path("system"), :method=>"put") do
+        fields_for(:system) do |system_fields|
+            content_tag(:div, :class=>"tab_form") do
+                content_tag(:ul, :class=>"tabs") do
+                    (site_params.present? ? content_tag(:li, content_tag(:a, "Site")) : "") +
+                    (advertising_params.present? ? content_tag(:li, content_tag(:a, "Advertising")) : "") +
+                    (seo_params.present? ? content_tag(:li, content_tag(:a, "Search")) : "")
+                end +
+                content_tag(:div, :class=>"panes") do
+                    (site_params.present? ? content_tag(:div, param_fields(system_fields, site_params), :id=>"site_pane", :class=>"justify_inputs") : "") +
+                    (advertising_params.present? ? content_tag(:div, param_fields(system_fields, advertising_params), :id=>"advertising_pane", :class=>"justify_inputs") : "") +
+                    (seo_params.present? ? content_tag(:div, param_fields(system_fields, seo_params), :id=>"seo_pane", :class=>"justify_inputs") : "")
+                end
+            end
+        end
+    end +
+    content_tag(:div, :class=>"dialog_buttons") do
+        button_tag("Save", :id=>"save_button", :type=>"submit", :class=>"save_button")
+    end
+end %>
 <script>
 $(function() {
     $("#system_settings_edit ul.tabs").tabs($("div.panes > div"))

@@ -12,7 +12,7 @@ else
 end
 content_tag(:div, :class=>"account_edit_form #{form_class}", :id=>"account_edit_form") do
     form_for(@user, :url=>endpoint) do |user| 
-	content_tag(:div) do
+	content_tag(:div, :class=>"justify_inputs") do
 	  content_tag(:div, :id=>"username_entry") do
 	      username_edit_enabled = current_user.is_admin? && @user.auth_services.find_by_provider('roxiware').blank? 
 	      user.label(:username, "Username") +

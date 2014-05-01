@@ -9,7 +9,7 @@
 <div class="huge_form" id="post_edit_form">
     <%= form_for(@post, {:url=>endpoint}) do |post| %>
         <%= render(:partial=>"edit_post", :locals=>{:post_fields=>post}) %>
-        <%= button_tag "Save", :id=>"save_button", :type=>"button", :class=>"save_button" %>
+        <%= content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons") %>
     <% end %>
 </div>
 <script>

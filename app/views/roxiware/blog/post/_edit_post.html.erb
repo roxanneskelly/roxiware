@@ -1,28 +1,30 @@
 <%=
-content_tag(:div, :id=>"post_title_entry") do
-    post_fields.label(:post_title, "Title") +
-    post_fields.text_field(:post_title, :altname=>:post_link)
-end +
-if (current_user.role == "super") 
-    content_tag(:div, :id=>"author_entry") do
-        post_fields.label(:person_id, "Author") +
-        post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]})
-    end
-end +
- content_tag(:div, :id=>"category_entry") do
-    post_fields.label(:category_name, "Category") +
-    post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category)
-end +
-content_tag(:div, :class=>"content_pos") do
-    content_tag(:div, :class=>"settings_wysiwyg") do
-        post_fields.text_area(:post_content, :class=>"post_item_content")
-    end
-end +
-content_tag(:div, :id=>"tag_csv_entry") do
-    post_fields.label(:tag_csv, "Tags") +
-    post_fields.text_field(:tag_csv)
-end +
-post_fields.hidden_field(:blog_class)
+content_tag(:div, :class=>"justify_inputs", :style=>"width:100%;height:100%") do
+    content_tag(:div, :id=>"post_title_entry", :class=>"param-field") do
+        post_fields.label(:post_title, "Title") +
+        post_fields.text_field(:post_title, :altname=>:post_link)
+    end + " " +
+    if (current_user.role == "super") 
+        content_tag(:div, :id=>"author_entry", :class=>"param-field") do
+            post_fields.label(:person_id, "Author") +
+            post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]})
+        end
+    end + " " +
+     content_tag(:div, :id=>"category_entry", :class=>"param-field") do
+        post_fields.label(:category_name, "Category") +
+        post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category)
+    end + " " +
+    content_tag(:div, :id=>"tag_csv_entry", :class=>"param-field") do
+        post_fields.label(:tag_csv, "Tags") +
+        post_fields.text_field(:tag_csv)
+    end + " " +
+    content_tag(:div, :class=>"content_pos") do
+        content_tag(:div, :class=>"settings_wysiwyg") do
+            post_fields.text_area(:post_content, :class=>"post_item_content")
+        end
+    end +
+    post_fields.hidden_field(:blog_class)
+end
  %>
 <script>
 $(function() {

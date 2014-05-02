@@ -1189,3 +1189,73 @@ jQuery.loadScripts = function(urls, arg1, arg2) {
         callback();
     }
 }
+
+$.roxiware.cycle_background = {
+    conf: {
+        ordered:false,
+        firstLoad:function() {},
+        lastLoad:function() {},
+        cycleParams: {
+            fit:true,
+            width:"100%",
+            height:"100%"
+        }
+    }
+}    
+
+
+// Add a bunch of divs with backgrounds set to the images parameter.
+// The images are loaded in parallel, but are added to the base object
+// in order.  On addition of second image, cycle is started
+$.fn.cycle_background = function(images, conf_params) {
+    var conf = $.extend({}, $.roxiware.cycle_background.conf, conf_params);
+    var self = $(this);
+    var loadedImages = [];
+    var currentAdded = 0;
+    var cycle_params = $.extend({}, $.roxiware.cycle_background.conf.cycleParams, conf.cycleParams);
+    $.each(images, function(index, image_path) {
+        var currentIndex = index;
+        var loadingImage = $(new Image());
+        loadingImage.bind("load error", function(e) {
+            if(!conf.ordered) {
+                currentIndex = currentAdded;
+            }
+            // save off the loaded image into an ordered array, with 
+            if(e.type == "load") {
+                loadedImages[currentIndex] = $("<div></div>").css({display:"none",
+                                                                   position:"absolute", 
+                                                                   left:0,
+                                                                   right:0,
+                                                                   top:0,
+                                                                   bottom:0,
+                                                                   width:"100%",
+                                                                   height:"100%",
+                                                                   "background-image":"url('"+$(this).attr('src')+"')"});
+            }
+            else {
+                loadedImages[currentIndex] = $("");
+            }
+            while((currentAdded < images.length) && loadedImages[currentAdded]) {
+                // add this image and any subsequent images that were waiting on this one to be added,
+                // if this is the one that we're currently waiting on.
+                self.append(loadedImages[currentAdded]);
+                
+                currentAdded++;
+                if(currentAdded == 1) {
+                    loadedImages[currentIndex].fadeIn(100, function() {
+                        conf.firstLoad();
+                    });
+                }
+                if(currentAdded == images.length) {
+                    conf.lastLoad();
+                }
+            }
+            if(currentAdded > 2) {
+                // only cycle if there are more than one images added
+                self.cycle("destroy");
+                self.cycle(cycle_params);
+            }
+        });
+        loadingImage.attr("src", image_path);
+    });
+}

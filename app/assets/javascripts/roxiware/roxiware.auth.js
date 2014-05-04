@@ -155,16 +155,11 @@ $.extend({
 
 
 function do_login(data) {
-    console.log("DO LOGIN");
-    console.log(data);
-    console.log(data.params);
     if(data.resetLogin) {
-        console.log("resetting login");
         reset_login();
     }
     _get_auth_info(function(auth_info) {
         var handleSuccess = function(auth_info, data) {
-            console.log("success");
             var date = new Date();
             date.setDate(date.getDate()+7);
             document.cookie = "ext_oauth_token="+escape(auth_info.auth_token) + ";Path=/;Expires="+date.toUTCString();
@@ -172,22 +167,15 @@ function do_login(data) {
         }
 
         if(auth_info && auth_info.auth_kind) {
-            console.log("got auth info for success");
             handleSuccess(auth_info, data);
             return;
         }
-        console.log("didn't get auth info");
         if(data.check_login_state) {
-            console.log("just checking login state");
             return;
         }
-        console.log("data");
-        console.log(data);
-        console.log(data.params);
 
         // we need to bring up the oauth providers login window
         var login_url = "/account/auth/authproxy?"+$.param(data.params);
-        console.log("login url " + login_url);
         var width=500;
         var height=300;
         var left = $(window).width()/2-width/2;
@@ -196,12 +184,9 @@ function do_login(data) {
         // poll until the login window closes.  When it closes, it'll set local storage auth info 
         // to the appropriate value
         var timer = setInterval(function() {
-            console.log("interval check");
             if(login_popup.closed) {
-                console.log("popup closed");
                 if(localStorage.roxiwareAuthInfo) {
                     try {
-                        console.log("handling dialog login");
                         var auth_info = JSON.parse(localStorage.roxiwareAuthInfo);
                         handleSuccess(auth_info, data);
                     }
@@ -233,7 +218,6 @@ function get_login_form_template(options) {
                      oauth_state:options[$(this).attr("provider")+"_oauth_state"]
                  },
                  onSuccess:function() { 
-                     console.log("on success reload window");
                      window.location.reload()
             }
         };

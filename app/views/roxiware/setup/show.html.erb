@@ -1,6 +1,6 @@
 <%=
 "".html_safe + 
-content_tag(:div, :id=>"first_post_page", :class=>"setup_page", :style=>"display:none") do
+content_tag(:div, :id=>"first_blog_post_page", :class=>"setup_page", :style=>"display:none") do
     render(:partial=>"first_post") 
 end +
 if %w(site_setup edit_biography manage_books).include?(@setup_step)
@@ -19,7 +19,8 @@ if @setup_step == "edit_biography"
         (render(:partial=>"import_biography") if @setup_type == "author") +
         render(:partial=>"roxiware/people/edit_biography") 
     end
-end
+end +
+content_tag(:div, "", :id=>"complete_page", :class=>"setup_page", :style=>"display:none")
  %>
 <script>
 $(function() {
@@ -43,7 +44,7 @@ $(function() {
      $("button#save_post").click(function() {
          // Submit first post
          $(".watermark").val("");
-         var post_data = $("#first_post input").serializeArray();
+         var post_data = $("#first_blog_post input").serializeArray();
          post_data.push({name:"first_post[post_content]",value:$("#post_content").html()});
          $.ajaxSetParamsJSON("<%= setup_path %>.json", post_data, { 
              success:function() {
@@ -62,7 +63,6 @@ console.log("bio setup page focus")
         $("#site_setup_page,#manage_books_page").fadeOut(200, function(){$("#site_setup_page,#manage_books_page").css("width","")});
     });
     $("#site_setup_page").focus(function() {
-console.log("site setup page focus")
         $("#edit_biography_page").animate({width:0},200);
         $("#site_setup_page").css("width","").fadeIn(200);
         $("#manage_books").fadeOut(200, function(){$("#manage_books").css("width","")});
@@ -72,11 +72,16 @@ console.log("site setup page focus")
         $("#manage_books_page").css("width","").fadeIn(200);
         $("#first_post_page").css("width","").fadeOut(200);
     });
-    $("#first_post_page").focus(function() {
+    $("#first_blog_post_page").focus(function() {
         $("#biography_setup_page,#site_setup_page,#manage_books_page").animate({width:0},200);
-        $("#first_post_page").css("width","").fadeIn(200);
+        $("#first_blog_post_page").css("width","").fadeIn(200);
     });
-console.log("focusing on #<%= @setup_step %>_page");
+
+    $("#complete_page").focus(function() {
+        console.log("focus");
+        window.close();
+    });
+    console.log("#<%= @setup_step %>_page");
     $("#<%= @setup_step %>_page").focus();
 });
 </script>

@@ -1,5 +1,5 @@
 <% hidden_post = "hidden_post" if post.post_status != "publish" %>
-  <article class="<%= hidden_post %> post post_type_<%= post.post_type %>" id="post-<%= post.id %>" rel="<%= blog_post_path(post.id) %>">
+  <article class="<%= hidden_post %> post post_type_<%= post.post_type %>" id="post-<%= post.id %>" rel="<%= blog_post_path(post.id) %>" post_status="<%= post.post_status %>">
      <% if (can? :edit, post) %>
          <div class="manage_post_menu manage_menu" id="manage_<%= post.id %>"><ul>
              <li><div class="manage_button icon-arrow-down-9"></div><ul>

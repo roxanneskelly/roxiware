@@ -17,7 +17,7 @@
             book_fields.hidden_field(:goodreads_id) +
             book_fields.hidden_field(:raw_image) +
             content_tag(:div, :id=>"book_top_fields") do
-                content_tag(:div, "", :id=>"delete_book", :class=>"icon-remove-2") +
+                content_tag(:div, "", :id=>"delete_book", :class=>"icon-remove") +
                 content_tag(:div, :id=>:book_image, :class=>"upload_target") do 
                     tag(:img, :id=>:book_upload_image)
                 end +
@@ -85,6 +85,9 @@ console.log(book_html.data().book);
     $("#book_title").autosize();
 
    function updateBook(book) {
+     if (!$(book).data()) {
+         return;
+     }
      $(book).data().book = {
          title:$("#book_edit_form #book_title:not(.watermark)").val(),
          isbn:$("#book_edit_form input#book_isbn:not(.watermark)").val(),

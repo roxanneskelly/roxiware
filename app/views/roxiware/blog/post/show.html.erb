@@ -23,11 +23,11 @@ end %>
     end +
     content_tag(:li) do
         content_tag(:a, :id=>"delete_post_app") do
-            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-remove-2")+content_tag(:span, "Delete Post", :class=>"top_menu_text")
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-remove")+content_tag(:span, "Delete Post", :class=>"top_menu_text")
         end
     end +
     content_tag(:li) do
-        content_tag(:a, :id=>"post_status", :class=>"post_status_#{@post.post_status}") do
+        content_tag(:a, :id=>"post_status_app", :class=>".post_status", :post_status=>@post.post_status) do
             content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-post-status")+content_tag(:span, "", :class=>"post_status_visibility top_menu_text")
         end
     end +
@@ -55,11 +55,10 @@ $(document).ready(function() {
         $(".post").trigger("context_menu", "delete_post");
     });
 <% end %>
+var csrf_token = $('meta[name="csrf-token"]').attr('content');
+var csrf_param = $('meta[name="csrf-param"]').attr('content');
 
 <% if @show_comments && can?(:comment, @post) %>
-    var csrf_token = $('meta[name="csrf-token"]').attr('content');
-    var csrf_param = $('meta[name="csrf-param"]').attr('content');
-
     var root_comment_form = $(".comment_form");
     root_comment_form.attr("id", "root_form");
     
@@ -78,6 +77,15 @@ $(document).ready(function() {
 <% end %>
 
 <% if can? :edit, @post %>
+    $("#post_status_app").click(function() {
+        $(".post .post_status a").click();
+    });
+
+    $(".post").bind("status_changed", function() {
+console.log("status changed");
+        $("#post_status_app").attr("post_status", $(this).attr("post_status"));
+    });
+
     $(".manage_comment").each(function(index, menu) {
 	ddsmoothmenu.init({
 	    mainmenuid: $(this).attr("id"),

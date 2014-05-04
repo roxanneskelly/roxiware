@@ -58,36 +58,37 @@ $(function() {
         };
        $.ajax($(post).attr("rel")+".json", {
            type:"PUT",
-	   data: upload_params,
+           data: upload_params,
            dataType: "json",
-	   error: function (jqXHR, textStatus, errorThrown) {
+           error: function (jqXHR, textStatus, errorThrown) {
 	       $.alert(errorThrown);
            },
            success: function() {
              self.parent().find("li.comment_permission").removeClass("selected_item");
              self.addClass("selected_item");
+             $(".post").trigger("comment_permissions_changed");
            }
 	});
     });
 
 
     $("article.post .post_status a").click(function(e) {
-       e.stopPropagation();
-       var self = $(this).parent();
-       var post = self.parents(".post");
-       var new_status = (self.attr("post_status") != "publish")?"publish":"draft";
-       var upload_params = {blog_post:{post_status:new_status}};
-       if (csrf_param !== undefined && csrf_token !== undefined) {
-           upload_params[csrf_param] = csrf_token;
-       };
-       $.ajax($(post).attr("rel")+".json", {
-           type:"PUT",
-	   data: upload_params,
-           dataType: "json",
-           complete: function() {},
-	   error: function (jqXHR, textStatus, errorThrown) {
-	       $.alert(errorThrown);
-	    },
+        e.stopPropagation();
+        var self = $(this).parent();
+        var post = self.parents(".post");
+        var new_status = (self.attr("post_status") != "publish")?"publish":"draft";
+        var upload_params = {blog_post:{post_status:new_status}};
+        if (csrf_param !== undefined && csrf_token !== undefined) {
+            upload_params[csrf_param] = csrf_token;
+        };
+        $.ajax($(post).attr("rel")+".json", {
+            type:"PUT",
+	        data: upload_params,
+            dataType: "json",
+            complete: function() {},
+            error: function (jqXHR, textStatus, errorThrown) {
+	            $.alert(errorThrown);
+            },
             success: function (data, jqXHR, textStatus) {
                self.attr("post_status", new_status);
                self.find("a").text((new_status == "publish")?"Hide":"Show");
@@ -97,6 +98,8 @@ $(function() {
                else {
                   post.removeClass("hidden_post");
                }
+               post.attr("post_status", new_status);
+               post.trigger("status_changed");
             }
 	});
    });

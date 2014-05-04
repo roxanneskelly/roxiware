@@ -854,7 +854,7 @@
                            },
                         "ctrl+left" : false, "ctrl+right" : false, "shift+left" : false, "shift+right" : false
           },
-	      "plugins" : ["themes", "json_data", "ui", "dnd","crrm","hotkeys","types"]
+	      "plugins" : ["themes", "json_data", "ui", "dnd","crrm","types"]
       });
       $(jstree).bind("loaded.jstree", function(event, data) {
 	      $(jstree).jstree("open_all");

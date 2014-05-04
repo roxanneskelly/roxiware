@@ -4,19 +4,19 @@
 		   content_tag(:ul) do
 		   content_tag(:li, :id=>"expand_collapse") do
 			content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-expandcontract") + content_tag(:span, "Hide", :class=>"top_menu_text"))
-		   end +
+		    end +
 			   tag(:hr, :id=>"application_menus") +
 			   
 			   tag(:hr) +
-		   content_tag(:li, :id=>"expand_collapse_admin") do
+           content_tag(:li, :id=>"expand_collapse_admin") do
 			content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-expandcontract-admin") + content_tag(:span, "", :class=>"admin_expander_text top_menu_text"))
 		   end +
 			   content_tag(:li, :class=>"admin_menu") do
 				   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-user")+content_tag(:span, "Self", :class=>"top_menu_text") +
 				   content_tag(:ul) do
-				   content_tag(:li, content_tag(:a, "Account", :rel=>edit_account_path(current_user.id), :form=>"Edit Account")) +
-				   content_tag(:li, content_tag(:a, "Profile", :rel=>edit_person_path(current_user.person.id), :form=>"Edit Biography")) +
-				   content_tag(:li, content_tag(:a, "Password", :rel=>account_update_password_path, :form=>"Change Password")) 
+				   content_tag(:li, content_tag(:a, "Account", :rel=>edit_account_path(current_user.id), :form=>"Edit Account", :id=>"edit_account", :proxy_scribaroo=>true)) +
+				   content_tag(:li, content_tag(:a, "Profile", :rel=>edit_person_path(current_user.person.id), :form=>"Edit Profile")) +
+				   content_tag(:li, content_tag(:a, "Password", :rel=>account_update_password_path, :form=>"Change Password", :id=>"change_password", :proxy_scribaroo=>true)) 
 				   end
 			   end +
 		   if ((["custom","forum"].include?(@setup_type) || (current_user.role == "super")) && can?(:create, Roxiware::User)) 
@@ -31,7 +31,7 @@
 		   content_tag(:li, :class=>"admin_menu") do
 				   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-image")+content_tag(:span, "Customize", :class=>"top_menu_text") +
 				   content_tag(:ul) do
-				  content_tag(:li, content_tag(:a, "Template", :rel=>layout_index_path, :form=>"Choose Template")) +
+				  content_tag(:li, content_tag(:a, "Template", :rel=>layout_index_path, :form=>"Choose Template", :id=>"choose_template", :proxy_scribaroo=>true)) +
 				  content_tag(:li, content_tag(:a, "Appearance", :rel=>customize_layout_path(@current_layout.guid), :form=>"Customize Template")) +
 				  if (can? :edit, @current_layout) 
 						  tag(:hr) +
@@ -96,7 +96,7 @@
 			   end +
 			   tag(:hr) +
 			   content_tag(:li) do
-			   content_tag(:a, :href=>destroy_session_path('user')) do
+			   content_tag(:a, :href=>destroy_session_path('user'), :id=>"sign_out", :proxy_scribaroo=>true) do
 					   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-switch-2")+content_tag(:span, "Sign Out", :class=>"top_menu_text")
 				   end
 			   end 
@@ -106,9 +106,18 @@
 	<script>
 $(function() {
     $("div#settings_menu hr#application_menus").after($("ul.application_menu > *"));
+    if(window.top != window) {
+        $("#settings_menu #sign_out .top_menu_text").text("Close");
+        $("#settings_menu a[proxy_scribaroo]").removeAttr("form").click(function(e) {
+            e.preventDefault();
+            $.postMessage({action:$(this).attr("id")}, "<%= AppConfig.scribaroo_url %>", parent);
+        });
+    }
+
     $("div#settings_menu a[form]").click(function() {
         settingsForm($(this).attr("rel"), $(this).attr("form"));
     });
+    
     $("div#settings_menu li#page_fork, div#settings_menu li#page_delete").click(function() {
 	    $("#mainBody").trigger("context_menu", $(this).attr("id"));
     });

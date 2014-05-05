@@ -17,7 +17,7 @@ if @setup_step == "edit_biography"
     content_tag(:div, :id=>"edit_biography_page", :class=>"setup_page", :style=>"display:none") do
         "".html_safe +
         (render(:partial=>"import_biography") if @setup_type == "author") +
-        render(:partial=>"roxiware/people/edit_biography") 
+        render(:partial=>"roxiware/people/edit_biography", :locals=>{:edit_biography_title=>"Tell Us About Yourself."}) 
     end
 end +
 content_tag(:div, "", :id=>"complete_page", :class=>"setup_page", :style=>"display:none")
@@ -26,11 +26,9 @@ content_tag(:div, "", :id=>"complete_page", :class=>"setup_page", :style=>"displ
 $(function() {
      $("button#save_biography").click(function() {
          // Once done with biography, show the site setup page
-         console.log("save");
          $(".watermark").val("");
          var biography_data = $("#biography input").serializeArray();
          biography_data.push({name:"person[bio]",value:$("#person_bio").html()});
-         console.log(biography_data);
          $.ajaxSetParamsJSON("<%= setup_path %>.json", biography_data, { 
              success:function() {
                   $("#site_setup_page #settings_title").val($("#biography input#person_full_name").val()).change();

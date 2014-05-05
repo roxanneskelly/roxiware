@@ -1,7 +1,7 @@
 <%= if current_user.is_admin?
-    form_class="medium_form"
+    form_class="huge_form"
 else
-    form_class="small_form"
+    form_class="huge_form"
 end 
 if @user.id.blank?
     endpoint = account_index_path
@@ -12,55 +12,52 @@ else
 end
 content_tag(:div, :class=>"account_edit_form #{form_class}", :id=>"account_edit_form") do
     form_for(@user, :url=>endpoint) do |user| 
-	content_tag(:div, :class=>"justify_inputs") do
-	  content_tag(:div, :id=>"username_entry") do
-	      username_edit_enabled = current_user.is_admin? && @user.auth_services.find_by_provider('roxiware').blank? 
-	      user.label(:username, "Username") +
-	      user.text_field(:username, :watermark=>"username", :disabled=>!username_edit_enabled)
-	  end + " " +
-	  if (current_user.is_admin? && (@user != current_user))
-	      content_tag(:div, :id=>"role_entry") do
-		  role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} 
-		  role_options["Super"] = :super if current_user.role == "super"
-		  user.label(:role, "Role") +
-		  user.select(:role, options_for_select(role_options, @user.role), {:disabled=>"disabled"})
-              end 
-	  end + " " +
-	  content_tag(:div, :id=>"name_entry", :class=>"justify_inputs") do
-	      user.label(:name, "Name") + " " +
-	      user.text_field(:first_name, :altname=>:seo_index, :watermark=>"First") + " " +
-	      user.text_field(:middle_name, :altname=>:seo_index, :watermark=>"Middle") + " " +
-	      user.text_field(:last_name, :altname=>:seo_index, :watermark=>"Last")
-	  end + " " +
-	  content_tag(:div, :id=>"email_entry") do
-	      user.label(:email, "Email") +
-	      user.email_field(:email, :watermark=>"email")
-	  end + " " +
-	  if(@role != "self")
-	      content_tag(:div, :id=>"password_entry") do
-		  user.label(:password, "Password") +
-		  user.password_field(:password, :autocomplete=>"off", :watermark=>"*******")
-	      end + " " +
-	      content_tag(:div, :id=>"password_confirmation_entry") do
-		  user.label(:password_confirmation, "Confirm") +
-		  user.password_field(:password_confirmation, :watermark=>"*******")
-	      end
-	  end + " " +
-          if (current_user.present? && current_user.role == "super")
-              auth_services = Hash[@user.auth_services.collect{|auth_service| [auth_service.provider, auth_service.uid]}]
-              Roxiware::AuthService::ALLOWED_PROVIDERS.collect do |provider|
-                  content_tag(:div, :id=>"provider_#{provider}", :class=>"auth_provider") do
-                      content_tag(:div, :class=>"labeled-checkbox") do
-                          user.check_box("auth_services[#{provider}][present]", {:checked=>auth_services.keys.include?(provider.to_s)}) +
-                          content_tag(:span, "", :class=>"control-icon checkbox-icon") +
-                          label_tag(provider) 
-                      end +
-                      user.text_field("auth_services[#{provider}][uid]", :value=>auth_services[provider.to_s])
-                  end
-              end.join(" ").html_safe
-          end
-       end +
-       button_tag("Save", :id=>"save_account", :value=>"save", :type=>"submit", :class=>"save_button")
+        content_tag(:div) do
+            content_tag(:div, :class=>"settings_section") do
+                content_tag(:h1, "Account Details") +
+                content_tag(:div, :id=>"username_entry") do
+                    username_edit_enabled = current_user.is_admin? && @user.auth_services.find_by_provider('roxiware').blank? 
+                    user.label(:username, "Username") +
+                    user.text_field(:username, :watermark=>"username", :disabled=>!username_edit_enabled)
+                end + " " +
+                if (current_user.is_admin? && (@user != current_user))
+                    content_tag(:div, :id=>"role_entry") do
+                        role_options = {"Admin"=>:admin, "User"=>:user, "Guest"=>:guest} 
+                        role_options["Super"] = :super if current_user.role == "super"
+                        user.label(:role, "Role") +
+                        user.select(:role, options_for_select(role_options, @user.role), {:disabled=>"disabled"})
+                    end 
+                end + " " +
+                content_tag(:div, :id=>"email_entry") do
+                    user.label(:email, "Email") +
+                    user.email_field(:email, :watermark=>"email")
+                end + " " +
+                if(@role != "self")
+                    content_tag(:div, :id=>"password_entry") do
+                    user.label(:password, "Password") +
+                    user.password_field(:password, :autocomplete=>"off", :watermark=>"*******")
+                    end + " " +
+                    content_tag(:div, :id=>"password_confirmation_entry") do
+                    user.label(:password_confirmation, "Confirm") +
+                    user.password_field(:password_confirmation, :watermark=>"*******")
+                    end
+                end 
+            end + " " +
+            content_tag(:div, :id=>"auth_provider_list", :class=>"settings_section") do
+                content_tag(:h1, "Link Your Account") +
+                fields_for(:auth_services) do |auth_services_fields|
+                    auth_services = Hash[@user.auth_services.collect{|auth_service| [auth_service.provider, auth_service.uid]}]
+                    Roxiware::AuthService::ALLOWED_PROVIDERS.select{|provider| provider != :roxiware}.collect do |provider|
+                        content_tag(:div, :id=>"provider_#{provider}", :class=>"auth_provider", :provider=>provider) do
+                            content_tag(:div, "", :id=>"#{provider}_login") +
+                            tag(:img, :class=>"account_image") +
+                            content_tag(:div, auth_services[provider.to_s], :class=>(auth_services[provider.to_s].present? ? "acct_uid linked_account" : "acct_uid unlinked_account"))
+                        end
+                    end.join(" ").html_safe
+                end +
+                content_tag(:div, button_tag("Save", :id=>"save_account", :value=>"save", :type=>"submit"), :style=>"text-align:right")
+           end
+       end
     end
 end %>
 <script>
@@ -69,12 +66,30 @@ $(function() {
     $("button#save_account").require_fields("#user_email, #user_username");
     $("form").submit(function(e) {
         e.preventDefault();
-        $.ajaxSetParamsJSON('<%= "#{endpoint}.json" %>', $("#account_edit_form form").serializeArray(), {form:$("#account_edit_form form"), 
+        var account_data = $("#account_edit_form form").serializeArray();
+        $(".auth_provider").each(function(index, provider_elem) {
+            account_data.push({name:"user[auth_services]["+$(provider_elem).attr("provider")+"]", value:$(provider_elem).find(".acct_uid").text()});
+        });
+        $.ajaxSetParamsJSON('<%= "#{endpoint}.json" %>', account_data, {form:$("#account_edit_form form"), 
                                                                                       fieldPrefix:"user_", 
                                                                                       method:"<%= method.to_s %>",
                                                                                       success: function() {
                                                                                           window.location.reload();
                                                                                       }});
+    });
+    $(".auth_provider#provider_facebook").click(function() {
+        $.oAuthResetLogin();
+        $.oAuthLogIn("facebook", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'facebook', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
+    });
+    $(".auth_provider#provider_twitter").click(function() {
+        $.oAuthResetLogin();
+        $.oAuthLogIn("twitter", "<%= Roxiware::AuthHelpers::AuthState.new({:auth_kind=>'twitter', :proxy=>true, :host_with_port=>request.host_with_port}).get_state %>");
+    });
+	$("body").bind("oauth_login", function(e, auth_info) {
+		if(auth_info) {
+           $(".auth_provider#provider_"+auth_info.auth_kind+" .acct_uid").removeClass("unlinked_account").addClass("linked_account").text(auth_info.uid);
+           //$(".auth_provider#provider_"+auth_info.auth_kind+" .account_image").attr("src", auth_info.thumbnail_url);
+        }
     });
   
 });

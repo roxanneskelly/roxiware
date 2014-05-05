@@ -935,9 +935,16 @@
 function settingsForm(source, title, options) {
     var conf = $.extend({}, options);
     title = typeof title  != 'undefined' ? title : "&nbsp;";
-    var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close icon-cancel-circle'></a>" +
-                   "<div class='settings_title'>"+title+"</div>" +
-                   "<div class='contentWrap'> </div></div>");
+    var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close icon-cancel-circle'></a>");
+
+
+    if(title.length > 0) {
+        overlay.append("<div class='settings_title'>"+title+"</div>");
+    }
+    overlay.append("<div class='contentWrap'> </div></div>");
+    if(title.length == 0) {
+        overlay.find(".contentWrap").css("top", "2em");
+    }
 
     var instantiateOverlay = function() {
         var top = "5%";
@@ -973,6 +980,7 @@ function settingsForm(source, title, options) {
             },
             onClose: function (event) {
                 overlay.find("div.settings_wysiwyg textarea").tinymce().remove();
+                overlay.find("div.inline_settings_wysiwyg").tinymce().remove();
                 $.roxiware.alert.popup = null;
                 if(conf.onClose) {
                     conf.onClose(overlay);
@@ -1040,6 +1048,31 @@ function settingsForm(source, title, options) {
                      toolbar: toolbar,
                  });
             }
+        });
+        $("div.inline_settings_wysiwyg").tinymce({
+               script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+               theme: "modern",
+               inline:true,
+               skin: "light",
+               menubar: false,
+               browser_spellcheck:true,
+               relative_urls: false,
+               verify_html:false,
+               remove_script_host:true,
+               document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
+               plugins: [
+                   "autolink lists link image charmap anchor",
+                   "visualblocks code media",
+                   "table contextmenu paste autoresize"
+               ],
+               height: $("div.settings_wysiwyg").height() - 30,
+               autoresize_min_height:140,
+               statusbar:false,
+               schema: "html5",
+               toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code",
+               setup: function(ed){ed.on('LoadContent', function() {
+                            tinymce.ui.FloatPanel.zIndex = overlay.css("z-index")+1;  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
+               })}
         });
 
         overlay.find(".contentWrap [title]").tooltip({

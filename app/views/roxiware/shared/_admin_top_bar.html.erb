@@ -14,8 +14,8 @@
 			   content_tag(:li, :class=>"admin_menu") do
 				   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-user")+content_tag(:span, "Self", :class=>"top_menu_text") +
 				   content_tag(:ul) do
-				   content_tag(:li, content_tag(:a, "Account", :rel=>edit_account_path(current_user.id), :form=>"Edit Account", :id=>"edit_account", :proxy_scribaroo=>true)) +
-				   content_tag(:li, content_tag(:a, "Profile", :rel=>edit_person_path(current_user.person.id), :form=>"Edit Profile")) +
+				   content_tag(:li, content_tag(:a, "Account", :rel=>edit_account_path(current_user.id), :form=>"", :id=>"edit_account", :proxy_scribaroo=>true)) +
+				   content_tag(:li, content_tag(:a, "Profile", :rel=>edit_person_path(current_user.person.id), :form=>"")) +
 				   content_tag(:li, content_tag(:a, "Password", :rel=>account_update_password_path, :form=>"Change Password", :id=>"change_password", :proxy_scribaroo=>true)) 
 				   end
 			   end +

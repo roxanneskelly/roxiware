@@ -1,42 +1,33 @@
-<div id="biography_edit_form" class="large_form">
+<div id="biography_edit_form" class="huge_form">
    <%= form_for @person do |person| %>
-      <%= render :partial=>'roxiware/people/edit_person', :locals=>{:person_form=>person, :person=>@person} %>
-      <%= button_tag "Save", :id=>"save_button", :value=>"save", :type=>"button", :class=>"save_button" %></div>
+      <%= render :partial=>'roxiware/people/edit_biography', :locals=>{:person_form=>person, :person=>@person, :edit_biography_title=>"Edit Profile"} %>
    <% end %>
 </div>
 <script>
 $(function() {
-      $("#biography_edit_form button#save_button").click(function() {
-         <% if @person.id.present? %>
-	    var endpoint = "<%= person_path(@person.id) %>.json";
-	    var method = "PUT";
-         <% else %>
-	    var endpoint = "<%= people_path %>.json";
+    $("#biography").focus();
+    console.log("editform");
+    $("#biography_edit_form button#save_biography").click(function(e) {
+        e.preventDefault();
+        <% if @person.id.present? %>
+            var endpoint = "<%= person_path(@person.id) %>.json";
+            var method = "PUT";
+        <% else %>
+            var endpoint = "<%= people_path %>.json";
             var method="POST";
-	 <% end %>
-	 $("form input.watermark").val("");
-         $.ajax({type:method,
-                 processData: true, 
-	         dataType:"json",
-                 url: endpoint,
-	         data: jQuery.param($("form").serializeArray()),
-	    error: function(xhr, textStatus, errorThrown) {
-                  $.error(errorThrown);
-	    },
-	    complete: function() {
-	    },
-	    success: function(data) {
-		if(data["error"]) {
-		    $(data["error"]).each(function(index, value) {
-	                $.error(value[0]+": "+value[1])
-                        $("form input#"+value[0]).css("background", "#ffcccc");
-	            })
-		}
-		else {
-		    window.location.reload();
-		}
-            }      
-       });
+        <% end %>
+        $("form input.watermark").val("");
+        var biography_data = $("#biography input").serializeArray();
+        biography_data.push({name:"person[bio]", value:$("#person_bio").html()});
+        console.log("pushing biography");
+        console.log(biography_data);
+        $.ajaxSetParamsJSON(endpoint, biography_data, {
+            form:$("#biography_edit_form form"),
+            method:method,
+            success:function() {
+                window.location.reload();
+            }
+        });
     });
 });
 </script>

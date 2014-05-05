@@ -1,6 +1,6 @@
 <%= content_tag(:div, :id=>"biography", :class=>"settings_section") do
     fields_for :person do |person_fields|
-        content_tag(:h1, "Tell Us About Yourself.") +
+        content_tag(:h1, edit_biography_title) +
         person_fields.hidden_field(:goodreads_id) +
         person_fields.hidden_field(:large_image) +
         content_tag(:div, :id=>:edit_section, :style=>"display:none") do
@@ -16,7 +16,7 @@
                         end || "".html_safe) +
                         content_tag(:div, :id=>"biography_field", :class=>"param-field") do
                             person_fields.label(:biography) +
-                            content_tag(:div, @person.bio.html_safe, :id=>:person_bio, :contenteditable=>"true")
+                            content_tag(:div, @person.bio.html_safe, :id=>:person_bio, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
                         end
                     end +
                     content_tag(:div, :id=>"right_section") do
@@ -35,7 +35,7 @@
                                 end.join("").html_safe
                             end
                         end +
-                        button_tag(:id=>"save_biography") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
+                        button_tag(:id=>"save_biography", :type=>"button") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
                     end
                 end
             end
@@ -45,7 +45,7 @@ end %>
  
 <script>
  $(function() {
-   $("#person_bio").tinymce({
+   $("#person_bio2").tinymce({
           script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
           theme: "modern",
           selector:"#person_bio",
@@ -68,7 +68,7 @@ end %>
           schema: "html5",
           toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code",
           setup: function(ed){ed.on('LoadContent', function() {
-                 tinymce.ui.FloatPanel.zIndex = 10;  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
+                 tinymce.ui.FloatPanel.zIndex = 2001;  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
           })}
    });
 

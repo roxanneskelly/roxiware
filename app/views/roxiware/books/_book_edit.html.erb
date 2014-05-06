@@ -1,40 +1,82 @@
-<div id="book_description_form">
-   <%= book_fields.hidden_field :goodreads_id %><%= book_fields.hidden_field :image %>
-    <%= book_fields.hidden_field :thumbnail %><%= book_fields.hidden_field :large_image %>
-   <div id="left_section">
-    <div id="title_entry"><%= book_fields.label :title, "Title"%><%= book_fields.text_field :title %></div>
-    <div id="isbn_entry"><%= book_fields.label :isbn, "ISBN"%><%= book_fields.text_field :isbn %></div>
-    <div id="isbn13_entry"><%= book_fields.label :isbn13, "ISBN13" %><%= book_fields.text_field :isbn13 %></div>
-    <div id="publish_entry"><%= book_fields.label :publish_date, "Publication Date"%><%= book_fields.text_field :publish_date %></div>
-   </div>
-   <div id="right_section">
-    <span class="popup_help_text" style="float:center;">Click to change</span><br/>
-    <img id="book_upload_image" src="" class="upload_target" />
-    <input type="hidden" name="large_image"/>
-   </div>
-   <%= book_fields.label :description, "Description" %>
-   <div id="bottom_section"><div class="settings_wysiwyg"><%= book_fields.text_area :description, :class=>"settings_wysiwyg" %></div></div>
-</div>
+<%= content_tag(:div, :id=>"book_description_edit_form") do
+        content_tag(:h2, "Book description.") +
+	    fields_for(:book) do |book_fields|
+            book_fields.hidden_field(:goodreads_id) +
+            book_fields.hidden_field(:large_image, :value=>@book.large_image) +
+            content_tag(:div, "", :id=>"delete_book", :class=>"icon-remove", :style=>"display:none") +
+            content_tag(:div, :id=>"book_top_fields") do
+                content_tag(:div, :id=>:book_image, :class=>"upload_target") do 
+                    tag(:img, :id=>:book_upload_image)
+                end +
+                content_tag(:div, :id=>:book_info, :class=>"justify_inputs") do
+                    content_tag(:div, :id=>:title_field, :class=>"param-field") do
+                        book_fields.label(:title) +
+                        book_fields.text_area(:title, :watermark=>"Title")
+                    end + " " +
+                    content_tag(:div, :id=>:isbn_field, :class=>"param-field") do
+                        book_fields.label(:isbn) +
+                        book_fields.text_field(:isbn, :watermark=>"ISBN")
+                    end + " " +
+                    content_tag(:div, :id=>:isbn13_field, :class=>"param-field") do
+                        book_fields.label(:isbn13) +
+                        book_fields.text_field(:isbn13, :watermark=>"ISBN13")
+                    end + " " +
+                    content_tag(:div, :publish_date_field, :class=>"param-field") do
+                        book_fields.label("Publication Date") +
+                        book_fields.text_field(:publish_date, :watermark=>"Publication Date")
+                    end + " " +
+                    content_tag(:div, :id=>"book_description_field", :class=>"param-field") do
+                        book_fields.label(:description) +
+                        content_tag(:div, "", :id=>:book_description, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
+                    end + " "
+                end
+            end 
+	    end
+    end %>
 <script>
-$(function() {     
 
-   $("input#book_publish_date").dateinput({
-                               format: 'm/d/yyyy',
-                               trigger: true
-                         });
-   
-   $("img#book_upload_image").attr("src", $("input#book_large_image").val());
-   $("img#book_upload_image").bind("click", function() {
-	 var params = {};
-         var url = $("input#book_large_image").val() || "";
-	 params = {url:encodeURI(url), width:300, height:450};
-         settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
-	     success: function(image) {
-                 $("img#book_upload_image").attr("src", image);
-                 $("input#book_large_image").val(image);
-                 $("input#book_large_image").trigger("change");
-	     }
-	 });
+function updateBookForm(book) {
+    $("#book_edit_form").css("opacity","0").css("display","block");
+    $("#book_edit_form #book_title").height(1).val(book.title).css("size","").trigger('autosize.resize');
+    $("#book_edit_form").hide().css("opacity","");
+    $("div#book_description").html(book.description);
+    $("#book_edit_form input#book_isbn").val(book.isbn);
+    $("#book_edit_form input#book_isbn13").val(book.isbn13);
+    // we totally remove the dateinput control then re-add it so we can deal with empty
+    // date fields
+    $("#book_edit_form input#book_publish_date").data("dateinput", null);
+    $("#book_edit_form input#book_publish_date").val(book.publish_date);
+    $("#book_edit_form input#book_publish_date").dateinput({
+                                    format: 'm/d/yyyy',
+                                     trigger: true
+                                 });
+
+
+    $("#book_edit_form input#book_goodreads_id").val(book.goodreads_id);
+    $("#book_edit_form input#book_raw_image").val(book.image);
+    $("#book_edit_form img#book_upload_image").attr("src","").attr("src", book.image);
+    $("[watermark]").trigger("change");
+    $("#book_edit_form").fadeIn(200, function() { console.log($("#book_edit_form"));console.log("edit fade in 2");});
+}
+
+$(function() {
+    $("#book_title").autosize();
+
+    $("#book_edit_form input#book_publish_date").dateinput({
+                                   format: 'm/d/yyyy',
+                                   trigger: true
+                                });
+
+    $("#book_image.upload_target").click(function() {
+        var params = {};
+        var url = $("input#book_large_image").val() || "";
+        params = {url:encodeURI(url), width:300, height:450};
+        settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+            success: function(image) {
+                $("img#book_upload_image").attr("src", image);
+                $("input#book_large_image").val(image);
+             }
+         });
     });
 });
 </script>

@@ -19,8 +19,6 @@ $(function() {
         $("form input.watermark").val("");
         var biography_data = $("#biography input").serializeArray();
         biography_data.push({name:"person[bio]", value:$("#person_bio").html()});
-        console.log("pushing biography");
-        console.log(biography_data);
         $.ajaxSetParamsJSON(endpoint, biography_data, {
             form:$("#biography_edit_form form"),
             method:method,

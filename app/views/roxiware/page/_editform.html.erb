@@ -1,20 +1,29 @@
-<div class="huge_form" id="page_edit_form">
-    <%= form_for @page, :method=>:put, :url=>page_path(@page.page_identifier) do |page| %> 
-      <%= page.hidden_field :page_type %>
-      <div class="content_pos"><div class="settings_wysiwyg"><%= page.text_area :content, :class=>"settings_wysiwyg" %></div></div>
-      <%= button_tag "Save", :id=>"save_button", :value=>"save", :type=>"submit", :class=>"save_button" %></div>
-    <% end %>
-</div>
+<%= content_tag(:div, :class=>"huge_form", :id=>"page_edit_form") do
+    content_tag(:div, :class=>"settings_section justify_inputs", :id=>"page_edit") do
+        content_tag(:h1, "Edit Page") +
+        form_for(@page, :method=>:put, :url=>page_path(@page.page_identifier)) do |page|
+            page.hidden_field(:page_type) +
+            content_tag(:div, :id=>"page_content_field", :class=>"param-field") do
+                page.label(:content) +
+                content_tag(:div, @page.content.html_safe, :id=>:page_content, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
+            end +
+            content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons")
+        end
+    end
+end %>
 <script>
    $(function() {
       $("button#save_button").click(function(e) {
           console.log("click");
           e.preventDefault();
+          var page_data = $("#page_edit input").serializeArray();
+          page_data.push({name:"page[content]", value:$("#page_content").html()});
           $.ajaxSetParamsJSON("<%= page_path(@page.page_identifier) %>.json", 
-                              $("#page_edit_form form").serializeArray(), 
+                              page_data,
                               {form:$("#page_edit_form form"),
                                method:"put",
                                success: function() {
+                                   $.notice("Page Updated");
                                    window.location.reload();
                                }}); 
       });

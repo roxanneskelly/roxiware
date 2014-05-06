@@ -1,24 +1,3 @@
-<% if @post.id.present?
-       endpoint = blog_post_path(@post.id)
-       method = "PUT"
-   else 
-       endpoint = blog_post_index_path
-       method = "POST"
-   end
-%>
 <div class="huge_form" id="post_edit_form">
-    <%= form_for(@post, {:url=>endpoint}) do |post| %>
-        <%= render(:partial=>"edit_post", :locals=>{:post_fields=>post}) %>
-        <%= content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons") %>
-    <% end %>
+    <%= render(:partial=>"edit_post") %>
 </div>
-<script>
-$(function() {
-    $("#post_edit_form button#save_button").click(function() {
-
-         $.ajaxSetParamsJSON("<%= endpoint %>.json", $("#post_edit_form form").serializeArray(), {method:"<%= method %>", form:$("#post_edit_form form"), success:function(data) {
-             window.location = data.post_link;
-         }});
-    });
-});
-</script>

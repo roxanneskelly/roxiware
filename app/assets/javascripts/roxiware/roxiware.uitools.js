@@ -152,43 +152,42 @@
 	popup: null
     }
     $.extend({
-	    notice: function(alert_string, conf) {
-		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Notice", $.extend(true, {iconClass:"icon-info"}, $.roxiware.alert.conf, conf));
-		}
-		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupNoticeClass);
-	    },
-            alert: function(alert_string, conf) {
-		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Alert", $.extend(true, {iconClass:"icon-notification"}, $.roxiware.alert.conf, conf));
-		}
-		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupAlertClass);
-	    },
-            error: function(alert_string, conf) {
-		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Error", $.extend(true, {iconClass:"icon-warning"}, $.roxiware.alert.conf, conf));
-		}
-		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupErrorClass);
-	    },
-            alertWait: function(alert_string, conf) {
-		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("Please Wait", $.extend(true, {iconClass:"icon-spinner-2"}, $.roxiware.alert.conf, conf));
-		}
-		$.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupWaitClass);
-	    },
-            alertResume: function() {
-		if($.roxiware.alert.popup) {
-		    $.roxiware.alert.popup.close();
-		}
-	    },
-	   alertHtml: function(alert_html, conf) {
-		if(!$.roxiware.alert.popup) {
-		    $.roxiware.alert.popup = new AlertPopup("", $.extend(true, {}, $.roxiware.alert.conf, conf));
-		}
-		$.roxiware.alert.popup.appendHtml(alert_string);
-	    }
-	}
-     );
+        notice: function(alert_string, conf) {
+            if(!$.roxiware.alert.popup) {
+                $.roxiware.alert.popup = new AlertPopup("Notice", $.extend(true, {iconClass:"icon-info"}, $.roxiware.alert.conf, conf));
+            }
+            $.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupNoticeClass);
+        },
+        alert: function(alert_string, conf) {
+            if(!$.roxiware.alert.popup) {
+                $.roxiware.alert.popup = new AlertPopup("Alert", $.extend(true, {iconClass:"icon-notification"}, $.roxiware.alert.conf, conf));
+            }
+            $.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupAlertClass);
+        },
+        error: function(alert_string, conf) {
+            if(!$.roxiware.alert.popup) {
+                $.roxiware.alert.popup = new AlertPopup("Error", $.extend(true, {iconClass:"icon-warning"}, $.roxiware.alert.conf, conf));
+            }
+            $.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupErrorClass);
+        },
+        alertWait: function(alert_string, conf) {
+            if(!$.roxiware.alert.popup) {
+                $.roxiware.alert.popup = new AlertPopup("Please Wait", $.extend(true, {iconClass:"icon-spinner-2"}, $.roxiware.alert.conf, conf));
+            }
+            $.roxiware.alert.popup.append(alert_string, $.roxiware.alert.conf.alertPopupWaitClass);
+        },
+        alertResume: function() {
+            if($.roxiware.alert.popup) {
+                $.roxiware.alert.popup.close();
+            }
+        },
+        alertHtml: function(alert_html, conf) {
+            if(!$.roxiware.alert.popup) {
+                $.roxiware.alert.popup = new AlertPopup("", $.extend(true, {}, $.roxiware.alert.conf, conf));
+            }
+            $.roxiware.alert.popup.appendHtml(alert_string);
+        }
+        });
 
     // Display an overlay popup for alert/error/notice content.
     function AlertPopup(alert_type, conf) {
@@ -1008,6 +1007,7 @@ function settingsForm(source, title, options) {
                      });
                  });
                  overlay.find("input[watermark]").watermark();
+                 overlay.find("select").selectBox();
                  overlay.find("button[require_fields]").each(function(index, button) {
                      $(button).require_fields($(button).attr("require_fields"));
                  });
@@ -1049,7 +1049,7 @@ function settingsForm(source, title, options) {
                  });
             }
         });
-        $("div.inline_settings_wysiwyg").tinymce({
+        overlay.find("div.inline_settings_wysiwyg").tinymce({
                script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
                theme: "modern",
                inline:true,

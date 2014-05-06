@@ -17,7 +17,7 @@ end %>
 <% if can? :edit, @post %>
 <%= content_tag(:ul, :id=>"blog_edit_application_menu", :class=>"application_menu") do
     content_tag(:li) do
-        content_tag(:a, :rel=> edit_blog_post_path(@post), :form=>"Edit Post") do
+        content_tag(:a, :rel=> edit_blog_post_path(@post), :form=>"") do
             content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Post", :class=>"top_menu_text")
         end
     end +

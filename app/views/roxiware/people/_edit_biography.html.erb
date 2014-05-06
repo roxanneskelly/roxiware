@@ -45,33 +45,6 @@ end %>
  
 <script>
  $(function() {
-   $("#person_bio2").tinymce({
-          script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
-          theme: "modern",
-          selector:"#person_bio",
-          inline:true,
-          skin: "light",
-          menubar: false,
-          browser_spellcheck:true,
-          relative_urls: false,
-          verify_html:false,
-          remove_script_host:true,
-          document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
-          plugins: [
-              "autolink lists link image charmap anchor",
-              "visualblocks code media",
-              "table contextmenu paste autoresize"
-          ],
-          height: $("div.settings_wysiwyg").height() - 30,
-          autoresize_min_height:140,
-	      statusbar:false,
-          schema: "html5",
-          toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code",
-          setup: function(ed){ed.on('LoadContent', function() {
-                 tinymce.ui.FloatPanel.zIndex = 2001;  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
-          })}
-   });
-
     $("#biography").focus(function() {
         $("#biography #edit_section").slideDown(200);
     });

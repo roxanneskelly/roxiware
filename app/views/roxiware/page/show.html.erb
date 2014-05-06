@@ -2,7 +2,7 @@
   <% if (can? :edit, @page) %>
 <%= content_tag(:ul, :id=>"page_edit_application_menu", :class=>"application_menu") do
     content_tag(:li) do
-        content_tag(:a, :rel=> edit_page_path(@page.page_identifier), :form=>"Edit #{@page.page_type.titleize}") do
+        content_tag(:a, :rel=> edit_page_path(@page.page_identifier), :form=>"") do
             content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Page", :class=>"top_menu_text")
         end
     end 

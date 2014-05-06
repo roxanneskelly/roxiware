@@ -12,36 +12,7 @@
             button_tag(:id=>"save_books") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
         end
     end +
-    content_tag(:div, :id=>"book_edit_form", :class=>"settings_section") do
-	    fields_for :book do |book_fields|
-            book_fields.hidden_field(:goodreads_id) +
-            book_fields.hidden_field(:raw_image) +
-            content_tag(:div, :id=>"book_top_fields") do
-                content_tag(:div, "", :id=>"delete_book", :class=>"icon-remove") +
-                content_tag(:div, :id=>:book_image, :class=>"upload_target") do 
-                    tag(:img, :id=>:book_upload_image)
-                end +
-                content_tag(:div, :id=>:book_info) do
-                    content_tag(:div, :id=>:title_field, :class=>"param-field") do
-                        book_fields.text_area(:title)
-                    end +
-                    content_tag(:div, :id=>:isbn_field, :class=>"param-field") do
-                        book_fields.label(:isbn) +
-                        book_fields.text_field(:isbn, :watermark=>"ISBN")
-                    end +
-                    content_tag(:div, :id=>:isbn13_field, :class=>"param-field") do
-                        book_fields.label(:isbn13) +
-                        book_fields.text_field(:isbn13, :watermark=>"ISBN13")
-                    end +
-                    content_tag(:div, :publish_date_field, :class=>"param-field") do
-                        book_fields.label("Publication Date") +
-                        book_fields.text_field(:publish_date, :watermark=>"Publication Date")
-                    end +
-                    content_tag(:div, "", :id=>:book_description, :contenteditable=>"true")
-                end
-            end 
-	    end
-    end
+    render(:partial=>'roxiware/books/book_edit') +
 end %>
 <script type="template/text" id="book_template">
 <div class="book roundabout-moveable-item"><img class="book_image"/></div>
@@ -69,9 +40,9 @@ console.log(book_html.data().book);
                                    btnPrev:$('#next_book'),
                                    responsive:true});
              $("#book_list .book").bind("focus", function() {
-                 updateForm($(this));
+                 updateBookForm($(this).data());
              }).blur(function() {
-                  //updateBook($(this));
+                  updateBook($(this));
               });
              $("#book_list .book").first().focus();
          });
@@ -82,7 +53,6 @@ console.log(book_html.data().book);
    $("#book_list").bind("animationStart", function() {
        $("#book_edit_form").fadeOut(100, function(){console.log("fading out end");});
     });
-    $("#book_title").autosize();
 
    function updateBook(book) {
      if (!$(book).data()) {
@@ -104,29 +74,11 @@ console.log(book_html.data().book);
        $(this).fadeIn(100);
    });
 
-   function updateForm(book) {
-      $("#book_edit_form").css("opacity","0").css("display","block");
-      $("#book_edit_form #book_title").height(1).val($(book).data().book.title).css("size","").trigger('autosize.resize');
-      $("#book_edit_form").hide().css("opacity","");
-      $("div#book_description").html($(book).data().book.description);
-      $("#book_edit_form input#book_isbn").val($(book).data().book.isbn);
-      $("#book_edit_form input#book_isbn13").val($(book).data().book.isbn13);
-      // we totally remove the dateinput control then re-add it so we can deal with empty
-      // date fields
-      $("#book_edit_form input#book_publish_date").data("dateinput", null);
-      $("#book_edit_form input#book_publish_date").val($(book).data().book.publish_date);
-      $("#book_edit_form input#book_publish_date").dateinput({
-                                      format: 'm/d/yyyy',
-                                       trigger: true
-                                   });
+   $("#book_edit_firm input#book_raw_image").change(function() {
+       var image = $(this).val();
+       $("#book_list .book").eq($("#book_list").roundabout("getChildInFocus")).find("img").attr("src",image);
+   });
 
-
-      $("#book_edit_form input#book_goodreads_id").val($(book).data().book.goodreads_id);
-      $("#book_edit_form input#book_raw_image").val($(book).data().book.image);
-      $("#book_edit_form img#book_upload_image").attr("src","").attr("src", $(book).data().book.image);
-      $("[watermark]").trigger("change");
-      $("#book_edit_form").fadeIn(200, function() { console.log($("#book_edit_form"));console.log("edit fade in 2");});
-   }
    $("#book_edit_form div#book_description").tinymce({
           script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
           theme: "modern",
@@ -240,20 +192,7 @@ console.log(book_html.data().book);
        });
 
    });
-   $("#book_image.upload_target").click(function() {
-     var params = {};
-     var url = $("input#book_large_image").val() || "";
-     params = {url:encodeURI(url), width:300, height:450};
-     settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
-         success: function(image) {
-             $("img#book_upload_image").attr("src", image);
-             $("input#book_raw_image").val(image);
-             $("#book_list .book").eq($("#book_list").roundabout("getChildInFocus")).find("img").attr("src",image);
-          }
-      });
-   });
     $("#book_description").blur();
-
 });
 
 

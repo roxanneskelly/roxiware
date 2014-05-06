@@ -1,46 +1,62 @@
-<div id="event_edit_form" class="large_form">
-<%= form_for @event do |event|%>
-  <div id="left_section">
-    <div id="start_entry"><%= event.label :start_time, "Start" %>
-        <%= event.text_field :start_date, :class=>"jquerytools_date" %>
-        <%= event.select :start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}, @event.start_time) %>
-    </div>
-    <div id="duration_entry"><%= event.label :duration, "Duration" %>
-        <%= event.select :duration, options_for_select((1..24).collect(), @event.duration), :include_blank=>true %>
-        <%= event.select :duration_units, options_for_select([["Minutes","minutes"], ["Hours","hours"],  ["Days","days"]], @event.duration_units), :include_blank=>false %>
-    </div>
-  </div>
-   <div id="right_section">
-    <div id="location_entry"><%= event.label :location, "Location" %><%= event.text_field :location, :watermark=>"Location", :title=>"Location" %></div>
-
-    <div id="address_entry"><label>&nbsp;</label><%= event.text_field :city, :watermark=>"City", :title=>"City" %><%= event.text_field :state, :watermark=>"State", :title=>"State" %>
-    </div>
-  </div>
-  <div id="url_entry">
-    <%= event.label :location_url, "URL" %>
-    <%= event.text_field :location_url, :watermark=>"MAP URL, Facebook URL, etc.", :title=>"URL associated with this event" %>
-  </div>
-  <div id="title_entry">
-    <%= event.label :title, "Title" %><%= event.text_field :title, :watermark=>"Title", :title=>"Title associated with this event" %>
-  </div>
-  <div id="description_entry">
-      <%= event.label :description, "Description" %>
-      <div id="description"><div class="settings_wysiwyg" toolbar="styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"><%= event.text_area :description, :class=>"event_description settings_wysiwyg" %></div></div>
-  </div>
-    <%= content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons") %>
-<% end %>
-</div>
-<script>
-
 <% if @event.id.present?
        endpoint = event_path(@event.id)
        method = "PUT"
+       edit_event_title = "Edit Event"
    else 
        endpoint = events_path
        method = "POST"
+       edit_event_title = "New Event"
    end
 %>
-
+<%= content_tag(:div, :id=>"event_edit_form", :class=>"huge_form") do
+    form_for @event do |event| 
+        content_tag(:div, :class=>"settings_section", :id=>"event_edit") do
+            content_tag(:h1, edit_event_title) +
+            content_tag(:div, :id=>"title_entry", :class=>"param-field") do
+                event.label(:title) +
+                event.text_field(:title, :watermark=>"Title", :title=>"Title associated with this event")
+            end +
+            content_tag(:div, :id=>"left_section", :class=>"justify_inputs") do
+                content_tag(:div, :id=>"start_date_entry", :class=>"param-field") do
+                    event.label(:start_time, "Start") +
+                    event.text_field(:start_date, :class=>"jquerytools_date")
+                end + " " +
+                content_tag(:div, :id=>"start_time_entry", :class=>"param-field param-field-select") do
+                    event.select(:start_time, options_for_select((0..1440).step(30).collect() {|x|  ((DateTime.now.midnight + x.minutes).strftime("%l:%M %p").strip)}, @event.start_time))
+                end + " " +
+                content_tag(:div, :id=>"duration_entry", :class=>"param-field param-field-select") do 
+                    event.label(:duration, "Duration") +
+                    event.select(:duration, options_for_select((1..24).collect(), @event.duration), :include_blank=>true)
+                end + " " +
+                content_tag(:div, :id=>"duration_units_entry", :class=>"param-field param-field-select") do
+                    event.select(:duration_units, options_for_select([["Minutes","minutes"], ["Hours","hours"],  ["Days","days"]], @event.duration_units), :include_blank=>false)
+                end + " "
+            end +
+            content_tag(:div, :id=>"right_section", :class=>"justify_inputs") do
+                content_tag(:div, :id=>"location_entry", :class=>"param-field") do
+                    event.label(:location, "Location") +
+                    event.text_field(:location, :watermark=>"Location", :title=>"Location")
+                end + " " +
+                content_tag(:div, :id=>"city_entry", :class=>"param-field") do
+                    event.text_field(:city, :watermark=>"City", :title=>"City")
+                end + " " +
+                content_tag(:div, :id=>"state_entry", :class=>"param-field") do
+                    event.text_field(:state, :watermark=>"State", :title=>"State")
+                end + " "
+            end +
+            content_tag(:div, :id=>"url_entry", :class=>"param-field") do
+                event.label(:location_url, "URL") +
+                event.text_field(:location_url, :watermark=>"MAP URL, Facebook URL, etc.", :title=>"URL associated with this event")
+            end +
+            content_tag(:div, :id=>"description_field", :class=>"param-field") do
+                event.label(:description) +
+                content_tag(:div, @event.description.html_safe, :id=>:description, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
+            end +
+            content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons")
+        end
+    end
+end %>
+<script>
 $(function() {
    $("input[watermark]").watermark();
    $("input.jquerytools_date").dateinput({
@@ -93,20 +109,14 @@ $(function() {
    $("#event_edit_form select#event_duration").change();
 
     $("#event_edit_form button#save_button").click(function() {
-        $("form input.watermark").val("");
-        $.ajax({type:"<%= method %>",
-                processData: false, 
-                 dataType:"json",
-                 url: "<%= endpoint %>.json",
-                 data:jQuery.param($("#event_edit_form form").serializeArray()),
-                 error: function(xhr, textStatus, errorThrown) {
-                    $.alert(textStatus);
-                 },
-                 complete: function() {
-                 },
-                 success: function() {
-                    window.location.reload();
-                 }}); 
+        $("#event_edit input.watermark").val("");
+        var event_data = $("#event_edit input").serializeArray();
+        event_data.push({name:"event[description]", value:$("#event_edit #description").html()});
+        $.ajaxSetParamsJSON("<%= endpoint %>.json", 
+                            post_data,
+                            {method:"<%= method %>", form:$("#event_edit form"), success:function(data) {
+                 window.location = data.post_link;
+             }});
     });
 
 });

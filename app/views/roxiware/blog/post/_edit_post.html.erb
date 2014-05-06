@@ -1,36 +1,58 @@
-<%=
-content_tag(:div, :class=>"justify_inputs", :style=>"width:100%;height:100%") do
-    content_tag(:div, :id=>"post_title_entry", :class=>"param-field") do
-        post_fields.label(:post_title, "Title") +
-        post_fields.text_field(:post_title, :altname=>:post_link)
-    end + " " +
-    if (current_user.role == "super") 
-        content_tag(:div, :id=>"author_entry", :class=>"param-field") do
-            post_fields.label(:person_id, "Author") +
-            post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]})
-        end
-    end + " " +
-     content_tag(:div, :id=>"category_entry", :class=>"param-field") do
-        post_fields.label(:category_name, "Category") +
-        post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category)
-    end + " " +
-    content_tag(:div, :id=>"tag_csv_entry", :class=>"param-field") do
-        post_fields.label(:tag_csv, "Tags") +
-        post_fields.text_field(:tag_csv)
-    end + " " +
-    content_tag(:div, :class=>"content_pos") do
-        content_tag(:div, :class=>"settings_wysiwyg") do
-            post_fields.text_area(:post_content, :class=>"post_item_content")
-        end
-    end +
-    post_fields.hidden_field(:blog_class)
+<% if @post.id.present?
+       endpoint = blog_post_path(@post.id)
+       method = "PUT"
+       edit_post_title ||= "Edit Post"
+   else 
+       endpoint = blog_post_index_path
+       method = "POST"
+       edit_post_title ||= "Create Post"
+   end
+%>
+<%= content_tag(:div, :class=>"settings_section justify_inputs", :id=>"post_edit") do
+    content_tag(:h1, edit_post_title) +
+    form_for(@post, {:url=>endpoint}) do |post_fields|
+        content_tag(:div, :id=>"post_title_entry", :class=>"param-field") do
+            post_fields.label(:post_title, "Title") +
+            post_fields.text_field(:post_title, :altname=>:post_link)
+        end + " " +
+        if (current_user.role == "super") 
+            content_tag(:div, :id=>"author_entry", :class=>"param-field") do
+                post_fields.label(:person_id, "Author") +
+                post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]})
+            end
+        end + " " +
+         content_tag(:div, :id=>"category_entry", :class=>"param-field") do
+            post_fields.label(:category_name, "Category") +
+            post_fields.text_field(:category_name, :class=>"category_input", :value=>@post_category)
+        end + " " +
+        content_tag(:div, :id=>"tag_csv_entry", :class=>"param-field") do
+            post_fields.label(:tag_csv, "Tags") +
+            post_fields.text_field(:tag_csv)
+        end + " " +
+        content_tag(:div, :id=>"post_content_field", :class=>"param-field") do
+            post_fields.label(:content) +
+            content_tag(:div, @post.post_content.html_safe, :id=>:post_content, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
+        end +
+        post_fields.hidden_field(:blog_class) +
+        content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons")
+    end
 end
  %>
 <script>
 $(function() {
-    var categories = [<%= raw Roxiware::Terms::Term.categories.values.collect{|category| "'#{category.name}'"}.join(",") %>]
+    var categories = <%= raw Roxiware::Terms::Term.categories.values.collect{|category| "'#{category.name}'"}.to_json %>;
     $("#category_name").autocomplete({source:categories});
 
+    $("#save_button").click(function() {
+        $("#post_edit input.watermark").val("");
+        var post_data = $("#post_edit input").serializeArray();
+        post_data.push({name:"post[post_content]", value:$("#post_content").html()});
+        $.ajaxSetParamsJSON("<%= endpoint %>.json", 
+                            post_data,
+                            {method:"<%= method %>", form:$("#post_edit form"), success:function(data) {
+                 window.location = data.post_link;
+             }});
+    });
     $(".post .comment_delete").click(function(event) {
        var post_id = $(this).attr("id").split("-")[2];
        var comment_id = $(this).attr("id").split("-")[3];

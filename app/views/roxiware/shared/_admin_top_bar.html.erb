@@ -46,7 +46,7 @@
 			   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-feed")+content_tag(:span, "Blog", :class=>"top_menu_text") +
 			   content_tag(:ul) do
 						  ["blog"].collect do |blog_class|
-				  content_tag(:li, content_tag(:a, "New #{blog_class.titleize} Post", :rel=>new_blog_post_path + '?blog_class=' + blog_class, :form=>"New #{blog_class.titleize} Post"))
+				  content_tag(:li, content_tag(:a, "New #{blog_class.titleize} Post", :rel=>new_blog_post_path + '?blog_class=' + blog_class, :form=>""))
 						  end.join("").html_safe + 
 						  tag(:hr) + 
 					  content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('blog'), :form=>"Blog Settings"))
@@ -57,7 +57,7 @@
 		   content_tag(:li, :class=>"admin_menu") do
 			   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-calendar")+content_tag(:span, "Calendar", :class=>"top_menu_text") +
 			   content_tag(:ul) do
-			  content_tag(:li, content_tag(:a, "New Event", :rel=>new_event_path, :form=>"New Event")) +
+			  content_tag(:li, content_tag(:a, "New Event", :rel=>new_event_path, :form=>"")) +
 						  if (current_user.role == "super") 
 							  tag(:hr) + 
 						  content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('events'), :form=>"Calendar Settings"))
@@ -70,7 +70,7 @@
 			   content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-books")+content_tag(:span, "Books", :class=>"top_menu_text") +
 			   content_tag(:ul) do
 			  content_tag(:li, content_tag(:a, "New Book", :rel=>new_book_path, :form=>"New Book")) +
-			  content_tag(:li, content_tag(:a, "New Series", :rel=>new_book_series_path, :form=>"New Series")) +
+			  #content_tag(:li, content_tag(:a, "New Series", :rel=>new_book_series_path, :form=>"New Series")) +
 						  if (current_user.role == "super") 
 				  tag(:hr) + 
 				  content_tag(:li, content_tag(:a, "Settings", :rel=>setting_path('books'), :form=>"Books Settings"))

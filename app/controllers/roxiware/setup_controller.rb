@@ -110,6 +110,7 @@ class Roxiware::SetupController < ApplicationController
                 @user = Roxiware::User.where(:username=>@verified_params['username']).first
                 raise Exception.new("user not found") if @user.nil?
                 sign_in(:user, @user)
+                @person = current_user.person if current_user.present?
             end
         elsif @setup_step != "welcome"
             authenticate_user!

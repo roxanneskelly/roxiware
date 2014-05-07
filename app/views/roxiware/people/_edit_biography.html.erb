@@ -16,18 +16,18 @@
                         end || "".html_safe) +
                         content_tag(:div, :id=>"biography_field", :class=>"param-field") do
                             person_fields.label(:biography) +
-                            content_tag(:div, @person.bio.html_safe, :id=>:person_bio, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
+                            content_tag(:div, (@person.bio || "").html_safe, :id=>:person_bio, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
                         end
                     end +
                     content_tag(:div, :id=>"right_section") do
                         content_tag(:div, :id=>:person_image, :class=>"upload_target") do 
-                            tag(:img, :src=>@person.large_image, :id=>:person_upload_image)
+                            tag(:img, :src=>(@person.large_image || default_image_path(:person, :large)), :id=>:person_upload_image)
                         end +
                         content_tag(:div, :id=>:social_networks) do
                             person_fields.fields_for :social_networks do |social_network_fields|
                                 Roxiware::Person::SOCIAL_NETWORKS.collect do |social_network|
                                     content_tag(:div, :class=>"social_network") do
-                                        social_network_param = @person.get_param("social_networks").h[social_network]
+                                        social_network_param = @person.get_param("social_networks").h[social_network] if @person.present?
                                         uid = social_network_param.h["uid"] if social_network_param.present?
                                         content_tag(:div, social_network_fields.text_field(social_network, :value=>uid, :watermark=>social_network.titleize), :class=>"param-field") +
                                         content_tag(:span, "", :class=>"icon-#{social_network}") 

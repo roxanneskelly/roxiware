@@ -73,6 +73,7 @@ end %>
 
      $("#book_edit_form #book_description").html("<%= (@book.description || "").html_safe %>");
      $("img#book_upload_image").attr("src", "<%= @book.large_image %>");
+     $("input#book_large_image").val("<%= @book.large_image %>");
 
      $("#save_button").require_fields("#book_title");
      $("#book_edit_form ul.tabs").tabs($("div.panes > div"));

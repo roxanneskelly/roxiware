@@ -135,10 +135,6 @@
    $(".button_link").click(function() {
       window.open($(this).attr("rel"), $(this).attr("target"));
    });
-  console.log("location " + "http://localhosttest:3000");
-  console.log(window.top);
-  console.log(parent);
-  $.postMessage({hello:"there", big:"boy"}, "http://localhosttest:3000", parent);
   !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 
   // g-plus share button setup

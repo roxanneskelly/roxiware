@@ -452,7 +452,7 @@ namespace :roxiware do
     end
 
     desc "Init Webserver Config"
-    task :config_web, [:host,:slot,:domain_name,:aliases]=>:environment do |t,args|
+    task :config_web, [:host,:slot,:domain_name,:aliases,:package_type]=>:environment do |t,args|
         domain_name=args[:domain_name]
         slot=args[:slot]
         aliases=args[:aliases]
@@ -488,8 +488,10 @@ server {
         auth_basic_user_file /home/roxiwarevps/sites/#{slot}/stats/.htpasswd;
     }
 }
-passenger_pre_start http://#{slot}/;
 EOF
+        if domain_name.present? && %w(premium_blog author).include?(package_type)
+            conf_file_data << "passenger_pre_start http://#{slot}/;"
+        end
         if(domain_name.present?)
             domain_components = domain_name.split(".")
             redirect_domain = "www."+domain_name

@@ -2,7 +2,7 @@
         content_tag(:h2, "Book description.") +
 	    fields_for(:book) do |book_fields|
             book_fields.hidden_field(:goodreads_id) +
-            book_fields.hidden_field(:large_image, :value=>@book.large_image) +
+            book_fields.hidden_field(:large_image, :value=>"") +
             content_tag(:div, "", :id=>"delete_book", :class=>"icon-remove", :style=>"display:none") +
             content_tag(:div, :id=>"book_top_fields") do
                 content_tag(:div, :id=>:book_image, :class=>"upload_target") do 

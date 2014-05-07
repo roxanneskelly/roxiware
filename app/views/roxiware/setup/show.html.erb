@@ -52,34 +52,45 @@ $(function() {
 
      });
 
-    $("#edit_biography_page").focus(function() {
-console.log("bio setup page focus")
+    $("#site_setup_page,#manage_books_page,#first_blog_post_page,#edit_biography_page").focus(function() {
 <% if (@site_type != "author") %>
-       $("#biography").focus();
+       if($(this).is("#edit_biography_page")) {
+           $("#biography").focus();
+       }
 <% end %>
-        $("#edit_biography_page").show().animate({width:"100%"},200);
-        $("#site_setup_page,#manage_books_page").fadeOut(200, function(){$("#site_setup_page,#manage_books_page").css("width","")});
-    });
-    $("#site_setup_page").focus(function() {
-        $("#edit_biography_page").animate({width:0},200);
-        $("#site_setup_page").css("width","").fadeIn(200);
-        $("#manage_books").fadeOut(200, function(){$("#manage_books").css("width","")});
-    });
-    $("#manage_books_page").focus(function() {
-        $("#biography_setup_page,#site_setup_page").animate({width:0},200);
-        $("#manage_books_page").css("width","").fadeIn(200);
-        $("#first_post_page").css("width","").fadeOut(200);
-    });
-    $("#first_blog_post_page").focus(function() {
-        $("#biography_setup_page,#site_setup_page,#manage_books_page").animate({width:0},200);
-        $("#first_blog_post_page").css("width","").fadeIn(200);
+        $(this).siblings(".setup_page").hide().animate({width:"0%"});
+        $(this).show().animate({width:"100%"},200);
     });
 
     $("#complete_page").focus(function() {
-        console.log("focus");
-        window.close();
+        $.postMessage({action:"setup_complete"}, "<%= AppConfig.scribaroo_url %>", parent);
     });
     console.log("#<%= @setup_step %>_page");
     $("#<%= @setup_step %>_page").focus();
+
+    $("div.inline_settings_wysiwyg").tinymce({
+        script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
+        theme: "modern",
+        inline:true,
+        skin: "light",
+        menubar: false,
+        browser_spellcheck:true,
+        relative_urls: false,
+        verify_html:false,
+        remove_script_host:true,
+        document_base_url: window.location.protocol+'//'+window.location.hostname+(window.location.port ? ':'+window.location.port: ''),
+        plugins: [
+            "autolink lists link image charmap anchor",
+            "visualblocks code media",
+            "table contextmenu paste autoresize"
+         ],
+        autoresize_min_height:140,
+        statusbar:false,
+        schema: "html5",
+        toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code",
+        setup: function(ed){ed.on('LoadContent', function() {
+            tinymce.ui.FloatPanel.zIndex = 10;  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
+         })}
+    });
 });
 </script>

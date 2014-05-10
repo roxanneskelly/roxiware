@@ -46,7 +46,7 @@ $(function() {
     $("#save_button").click(function() {
         $("#post_edit input.watermark").val("");
         var post_data = $("#post_edit input").serializeArray();
-        post_data.push({name:"post[post_content]", value:$("#post_content").html()});
+        post_data.push({name:"blog_post[post_content]", value:$("#post_content").html()});
         $.ajaxSetParamsJSON("<%= endpoint %>.json", 
                             post_data,
                             {method:"<%= method %>", form:$("#post_edit form"), success:function(data) {

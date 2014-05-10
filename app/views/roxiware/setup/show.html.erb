@@ -46,10 +46,10 @@ $(function() {
          post_data.push({name:"first_post[post_content]",value:$("#post_content").html()});
          $.ajaxSetParamsJSON("<%= setup_path %>.json", post_data, { 
              success:function() {
-                  window.location = "/";
+                  console.log("focus on complete");
+                  $("#complete_page").focus();
              }
          });
-
      });
 
     $("#site_setup_page,#manage_books_page,#first_blog_post_page,#edit_biography_page").focus(function() {
@@ -63,6 +63,7 @@ $(function() {
     });
 
     $("#complete_page").focus(function() {
+        console.log("complete, so posting message to <%= AppConfig.scribaroo_url %>");
         $.postMessage({action:"setup_complete"}, "<%= AppConfig.scribaroo_url %>", parent);
     });
     console.log("#<%= @setup_step %>_page");

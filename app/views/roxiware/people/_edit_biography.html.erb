@@ -27,7 +27,8 @@
                             person_fields.fields_for :social_networks do |social_network_fields|
                                 Roxiware::Person::SOCIAL_NETWORKS.collect do |social_network|
                                     content_tag(:div, :class=>"social_network") do
-                                        social_network_param = @person.get_param("social_networks").h[social_network] if @person.present?
+                                        social_networks = @person.get_param("social_networks") if @person.present?
+                                        social_network_param = @person.get_param("social_networks").h[social_network] if social_networks.present?
                                         uid = social_network_param.h["uid"] if social_network_param.present?
                                         content_tag(:div, social_network_fields.text_field(social_network, :value=>uid, :watermark=>social_network.titleize), :class=>"param-field") +
                                         content_tag(:span, "", :class=>"icon-#{social_network}") 

@@ -395,6 +395,8 @@ class Roxiware::SetupController < ApplicationController
         result
     end
 
+    def _complete
+    end
 
     def _get_goodreads_author_books
         goodreads = Roxiware::Goodreads::Book.new(:goodreads_user=>@goodreads_user)

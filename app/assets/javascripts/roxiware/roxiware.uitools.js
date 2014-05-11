@@ -1007,7 +1007,7 @@ function settingsForm(source, title, options) {
                      });
                  });
                  overlay.find("input[watermark]").watermark();
-                 overlay.find("select").selectBox();
+                 overlay.find(".param-field-select select").selectBox();
                  overlay.find("button[require_fields]").each(function(index, button) {
                      $(button).require_fields($(button).attr("require_fields"));
                  });

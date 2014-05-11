@@ -54,8 +54,8 @@ div#colors_pane > div {
 
 #param_header_background_image {
     position:absolute;
-    top:2em;
-    left:2em;
+    top:10px;
+    left:20px;
     width:237px;
     height:43px;
     margin-left:auto;
@@ -64,51 +64,52 @@ div#colors_pane > div {
 
 #param_body_background_image {
     position:absolute;
-    bottom:2em;
+    top:63px;
     width:237px;
     height:300px;
-    left:2em;
+    left:20px;
 }
 
 #param_background_image {
     position:absolute;
-    top:2em;
+    top:10px;
     width:480px;
     height:300px;
-    right:2em;
+    right:20px;
 }
 </style>
 <div class="template_customize_form large_form" id="template_customize_form">
    <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
        custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
-
-       content_tag(:ul, :class=>"tabs") do
-           content_tag(:li, content_tag(:a, "Backgrounds")) +
-           content_tag(:li, content_tag(:a, "Fonts & Colors"))
-       end +
-       content_tag(:div, :class=>"panes") do 
-           content_tag(:div, :id=>"background_pane") do
-	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>170, :id=>"header_background_image") + " " +
-	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
-	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) 
+       content_tag(:div, :class=>"tab_form") do
+           content_tag(:ul, :class=>"tabs") do
+               content_tag(:li, content_tag(:a, "Backgrounds")) +
+               content_tag(:li, content_tag(:a, "Fonts & Colors"))
            end +
-           content_tag(:div, :id=>"colors_pane") do
-               content_tag(:div, :id=>"left_fields") do
-	           param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font") +
-	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color")
-		   param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
-		   param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") +
-		   param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
-		   param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color")
+           content_tag(:div, :class=>"panes") do 
+               content_tag(:div, :id=>"background_pane") do
+               param_field(customize_form, custom_params.delete("header_background_image"), :width=>950, :height=>170, :id=>"header_background_image") + " " +
+               param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+               param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>950, :height=>1200) 
                end +
+               content_tag(:div, :id=>"colors_pane") do
+                   content_tag(:div, :id=>"left_fields") do
+                       param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font", :param_field_type=>"font") +
+                       param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
+                       param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
+                       param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") +
+                       param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
+                       param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color")
+                   end +
                content_tag(:div, :id=>"color_fields") do
-		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
-		       param_field(customize_form, param, :id=>param.name) 
-		   end.join("").html_safe
+                   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+                       param_field(customize_form, param, :id=>param.name) 
+                       end.join("").html_safe
+                   end
                end
            end
        end +
-       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+       content_tag(:div, button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit"), :class=>"dialog_buttons")
     end %>
 </div>
 <script>

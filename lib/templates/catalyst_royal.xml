@@ -43,6 +43,7 @@ div#background_pane {
     position:absolute;
 }
 div#colors_pane {
+    padding-top:1em;
     text-align:justify;
     line-height:3em;
 }
@@ -54,8 +55,8 @@ div#colors_pane > div {
 }
 #param_header_background_image {
     position:absolute;
-    top:2em;
-    left:2em;
+    top:10px;
+    left:20px;
     width:237px;
     height:43px;
     margin-left:auto;
@@ -64,64 +65,62 @@ div#colors_pane > div {
 
 #param_body_background_image {
     position:absolute;
-    bottom:2em;
+    top:63px;
     width:237px;
     height:300px;
-    left:2em;
+    left:20px;
 }
 
 #param_background_image {
     position:absolute;
-    top:2em;
+    top:10px;
     width:480px;
     height:300px;
-    right:2em;
+    right:20px;
 }
 
 </style>
 <div class="template_customize_form large_form" id="template_customize_form">
    <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
        custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
-
-       content_tag(:ul, :class=>"tabs") do
-           content_tag(:li, content_tag(:a, "Backgrounds")) +
-           content_tag(:li, content_tag(:a, "Fonts & Colors"))
-       end +
-       content_tag(:div, :class=>"panes") do 
-           content_tag(:div, :id=>"background_pane") do
-	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>1038, :height=>150, :id=>"header_background_image") + " " +
-	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
-	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1038, :height=>1200) 
+       content_tag(:div, :class=>"tab_form") do
+           content_tag(:ul, :class=>"tabs") do
+               content_tag(:li, content_tag(:a, "Backgrounds")) +
+               content_tag(:li, content_tag(:a, "Colors"))
            end +
-           content_tag(:div, :id=>"colors_pane") do
-               content_tag(:div, :id=>"left_fields") do
-                   param_field(customize_form, custom_params.delete("home_page_splash_image"), :width=>728, :height=>450, :id=>"home_page_splash_image") +
-		   param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
-		   param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
-		   param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+           content_tag(:div, :class=>"panes") do 
+               content_tag(:div, :id=>"background_pane") do
+               param_field(customize_form, custom_params.delete("header_background_image"), :width=>1038, :height=>150, :id=>"header_background_image") + " " +
+               param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+               param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1038, :height=>1200) 
                end +
-               content_tag(:div, :id=>"center_fields") do
-		   param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
-		   param_field(customize_form, custom_params.delete("secondary_text_color"), :id=>"secondary_text_color") +
-		   param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") +
-		   param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
-		   param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
-		   param_field(customize_form, custom_params.delete("link_active_color"), :id=>"link_active_color")
-               end +
-               content_tag(:div, :id=>"right_fields") do
-		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
-		       param_field(customize_form, param, :id=>param.name) 
-		   end.join("").html_safe
+               content_tag(:div, :id=>"colors_pane") do
+                   content_tag(:div, :id=>"left_fields") do
+                       param_field(customize_form, custom_params.delete("home_page_splash_image"), :width=>728, :height=>450, :id=>"home_page_splash_image") +
+               param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
+               param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+               param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+                   end +
+                   content_tag(:div, :id=>"center_fields") do
+               param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
+               param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") +
+               param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
+               param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
+               param_field(customize_form, custom_params.delete("link_active_color"), :id=>"link_active_color")
+                   end +
+                   content_tag(:div, :id=>"right_fields") do
+               custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+                   param_field(customize_form, param, :id=>param.name) 
+               end.join("").html_safe
+                   end
                end
            end
-       end +
-       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+       end + 
+       content_tag(:div, button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit"), :class=>"dialog_buttons");
     end %>
 </div>
 <script>
     $(function() {
-      $('select#custom_settings_title_font,select#custom_settings_subtitle_font').fontSelector({
-      });
        $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
 
        $(".template_customize_form form").submit(function(e) {

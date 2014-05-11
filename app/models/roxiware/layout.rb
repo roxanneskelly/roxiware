@@ -33,6 +33,7 @@ module Roxiware
             end
 
             def eval_style(params_in)
+                puts "STYLE PARAMS IN #{params_in.inspect}"
                 style_class = StyleRenderClass.new(params_in)
                 ERB.new(self.style).result(style_class.get_binding)
             end
@@ -336,9 +337,14 @@ module Roxiware
                 end
             end
 
-            def get_scheme_param_values(scheme)
+            def get_scheme_param_values(scheme_name)
                 result = {}
-                scheme = get_param("schemes").h[scheme] if get_param("schemes").present?
+                puts "SCHEME PARAMS for scheme #{scheme_name}"
+                schemes =get_param("schemes")
+                puts "SCHEME list  " + schemes.h.collect{ |name, value| "#{name} :  #{value.inspect}" }.join("\n")
+                puts "SCHEME PARAMS in scheme #{schemes.h[scheme_name].inspect}"
+                scheme = get_param("schemes").h[scheme_name] if get_param("schemes").present?
+                puts scheme.inspect
                 if(scheme.present? && scheme.h["params"].present?)
                     result = Hash[scheme.h["params"].h.collect{|name, param| [name, param.conv_value]}]
                 end
@@ -349,7 +355,9 @@ module Roxiware
             def custom_settings
                 if @custom_settings.nil?
                     @custom_settings  = Roxiware::Param::Param.application_param_hash("custom_settings")[self.guid] || Roxiware::Param::Param.set_application_param("custom_settings", self.guid, "371BA63A-EEDB-440D-B641-40A6B813D280", {})
+                    puts "CUSTOM SETTINGS for #{ self.guid } #{@custom_settings.h.inspect}"
                     # filter the custom settings by the scheme params
+                    puts "SCHEMES #{get_param('schemes').h.inspect}"
                     scheme = get_param("schemes").h.first
                     scheme_params = scheme.last.h["params"].h.keys
                     @custom_settings.h.each do |key, value|

@@ -72,50 +72,51 @@ div#colors_pane > div {
 <div class="template_customize_form large_form" id="template_customize_form">
    <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
        custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
-
-       content_tag(:ul, :class=>"tabs") do
-           content_tag(:li, content_tag(:a, "Backgrounds")) +
-           content_tag(:li, content_tag(:a, "Fonts & Colors"))
-       end +
-       content_tag(:div, :class=>"panes") do 
-           content_tag(:div, :id=>"background_pane") do
-	       param_field(customize_form, custom_params.delete("header_background_image"), :width=>1024, :height=>110, :id=>"header_background_image") + " " +
-	       param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
-	       param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1024, :height=>1200)
+       content_tag(:div, :class=>"tab_form") do
+           content_tag(:ul, :class=>"tabs") do
+               content_tag(:li, content_tag(:a, "Backgrounds")) +
+               content_tag(:li, content_tag(:a, "Fonts & Colors"))
            end +
-           content_tag(:div, :id=>"colors_pane") do
-               content_tag(:div, :id=>"background_fields") do
-	       param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
-	       param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
-	       param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+           content_tag(:div, :class=>"panes") do 
+               content_tag(:div, :id=>"background_pane") do
+                   param_field(customize_form, custom_params.delete("header_background_image"), :width=>1024, :height=>110, :id=>"header_background_image") + " " +
+                   param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+                   param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1024, :height=>1200)
+               end +
+               content_tag(:div, :id=>"colors_pane") do
+                   content_tag(:div, :id=>"background_fields") do
+                   param_field(customize_form, custom_params.delete("menu_text_color"), :id=>"menu_text_color") +
+                   param_field(customize_form, custom_params.delete("menu_text_selected_color"), :id=>"menu_text_selected_color") +
+                   param_field(customize_form, custom_params.delete("menu_background_color"), :id=>"menu_background_color") +
+                   param_field(customize_form, custom_params.delete("menu_background_hover_color"), :id=>"menu_background_hover_color") +
+                   param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
+                   param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color")
                end +
                content_tag(:div, :id=>"title_fields") do
-	           param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font") +
-	           param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
-	           param_field(customize_form, custom_params.delete("subtitle_font"), :id=>"subtitle_font") +
-	           param_field(customize_form, custom_params.delete("subtitle_color"), :id=>"subtitle_color") +
-	           param_field(customize_form, custom_params.delete("menu_text_color"), :id=>"menu_text_color") +
-	           param_field(customize_form, custom_params.delete("menu_text_selected_color"), :id=>"menu_text_selected_color") +
-	           param_field(customize_form, custom_params.delete("menu_background_color"), :id=>"menu_background_color") +
-	           param_field(customize_form, custom_params.delete("menu_background_hover_color"), :id=>"menu_background_hover_color")
-               end +
-               content_tag(:div, :id=>"color_fields") do
-	           param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
-	           param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
-	           param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
-	           param_field(customize_form, custom_params.delete("post_text_color"), :id=>"post_text_color") +
-	           param_field(customize_form, custom_params.delete("post_link_color"), :id=>"post_link_color") +
-	           param_field(customize_form, custom_params.delete("post_link_hover_color"), :id=>"post_link_hover_color") +
-	           param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") 
-               end +
-               content_tag(:div, :id=>"color_fields") do
-		   custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
-		       param_field(customize_form, param, :id=>param.name) 
-		   end.join("").html_safe
+                   param_field(customize_form, custom_params.delete("title_font"), :id=>"title_font", :param_field_type=>"font") +
+                   param_field(customize_form, custom_params.delete("title_color"), :id=>"title_color") +
+                   param_field(customize_form, custom_params.delete("subtitle_font"), :id=>"subtitle_font", :param_field_type=>"font") +
+                   param_field(customize_form, custom_params.delete("subtitle_color"), :id=>"subtitle_color") +
+                   param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
+                   param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color")
+                end +
+                content_tag(:div, :id=>"color_fields") do
+                   param_field(customize_form, custom_params.delete("post_text_color"), :id=>"post_text_color") +
+                   param_field(customize_form, custom_params.delete("post_link_color"), :id=>"post_link_color") +
+                   param_field(customize_form, custom_params.delete("post_link_hover_color"), :id=>"post_link_hover_color") +
+                   param_field(customize_form, custom_params.delete("header_background_color"), :id=>"header_background_color") + 
+                   param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+                   param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+                end +
+                   content_tag(:div, :id=>"color_fields") do
+               custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+                   param_field(customize_form, param, :id=>param.name) 
+               end.join("").html_safe
+                   end
                end
            end
        end +
-       button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit")
+       content_tag(:div, button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit"), :class=>"dialog_buttons")
     end %>
 </div>
 <script>
@@ -1330,9 +1331,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{post_asset}%{title}%{date}%{comments}</param>
     <param class="local" name="posts_per_page" description="5A60C89E-4A1E-4D0C-B90F-E0D284883C89">5</param>
     <param class="scheme" name="schemes" description="62275C2A-29F9-4BAA-9893-BB0417917807">
-      <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(101,101,101,1)</param>
-      <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
       <param class="scheme" name="6605BFB7-3D19-4603-8965-A969C87138C6" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(101,101,101,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(40,40,40,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
@@ -1364,8 +1365,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/slate.jpg</param>
       </param>
       <param class="scheme" name="D8ED6A26-FD22-4742-AB88-7ACDE18C7D3A" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-      <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(41,41,41,1)</param>
-      <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
+          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(41,41,41,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(185,185,185,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
@@ -1397,8 +1398,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/grey.jpg</param>
       </param>
       <param class="scheme" name="C299992B-869C-4CF6-9181-A108D02100F5" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(14562,29,23,1)</param>
-        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
+          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(14562,29,23,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(205,205,205,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
@@ -1430,8 +1431,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/candy-cane.jpg</param>
       </param>
       <param class="scheme" name="F9478A1E-3D64-4186-ADEF-3E510FE04A3B" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
-        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,13,13,1)</param>
+          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,13,13,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(60,22,22,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,13,13,1)</param>
@@ -1463,8 +1464,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/crimson.jpg</param>
       </param>
       <param class="scheme" name="4777A407-CE06-497D-BA03-1C822262EC16" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15, 53, 129,1)</param>
-        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
+          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15, 53, 129,1)</param>
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,32,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>

@@ -137,9 +137,8 @@ div#colors_pane > div {
     <category>General</category>
   </categories>
   <packages>
-    <package>basic_author</package>
+    <package>author</package>
     <package>basic_blog</package>
-    <package>premium_author</package>
     <package>premium_blog</package>
   </packages>
   <thumbnail_url>http://cdn.roxiware.com/templates/bloggish/chooser_image.jpg</thumbnail_url>
@@ -159,14 +158,15 @@ body.application_body {
 }
 
 /* Sizing for various devices */
-div#mainBody {
+#mainBody {
      font-size:12px;
-     width:950px;
+     max-width:950px;
+     width:100%;
 }
 
 /* for all mobile devices, set width to 100% */
 @media all and (max-device-width: 1024px) {
-      div#mainBody {
+      #mainBody {
           border:solid 1px black;
           position:absolute;
           right:0px;
@@ -177,7 +177,7 @@ div#mainBody {
 
 /* Various mobile portrait guesses */
 @media all and (min-device-height: 320px) and (orientation:portrait) {
-      div#mainBody {
+      #mainBody {
            font-size:8px;
            #content_section {
                min-height:220px;
@@ -186,111 +186,111 @@ div#mainBody {
 }
 
 @media all and (min-device-height: 480px) and (orientation:portrait) {
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:370px;
        }
 }
 
 @media all and (min-device-height: 640px) and (orientation:portrait) {
-      div#mainBody {
+      #mainBody {
           min-height:600px;
       }
 }
 
 @media all and (device-height: 800px) and (orientation:portrait) {
-      div#mainBody {
+      #mainBody {
            font-size:10px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:600px;
        }
 }
 
 @media all and (min-device-height: 1024px) and (orientation:portrait) {
-      div#mainBody {
+      #mainBody {
            font-size:11px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:740px;
        }
 }
 
 @media all and (min-device-height: 1280px) and (orientation:portrait) {
-      div#mainBody {
+      #mainBody {
           font-size:12px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:1000px;
        }
 }
 
 /* Landscape */
 @media all and (min-device-width: 320px) and (orientation:landscape) {
-      div#mainBody {
+      #mainBody {
           font-size:8px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:220px;
        }
 }
 
 @media all and (min-device-width: 480px) and (orientation:landscape) {
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:370px;
        }
 }
 
 
 @media all and (min-device-width: 640px) and (orientation:landscape) {
-      div#mainBody {
+      #mainBody {
           font-size:12px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:540px;
        }
 }
 
 @media all and (min-device-width: 768px) and (orientation:landscape) {
-      div#mainBody {
+      #mainBody {
           min-height:680px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:480px;
        }
 }
 
 @media all and (min-device-width: 800px) and (orientation:landscape) {
-      div#mainBody {
+      #mainBody {
           font-size:12px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:550px;
        }
 }
 
 @media all and (min-device-width: 1024px) and (orientation:landscape) {
-      div#mainBody {
+      #mainBody {
           min-height:940px;
           font-size:12px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:740px;
        }
 }
 
 @media all and (device-width: 1280px) and (device-height:800px) and (orientation:landscape) {
-      div#mainBody {
+      #mainBody {
           min-height:1200px;
           font-size:12px;
       }
-      div#mainBody #content_section {
+      #mainBody #content_section {
            min-height:1000px;
        }
 }
 
 
 /* Fonts and text */
-div#mainBody
+#mainBody
 {
 
     font-family:Geneva, Verdana, Arial, Helvetica, sans-serif;
@@ -355,7 +355,7 @@ div#mainBody
 
 
 /* General layout */
-div#mainBody
+#mainBody
 {
     header {
        width:100%;
@@ -369,9 +369,10 @@ div#mainBody
     }
 
     #layout_body  {
-       margin:0px;
+       margin:0;
+       display:table;
+       table-layout:fixed;
        width:100%;
-       display:block;
        background: url('<%= body_background_image %>') no-repeat scroll top left;
        background-color:<%= body_background_color %>;
        -webkit-background-size: 100%;
@@ -379,16 +380,18 @@ div#mainBody
        -o-background-size: 100%;
        background-size: 100%;
        background-position:center top;
+       > div {
+            display:table-row;
+            > div {
+               display:table-cell;
+               vertical-align:top;
+            }
+       }
     }
 
     #content_section {
-       display:block;
-       width:100%;
        position:relative;
-
         #center_bar {
-            padding:0px 200px 0px 290px;
-
             position:relative;
             width:100%;
             box-sizing:border-box;
@@ -403,11 +406,141 @@ div#mainBody
             .content_background_container {
                 #center_content {
                     position:relative;
-                    width:100%;
+                    margin:0;
                 }
             }
         }
+    }
+}
 
+
+#left_bar_section {
+    width:250px;
+    .widget#social_networks_header {
+        margin-top:0px;
+        .widget_content {
+            text-align:left;
+            .social_networks {
+                margin:1em auto 0 auto;
+                text-align:center;
+                .social_networks_item {                 
+                    padding:5px;
+                    display:inline-block;
+                }
+            }
+        }
+   }
+}
+
+#right_bar_section {
+   width:160px;
+   overflow:hidden;
+   .widget#events_widget {
+        margin-bottom:1em;
+        padding-bottom:1em;
+        width:100%;
+        .widget_content {
+            padding:1em;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        }
+        .events_widget {
+            width:100%;
+        }
+        .events_widget_title:before {
+            content: "Calendar";
+        }
+        .events_widget_title {
+            font-size:1.3em;
+        }
+        .events_widget_all_events {
+            margin-left:0.1em;
+            padding-right:0.1em;
+            vertical-align:top;
+        }
+        .events_widget_all_events:before {
+             border-top:solid 1px <%= link_color %>;
+             display:inline-block;
+             content: "More...";
+        }
+        .event_widget_event {
+            width:100%;
+            display:block;
+            border-top:solid 1px <%= text_color  %>;
+            margin-top:0em;
+            padding-top:1em;
+            padding-bottom:2em;
+            .event_time {
+                font-size:0.7em;
+                .event_start_time {
+                     display:inline-block;
+                     margin-right:1em;
+                }
+                .event_start_time:after {
+                    content:",  ";
+                }
+                .event_date_range {
+                    display:inline-block;
+                }
+            }
+            .event_title {
+                font-weight:900;
+            }
+            .event_full_location {
+                font-size:0.7em;
+                font-style:italic;
+                .event_city, .event_state {
+                    display:inline-block;
+                }
+                .event_state:before {
+                    content:",  ";
+                }
+            }
+        }
+        .event_widget_event:hover {
+            border-top:solid 1px <%= link_hover_color  %>;
+        }
+    }
+}
+
+@media all and (max-width: 768px)  {
+    #mainBody #content_section #left_bar_section {
+        width:30px;
+        .widget#calendar_nav {
+            display:none;
+        }
+        .widget#social_networks_header {
+            .widget_content {
+                 .social_network_icon {
+                     font-size:16px;
+                  }
+                  .social_networks{
+                      .social_networks_item {                 
+                          padding-top:5px;
+                          display:block;
+                      }
+                  }
+            }
+        }
+        .widget#google_widget {
+            display:none;
+        }
+    }
+}
+
+
+@media all and (max-width: 640px)  {
+    #mainBody #layout_body #content_section #right_bar_section {
+        display:none;
+    }
+}
+
+@media all and (max-width: 480px)  {
+    #mainBody #content_section #left_bar_section {
+        display:none;
+        .widget#recent_posts {
+            display:none;
+        }
     }
 }
 
@@ -470,10 +603,9 @@ div.widget_background, div.content_background
         iframe { display:none; }
     }
 }
-div#mainBody .post {
+#mainBody .post {
     position:relative;
     margin: 0;
-    width:100%;
     padding:0 0em 2em 0em;
     
     .post_header {
@@ -945,48 +1077,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 
-@media all and (max-width: 768px)  {
-    div#mainBody {
-        width:100%;
-        .share_bar > div {
-            padding-left:0em;
-        }
-        #content_section #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 200px 0px 50px !important;
-        }
-    }
-}
-@media all and (max-width: 640px)  {
-    div#mainBody {
-        width:100%;
-        .share_bar > div {
-            padding-left:0em;
-        }
-        #right_bar_section {
-            display:none;
-        }
-        #content_section #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 10px 0px 50px !important;
-        }
-    }
-}
-@media all and (max-width: 480px)  {
-    div#mainBody {
-        width:100%;
-        .share_bar > div {
-            padding-left:0em;
-        }
-        #right_bar_section {
-            display:none;
-        }
-        #content_section #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 0px 0px 0px !important;
-        }
-    }
-}
 ]]>
   </style>
   <params>
@@ -1375,7 +1465,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 @media all and (max-width: 640px)  {
-    div#mainBody {
+    #mainBody {
         #header_bar_section {
             height:115px;
             .widget#book_bar {
@@ -1400,7 +1490,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 @media all and (max-width: 320px)  {
-    div#mainBody {
+    #mainBody {
         #header_bar_section {
            height:60px;
            .widget#main_menu a {
@@ -1422,6 +1512,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
                 <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                   <![CDATA[<%= 
                       person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -1488,62 +1581,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <section name="left_bar">
           <style>
             <![CDATA[
-#mainBody #content_section {
-        #left_bar_section {
-            position:absolute;
-            left: 2em;
-            z-index:2;
-
-            top:0px;
-            bottom:0px;
-            width:250px;
-            overflow:hidden;
-
-
-            .widget#social_networks_header {
-                margin-top:0px;
-
-                .widget_content {
-                    text-align:left;
-                    .social_networks{
-                        margin:1em auto 0 auto;
-                        text-align:center;
-                        .social_networks_item {                 
-                            padding:5px;
-                            display:inline-block;
-                        }
-                    }
-                }
-           }
-        }
-}
-
-@media all and (max-width: 768px)  {
-    #mainBody #content_section #left_bar_section  {
-        width:30px;
-
-        .widget#google_widget { display:none; }
-        .widget#social_networks_header {
-            .widget_content {
-                 .social_network_icon {
-                     font-size:16px;
-                  }
-                    .social_networks{
-                        .social_networks_item {                 
-                            padding-top:5px;
-                            display:block;
-                        }
-                    }
-            }
-        }
-        .widget#recent_posts {
-            display:none;
-        }
-    }
-}
-@media all and (max-width: 480px)  {
-    #mainBody #content_section #left_bar_section  { display:none; }
-}
 ]]>
           </style>
           <params>
@@ -1587,16 +1624,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
         <section name="right_bar">
           <style>
-            <![CDATA[#right_bar_section {
-    position:absolute;
+            <![CDATA[
+#right_bar_section {
     width:160px;
-    top:2em;
-    bottom:2em;
-    right:2em;
-    padding:0px;
-
     overflow:hidden;
-
     .widget#events_widget {
 	margin-bottom:1em;
 	padding-bottom:1em;
@@ -1664,7 +1695,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 	    border-top:solid 1px <%= link_hover_color  %>;
 	}
     }
-}]]>
+}
+]]>
           </style>
           <params>
           </params>
@@ -1715,7 +1747,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
         <section name="top_bar">
           <style>
-            <![CDATA[div#mainBody {
+            <![CDATA[#mainBody {
     #top_bar_section {
         box-sizing:border-box;
             -moz-box-sizing:border-box;
@@ -1740,7 +1772,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 @media all and (max-width: 767px) {
-      div#mainBody #content_section #center_bar #top_bar_section {
+      #mainBody #content_section #center_bar #top_bar_section {
            left:2em;
            right:60px;
       }
@@ -1761,7 +1793,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[
-        div#mainBody .post .post_tags {
+        #mainBody .post .post_tags {
     display:none;
 }
       ]]>
@@ -1771,7 +1803,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
         <section name="bottom_bar">
           <style>
-            <![CDATA[div#mainBody {
+            <![CDATA[#mainBody {
     #bottom_bar_section {
         box-sizing:border-box;
         -moz-box-sizing:border-box;
@@ -1805,69 +1837,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           </widget_instances>
         </section>
         <section name="left_bar">
-          <style>
-            <![CDATA[#mainBody #content_section {
-        #left_bar_section {
-            position:absolute;
-            left: 2em;
-            z-index:2;
-
-            top:0px;
-            bottom:0px;
-            float:left;
-            width:250px;
-
-
-           .widget#social_networks_header {
-                margin-top:0px;
-
-                .widget_content {
-                    text-align:left;
-                    .social_networks{
-                        margin:1em auto 0 auto;
-                        text-align:center;
-                        .social_networks_item {                 
-                            padding:5px;
-                            display:inline-block;
-                        }
-                    }
-                }
-           }
-        }
-}
-
-@media all and (max-width: 768px)  {
-    #mainBody #content_section #left_bar_section  {
-        width:30px;
-        .widget#social_networks_header {
-            .widget_content {
-                 .social_network_icon {
-                     font-size:16px;
-                  }
-                    .social_networks{
-                        .social_networks_item {                 
-                            padding-top:5px;
-                            display:block;
-                        }
-                    }
-            }
-        }
-        .widget#google_widget {
-            display:none;
-        }
-        .widget#recent_posts {
-            display:none;
-        }
-        .widget#calendar_nav {
-            display:none;
-        }
-    }
-}
-@media all and (max-width: 480px)  {
-    #mainBody #content_section #left_bar_section  { display:none; }
-}
-]]>
-          </style>
+          <style/>
           <params>
           </params>
           <widget_instances>
@@ -1927,7 +1897,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <sections>
         <section name="top_bar">
           <style>
-            <![CDATA[div#mainBody {
+            <![CDATA[#mainBody {
     #top_bar_section {
         height:4em;
         box-sizing:border-box;
@@ -1947,7 +1917,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 @media all and (max-width: 640px)  {
-    div#mainBody  #top_bar_section {
+    #mainBody  #top_bar_section {
          .share_bar {
               > div {
                   display:inline-block;
@@ -2286,7 +2256,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       <render_layout>roxiware/layouts/threecolumn</render_layout>
       <style>
         <![CDATA[
-div#mainBody .post .post_tags {
+#mainBody .post .post_tags {
     display:none;
 }
       ]]>
@@ -2314,65 +2284,7 @@ div#mainBody .post .post_tags {
         </section>
         <section name="left_bar">
           <style>
-            <![CDATA[#mainBody #content_section {
-        #left_bar_section {
-            position:absolute;
-            left: 2em;
-            z-index:2;
-
-            top:0px;
-            bottom:0px;
-            float:left;
-            width:250px;
-            overflow:hidden;
-
-            .widget#calendar_nav {
-                margin-top:1em;
-            }
-
-            .widget#social_networks_header {
-                margin-top:0px;
-
-                .widget_content {
-                    text-align:left;
-                    .social_networks{
-                        margin:1em auto 0 auto;
-                        text-align:center;
-                        .social_networks_item {                 
-                            padding:5px;
-                            display:inline-block;
-                        }
-                    }
-                }
-           }
-        }
-}
-
-
-@media all and (max-width: 768px)  {
-    #mainBody #content_section #left_bar_section  {
-        width:30px;
-        .widget#google_widget, .widget#calendar_nav {
-            display:none;
-        }
-        .widget#social_networks_header {
-            .widget_content {
-                 .social_network_icon {
-                     font-size:16px;
-                  }
-                    .social_networks{
-                        .social_networks_item {                 
-                            padding-top:5px;
-                            display:block;
-                        }
-                    }
-            }
-        }
-    }
-}
-@media all and (max-width: 480px)  {
-    #mainBody #content_section #left_bar_section  { display:none; }
-}
+            <![CDATA[
 ]]>
           </style>
           <params>

@@ -19,7 +19,7 @@ Displays images of books in the authors book list
                 when "random"
                     globals[:books] = Roxiware::Book.find(:all).sample(locals[:book_count])
                 when "newest"
-                    globals[:books] = Roxiware::Book.where(:publish_date=>(DateTime.new()..DateTime.now())).order("publish_date DESC").limit(locals[:book_count])
+                    globals[:books] = Roxiware::Book.order("publish_date DESC").limit(locals[:book_count])
                 else
                 globals[:books] = nil
             end

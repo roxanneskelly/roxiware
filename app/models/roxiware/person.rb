@@ -75,12 +75,17 @@ class Roxiware::Person < ActiveRecord::Base
        self.middle_name = split_name.join(" ")
    end
 
-    before_validation do
-       self.seo_index = self.full_name.to_seo
-       index = 1
-       while Roxiware::Person.find_by_seo_index(self.seo_index).present?
-           self.seo_index = "#{self.full_name.to_seo}-#{index}"
-           index += 1
+   before_validation do
+       if(self.seo_index != self.full_name.to_seo)
+           # if we've changed the full name, so we need to validate we didn't
+           # change it to something that's already there.  If so, create
+           # a new seo index with a number after it
+           self.seo_index = self.full_name.to_seo
+           index = 1
+           while Roxiware::Person.find_by_seo_index(self.seo_index).present?
+               self.seo_index = "#{self.full_name.to_seo}-#{index}"
+               index += 1
+           end
        end
        self.bio = Sanitize.clean(self.bio, Roxiware::Sanitizer::BASIC_SANITIZER)
        if(self.large_image.present?)

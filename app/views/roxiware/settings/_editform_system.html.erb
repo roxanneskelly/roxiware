@@ -17,10 +17,10 @@ content_tag(:div, :id=>"system_settings_edit", :class=>"large_form") do
                     (seo_params.present? ? content_tag(:div, param_fields(system_fields, seo_params), :id=>"seo_pane", :class=>"justify_inputs") : "")
                 end
             end
+        end +
+        content_tag(:div, :class=>"dialog_buttons") do
+            button_tag("Save", :id=>"save_button", :type=>"submit", :class=>"save_button")
         end
-    end +
-    content_tag(:div, :class=>"dialog_buttons") do
-        button_tag("Save", :id=>"save_button", :type=>"submit", :class=>"save_button")
     end
 end %>
 <script>

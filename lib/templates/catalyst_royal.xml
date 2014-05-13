@@ -143,6 +143,7 @@ div#colors_pane > div {
   <packages>
     <package>basic_blog</package>
     <package>premium_blog</package>
+    <package>author</package>
   </packages>
   <thumbnail_url>http://cdn.roxiware.com/templates/catalyst-royal/chooser_image.jpg</thumbnail_url>
   <preview_url>http://blogdemo.scribaroo.com/</preview_url>

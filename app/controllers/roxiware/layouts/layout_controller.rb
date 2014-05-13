@@ -8,49 +8,52 @@ module Roxiware
             # Template chooser
             def index
                 @layouts = []
+                @categories = {}
                 category_ids = Set.new([])
                 package_name = Roxiware::Param::Param.application_param_val("system", "hosting_package")
                 package_term = Roxiware::Terms::Term.where(:term_taxonomy_id=>Roxiware::Terms::TermTaxonomy.taxonomy_id(Roxiware::Terms::TermTaxonomy::LAYOUT_PACKAGE_NAME), :name=>package_name).first
-                Roxiware::Layout::Layout.joins(:term_relationships).where(:term_relationships=>{:term_id=>package_term.id}).each do |layout|
-                    next if cannot? :read, layout
-                    schemes = []
-                    if(layout.get_param("schemes").present?)
-                        layout.get_param("schemes").h.each do |scheme_id, scheme|
-                            large_image_urls = []
-                            large_image_urls = scheme.h["large_images"].a.each.collect{|image| {:thumbnail=>image.h["thumbnail"].to_s, :full=>image.h["full"].to_s}} if scheme.h["large_images"].present?
-                            schemes << {:id=>scheme_id,
-                                :name=>scheme.h["name"].to_s,
-                                :thumbnail_image=>scheme.h["thumbnail_image"].to_s}
+                if package_term.present?
+                    Roxiware::Layout::Layout.joins(:term_relationships).where(:term_relationships=>{:term_id=>package_term.id}).each do |layout|
+                        next if cannot? :read, layout
+                        schemes = []
+                        if(layout.get_param("schemes").present?)
+                            layout.get_param("schemes").h.each do |scheme_id, scheme|
+                                large_image_urls = []
+                                large_image_urls = scheme.h["large_images"].a.each.collect{|image| {:thumbnail=>image.h["thumbnail"].to_s, :full=>image.h["full"].to_s}} if scheme.h["large_images"].present?
+                                schemes << {:id=>scheme_id,
+                                    :name=>scheme.h["name"].to_s,
+                                    :thumbnail_image=>scheme.h["thumbnail_image"].to_s}
+                            end
                         end
+
+                        category_ids.merge(layout.category_ids)
+                        schemes.sort!{|x,y| x[:name] <=> y[:name]}
+                        layout_data = {:name=>layout.name,
+                            :guid=>layout.guid,
+                            :thumbnail_url=>layout.get_param("chooser_image").to_s,
+                            :description=>layout.description,
+                            :categories=>layout.category_ids,
+                            :schemes=>schemes}
+                        @layouts << layout_data
+                    end
+                    @layouts.sort!{|x,y| x[:name] <=> y[:name]}
+
+                    cat_tree_build = {}
+                    # grab the categories and sort them so lesser specific items will come before their contained categories
+                    Roxiware::Terms::Term.where(:id=>category_ids.to_a).sort{|x, y| x.name <=> y.name}.each do |category|
+                        # for the category, split off it's name and find the parent name
+                        parent = category.name.split("/").reverse
+                        parent.shift
+
+                        cat_tree_build[parent.reverse.join("/")] ||= []
+                        cat_tree_build[parent.reverse.join("/")] << category
+                    end
+                    dfs = lambda do |current|
+                        Hash[cat_tree_build[current].collect{|category| [category, dfs.call(category.name)]}] if cat_tree_build[current].present?
                     end
 
-                    category_ids.merge(layout.category_ids)
-                    schemes.sort!{|x,y| x[:name] <=> y[:name]}
-                    layout_data = {:name=>layout.name,
-                        :guid=>layout.guid,
-                        :thumbnail_url=>layout.get_param("chooser_image").to_s,
-                        :description=>layout.description,
-                        :categories=>layout.category_ids,
-                        :schemes=>schemes}
-                    @layouts << layout_data
+                    @categories = dfs.call("")
                 end
-                @layouts.sort!{|x,y| x[:name] <=> y[:name]}
-
-                cat_tree_build = {}
-                # grab the categories and sort them so lesser specific items will come before their contained categories
-                Roxiware::Terms::Term.where(:id=>category_ids.to_a).sort{|x, y| x.name <=> y.name}.each do |category|
-                    # for the category, split off it's name and find the parent name
-                    parent = category.name.split("/").reverse
-                    parent.shift
-
-                    cat_tree_build[parent.reverse.join("/")] ||= []
-                    cat_tree_build[parent.reverse.join("/")] << category
-                end
-                dfs = lambda do |current|
-                    Hash[cat_tree_build[current].collect{|category| [category, dfs.call(category.name)]}] if cat_tree_build[current].present?
-                end
-
-                @categories = dfs.call("")
 
                 respond_to do |format|
                     format.html {render :partial => "roxiware/templates/choose_template", :locals=>{:selected_scheme=>@layout_scheme, :selected_template=>@current_layout.guid} }

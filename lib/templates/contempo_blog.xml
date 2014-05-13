@@ -137,8 +137,8 @@ div#colors_pane > div {
     <category>General</category>
   </categories>
   <packages>
-    <package>basic_blog</package>
-    <package>premium_blog</package>
+    <package>devbasic_blog</package>
+    <package>devpremium_blog</package>
   </packages>
   <thumbnail_url>http://cdn.roxiware.com/templates/contempo-blog/chooser_image.jpg</thumbnail_url>
   <preview_url>http://blogdemo.scribaroo.com/</preview_url>

@@ -76,7 +76,8 @@
       ]]>
     </editform>
     <preload><![CDATA[
-        true]]>
+        eval(locals[:preload], binding(), locals[:widget_instance_id], 1)
+    ]]>
     </preload>
     <render_view>
       <![CDATA[<%= render :inline=>raw(content.to_s), :locals=>locals %>]]>
@@ -88,6 +89,7 @@
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
       <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">Template Content</param>
+      <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="preload">true</param>
     </params>
   </widget>
 </widgets>

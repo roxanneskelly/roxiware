@@ -1,21 +1,21 @@
-<div class="medium_form" id="book_settings_edit">
-   <% general_params = @settings.values_at("enable_books").compact %>
-   <%= form_tag(setting_path("books"), :method=>"put") do %>
-       <%= fields_for :books do |book_fields| %>
-	  <ul class="tabs">
-	      <% if general_params.present? %><li><a>General</a></li><% end %>
-	  </ul>
-          <div class="panes">
-	      <% if general_params.present? %>
-		<div>
-		   <%= param_fields(book_fields, general_params) %>
-		</div>
-              <% end %>
-          </div>
-      <% end %>
-      <%= button_tag "Save", :id=>"save_button", :type=>"submit", :class=>"save_button" %>
-   <% end %>
-</div>
+<%= content_tag(:div, :class=>"medium_form", :id=>"book_settings_edit") do
+    general_params = @settings.values_at("enable_books").compact
+    form_tag(setting_path("books"), :method=>"put") do
+       fields_for(:books) do |book_fields|
+           content_tag(:div, :class=>"tab_form") do
+               content_tag(:ul, :class=>"tabs") do
+                   "".html_safe + 
+	               (content_tag(:li, content_tag(:a, "General")) if general_params.present?)
+               end +
+               content_tag(:div, :class=>"panes") do
+                   "".html_safe +
+                   (content_tag(:div, param_fields(book_fields, general_params)) if general_params.present?)
+               end
+           end
+       end +
+       content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"submit", :class=>"save_button"), :class=>"dialog_buttons")
+   end
+end %>
 
 <script>
 $(function() {

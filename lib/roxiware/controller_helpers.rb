@@ -60,14 +60,18 @@ module Roxiware
         def load_layout
             puts "CURRENT TEMPLATE #{@current_template}"
             puts "CURRENT SCHEME #{@layout_scheme}"
-            run_setup = @@loaded_layouts[@current_template].nil?
-            #@@loaded_layouts[@current_template] ||= Roxiware::Layout::Layout.includes( page_layouts: [
-            #                                                                              {layout_sections: [ {:widget_instances =>[:params]}, :params]}, 
-            #                                                                              :params
-            #                                                                           ], :params).where(:guid=>@current_template).first
+            if(!Roxiware::Layout::Layout.exists?(:guid=>@current_template))
+                Rails.logger.error("Template #{@current_template} does not exist, using default.")
+                @current_template="9D077BF9-0C25-4E49-9AC6-F2FBA0459355"
+            end
             @@loaded_layouts[@current_template] ||= Roxiware::Layout::Layout.includes({:page_layouts=>[ {:layout_sections=>[:widget_instances, :params]}, :params ]}, :params).where(:guid=>@current_template).first
-            raise Exception.new("Invalid Layout #{@current_template}") if @@loaded_layouts[@current_template].nil?
             @current_layout = @@loaded_layouts[@current_template]
+            raise Exception.new("Invalid Layout #{@current_template}") if @current_layout.blank?
+            if(@current_layout.get_param("schemes").h[@layout_scheme].blank?)
+                Rails.logger.error("Bad Scheme #{@layout_scheme}")
+                @layout_scheme=@current_layout.get_param("schemes").h.keys.first
+            end
+            run_setup = @@loaded_layouts[@current_template].nil?
             run_layout_setup if run_setup
             @page_layout = @@loaded_layouts[@current_template].find_page_layout(params)
             @page_identifier = @page_layout.get_url_identifier

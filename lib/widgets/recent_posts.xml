@@ -12,7 +12,11 @@
       <![CDATA[if globals[:recent_posts_last_update].blank? || globals[:recent_posts_last_update] < Roxiware::Blog.last_update
 	 globals[:recent_posts] = []
 	 Roxiware::Blog::Post.published().order("post_date DESC").limit(locals[:recent_posts_count]).each do |post|
-	   globals[:recent_posts] << {:post=>post, :snippet=>raw(post.snippet(locals[:excerpt_length], :sanitizer=>Roxiware::Sanitizer::EXTENDED_SANITIZER){""})}
+       if(locals[:excerpt_length] > 0)
+    	   globals[:recent_posts] << {:post=>post, :snippet=>raw(post.snippet(locals[:excerpt_length], :sanitizer=>Roxiware::Sanitizer::EXTENDED_SANITIZER){""})
+       else
+    	   globals[:recent_posts] << {:post=>post, :snippet=>post.post_content}
+       end
 	 end
          globals[:recent_posts_last_update] = Roxiware::Blog.last_update
        end

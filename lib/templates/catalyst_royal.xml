@@ -181,21 +181,18 @@ body.application_body
 /* General layout */
 div#mainBody {
     font-size:12px;
-    width:1038px; 
+    max-width:1038px; 
+    width:100%;
 }
 
 div#mainBody {
     #content_section {
         #center_bar {
-            width:728px;
-            padding:0px 0px 0px 0px;
-            display:inline-block;
             position:relative;
             vertical-align:top;
         }
         #left_bar_section {
             position:relative;
-            display:inline-block;
             padding-right:20px;
             width:250px;
             padding-left:20px;
@@ -205,19 +202,12 @@ div#mainBody {
             }
         }
     }
-}
-@media all and (max-width:1037px) {
-    div#mainBody {
-        width:100%;
+    #bottom_bar_section {
+        margin-bottom:1em;
     }
+}
+@media all and (max-width:950px) {
     div#mainBody #content_section {
-        width:100%;
-        #center_bar {
-            margin-left:auto;
-            margin-right:auto;
-            width:100%;
-            padding:0 0 0 0px;
-        }
         #left_bar_section {
             display:none;
         }
@@ -226,7 +216,6 @@ div#mainBody {
 
 @media all and (max-width:747px) {
     div#mainBody {
-        width:100%;
         #center_bar {
             .widget#google_top_bar {
                 display:none;
@@ -367,32 +356,24 @@ div#mainBody
 
     #layout_body {
        margin:0px;
-       padding:20px 0px 20px 0px;
+       padding:0;
+       margin:0px;
        width:100%;
-       display:block;
+       display:table;
        background: url('<%= body_background_image %>') no-repeat scroll top left;
        background-color:<%= body_background_color %>;
        -webkit-background-size: cover;
        -moz-background-size: cover;
        -o-background-size: cover;
        background-size: cover;
-      
-    }
-
-    #content_section {
-       display:block;
-       position:relative;
-
-        #center_bar {
-
-            .content_background_container {
-                #center_content {
-                    position:relative;
-                    width:100%;
-                }
+       > div {
+            display:table-row;
+            > div {
+               display:table-cell;
+               vertical-align:top;
             }
-        }
-
+       }
+      
     }
 }
 
@@ -964,9 +945,9 @@ div#mainBody .post {
                 box-sizing:border-box;
                 -moz-box-sizing:border-box;
                 .post_header {
-                    .post_image {
+                    .post_thumbnail {
                         float:left;
-                        width:30%;
+                        max-width:30%;
                         margin:0 1em 1em 0;
                     }
                     .post_title {
@@ -1045,14 +1026,17 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 
-.share_bar {
+div.share_bar {
     > div {
         display:inline-block;
-        padding-left:2em;
+        vertical-align:middle;
+        width:90px;
+        height:20px;
     }
+    line-height:20px;
+    height:20px;
+    padding-left:1em;
 }
-
-
 ]]>
   </style>
   <params>
@@ -1195,15 +1179,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 {
     width:250px;
 }
-@media all and (max-width: 728px)  {
-    div#mainBody {
-        width:100%;
-        #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 0px 0px 0px !important;
-        }
-    }
-}]]>
+]]>
       </style>
       <params>
       </params>
@@ -1266,6 +1242,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                   <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
                 </param>
@@ -1509,6 +1488,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <instance order="5" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                   <![CDATA[<%= 
                       person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -1631,29 +1613,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
     }
 }
-
-@media all and (max-width: 640px)  {
-    div#mainBody  #top_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -1929,30 +1891,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
     }
 }
-
-
-@media all and (max-width: 640px)  {
-    div#mainBody  #top_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2111,28 +2052,9 @@ div#mainBody {
         -moz-box-sizing:border-box;
         padding-top:1em;
 
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
     }
 }
-
-@media all and (max-width: 640px)  {
-    div#mainBody  #bottom_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2382,17 +2304,7 @@ div#mainBody {
       </params>
       <sections>
         <section name="bottom_bar">
-          <style>
-            <![CDATA[#mainBody #bottom_bar_section {
-}
-
-.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
-          </style>
+          <style/>
           <params>
           </params>
           <widget_instances>
@@ -2473,7 +2385,8 @@ div#mainBody {
         clear:both;
 
         .widget#header_image {
-            img { max-width:100%; }
+            width:100%;
+            img { width:100%; height:auto;}
         }
     }
 }
@@ -2485,9 +2398,13 @@ div#mainBody {
             <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">header_image</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
+
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
-                  <![CDATA[<img src="<%= @home_page_splash_image %>"/>]]>
+                  <![CDATA[<img src="<%= @post.post_image.present? ? @post.post_image : @home_page_splash_image %>"/>]]>
                 </param>
               </params>
             </instance>
@@ -2529,14 +2446,7 @@ div#mainBody {
       </params>
       <sections>
         <section name="bottom_bar">
-          <style>
-            <![CDATA[.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
-          </style>
+          <style/>
           <params>
           </params>
           <widget_instances>

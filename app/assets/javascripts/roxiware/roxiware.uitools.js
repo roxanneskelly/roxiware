@@ -1071,7 +1071,7 @@ function settingsForm(source, title, options) {
                schema: "html5",
                toolbar: "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image media | code",
                setup: function(ed){ed.on('LoadContent', function() {
-                            tinymce.ui.FloatPanel.zIndex = overlay.css("z-index")+1;  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
+                   tinymce.ui.FloatPanel.zIndex = overlay.css("z-index");  // Normally, the float panel defaults to 65535, but that'll overlay other dialogs
                })}
         });
 

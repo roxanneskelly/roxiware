@@ -527,7 +527,6 @@ div#mainBody .page_content {
 div#mainBody .post {
     position:relative;
     margin: 0 0 3em 0;
-    width:100%;
     padding:0;
     background: <%= background_highlight_color %>;
     box-sizing:border-box;
@@ -550,8 +549,7 @@ div#mainBody .post {
         display:inline;
         box-sizing:border-box;
         display:inline-block;
-        width:100%;
-        margin-bottom:0.5em;
+        margin:0 0 0.5em 0;
         .post_date {
             opacity:0.8;
             display:inline-block;
@@ -569,12 +567,10 @@ div#mainBody .post {
      }
     .content {
         display:inline;
-        margin-top:0.5em;
-        margin-left:0em;
+        margin: 0.5em 0 0 0;
         overflow:hidden;
         box-sizing:border-box;
         display:inline-block;
-        width:100%;
         iframe {
             display:none;
         }
@@ -1132,7 +1128,6 @@ div#mainBody .post_listing {
 
 /* WIDGETS */
 .widget {
-    width:100%;
     margin:0px;
 
     .widget_content {
@@ -1260,11 +1255,16 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 
-.share_bar {
+div.share_bar {
     > div {
         display:inline-block;
-        padding-left:2em;
+        vertical-align:middle;
+        width:90px;
+        height:20px;
     }
+    line-height:20px;
+    height:20px;
+    text-align:center;
 }
 
 /* Various mobile portrait guesses */
@@ -1534,22 +1534,19 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     margin-top:1em;
 }
 #copyright.widget {
-    text-align:right;
-    padding-right:2em;
-    div {
-        display:inline-block;
-    }
-    .scribaroo_site {
-         padding-left:2em;
+    margin:0 2em 0 2em;
+    div.widget_content {
+        text-align:center;
+        div {
+            display:inline-block;
+        }
     }
 }
 #scribaroo_copyright {
-    text-align:right;
-    padding-right:2em;
-    float:left;
-    display:inline-block;
-    box-sizing:border-box;
-    -moz-box-sizing:border-box;
+    margin:0 2em 0 2em;
+    div.widget_content {
+        text-align:center;
+    }
 }
 
 ]]>
@@ -1564,6 +1561,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
                 <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                   <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
                 </param>
@@ -1840,7 +1840,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 		    color:<%= title_color %>;
 		    white-space:nowrap;
 		    font-family:<%= title_font %>;
-		    left:0.0em;
+		    left:0.5em;
 		    top:0em;
 		    font-size:3em;
 		    font-weight:300;
@@ -1851,7 +1851,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 		    position:absolute;
 		    white-space:nowrap;
 		    font-family:<%= subtitle_font %>;
-		    left:0.0em;
+		    left:0.5em;
 		    top:3.2em;
 		    font-size:2.0em;
 		    font-weight:300;
@@ -1923,6 +1923,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
                 <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
                   <![CDATA[<%= 
                       person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -2096,30 +2099,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
     }
 }
-
-
-@media all and (max-width: 640px)  {
-    div#mainBody  #top_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2175,15 +2157,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
       </params>
       <sections>
         <section name="bottom_bar">
-          <style>
-            <![CDATA[
-.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
-          </style>
+          <style/>
           <params>
           </params>
           <widget_instances>
@@ -2252,12 +2226,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 #bottom_bar_section {
     margin-bottom:1em;
 }
-.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
+]]>
           </style>
           <params>
           </params>

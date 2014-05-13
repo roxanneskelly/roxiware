@@ -431,6 +431,7 @@ div.share_bar {
         width:90px;
         height:20px;
     }
+    padding-left:2em;
     line-height:20px;
     height:20px;
 }
@@ -449,12 +450,6 @@ div#mainBody .post {
         position:absolute;
         bottom:0.5em;
         right:1em;
-        > div {
-            display:inline-block;
-            vertical-align:middle;
-            width:90px;
-            height:30px;
-        }
     }
 
     .post_categories {
@@ -657,6 +652,7 @@ div#mainBody .post {
 /* Full post display with comments */
 .post_listing {
     .post_footer {
+        margin:0 1em 0 1em;
         .comment_count {
             font-size:1.3em;
             display:inline-block;
@@ -1013,6 +1009,18 @@ padding:2em;
           <widget_instances>
             <instance order="1" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
               <params>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">scribaroo_copyright</param>
               </params>
             </instance>
           </widget_instances>
@@ -1483,13 +1491,6 @@ padding:2em;
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }
     }
 }]]>
           </style>
@@ -1843,19 +1844,15 @@ div.book_listing {
       </params>
       <sections>
         <section name="bottom_bar">
-          <style>
-            <![CDATA[.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
-          </style>
+          <style/>
           <params>
           </params>
           <widget_instances>
             <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
+                <param class="local" name="share_link" description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB"></param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">share_bar</param>
               </params>
             </instance>
           </widget_instances>
@@ -1939,19 +1936,15 @@ A mailing-list request Has Been Received from: $email
       </params>
       <sections>
         <section name="bottom_bar">
-          <style>
-            <![CDATA[.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
-          </style>
+          <style/>
           <params>
           </params>
           <widget_instances>
             <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
               <params>
+                <param class="local" name="share_link" description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB"></param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">share_bar</param>
               </params>
             </instance>
           </widget_instances>

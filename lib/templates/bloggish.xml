@@ -610,11 +610,8 @@ div.widget_background, div.content_background
     
     .post_header {
         position:relative;
-        margin-top:1em;
-        width:90%;
-        left:5%;
+        margin:1em 2em 1em 2em;
         color: <%= link_color %>;
-
         .post_title {
             top:1.0em;
             font-size:2em;
@@ -656,9 +653,8 @@ div.widget_background, div.content_background
     }
     .content {
         margin-top:1em;
-        margin-left:0.5em;
+        margin:0 1em 0 1em;
         overflow:hidden;
-        width:100%;
         img, iframe {
             margin:1em;
             max-width:100%;
@@ -818,6 +814,7 @@ div.widget_background, div.content_background
 /* Full post display with comments */
 .post_listing {
     .post_footer {
+        margin:0 1em 0 1em;
         hr.post_separator {
             margin:0 10% 0 10%;
             width:80%;
@@ -1062,20 +1059,17 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 
  
 
-.share_bar {
-    text-align:center;
-    margin-left:auto;
-    margin-right:auto;
-    width:100%;
+div.share_bar {
     > div {
         display:inline-block;
-        padding-left:2em;
+        vertical-align:middle;
+        width:90px;
+        height:20px;
     }
-    > div:nth-child(1) {
-        padding-left:0em;
-    }
+    line-height:20px;
+    height:20px;
+    padding-left:1em;
 }
-
 
 ]]>
   </style>
@@ -1298,6 +1292,18 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <widget_instances>
             <instance order="0" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
               <params>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+                  <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
+                </param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">scribaroo_copyright</param>
               </params>
             </instance>
           </widget_instances>
@@ -1901,18 +1907,8 @@ true
     #top_bar_section {
         height:4em;
         box-sizing:border-box;
-            -moz-box-sizing:border-box;
+        -moz-box-sizing:border-box;
         padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
     }
 }
 
@@ -2266,18 +2262,21 @@ true
       <sections>
         <section name="bottom_bar">
           <style>
-            <![CDATA[.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
+            <![CDATA[
+          ]]>
           </style>
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+            <instance order="0" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
               <params>
+              </params>
+            </instance>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+                <param class="local" name="share_link" description="21D5E42E-7D66-4ECF-9802-3B813ECC51AB"></param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">share_bar</param>
               </params>
             </instance>
           </widget_instances>
@@ -2377,14 +2376,7 @@ true
       </params>
       <sections>
         <section name="bottom_bar">
-          <style>
-            <![CDATA[.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
-          </style>
+          <style/>
           <params>
           </params>
           <widget_instances>

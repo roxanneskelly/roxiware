@@ -9,11 +9,6 @@
      <li id="new_book"><a menu_item="new_book"><span aria-hidden="true" class="icon-none"></span>&nbsp;New Book</a></li>
 <% if 0 %>     <li id="new_series"><a menu_item="new_series"><span aria-hidden="true" class="icon-none"></span>&nbsp;New Series</a></li> <% end %>
   </ul>
-
-  <div class="help_bar_entry">Left-click on a book and select <b>Edit Book</b> to manage the book.</div>
-  <div class="help_bar_entry">Left-click and select <b>New Series</b> to collect your books in a series.</div>
-  <div class="help_bar_entry">Import details for a book via the <b>Import</b> tab of the edit dialog.</div>
-  <div class="help_bar_entry">Left-click and select <b>New Book</b> to add another book.</div>
 <%= content_tag(:ul, :id=>"books_edit_application_menu", :class=>"application_menu") do
     content_tag(:li) do
         content_tag(:a, :rel=> new_book_path, :form=>"New Book") do

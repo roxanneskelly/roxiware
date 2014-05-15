@@ -780,7 +780,7 @@
     <description>Type of page to show on root page.</description>
     <field_type>select</field_type>
     <permissions>super</permissions>
-    <meta>First Blog Post:first_blog_post|First Blog Post With Comments:first_blog_post_with_comments|First Blog Post Excerpt:first_blog_post_excerpt|Blog Posts:blog_posts|Content:content</meta>
+    <meta>Nothing|none|First Blog Post:first_blog_post|First Blog Post With Comments:first_blog_post_with_comments|First Blog Post Excerpt:first_blog_post_excerpt|Blog Posts:blog_posts|Content:content</meta>
   </param_description>
   <param_description guid="CDC341F5-9EFB-41DB-8B84-B1101A58704D">
     <name>Date Display Format String</name>

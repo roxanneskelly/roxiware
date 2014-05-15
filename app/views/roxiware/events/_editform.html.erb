@@ -110,13 +110,15 @@ $(function() {
 
     $("#event_edit_form button#save_button").click(function() {
         $("#event_edit input.watermark").val("");
-        var event_data = $("#event_edit input").serializeArray();
+        var event_data = $("#event_edit input, #event_edit select").serializeArray();
         event_data.push({name:"event[description]", value:$("#event_edit #description").html()});
         $.ajaxSetParamsJSON("<%= endpoint %>.json", 
-                            post_data,
-                            {method:"<%= method %>", form:$("#event_edit form"), success:function(data) {
-                 window.location = data.post_link;
-             }});
+                            event_data,
+                            {method:"<%= method %>", 
+                             form:$("#event_edit form"), 
+                             success:function(data) {
+                                 window.location.reload();
+                            }});
     });
 
 });

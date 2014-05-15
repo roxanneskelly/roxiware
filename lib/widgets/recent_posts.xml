@@ -25,14 +25,13 @@
     </preload>
     <render_view>
       <![CDATA[<div class="recent_posts_title"></div><nav class="recent_posts">
-	<% recent_posts.each do |post_data| 
-	   post = post_data[:post] %>
-	   <%= content_tag(:div, :class=>"recent_post_entry") do
-	       Roxiware::Blog::PostHelper.post_header(post, :header_format=>header_format, :date_format=>date_format, :show_comments=>true) + 
+	<%= recent_posts.collect do |post_data| 
+	   content_tag(:div, :class=>"recent_post_entry") do
+	       Roxiware::Blog::PostHelper.post_header(post_data[:post], :header_format=>header_format, :date_format=>date_format, :show_comments=>true) + 
 	       content_tag(:div, post_data[:snippet].html_safe, :class=>"post_snippet") +
-               link_to("", post.post_link, :class=>"post_more")
-           end %>
-	<% end %>
+           link_to("", post_data[:post].post_link, :class=>"post_more")
+       end + " "
+    end.join("").html_safe %>
       </nav>]]>
     </render_view>
     <style>

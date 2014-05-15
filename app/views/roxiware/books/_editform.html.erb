@@ -71,11 +71,11 @@ end %>
           }
      });
 
-     $("#book_edit_form #book_description").html("<%= (@book.description || "").html_safe %>");
+     $("#book_edit_form #book_description").html("<%= (escape_javascript(@book.description)|| '').html_safe %>");
      $("img#book_upload_image").attr("src", "<%= @book.large_image %>");
      $("input#book_large_image").val("<%= @book.large_image %>");
 
-     $("#save_button").require_fields("#book_title");
+     $("#save_button").attr("require_fields", "#book_title");
      $("#book_edit_form ul.tabs").tabs($("div.panes > div"));
      <% if params[:id] %>
         $("#book_edit_form ul.tabs").data("tabs").next();
@@ -238,8 +238,8 @@ end %>
         $.ajaxSetParamsJSON(endpoint, book_data,
                             {
                                 method:method,
-                                success:function() {
-                                    window.location.reload();
+                                success:function(data) {
+                                    window.location = "/books/"+data.book.seo_index;
                             }});
       });
 });

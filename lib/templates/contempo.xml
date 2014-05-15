@@ -168,14 +168,10 @@ body.application_body
 /* Sizing for various devices */
 div#mainBody {
      font-size:12px;
-     width:950px;
+     width:100%;
+     max-width:950px;
 }
 
-@media all and (min-device-height: 950px) and (orientation:portrait), all and (min-device-width: 950px) and (orientation:landscape) {
-    div#mainBody {
-        width:100%;
-    }
-}
 
 /* Various mobile portrait guesses */
 @media all and (min-device-height: 320px) and (orientation:portrait), all and (min-device-width: 320px) and (orientation:landscape) {
@@ -306,45 +302,61 @@ div#mainBody
        background-size: cover;
     }
 
-    #layout_body
-    {
-       margin:0px;
-       width:100%;
-       display:block;
-       background: url('<%= body_background_image %>') no-repeat scroll top left;
-       background-color: <%= body_background_color %>;
-       -webkit-background-size: cover;
-       -moz-background-size: cover;
-       -o-background-size: cover;
-       background-size: cover;
+    #layout_body {
+        margin:0px;
+        width:100%;
+        display:table;
+        background: url('<%= body_background_image %>') no-repeat scroll top left;
+        background-color: <%= body_background_color %>;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        > div {
+            display:table-row;
+            > div {
+                display:table-cell;
+                vertical-align:top;
+            }
+        }
     }
 
+
     #content_section {
-       display:block;
        width:100%;
        position:relative;
 
         #center_bar {
-            padding:0px 195px 0px 200px;
-
             position:relative;
-            width:100%;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
-            display:inline-block;
             vertical-align:top;
-
             .content_background_container {
                 #center_content {
-                    position:relative;
-                    width:100%;
+                    margin:0 1em 0 1em;
                 }
             }
         }
 
+        #bottom_bar_section {
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+            margin-top:1em;
+            margin-bottom:1em;
+        }
+        #left_bar_section {
+            .widget {
+                margin:1em 0 1em 0;
+            }
+        }
     }
 }
 
+@media all and (max-width: 728px) {
+    div#mainBody #layout_body #content_section #right_bar_section { display:none; }
+}
+
+@media all and (max-width: 640px) {
+    #mainBody #layout_body #content_section #left_bar_section  {  display:none;  }
+}
 
 
 .manage_button {
@@ -372,7 +384,6 @@ div.widget_background, div.content_background
 div#mainBody .post {
     position:relative;
     margin: 0;
-    width:100%;
     padding:0.5em 1em 2em 1em;
 
     .post_header {
@@ -387,6 +398,7 @@ div#mainBody .post {
          }
          .post_title {
              clear:both;
+             padding:0 4em 0 1em;
              font-size: 2em;
              display:block;
              text-align:center;
@@ -400,12 +412,9 @@ div#mainBody .post {
     .content {
         margin-top:0.5em;
         padding-top:1em;
-        margin-left:0em;
+        margin: 0;
         overflow:hidden;
         padding-left:1em;
-        box-sizing:border-box;
-        -moz-box-sizing:border-box;
-        width:100%;
         img {
             padding:1em;
             max-width:100%;
@@ -634,8 +643,7 @@ div#mainBody .post {
 
 .comment_form {
     position:relative;
-    width:100%;
-    margin:2em 0 3em 0;
+    margin:2em 1em 3em 1em;
     .comment_recaptcha {
          .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
              color: <%= link_color %>;
@@ -648,64 +656,60 @@ div#mainBody .post {
 
 .widget#recent_posts {
     .recent_posts {
-	.recent_post_entry {
-	    vertical-align:top;
-
-	    iframe {
-		display:none;
-	    }
-
-	    .post_snippet {
+        .recent_post_entry:nth-child(1) { display:none; }
+        .recent_post_entry {
+            vertical-align:top;
+            .post_snippet {
                 padding:0 0.5em 0 0.5em;
-		margin-top:0.5em;
-		img {
-		    display:none;
-		}
-		iframe {
-		    display:none;
-		}
-	    }
-	    .post_header {
-		.margin-bottom:0.5em;
-		.post_image {
-		    float:left;
-		    width:30%;
-		    margin:0 1em 1em 0;
-		}
-		.post_date {
-		    padding-left:1em;
-		    color:<%= secondary_text_color %>;
-		    font-style:italic;
-		    display:inline-block;
-		}
-	        .comments_link {
-		    float:right;
-		    padding-right:1em;
-		    display:inline-block;
-		}
-
-		.post_title {
-		    clear:both;
-		    font-size: 1.5em;
-		    display:block;
-		    text-align:center;
-		    border-bottom:solid 3px <%= graphic_element_color %>;
-		    margin-bottom:0.3em;
-		    padding-left:0.5em;
-		}
-		.post_title:hover {
-		    border-bottom:solid 3px <%= link_hover_color %>;
-		}
+                margin-top:0.5em;
+                img, iframe {
+                    max-width:30%;
+                }
             }
-	    .post_more {
-	        padding-right:2em;
-	        margin-left:1em;
-	    }
-	    .post_more:before {
-	        content:"More...";
-	        padding-left:2em;
-	    }
-	}
+            .post_header {
+                .margin-bottom:0.5em;
+                text-align:center;
+                .post_thumbnail {
+                    float:left;
+                    width:30%;
+                    height:auto;
+                    margin:0 1em 1em 0;
+                }
+                .post_date {
+                    padding-left:1em;
+                    color:<%= secondary_text_color %>;
+                    font-style:italic;
+                    display:inline-block;
+                }
+                .comments_link {
+                    float:right;
+                    padding-right:1em;
+                    display:inline-block;
+                }
+                .post_title {
+                    clear:both;
+                    font-size: 1.5em;
+                    display:block;
+                    border-bottom:solid 3px <%= graphic_element_color %>;
+                    margin-bottom:0.3em;
+                    padding-left:0.5em;
+                }
+                .post_title:hover {
+                    border-bottom:solid 3px <%= link_hover_color %>;
+                }
+            }
+            .post_snippet {
+                iframe, img { display:none; }
+            }
+            .post_more {
+                padding-right:2em;
+                margin-left:1em;
+            }
+            .post_more:before {
+                content:"More...";
+                padding-left:2em;
+            }
+        }
     }
 }
 
@@ -911,21 +915,21 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 }
 
 
-.share_bar {
+div.share_bar {
     > div {
         display:inline-block;
-        padding-left:2em;
+        vertical-align:middle;
+        width:90px;
+        height:20px;
     }
+    line-height:20px;
+    height:20px;
+    padding-left:1em;
 }
 
 /* Various mobile portrait guesses */
 @media all and (max-width 2000px)  {
     div#mainBody article.post {
-        .post_title {
-            font-size:12px;
-            margin: 1em 0em 0.5em 0em;
-            width:55%;
-        }
         .post_header {
             font-size:8px;
             .post_date {
@@ -935,24 +939,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     }
 }
 
-@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
+@media all and (max-width: 640px) {
     div#mainBody {
-        width:100%;
-        #left_bar_section {
-            display:none ;
-        }
-        #right_bar_section {
-            display:none;
-        }
-        #content_section #center_bar {
-            margin:0px 0px 0px 0px;
-            padding:0px 0px 0px 0px !important;
-        }
         .post {
-            .post_title {
-                font-size:8px;
-                width:55%;
-            }
             .post_header {
                 font-size:8px;
                 .post_date {
@@ -972,7 +961,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param class="template" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D" name="chooser_image">http://cdn.roxiware.com/templates/contempo/thumbnail.jpg</param>
     <param description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE" class="local" name="comment_header_format">%{author_image}%{author_name}%{date}%{moderate_indicator}</param>
     <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="event_date_format">%b %e</param>
-    <param class="local" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" name="home_page_type">content</param>
+    <param class="local" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4" name="home_page_type">none</param>
     <param class="local" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D" name="post_date_format">%e %b %Y</param>
     <param class="local" description="D009D4B0-5428-4A04-82AC-5A846EC12379" name="post_header_format">%{title}%{date}%{comments}</param>
     <param description="62275C2A-29F9-4BAA-9893-BB0417917807" class="scheme" name="schemes">
@@ -1202,6 +1191,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <![CDATA[
 #footer_bar_section {
     margin-top:1em;
+    margin-bottom:1em;
 }
 #copyright.widget {
     text-align:right;
@@ -1237,6 +1227,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                   <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
                 </param>
@@ -1348,6 +1341,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             ul {
                 list-style-type:none;
                 display:inline-block;
+                margin:0;
                 li { 
                    display:inline-block;
                    vertical-align:middle;
@@ -1469,6 +1463,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
             <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="2">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
                   <![CDATA[<%= 
                       person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
@@ -1526,27 +1523,22 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <style>
             <![CDATA[#mainBody #content_section {
     #left_bar_section {
-        position:absolute;
-        left: 20px;
-        z-index:2;
-        top:0px;
-        float:left;
         width:160px;
         overflow:hidden;
         .widget#recent_posts {
             margin-top:2em;
             .recent_posts {
-	        .recent_post_entry {
-		    display:block;
-		    margin-bottom:3em;
-		}
-	    }
-	    .recent_posts:after {
-	        width:100%;
-		content:" ";
-		display:inline-block;
-	    }
-	}
+                .recent_post_entry {
+                    display:block;
+                    margin-bottom:3em;
+                }
+            }
+            .recent_posts:after {
+                width:100%;
+                content:" ";
+                display:inline-block;
+            }
+        }
 <% if Roxiware::Param::Param.application_param_val("system", "google_ad_client").present? %>
         .recent_posts {
             display:none;
@@ -1554,12 +1546,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
 <% end %>
     }
 }
-
-@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
-    #mainBody #content_section #left_bar_section  {
-        display:none;
-     }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -1576,11 +1563,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <section name="right_bar">
           <style>
             <![CDATA[#right_bar_section {
-    position:absolute;
     width:180px;
-    top:0px;
-    bottom:0px;
-    right:0px;
     padding: 2em 0.5em 2em 0.5em;
     overflow:hidden;
 }]]>
@@ -1637,29 +1620,9 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
     }
 }
-
-@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
-    div#mainBody  #top_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -1756,21 +1719,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     </page>
     <page action="" application="blog">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[div#mainBody {
-    #content_section {
-            #center_bar {
-                  padding:0px 200px 0px 220px;
-            }
-     }
-}
-@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
-    div#mainBody #content_section #center_bar {
-        padding:0px;
-    }
-}
-]]>
-      </style>
+      <style/>
       <params>
       </params>
       <sections>
@@ -1778,11 +1727,6 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <style>
             <![CDATA[div#mainBody {
     #bottom_bar_section {
-        box-sizing:border-box;
-        -moz-box-sizing:border-box;
-        padding-top:1em;
-        padding-bottom:1em;
-
         .blog_page_nav_prev {
              padding-left:1em;
              margin-right:1em;
@@ -1807,74 +1751,61 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         </section>
         <section name="left_bar">
           <style>
-            <![CDATA[#mainBody #content_section {
-        #left_bar_section {
-            position:absolute;
-            left: 20px;
-            z-index:2;
-
-            top:0px;
-            bottom:0px;
-            float:left;
-            width:180px;
-
-            .widget#google_widget {
-                margin-top:1em;
-                margin-bottom:2em;
-            }
-
+            <![CDATA[
+#mainBody #content_section {
+    #left_bar_section {
+        width:180px;
 	    .widget#recent_posts {
-                margin-top:2em;
-		.recent_posts {
-		    .recent_post_entry {
-			display:block;
-			margin-bottom:3em;
-		    }
-		}
-		.recent_posts:after {
-		    width:100%;
-		    content:" ";
-		    display:inline-block;
-		}
-	    }
-
-	    .widget#calendar_nav {
-                .widget_content {
-                    padding:1em;
+            .recent_posts {
+                .recent_post_entry {
+                    display:block;
+                    margin-bottom:3em;
                 }
-		.calendar_nav_title {
-		    font-weight:300;
-		    font-size:1.5em;
-		}
-		ul {
-		    li a {
-		        margin-left:0.5em;
-                        .post_count:before { content:" (";}
-                        .post_count:after { content:")";}
-		    }
+            }
+            .recent_posts:after {
+                width:100%;
+                content:" ";
+                display:inline-block;
+            }
+        }
 
-		    ul.calendar_nav_posts {
-		        list-style-type:none;
-			> li >a {
-			    font-weight:400;
-			}
-		    }
-		    ul.calendar_nav_months, ul.calendar_nav_years {
-		        list-style-type:circle;
-			list-style-position:outside;
-			> li >a {
-			    font-weight:300;
-			}
-		    }
-		    li.calendar_nav_hidden {
-		        list-style-type:hidden;
-		    }
-		}
+        .widget#calendar_nav {
+            .widget_content {
+                padding:1em;
+            }
+            .calendar_nav_title {
+                font-weight:300;
+                font-size:1.5em;
+            }
+            ul {
+                li a {
+                    margin-left:0.5em;
+                   .post_count:before { content:" (";}
+                   .post_count:after { content:")";}
+                }
+
+                ul.calendar_nav_posts {
+                    list-style-type:none;
+                    > li >a {
+                        font-weight:400;
+                    }
+                }
+                ul.calendar_nav_months, ul.calendar_nav_years {
+                    list-style-type:circle;
+                    list-style-position:outside;
+                    > li >a {
+                        font-weight:300;
+                    }
+                }
+                li.calendar_nav_hidden {
+                    list-style-type:hidden;
+                }
+            }
         }
     }
 }
 
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
+@media all and (max-height: 640px) {
     #mainBody #content_section #left_bar_section  {
         width:20px;
         .widget#social_networks_header {
@@ -1952,11 +1883,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <section name="right_bar">
           <style>
             <![CDATA[#right_bar_section {
-    position:absolute;
     width:160px;
-    top:0px;
-    bottom:0px;
-    right:0px;
     padding:5px;
 
     overflow:hidden;
@@ -2096,21 +2023,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     </page>
     <page action="index_by_date" application="blog">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[div#mainBody {
-    #content_section {
-            #center_bar {
-                  padding:0px 200px 0px 220px;
-            }
-     }
-}
-@media all and (max-device-width: 640px) and (orientation:portrait), all and (max-device-height:640px) and (orientation:landscape)  {
-    div#mainBody #content_section #center_bar {
-        padding:0;
-    }
-}
-]]>
-      </style>
+      <style/>
       <params>
       </params>
       <sections>
@@ -2184,21 +2097,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     </page>
     <page action="show_by_title" application="blog">
       <render_layout>roxiware/layouts/threecolumn</render_layout>
-      <style>
-        <![CDATA[div#mainBody {
-    #content_section {
-        #center_bar {
-            padding:0px 200px 0px 220px;
-        }
-    }
-}
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
-    div#mainBody #content_section #center_bar {
-        padding:0;
-    }
-}
-]]>
-      </style>
+      <style/>
       <params>
       </params>
       <sections>
@@ -2209,30 +2108,10 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         box-sizing:border-box;
         -moz-box-sizing:border-box;
         padding-top:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
     }
 }
 
-
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
-    div#mainBody  #top_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2379,35 +2258,7 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
           <style>
             <![CDATA[
 
-div#mainBody {
-    #bottom_bar_section {
-        box-sizing:border-box;
-        -moz-box-sizing:border-box;
-        padding-top:1em;
-        padding-bottom:1em;
-
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-              > div:nth-child(1) {
-                  padding-left:0em;
-              }
-          }
-    }
-}
-
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
-    div#mainBody  #bottom_bar_section {
-         .share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:0em;
-              }
-          }
-    }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2580,74 +2431,45 @@ div#mainBody {
     </page>
     <page action="" application="home">
       <render_layout>roxiware/layouts/twocolumn_right</render_layout>
-      <style>
-        <![CDATA[div#mainBody {
-    #content_section {
-            #center_bar {
-                  padding:0px 20px 0em 200px;
-                  .content_background_container {
-                      padding:0em;
-                      margin-top:0em;
-                      box-sizing:border-box;
-                      -moz-box-sizing:border-box;
-                      #center_content .post_listing .post {
-                          .post_header {
-                               width:70%;
-                               display:inline-block;
-                               .post_title { clear:none;}
-                           }
-                          .content { display:inline;}
-                      }
-                  }
-            }
-     }
-}
-#left_bar_section
-{
-    min-height:40px;
-}
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
-    div#mainBody {
-        #left_bar_section {
-            display:none;
-        }
-        #content_section #center_bar {
-            padding:0px;
-        }
-    }
-}]]>
-      </style>
+      <style/>
       <params>
       </params>
       <sections>
         <section name="bottom_bar">
           <style>
             <![CDATA[#mainBody #bottom_bar_section {
-    padding-bottom:1em;
     .widget#recent_posts {
         text-align:justify;
+        margin:0;
         .recent_posts {
+            margin:0 1em 0 1em;
             text-align:justify;
             .recent_post_entry {
+                display:inline-block;
+                text-align:justify;
                 vertical-align:top;
                 width:32%;
                 margin-bottom:3em;
             }
         }
+        .recent_posts:after {
+            content:"";
+            height:0px;
+            width:60%;
+        }
     }
 }
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:landscape)  {
+@media all and (max-width: 640px) {
     #mainBody #bottom_bar_section .widget#recent_posts .recent_posts .recent_post_entry {
         width:49%;
     }
 }
-
-.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
+@media all and (max-width: 480px) {
+    #mainBody #bottom_bar_section .widget#recent_posts .recent_posts .recent_post_entry {
+        width:100%;
+    }
+}
+]]>
           </style>
           <params>
           </params>
@@ -2672,26 +2494,10 @@ div#mainBody {
           <style>
             <![CDATA[#mainBody #content_section {
     #left_bar_section {
-        position:absolute;
-        left: 20px;
-        z-index:2;
-        top:0px;
-        float:left;
         width:160px;
-        overflow:hidden;
-        .widget {
-            margin-bottom:1em;
-            margin-top:1em;
-        }
-
     }
 }
-
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
-    #mainBody #content_section #left_bar_section  {
-        display:none;
-     }
-}]]>
+]]>
           </style>
           <params>
           </params>
@@ -2703,7 +2509,14 @@ div#mainBody {
                 <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
               </params>
             </instance>
-            <instance order="2" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+            <instance order="2" widget_guid="53A77ACC-5261-49F3-A959-9FB434F43768">
+              <params>
+                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">events_widget</param>
+                <param class="local" description="6CD4546A-E350-46AC-BAF5-A788047DCD08" name="events_count">3</param>
+                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+              </params>
+            </instance>
+            <instance order="3" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
                 <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
                 <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
@@ -2738,130 +2551,232 @@ div#mainBody {
             <![CDATA[div#mainBody {
     #top_bar_section {
         position:relative;
-        box-sizing:border-box;
-         -moz-box-sizing:border-box;
         padding:1em;
         background: <%= background_highlight_color %>;
-        clear:both;
-        margin-top:1.5em;
-
-        .widget#home_page_clear {
-           clear:both;
-           width:100%;
-           height:0px;
-        }
-        .widget#front_page_book {
-            display:inline;
-            padding:2em;
-            box-sizing:border-box;
-            -moz-box-sizing:border-box;
+        margin:3em 2.5em 0 1em;
+        .widget#header_content {
             .widget_content {
+                position:relative;
                 display:inline !important;
-            }
-            .book_list {
-                display:inline;
-                .book_list_book {
-                    display:inline;
-                    .book_list_cover_link {
-                        display:inline;
-                        .book_list_book_cover {
-                            margin:1em;
-                            padding:5px;
-                            display:inline-block;
-                            float:left;
-                            max-width:30%;
-                            height:auto;
-                            background: <%= link_color %>;
-                        }
+                .person_image  {
+                    position:relative;
+                    right:-3em;
+                    top:-3em;
+                    margin-left:-2em;
+                    margin-bottom:-2em;
+                    width:30%;
+                    height:auto;
+                    float:right;
+                    img {
+                        box-sizing:border-box;
+                        -moz-box-sizing:border-box;
+                        width:100%;
+                        border:solid 0.5em <%= link_color %>;
+                        height:auto;
                     }
-                    .book_list_book_title {
-                        display:block;
-                        font-size:2em;
-                        max-width:65%;
+                }
+                .cover_image {
+                    margin:1em;
+                    float:left;
+                    img {
+                        box-sizing:border-box;
+                        -moz-box-sizing:border-box;
+                        width:100%;
+                        border:solid 0.5em <%= link_color %>;
+                        height:auto;
                     }
-                    .book_list_book_title:after {
-                        content:"\A\A"; white-space:pre;
+                }
+                .post_title, .book_title {
+                    display:inline-block;
+                    margin-top:2em;
+                    color:<%= text_color %>;
+                    font-size:2.5em;
+                    line-height:1;
+                    margin-bottom:0.5em;
+                }
+                .post_date {
+                    display:block;
+                    margin-bottom:2em;
+                }
+                .post_comments {
+                    display:inline-block;
+                }
+                .post_snippet, .book_description {
+                    img, iframe {
+                        max-width:30%;
+                        margin:1em;
+                        height:auto;
                     }
-                    .book_list_book:hover .book_list_book_cover {
-                        background: <%= link_hover_color %>
-                    }
-                    .book_list_book_description {
-                       display:inline;
-                       clear:both;
-                       .book_more_link {
-                           text-align:right;
-                       }
-                       .book_more_link:before { content: "More..."; padding-left:2em;}
-                       .book_more_link:after { width:100%; display:block; clear:both;}
-                   }
                 }
             }
         }
-        .widget#front_page_bio {
-             max-width:25%;
-             display:inline-block;
-             position:relative;
-             float:right;
-             width:auto;
-             top:-0.5em;
-             right:-0.5em;
-             z-index:3;
-             .biography a {
-                 display:inline-block;
-		 .bio_name, .bio_title {
-		     display:none;
-		 }
-		 .bio_portrait {
-		     padding:0.5em;
-		     max-width:100%;
-		     height:auto;
-		     background: <%= link_color %>;
-		     box-sizing:border-box;
-		     -moz-box-sizing:border-box;
-		 }
-		 .bio_portrait:hover {
-		    background: <%= link_hover_color %>;
-		 }
-             }
-        }
     }
 }
-
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
-      div#mainBody #content_section #center_bar #top_bar_section {
-        top:0;
-        right:0;
-      }
-}]]>
+]]>
           </style>
           <params>
           </params>
           <widget_instances>
-            <instance order="1" widget_guid="BED8AFA4-4853-4FF8-B53E-1841147A9E4F">
+            <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="portrait_size">large_image</param>
-                <param class="local" description="C94F5738-AEDF-46B1-99F1-8A526393DD54" name="person_id"></param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">front_page_bio</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">header_content</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+true
+]]></param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
+if(Roxiware::Param::Param.application_param_val("system", "hosting_package") == "author")
+    if globals[:book].blank? || globals[:refresh_time].blank? || ((globals[:refresh_time] + locals[:refresh_period].to_f) < Time.now())
+        globals[:refresh_time] = Time.now()
+        globals[:book] = Roxiware::Book.order("publish_date DESC").first
+    end
+end
+locals[:book] = globals[:book]
+
+if globals[:last_post_update].blank? || globals[:last_post_update] < Roxiware::Blog.last_update
+    globals[:last_post] = nil
+    last_post = Roxiware::Blog::Post.published().order("post_date DESC").first
+    if(last_post.present?)
+        globals[:last_post] = {:post=>last_post, :snippet=>raw(last_post.snippet(500, :sanitizer=>Roxiware::Sanitizer::EXTENDED_SANITIZER){""})}
+    end
+    globals[:last_post_update] = Roxiware::Blog.last_update
+end
+locals[:last_post] = globals[:last_post]
+locals[:last_post].present? || locals[:book].present?
+]]></param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
+<![CDATA[
+<%=
+if(book.present?)
+    content_tag(:div, :class=>"header_book") do
+        person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+        person = Roxiware::Person.find(person_id)
+        link_to(tag(:img, :src=>book.image), book_path(book.seo_index), :class=>"cover_image") +
+        link_to(tag(:img, :src=>person.large_image), person_path(person.seo_index), :class=>"person_image") +
+        link_to(book.title, book_path(book.seo_index), :class=>"book_title") +
+        content_tag(:div, book.description.html_safe, :class=>"book_description")
+    end
+else
+    content_tag(:div, :class=>"header_last_post") do
+        Roxiware::Blog::PostHelper.post_header(last_post[:post], :header_format=>"%{large_author_image}%{title} %{date}", :date_format=>"%D", :show_comments=>true) + 
+        content_tag(:div, last_post[:snippet].html_safe, :class=>"post_snippet") +
+        link_to("", last_post[:post].post_link, :class=>"post_more")
+    end
+end + content_tag(:div, "", :style=>"clear:both;")
+%>
+]]>
+                </param>
               </params>
             </instance>
-            <instance order="2" widget_guid="CB1A6A19-2098-44C4-97CC-3E47BC32E15F">
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page action="" application="events">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[
+
+#mainBody #center_content {
+    .events {
+        text-align:justify;
+        .event {
+            display:inline-block;
+            width:48%;
+            vertical-align:top;
+            .event_header:after {
+                width:100%;
+                display:inline-block;
+                height:0px;
+                content:"";
+            }
+            .event_header {
+                margin-bottom:1em;
+                text-align:justify;
+                .event_title {
+                    font-size: 2.5em;
+                    display:block;
+                    border-bottom:solid 3px <%= graphic_element_color %>;
+                    margin:0 0 0.3em 0;
+                    padding-left:0.5em;
+                    text-align:center;
+                }
+                .event_full_time {
+                    display:inline-block;
+                    margin-right:3em;
+                    .event_date_range, .event_start_time {
+                        display:inline-block;
+                        font-style:italic;
+                        font-size:1.5em;
+                    }
+                }
+                .event_full_location {
+                    display:inline-block;
+                    font-size:1.5em;
+                    .event_city, .event_state, .event_location {
+                        display:inline-block;
+                    }
+                }
+            }
+        }
+    }
+    .events:after {
+        width:60%;
+        display:inline-block;
+        height:0px;
+        content:"";
+    }
+}
+]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="left_bar">
+          <style>
+            <![CDATA[#mainBody #content_section {
+    #left_bar_section {
+        width:160px;
+    }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
               <params>
-                <param class="local" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA" name="excerpt_length">500</param>
-                <param class="local" description="BEDD0F51-5E0A-489F-9495-195CDC090877" name="book_count">1</param>
-                <param class="local" description="F247867F-5D91-4D9F-A73B-B0022130FD88" name="selection_order">newest</param>
-                <param class="local" description="4EA22E83-3E36-4DA4-ABBF-1C79A1D50FD0" name="link_path"></param>
-                <param class="local" description="BF45A131-4491-42FF-942F-C42CC28E6987" name="cover_size">large_image</param>
-                <param class="local" description="B3155EA7-F1AD-481C-93B2-FC7DE542D5E4" name="show_description">excerpt</param>
+                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">google_adsense</param>
+                <param class="local" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E" name="google_ad_slot">2452453078</param>
                 <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">front_page_book</param>
-                <param class="local" description="26F42447-4148-4F5F-AAE3-FE3744618E3F" name="refresh_period">86400</param>
               </params>
             </instance>
-            <instance order="3" widget_guid="73D15D17-6DB3-46F5-A2B7-6DF1B103617D">
+            <instance order="3" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
               <params>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">home_page_clear</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
+                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+                <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="mailer_form">
+                  <![CDATA[
+<p>Join my e-mail list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param class="local" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF" name="mailers">
+                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="response">
+                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Thank you for your interest.</param>
+                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param class="local" description="EE53AA34-7EC8-409A-AF77-446F712B7777" name="notification">
+                    <param class="local" description="F25B251A-E227-450E-AC2C-0F4A37E79051" name="subject">Contact Request</param>
+                    <param class="local" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" name="content">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
               </params>
             </instance>
           </widget_instances>
@@ -2899,7 +2814,7 @@ div#mainBody {
         }
     }
 }
-@media all and (max-device-height: 640px) and (orientation:portrait), all and (max-device-width:640px) and (orientation:portrait)  {
+@media all and (max-width: 640px) {
     .person_listing .person_portrait {
         right:0;
     }
@@ -2912,15 +2827,7 @@ div#mainBody {
         <section name="bottom_bar">
           <style>
             <![CDATA[
-#bottom_bar_section {
-    margin-bottom:1em;
-}
-.share_bar {
-              > div {
-                  display:inline-block;
-                  padding-left:2em;
-              }
-          }]]>
+]]>
           </style>
           <params>
           </params>

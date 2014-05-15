@@ -1,41 +1,31 @@
-<section class="events">
-  <div class="events_title"></div>
-  <% @events.each do |event|  %>
-    <div id="event-<%= event.id %>" class="event" rel="<%= event_path(event.id) %>">
-     <% if (can? :edit, event) %>
-         <div class="manage_event_menu manage_menu" id="manage_<%= event.id %>"><ul>
-             <li><div class="manage_button icon-arrow-down-9"></div><ul>
-		<li class="edit_event"><a><span aria-hidden="true"></span>&nbsp;Edit</a></li>
-		<li class="delete_event"><a>Delete</a></li>
-	    </ul></li></ul></div>
-     <% end %>
-
-     <%= # generate the date range string
-	 show_date = event.start.strftime(@event_date_format)
-	 end_time = event.end_time
-
-	 if ((event.start.day != end_time.day) || (event.start.month != end_time.month) || (event.start.year != end_time.year))
-	     show_date += " - " + end_time.strftime(@event_date_format)
-	 end
-         result = raw("")
-         result = content_tag(:div, event.start.strftime("%l:%M %p"), :class=>"event_start_time") if (event.duration_units != "days") || (event.start_time != "12:00 AM")
-	 result += content_tag(:div, raw(show_date), :class=>"event_date_range")
-         result = content_tag(:div, result, :class=>"event_time") +
-         content_tag(:div, event.title, :class=>"event_title")
-         location_str = content_tag(:div, event.location_url.present? ? link_to(event.location, event.location_url, :target=>"_blank") : event.location, :class=>"event_location")
-         location_str += content_tag(:div, event.city, :class=>"event_city")  unless event.city.blank?
-         location_str += content_tag(:div, event.state, :class=>"event_state")  unless event.state.blank?
-         result += content_tag(:div, location_str, :class=>"event_full_location")
-         result += content_tag(:div, raw(event.description), :class=>"event_description")
-         result %>
-    </div>
-  <% end %>
-</section>
+<%= content_tag(:section, :class=>"events") do
+    content_tag(:div, "", :class=>"events_title") +
+    @events.collect do |event|
+        content_tag(:div, :id=>"event-#{event.id}", :class=>"event",  :rel=>"#{event_path(event.id)}") do
+            "".html_safe +
+            if (can? :edit, event) 
+                content_tag(:div, :class=>"manage_event_menu manage_menu", :id=>"manage_#{event.id}") do
+                    content_tag(:ul) do
+                        content_tag(:li) do
+                            content_tag(:div, "", :class=>"manage_button icon-arrow-down-9") +
+                            content_tag(:ul) do
+                                content_tag(:li, content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true") + "&nbsp;Edit"), :class=>"edit_event") +
+                                content_tag(:li, content_tag(:a, content_tag(:span, "", "aria-hidden"=>"true") + "&nbsp;Delete"), :class=>"delete_event")
+                            end
+                        end
+                    end
+                end
+            end +
+            Roxiware::EventsHelper.event_header(event, {:date_format=>@event_date_format}) +
+            content_tag(:div, event.description.html_safe, :class=>"event_description")
+        end
+    end.join(" ").html_safe
+ end %>
 
 <% if (can? :create, Roxiware::Event)  %>
 <%= content_tag(:ul, :id=>"events_application_menu", :class=>"application_menu") do
     content_tag(:li) do
-        content_tag(:a, :rel=> new_event_path, :form=>"New Event") do
+        content_tag(:a, :rel=> new_event_path, :form=>"") do
             content_tag(:span, "+", "aria-hidden"=>"true", :class=>"menu-icon icon-calendar")+content_tag(:span, "New", :class=>"top_menu_text")
         end
     end
@@ -53,10 +43,20 @@ $(function() {
     });
 
     $(".event li.edit_event a").click(function() {
-       $(this).parents(".event").trigger("context_menu", "edit_event");
+        var event_link=$(this).parents(".event").attr("rel");
+	    settingsForm(event_link+"/edit", "Edit Event");
     });
     $(".event li.delete_event a").click(function() {
-       $(this).parents(".event").trigger("context_menu", "delete_event");
+        if(confirm("Remove Event\nAre you sure?")) {
+        var event_link=$(this).parents(".event").attr("rel");
+        $.ajax({url:event_link, 
+                type:"DELETE",
+                dataType: "json", 
+                success: function(json_data, textStatus, jqXHR) {
+                    window.location = "<%= events_path %>";
+                }
+            });
+         }
     });
 
 });

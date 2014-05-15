@@ -200,6 +200,8 @@ div#mainBody {
             .widget {
                 margin-bottom:2em;
             }
+            > div#recent_posts {
+            }
         }
     }
     #bottom_bar_section {
@@ -854,7 +856,6 @@ div#mainBody .post {
 
 /* WIDGETS */
 .widget {
-    width:100%;
     margin:0px;
 
     .widget_content {
@@ -945,10 +946,11 @@ div#mainBody .post {
                 box-sizing:border-box;
                 -moz-box-sizing:border-box;
                 .post_header {
+                    margin:0;
                     .post_thumbnail {
                         float:left;
-                        max-width:30%;
-                        margin:0 1em 1em 0;
+                        width:30%;
+                        margin: 0 1em 1em 0;
                     }
                     .post_title {
                         text-align:left;
@@ -2386,7 +2388,17 @@ div#mainBody {
 
         .widget#header_image {
             width:100%;
-            img { width:100%; height:auto;}
+            opacity:0;
+            .widget_content {
+                position:relative;
+                width:100%;
+                padding-top:61%;
+                overflow:hidden;
+                -webkit-background-size: cover;
+                -moz-background-size: cover;
+                -o-background-size: cover;
+                background-size: cover;
+            }
         }
     }
 }
@@ -2404,7 +2416,27 @@ true
 
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3" class="local" name="content">
-                  <![CDATA[<img src="<%= @post.post_image.present? ? @post.post_image : @home_page_splash_image %>"/>]]>
+                  <![CDATA[
+<script>
+    var header_image = $(new Image);
+    header_image.bind("load", function() {
+        if((this.height < 200) || (this.width < 364)) {
+            $(header_image).attr("src", "<%= @home_page_splash_image %>");
+        }
+        else {
+            $("#header_image").css("background-image", "url('" + $(this).attr("src") + "')");
+            $("#header_image").animate({opacity:1});
+        }
+    });
+    header_image.bind("error", function() {
+        console.log("error");
+        if(header_image.attr("src") != "<%= @home_page_splash_image %>") {
+            $(header_image).attr("src", "<%= @home_page_splash_image %>");
+        }
+    });
+    header_image.attr("src", "<%= @post.post_image.present? ? @post.post_image : @home_page_splash_image %>")
+</script>
+]]>
                 </param>
               </params>
             </instance>

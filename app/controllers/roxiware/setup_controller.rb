@@ -1,6 +1,5 @@
 require 'nokogiri'
 
-
 class Roxiware::SetupController < ApplicationController
     application_name = 'setup'
 
@@ -35,7 +34,7 @@ class Roxiware::SetupController < ApplicationController
         end
         @verified_params = ActiveSupport::JSON.decode(verified_result.first)
 
-        Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", "basic_author") if @setup_step == "welcome"
+        Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", "basic_blog") if @setup_step == "welcome"
         Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", request.host) if @setup_step == "welcome"
 
         @setup_type ||= @verified_params['site_type']

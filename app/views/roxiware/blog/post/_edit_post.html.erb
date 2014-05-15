@@ -16,7 +16,7 @@
             post_fields.text_field(:post_title, :altname=>:post_link)
         end + " " +
         if (current_user.role == "super") 
-            content_tag(:div, :id=>"author_entry", :class=>"param-field") do
+            content_tag(:div, :id=>"author_entry", :class=>"param-field param-field-select") do
                 post_fields.label(:person_id, "Author") +
                 post_fields.select(:person_id, Roxiware::Person.all.collect{|p| [p.full_name, p.id]})
             end
@@ -34,7 +34,7 @@
             content_tag(:div, @post.post_content.html_safe, :id=>:post_content, :contenteditable=>"true", :class=>"inline_settings_wysiwyg")
         end +
         post_fields.hidden_field(:blog_class) +
-        content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons")
+        content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons", :require_fields=>"#post_title")
     end
 end
  %>
@@ -45,7 +45,7 @@ $(function() {
 
     $("#save_button").click(function() {
         $("#post_edit input.watermark").val("");
-        var post_data = $("#post_edit input").serializeArray();
+        var post_data = $("#post_edit input, #post_edit select").serializeArray();
         post_data.push({name:"blog_post[post_content]", value:$("#post_content").html()});
         $.ajaxSetParamsJSON("<%= endpoint %>.json", 
                             post_data,

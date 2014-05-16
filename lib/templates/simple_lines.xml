@@ -1107,10 +1107,16 @@ true
                     line-height:auto;
                     display:none;
                 }
-                .book_list_book_cover {
-                     height:100%;
-                     width:auto;   
-                     border: solid 1px black;
+                .book_list_cover_link {
+                    height:100%;
+                    width:auto;
+                    display:inline-block;
+                    .book_list_book_cover {
+                         display:inline-block;
+                         height:120px;
+                         width:auto;   
+                         border: solid 1px black;
+                     }
                  }
             }
         }

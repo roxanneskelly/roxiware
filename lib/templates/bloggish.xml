@@ -28,7 +28,7 @@ books_menu_permission.value = Roxiware::Param::Param.application_param_val("book
 books_menu_permission.save!
 
 calendar_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_3/permission")
-calendar_menu_permission.value = Roxiware::Param::Param.application_param_val("events", "enable_events") ? "guest" : "super"
+calendar_menu_permission.value = Roxiware::Param::Param.application_param_val("books", "enable_events") ? ((Roxiware::event.all.count > 0) ? "guest" : "admin") : "super"
 calendar_menu_permission.save!
 
 ]]>
@@ -1316,7 +1316,6 @@ true
     height:170px;
     position:relative;
     margin:0;
-    margin:0;
     padding:1em 0em 1em 0em;
     box-sizing:border-box;
     -moz-box-sizing:border-box;
@@ -1392,7 +1391,7 @@ true
                     display:none;
                 }
                 .book_list_book_cover {
-                     height:100%;
+                     height:120px;
                      width:auto;   
                      border: solid 1px black;
                  }

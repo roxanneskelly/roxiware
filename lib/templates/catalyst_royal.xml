@@ -2389,15 +2389,15 @@ div#mainBody {
         .widget#header_image {
             width:100%;
             opacity:0;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
             .widget_content {
                 position:relative;
                 width:100%;
                 padding-top:61%;
                 overflow:hidden;
-                -webkit-background-size: cover;
-                -moz-background-size: cover;
-                -o-background-size: cover;
-                background-size: cover;
             }
         }
     }

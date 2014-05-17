@@ -122,6 +122,17 @@ class Roxiware::SetupController < ApplicationController
         end
     end
 
+    def status
+        begin
+            result = { :status => (Roxiware::Param::Param.application_param_val('setup', 'setup_step') == "complete") ? "up" : "remote_setup",
+                       :package => Roxiware::Param::Param.application_param_val('setup', 'setup_type')}
+        rescue Exception=>e
+            result = { }
+        end
+        respond_to do |format|
+            format.json { render :json=>result}
+        end
+    end
 
     # PUT /setup
     def update

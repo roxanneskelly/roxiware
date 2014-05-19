@@ -46,22 +46,19 @@ $(function() {
          post_data.push({name:"first_post[post_content]",value:$("#post_content").html()});
          $.ajaxSetParamsJSON("<%= setup_path %>.json", post_data, { 
              success:function() {
-                  console.log("focus on complete");
                   $("#complete_page").focus();
              }
          });
      });
 
     $("#site_setup_page,#manage_books_page,#first_blog_post_page,#edit_biography_page").focus(function() {
-console.log("site type is <%= @setup_type %>");
+        $(this).siblings(".setup_page").hide().animate({width:"0%"});
+        $(this).show().animate({width:"100%"},200);
 <% if (@setup_type != "author") %>
-console.log("focusing on biography");
        if($(this).is("#edit_biography_page")) {
            $("#biography").focus();
        }
 <% end %>
-        $(this).siblings(".setup_page").hide().animate({width:"0%"});
-        $(this).show().animate({width:"100%"},200);
     });
 
     $("#complete_page").focus(function() {

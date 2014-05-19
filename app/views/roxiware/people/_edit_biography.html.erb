@@ -47,7 +47,7 @@ end %>
 <script>
  $(function() {
     $("#biography").focus(function() {
-        $("#biography #edit_section").animate({opacity:1, height:$(this).find("#biography_table").height()}, 200).slideDown(200);
+        $("#biography #edit_section").animate({opacity:1, height:$(this).find("#biography_table").height()}, 200);
     });
      $("#save_biography").require_fields("#person_full_name");
 

@@ -2,23 +2,29 @@
     content_tag(:div, :id=>"book_list_container", :class=>"settings_section") do
         content_tag(:h1, "Manage Books") +
         content_tag(:div, :id=>"add_buttons") do
-            content_tag(:div, "+", :id=>"new_book", :class=>"icon-book") +
-            content_tag(:div, "+", :id=>"new_series", :class=>"icon-books")
+            content_tag(:div, "+", :id=>"new_book", :class=>"icon-book") # +
+            # content_tag(:div, "+", :id=>"new_series", :class=>"icon-books")
         end +
-        content_tag(:div, "", :class=>"icon-arrow-left-9", :id=>"next_book") +
-        content_tag(:div, "", :id=>"book_list", :class=>"roundabout-holder") +
         content_tag(:div, "", :class=>"icon-arrow-right-9", :id=>"prev_book") +
+        content_tag(:div, "", :id=>"book_list", :class=>"roundabout-holder") +
+        content_tag(:div, "", :class=>"icon-arrow-left-9", :id=>"next_book") +
         content_tag(:div, :class=>"setup_buttons") do
             button_tag(:id=>"save_books") {"Done&nbsp;".html_safe + content_tag(:span, "", :class=>"icon-arrow-right-2")}
         end
     end +
-    render(:partial=>'roxiware/books/book_edit')
+    content_tag(:div, :id=>"book_info", :class=>"settings_section") do
+        content_tag(:h1, "Book Information") +
+        content_tag(:div, :id=>"book_info_edit") do
+            render(:partial=>'roxiware/books/book_edit')
+        end
+    end
 end %>
 <script type="template/text" id="book_template">
 <div class="book roundabout-moveable-item"><img class="book_image"/></div>
 </script>
 <script>
 $(function() {
+    $("button#save_button").removeAttr("disabled");
     var import_books = function(books) {
         var endpoint = "<%= setup_books_path %>.json"
         $.getJSON(endpoint, function(books) {
@@ -27,7 +33,6 @@ $(function() {
                    book_html.find(".book_image").attr("src", book.image);
                    book_html.data().book = book;
                    $("div#book_list").append(book_html);
-console.log(book_html.data().book);
                 });
    
              $("#book_list").roundabout({childSelector:".book", 
@@ -40,7 +45,7 @@ console.log(book_html.data().book);
                                    btnPrev:$('#next_book'),
                                    responsive:true});
              $("#book_list .book").bind("focus", function() {
-                 updateBookForm($(this).data());
+                 updateBookForm($(this).data().book);
              }).blur(function() {
                   updateBook($(this));
               });
@@ -51,38 +56,38 @@ console.log(book_html.data().book);
        import_books();
    });
    $("#book_list").bind("animationStart", function() {
-       $("#book_edit_form").fadeOut(100, function(){console.log("fading out end");});
+       //$("#book_description_edit_form").fadeOut(100, function(){console.log("fading out end");});
     });
 
    function updateBook(book) {
      if (!$(book).data()) {
          return;
      }
+     $(":focus").blur();
      $(book).data().book = {
-         title:$("#book_edit_form #book_title:not(.watermark)").val(),
-         isbn:$("#book_edit_form input#book_isbn:not(.watermark)").val(),
-         isbn13:$("#book_edit_form input#book_isbn13:not(.watermark)").val(),
-         publish_date:$("#book_edit_form input#book_publish_date:not(.watermark)").val(),
-         image:$("#book_edit_form input#book_raw_image").val(),
-         goodreads_id:$("#book_edit_form input#book_goodreads_id").val(),
-         description: $("#book_edit_form #book_description").html()
+         title:$("#book_description_edit_form #book_title:not(.watermark)").val(),
+         isbn:$("#book_description_edit_form input#book_isbn:not(.watermark)").val() || "",
+         isbn13:$("#book_description_edit_form input#book_isbn13:not(.watermark)").val() || "",
+         publish_date:$("#book_description_edit_form input#book_publish_date:not(.watermark)").val(),
+         image:$("#book_description_edit_form input#book_large_image").val(),
+         goodreads_id:$("#book_description_edit_form input#book_goodreads_id").val(),
+         description: $("#book_description_edit_form #book_description").html()
       }
-     $(book).find(".book_title").text($("#book_edit_form #book_title").html());
-     $(book).find("img").attr("src", $("#book_edit_form input#book_thumbnail").val());
+     $(book).find(".book_title").text($("#book_description_edit_form #book_title").html());
+     $(book).find("img").attr("src", $("#book_description_edit_form input#book_thumbnail").val());
    }
-   $("#book_edit_form #book_upload_image").on("load,error", function() {
+   $("#book_description_edit_form #book_upload_image").on("load,error", function() {
        $(this).fadeIn(100);
    });
 
-   $("#book_edit_firm input#book_raw_image").change(function() {
+   $("input#book_large_image").bind("change", function() {
        var image = $(this).val();
        $("#book_list .book").eq($("#book_list").roundabout("getChildInFocus")).find("img").attr("src",image);
    });
-
-   $("#book_edit_form div#book_description").tinymce({
+   $("#book_description_edit_form div#book_description").tinymce({
           script_url:"http://cdn.roxiware.com/tools/tinymce/tinymce.min.js",
           theme: "modern",
-          selector:"#book_edit_form div#book_description",
+          selector:"#book_description_edit_form div#book_description",
           inline:true,
           skin: "light",
           menubar: false,
@@ -113,7 +118,7 @@ console.log(book_html.data().book);
 
    });
 
-   $("#book_edit_form input").blur(function() {
+   $("#book_description_edit_form input").blur(function() {
       var current_selected_book = $(".list_box_item_selected");
       if(current_selected_book.length != 0) {
         updateBook(current_selected_book);
@@ -149,6 +154,9 @@ console.log(book_html.data().book);
                          }});
    });
 
+   $("button#save_button").click(function() {
+       updateBook($("#book_list .book").eq($("#book_list").roundabout("getChildInFocus")));
+   });
    $("div#new_book").click(function() {
        var book_id = "new";
        var book_html = $($("#book_template").html());
@@ -162,27 +170,24 @@ console.log(book_html.data().book);
            description: ""
       }
       if($("#book_list .book").length > 0) {
+          // save off existing book
           $("#book_list .book").eq($("#book_list").roundabout("getChildInFocus")).after(book_html);
-          updateBook($("#book_list .book").eq($("#book_list").roundabout("getChildInFocus")));
+          $("#book_list").roundabout("relayoutChildren");
+          $("#book_list").roundabout("animateToNextChild", function() {console.log("done");});
       }
       else {
         $("#book_list").append(book_html);
+          $("#book_list").roundabout("relayoutChildren");
       }
+      updateBookForm(book_html.data().book);
       $(book_html).focus(function() {
-          updateForm($(this));
+          updateBookForm($(this).data().book);
       });
-
-      $(book_html).blur(function() {
-          updateBook($(this));
-      });
-      $("#book_list").roundabout("relayoutChildren");
-      $("#book_list").roundabout("animateToNextChild", function() {console.log("done");});
-       
    });
 
    $("div#delete_book").click(function() {
         var book = $("#book_list .book").eq($("#book_list").roundabout("getChildInFocus"));
-       $("#book_edit_form").animate({opacity:0}, 100, function(){ $("#book_edit_form").css("display","hidden");});
+       $("#book_description_edit_form").animate({opacity:0}, 100, function(){ $("#book_description_edit_form").css("display","hidden");});
         book.fadeOut(200, function() {
             $("#book_list").roundabout("animateToPreviousChild", null, null, function() { 
                 book.remove();

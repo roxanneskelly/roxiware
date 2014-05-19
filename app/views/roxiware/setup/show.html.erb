@@ -53,7 +53,9 @@ $(function() {
      });
 
     $("#site_setup_page,#manage_books_page,#first_blog_post_page,#edit_biography_page").focus(function() {
-<% if (@site_type != "author") %>
+console.log("site type is <%= @setup_type %>");
+<% if (@setup_type != "author") %>
+console.log("focusing on biography");
        if($(this).is("#edit_biography_page")) {
            $("#biography").focus();
        }
@@ -63,10 +65,8 @@ $(function() {
     });
 
     $("#complete_page").focus(function() {
-        console.log("complete, so posting message to <%= AppConfig.scribaroo_url %>");
         $.postMessage({action:"setup_complete"}, "<%= AppConfig.scribaroo_url %>", parent);
     });
-    console.log("#<%= @setup_step %>_page");
     $("#<%= @setup_step %>_page").focus();
 
     $("div.inline_settings_wysiwyg").tinymce({

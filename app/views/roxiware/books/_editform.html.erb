@@ -17,8 +17,7 @@
             content_tag(:div, :id=>"book_description_pane") do
                 content_tag(:div, :class=>"settings_section", :style=>"position:relative") do
                     form_for(@book) do |book|
-                        render(:partial=>"roxiware/books/book_edit") +
-                        content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button", :disabled=>true), :class=>"dialog_buttons")
+                        render(:partial=>"roxiware/books/book_edit")
                     end
                 end 
             end +
@@ -44,8 +43,7 @@
                             text_field_tag(:name, "", :watermark=>"Paste your link here")
                         end
                     end
-                end +
-                content_tag(:div, button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button"), :class=>"dialog_buttons")
+                end
             end
         end
     end
@@ -54,9 +52,9 @@ end %>
   <% bookstores = []
      bookstores = @book.get_param("bookstores").a if @book.get_param("bookstores")
    %>
+$("#book_edit_form_wrap").css("height","auto");
   $(function() {
      $("#book_edit_form ul.tabs").tabs($("div.panes > div"));
-
 
      $("#skip_import").click(function() {
         $("#book_edit_form ul.tabs").data("tabs").next();

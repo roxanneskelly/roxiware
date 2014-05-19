@@ -1,5 +1,6 @@
-<%= content_tag(:div, :id=>"book_description_edit_form") do
-        content_tag(:h2, "Book description.") +
+<%= 
+content_tag(:div, :id=>"book_edit_form_wrap", :style=>"height:0;overflow:hidden;") do
+    content_tag(:div, :id=>"book_description_edit_form") do
 	    fields_for(:book) do |book_fields|
             book_fields.hidden_field(:goodreads_id) +
             book_fields.hidden_field(:large_image, :value=>"") +
@@ -17,6 +18,7 @@
                         book_fields.label(:isbn) +
                         book_fields.text_field(:isbn, :watermark=>"ISBN")
                     end + " " +
+                    button_tag("Save", :id=>"save_button", :type=>"button", :class=>"save_button", :disabled=>true) +
                     content_tag(:div, :id=>:isbn13_field, :class=>"param-field") do
                         book_fields.label(:isbn13) +
                         book_fields.text_field(:isbn13, :watermark=>"ISBN13")
@@ -32,37 +34,38 @@
                 end
             end 
 	    end
-    end %>
+    end
+end %>
 <script>
 
 function updateBookForm(book) {
-    $("#book_edit_form").css("opacity","0").css("display","block");
-    $("#book_edit_form #book_title").height(1).val(book.title).css("size","").trigger('autosize.resize');
-    $("#book_edit_form").hide().css("opacity","");
+    $("#book_description_edit_form #book_title").height(1).val(book.title).css("size","").trigger('autosize.resize');
     $("div#book_description").html(book.description);
-    $("#book_edit_form input#book_isbn").val(book.isbn);
-    $("#book_edit_form input#book_isbn13").val(book.isbn13);
+    $("div#book_description").blur();
+    $("#book_description_edit_form input#book_isbn").val(book.isbn);
+    $("#book_description_edit_form input#book_isbn13").val(book.isbn13);
     // we totally remove the dateinput control then re-add it so we can deal with empty
     // date fields
-    $("#book_edit_form input#book_publish_date").data("dateinput", null);
-    $("#book_edit_form input#book_publish_date").val(book.publish_date);
-    $("#book_edit_form input#book_publish_date").dateinput({
+    $("#book_description_edit_form input#book_publish_date").data("dateinput", null);
+    $("#book_description_edit_form input#book_publish_date").val(book.publish_date);
+    $("#book_description_edit_form input#book_publish_date").dateinput({
                                     format: 'm/d/yyyy',
                                      trigger: true
                                  });
 
 
-    $("#book_edit_form input#book_goodreads_id").val(book.goodreads_id);
-    $("#book_edit_form input#book_raw_image").val(book.image);
-    $("#book_edit_form img#book_upload_image").attr("src","").attr("src", book.image);
+    $("#book_description_edit_form input#book_goodreads_id").val(book.goodreads_id);
+    $("#book_description_edit_form input#book_large_image").val(book.image);
+    $("#book_description_edit_form img#book_upload_image").attr("src","").attr("src", book.image);
+    $("#book_description_edit_form img#large_image").attr("src","").attr("src", book.image);
     $("[watermark]").trigger("change");
-    $("#book_edit_form").fadeIn(200, function() { console.log($("#book_edit_form"));console.log("edit fade in 2");});
+    $("#book_edit_form_wrap").animate({height:$("#book_description_edit_form").height()}, 300);
 }
 
 $(function() {
     $("#book_title").autosize();
 
-    $("#book_edit_form input#book_publish_date").dateinput({
+    $("#book_description_edit_form input#book_publish_date").dateinput({
                                    format: 'm/d/yyyy',
                                    trigger: true
                                 });
@@ -75,6 +78,7 @@ $(function() {
             success: function(image) {
                 $("img#book_upload_image").attr("src", image);
                 $("input#book_large_image").val(image);
+                $("input#book_large_image").change();
              }
          });
     });

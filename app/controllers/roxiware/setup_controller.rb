@@ -355,6 +355,12 @@ class Roxiware::SetupController < ApplicationController
                     new_book.large_image = book_node.search('image').text
                     new_book.thumbnail = book_node.search('thumbnail').text
                     new_book.init_sales_links
+                    title_add = 1
+                    init_title = new_book.title
+                    while(Roxiware::Book.find_by_title(new_book.title).present?)
+                        new_book.title = "#{init_title} (#{title_add})"
+                        title_add += 1
+                    end
                     new_book.save!
                     if(new_book.errors.present?)
                         result = report_error(new_book)

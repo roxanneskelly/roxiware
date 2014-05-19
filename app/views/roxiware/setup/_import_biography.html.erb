@@ -67,6 +67,7 @@ end %>
                         $("#biography input[type=hidden]#person_large_image").val(author.large_image);
                         $("#biography #person_image #person_upload_image").attr("src", author.large_image);
                         $("#biography #person_bio").html(author.about);
+                        $("#biography #person_bio").blur();
                         $("#biography input#person_full_name").val(author.name).change();
                         $("#import_biography").blur();
                         $("#biography").focus();

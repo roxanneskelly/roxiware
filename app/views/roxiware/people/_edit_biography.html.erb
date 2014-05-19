@@ -3,7 +3,7 @@
         content_tag(:h1, edit_biography_title) +
         person_fields.hidden_field(:goodreads_id) +
         person_fields.hidden_field(:large_image) +
-        content_tag(:div, :id=>:edit_section, :style=>"display:none") do
+        content_tag(:div, :id=>:edit_section) do
             content_tag(:div, :id=>:biography_table) do
                 content_tag(:div, :id=>:biography_row) do
                     content_tag(:div, :id=>"left_section") do
@@ -47,7 +47,7 @@ end %>
 <script>
  $(function() {
     $("#biography").focus(function() {
-        $("#biography #edit_section").slideDown(200);
+        $("#biography #edit_section").animate({opacity:1, height:$(this).find("#biography_table").height()}, 200).slideDown(200);
     });
      $("#save_biography").require_fields("#person_full_name");
 

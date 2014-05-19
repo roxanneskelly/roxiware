@@ -5,9 +5,10 @@
 <% if latest_book.present? %>
 <p>Be sure to check out my <a href="/books">books</a>, and if you'd like to find out more about me, take a look at my <a href="/biography">biography</a>.</p>
 <p>And definitely enjoy my latest</p></br>
-<a href="<%= book_path(latest_book.seo_index)%>"><h2><%= latest_book.title %></h2></a><p style="clear:both"><a href="<%= book_path(latest_book.seo_index) %>"><img src="<%= latest_book.image %>" style="float:left;margin-right:1em;"/></a><%= raw latest_book.description %><br></p>
+<a href="<%= book_path(latest_book.seo_index)%>"><h2><%= latest_book.title %></h2></a><p style="clear:both"><a href="<%= book_path(latest_book.seo_index) %>"><img src="<%= latest_book.image %>" style="float:left;margin-right:1em;"/></a><br/><br/><%= raw latest_book.description %><br></p>
 <p><br/>
 <% end %>
 <br/>
 - <%= current_user.person.full_name %>
 </p>
+<div style="clear:both">&nbsp;</div>

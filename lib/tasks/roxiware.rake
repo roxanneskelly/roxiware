@@ -456,6 +456,7 @@ namespace :roxiware do
         domain_name=args[:domain_name]
         slot=args[:slot]
         aliases=args[:aliases]
+        package_type=args[:package_type]
         conf_file_data = <<-EOF
 server {
     listen #{args[:host]}:80;
@@ -489,7 +490,7 @@ server {
     }
 }
 EOF
-        if domain_name.present? && %w(premium_blog author).include?(package_type)
+        if %w(premium_blog author slot).include?(package_type)
             conf_file_data << "passenger_pre_start http://#{slot}/;"
         end
         if(domain_name.present?)

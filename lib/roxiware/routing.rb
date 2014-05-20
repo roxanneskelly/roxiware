@@ -199,8 +199,12 @@ module ActionDispatch::Routing
         end
 
         def roxiware_forum
-	    resources :forum do
-	        get ":year/:month/:day/:title"=> "forum#show_topic", :as=>:topic
+            resources :forum do
+                get ":year/:month/:day/:title"=> "forum#show_topic", :as=>:topic
+                get "group/new"=>"forum#new_group", :as=>:new_group
+                post "group/"=>"forum#create_group", :as=>:create_group
+                post "group/:id"=>"forum#edit_group", :as=>:edit_group
+                put "group/:id"=>"forum#update_group", :as=>:update_group
                 post ""=>"forum#create_topic", :as=>:create_topic
                 put ":id"=>"forum#update_topic", :as=>:update_topic
                 get ":id/edit"=>"forum#edit_topic", :as=>:edit_topic

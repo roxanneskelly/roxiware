@@ -1,7 +1,7 @@
 <%=
-content_tag(:div, :id=>"mailer_footer") do
-    link_to(tag(:img, :src=>"http://cdn.roxiware.com/templates/scribaroo/logo.png", :id=>"mailer_logo_image"), "http://www.scribaroo.com") +
-    content_tag(:div, :id=>"mailer_contact", :style=>"display:inline-block") do
+content_tag(:div, :id=>"mailer_footer", :style=>"margin-top:2em;") do
+    link_to(tag(:img, :src=>"http://cdn.roxiware.com/templates/scribaroo/scriblogo_color_large.png", :id=>"mailer_logo_image", :style=>"width:200px;height:auto;"), "http://www.scribaroo.com") +
+    content_tag(:div, :id=>"mailer_contact", :style=>"display:block;margin-top:2em;") do
         link_to("Scribaroo, LLC", "http://www.scribaroo.com") + " " + 
         mail_to("info@scribaroo.com") + " " +
         link_to("1 (877) 999-5821", "tel:18779995821")

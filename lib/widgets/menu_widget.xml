@@ -30,13 +30,24 @@ div.menu_edit
   height:100%;
 }
 
-#menu_edit_tree
-{
-    position:absolute;
+#menu_item_edit_bar {
+    display:inline-block;
+    position:relative;
     left:0;
     top:0;
-    bottom:0;
+    width:auto;
+    padding-top:3em;
+    #new_menu_item, #delete_menu_item {
+        display:block;
+    }
+}
+
+#menu_edit_tree
+{
+    position:relative;
+    height:100%;
     width:30%;
+    display:inline-block;
     vertical-align:top;
 }
 
@@ -46,7 +57,7 @@ div.menu_edit
     right:0;
     top:0;
     bottom:0;
-    width:65%;
+    width:60%;
     vertical-align:top;
 }
 
@@ -83,9 +94,9 @@ div.menu_edit
      <div class="panes">
        <div id="menu_layout_pane">
 	 <div class="menu_edit">
+        <div id="menu_item_edit_bar" class="edit_bar"><div id="new_menu_item" class="edit_bar_button">+</div><div id="delete_menu_item" class="edit_bar_button"><span class="icon-remove"></span></div></div>
 	    <div id="menu_edit_tree" class="tree_box">
 	       <div id="tree_edit"  class="tree_box_content"></div>
-	       <div id="menu_item_edit_bar" class="edit_bar"><div id="new_menu_item" class="edit_bar_button">+</div><div id="delete_menu_item" class="edit_bar_button">-</div></div>
 	    </div>
 	    <div id="menu_edit_right_pane">
 	      <%= label_tag :permission, "Permissions" %><%= select_tag :permission, options_for_select({"Guest"=>"guest", "Guest Only"=>"guest_only", "User"=>"user", "Admin"=>"admin", "Super"=>"super"}) %><br/><br/>
@@ -105,7 +116,7 @@ div.menu_edit
        </div>
      </div>
     </div>
-   <%= button_tag "Save", :id=>"save_button", :class=>"save_button", :type=>"button" %>
+   <%= content_tag(:div, button_tag("Save", :id=>"save_button", :class=>"save_button", :type=>"button"), :class=>"dialog_buttons") %>
    <% end %>
 </div>
 <script>
@@ -199,67 +210,72 @@ div.menu_edit
     </preload>
     <render_view>
       <![CDATA[<% 
-         def render_menu(menu_node) 
-	  permissions = {"guest"=>0, "guest_only"=>0, "user"=>1, "admin"=>2, "super"=>3}
-          role = "guest"
-          role = current_user.role unless current_user.nil?
-          menu_node_values = menu_node.conv_value
-          permission = menu_node_values['permission'].to_s
-          permission = "guest" unless permissions.has_key?(permission)
-          return if(permissions[permission] > permissions[role])
-          return if(permission=="guest_only" && (role != "guest")) 
-          menu_id = menu_node_values['identifier'].to_s
-          menu_id = "child_#{menu_node.id}" if menu_id.blank? 
-         %>
-          <li id="<%= menu_id %>">
-	      <% uri = URI.parse(menu_node_values["url"].conv_value) 
-	      menu_class = "menu_selected" if ((uri.path == request.path) && ( uri.host.blank? || (uri.host == request.host))) %>
-	      <%=  link_to(menu_node_values["url"].conv_value, :class=>menu_class) do %>
-                 <span class="menu_text"><%= menu_node_values["name"].conv_value %></span>
-              <% end %>
-	    <% if menu_node_values["children"].present? && menu_node_values["children"].conv_value.present? %>
-              <ul>
-	          <% menu_node_values["children"].conv_value.each do |menu_node_child| 
-		     render_menu(menu_node_child)
-                  end%>
-              </ul>
-	    <% end %>
-	  </li>
-      <% end %>
-      <div class="ddsmoothmenu_widget" id="menu-<%= widget_instance_id %>">
-	<ul id="root_<%= widget_instance_id %>">
-          <% menu_root.each do |menu_node_child| 
-	     render_menu(menu_node_child)
-           end%>
-	</ul>
-      <% if show_search_box %>
-	 <%= form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do %>
-	    <%= search_field_tag(:query) %>
-	 <% end %>
-	 <script>
-	     $(function() {
-		var search_watermark = 'Search';
-		$('#login-strip-<%= widget_instance_id %> #query').blur(function(){
-		if ($(this).val().length == 0)
-		   $(this).val(search_watermark).addClass('search_watermark');
-		}).focus(function(){
-		  if ($(this).val() == search_watermark)
-		   $(this).val('').removeClass('search_watermark');
-		}).val(search_watermark).addClass('search_watermark');
-	     });
-	 </script>
-      <% end %>
-      </div>
-      <script>
-	ddsmoothmenu.init({
-	   noarrow: <%= show_arrow ?"false":"true" %>,
-	   mainmenuid: "menu-<%= widget_instance_id %>",
-	   orientation: 'h',
-	   classname: 'ddsmoothmenu_widget',
-	   contentsource: "markup"});
-      </script>]]>
-    </render_view>
-    <style>
+def render_menu(menu_node) 
+    permissions = {"guest"=>0, "guest_only"=>0, "user"=>1, "admin"=>2, "super"=>3}
+    role = "guest"
+    role = current_user.role unless current_user.nil?
+    menu_node_values = menu_node.conv_value
+    permission = menu_node_values['permission'].to_s
+    permission = "guest" unless permissions.has_key?(permission)
+    return if(permissions[permission] > permissions[role])
+    return if(permission=="guest_only" && (role != "guest")) 
+    menu_id = menu_node_values['identifier'].to_s
+    menu_id = "child_#{menu_node.id}" if menu_id.blank? 
+    content_tag(:li, :id=>menu_id) do
+	    uri = URI.parse(menu_node_values["url"].conv_value) 
+	    menu_class = "menu_selected" if ((uri.path == request.path) && ( uri.host.blank? || (uri.host == request.host)))
+	    link_to(menu_node_values["url"].conv_value, :class=>menu_class) do
+            content_tag(:span, menu_node_values["name"].to_s, :class=>"menu_text")
+        end +
+	    if menu_node_values["children"].present? && menu_node_values["children"].conv_value.present?
+            content_tag(:ul) do
+	            menu_node_values["children"].a.collect do |menu_node_child| 
+		            render_menu(menu_node_child)
+                end.join(" ").html_safe
+            end
+	    end
+    end
+end
+%>
+<%=
+menu_class= smooth ? "ddsmoothmenu_widget" : "menu_widget"
+content_tag(:div, :class=>menu_class, :id=>"menu-#{widget_instance_id}") do 
+    content_tag(:ul, :id=>"root_#{widget_instance_id}") do
+        menu_root.collect do |menu_node_child| 
+	        render_menu(menu_node_child)
+        end.join(" ").html_safe
+	end +
+    if show_search_box
+	    form_tag(search_path, :method=>"get", :style=>"display:inline-block;") do
+	        search_field_tag(:query)
+	    end
+    end
+end %>
+<script>
+$(function() {
+<% if show_search_box %>
+    var search_watermark = 'Search';
+    $('#login-strip-<%= widget_instance_id %> #query').blur(function() {
+        if ($(this).val().length == 0) {
+		    $(this).val(search_watermark).addClass('search_watermark');
+        }
+    }).focus(function(){
+        if ($(this).val() == search_watermark)
+            $(this).val('').removeClass('search_watermark');
+        }).val(search_watermark).addClass('search_watermark');
+    });
+<% end %>
+<% if smooth %>
+ddsmoothmenu.init({
+    noarrow: <%= show_arrow ?"false":"true" %>,
+    mainmenuid: "menu-<%= widget_instance_id %>",
+    orientation: 'h',
+    classname: 'ddsmoothmenu_widget',
+    contentsource: "markup"});
+<% end %>
+</script>]]>
+</render_view>
+   <style>
       <![CDATA[
 
 .search_watermark
@@ -267,7 +283,7 @@ div.menu_edit
    color:grey;
 }
 
-div.ddsmoothmenu_widget {
+.ddsmoothmenu_widget {
     form {
        float:right;   
     }
@@ -345,6 +361,7 @@ div.ddsmoothmenu_widget {
     <params>
       <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
       <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="smooth">true</param>
       <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="show_arrow">true</param>
       <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">true</param>
       <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">

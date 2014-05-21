@@ -70,6 +70,7 @@ module OmniAuth
 		end
 
 		query["is_proxy"]=auth_state.proxy?
+                puts "QUERY IS " + query.inspect
 	        @auth_kind = auth_state.auth_kind
 		@login_url = "http://#{auth_state.host_with_port}/account/auth/#{auth_state.auth_kind}/callback?"+query.collect{|query_val| query_val.join("=")}.join("&")
 		super

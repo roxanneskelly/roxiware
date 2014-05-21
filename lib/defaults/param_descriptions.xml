@@ -663,6 +663,13 @@
     <permissions></permissions>
     <meta/>
   </param_description>
+  <param_description guid="4B65A759-2D15-4267-97F7-076984EE88DD">
+    <name>Smooth</name>
+    <description>Enable smooth menu dropdown.</description>
+    <field_type>bool</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
   <param_description guid="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1">
     <name>Permissions</name>
     <description>Permissions to show a menu item.</description>

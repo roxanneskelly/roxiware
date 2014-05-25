@@ -44,6 +44,13 @@ end %>
             }).val(search_watermark).addClass('search_watermark');
        });
 <% end %>
+
+<% if AppConfig.scribaroo_url.present? %>
+    if(window.top != window.self) {
+        $("a.sign_in_link").css("display", "none");
+    }
+<% end %>
+
 <% if show_links %> 
     $(".sign_in_link").click(function() {
 
@@ -53,7 +60,7 @@ end %>
 %>
     loginForm({twitter_oauth_state: '<%= twitter_oauth_state %>', facebook_oauth_state: '<%= facebook_oauth_state %>'});
 <% else params[:connect].blank? %>
-    window.location = "<%= AppConfig.scribaroo_url %>"
+    window.location = "<%= AppConfig.scribaroo_url %>/account/login"
 <% end %>
     });
 <% end %>

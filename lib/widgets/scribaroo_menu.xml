@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<widgets>
+  <widget version="1.0" guid="3DE97301-A7E8-4956-95E8-FF52F4059BA0">
+    <name>Scribaroo Menu</name>
+    <description>
+      <![CDATA[Displays the standard Scribaroo template menu]]>
+    </description>
+    <editform>
+      <![CDATA[]]>
+    </editform>
+    <preload>
+      <![CDATA[
+time_check = Time.now.utc.midnight 
+time_check -= 1.month if current_user.present? && current_user.is_admin?
+locals[:show_events] = (Roxiware::Event.order("start ASC").select{|event| event.end_time > time_check} || []).length > 0
+locals[:show_books] = ((@hosting_package == "author") && (Roxiware::Book.all.count > 0))
+true
+]]>
+    </preload>
+    <render_view>
+      <![CDATA[
+<%=
+content_tag(:div, :class=>"menu_widget", :id=>"menu-#{widget_instance_id}") do 
+    content_tag(:ul, :id=>"root_#{widget_instance_id}") do
+        content_tag(:li, link_to(content_tag(:span, "Home", :class=>"menu_text"), "/", :class=>(request.path == "/") ? "menu_selected" : ""), :id=>"home") +
+        content_tag(:li, link_to(content_tag(:span, "Blog", :class=>"menu_text"), "/blog", :class=>(request.path == "/blog") ? "menu_selected" : ""), :id=>"blog") +
+        (content_tag(:li, link_to(content_tag(:span, "Books", :class=>"menu_text"), "/books", :class=>(request.path == "/books") ? "menu_selected" : ""), :id=>"books") if show_books) +
+        (content_tag(:li, link_to(content_tag(:span, "Calendar", :class=>"menu_text"), "/events", :class=>(request.path == "/events") ? "menu_selected" : ""), :id=>"events") if show_events) +
+        content_tag(:li, link_to(content_tag(:span, "Biography", :class=>"menu_text"), "/biography", :class=>(request.path == "/biography") ? "menu_selected" : ""), :id=>"biography")
+	end
+end    
+%>
+<script>
+$(function() {
+<% if smooth %>
+ddsmoothmenu.init({
+    noarrow: <%= show_arrow ?"false":"true" %>,
+    mainmenuid: "menu-<%= widget_instance_id %>",
+    orientation: 'h',
+    classname: 'ddsmoothmenu_widget',
+    contentsource: "markup"});
+<% end %>
+</script>]]>
+</render_view>
+   <style>
+      <![CDATA[
+
+.ddsmoothmenu_widget {
+    form {
+       float:right;   
+    }
+
+    ul {
+	list-style-type: none;
+
+	/*Top level list items*/
+	li {
+	    position: relative;
+
+	    /*Top level menu link items style*/
+	    div.no_menu_link {
+		padding-left:10px;
+		padding-right:10px;
+	    }
+
+	    /*1st sub level menu*/
+	    ul {
+		position: absolute;
+		left: 0;
+		display: none; /*collapse all sub menus to begin with*/
+		visibility: hidden;
+
+		/* Sub level menu links style */
+		li {
+		    width: 100%; /*width of sub menus*/
+		    display: list-item;
+		    /*Top level menu link items style*/
+		}
+		/*All subsequent sub menu levels vertical offset after 1st level sub menu */
+		li ul {
+		   top: 0;
+		}
+	    }
+	}
+    }
+
+
+    /* Holly Hack for IE \*/
+    * html .ddsmoothmenu_widget{height: 1%;} /*Holly Hack for IE7 and below*/
+
+
+    /* ######### CSS classes applied to down and right arrow images  ######### */
+
+    .downarrowclass {
+	position: absolute;
+	top: 8px;
+	right: 7px;
+    }
+
+    .rightarrowclass{
+	position: absolute;
+	top: 6px;
+	right: 5px;
+    }
+
+    /* ######### CSS for shadow added to sub menus  ######### */
+
+    .ddshadow{ /*shadow for NON CSS3 capable browsers*/
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 0;
+	height: 0;
+	background: black;
+    }
+
+    .toplevelshadow { /*shadow opacity for NON CSS3 capable browsers. Doesn't work in IE*/
+        opacity: 0.8;
+    }
+}
+]]>
+    </style>
+    <params>
+      <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id"></param>
+      <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">true</param>
+      <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="smooth">true</param>
+      <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="show_arrow">true</param>
+    </params>
+  </widget>
+</widgets>

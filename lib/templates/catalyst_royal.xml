@@ -18,18 +18,8 @@ title = person.full_name if title.blank?
 
 Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
 Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
-Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", person.full_name)
-Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", title+", #{subtitle}")
 Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
 Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", title)
-
-books_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_2/permission")
-books_menu_permission.value = Roxiware::Param::Param.application_param_val("books", "enable_books") ? ((Roxiware::Book.all.count > 0) ? "guest" : "admin") : "super"
-books_menu_permission.save!
-
-calendar_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_3/permission")
-calendar_menu_permission.value = Roxiware::Param::Param.application_param_val("events", "enable_events") ? "guest" : "super"
-calendar_menu_permission.save!
 ]]>
   </setup>
   <settings_form>
@@ -784,35 +774,25 @@ div#mainBody .post {
     }
 }
 
-.book_title_link, .series_link {
-    font-face: Verdana;
-    margin-bottom:1em;
+.book_title {
+    clear:both;
+    padding:0.4em 1em 0.2em 1em;
+    font-size: 1.5em;
+    width:70%;
     display:block;
-    font-size:1.5em;
-}
-.book_title_link:before, .series_link:before {
-    font-family: 'Metro Icons';
-    speak: none;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    -webkit-font-smoothing: antialiased;
-    font-size:1.4em;
+    text-align:left;
     line-height:1em;
-    width:10%;
-    display:inline-block;
+    margin-bottom:0.3em;
+    text-transform:uppercase;
+    color:<%= title_color %>;
+    background:<%= highlight_color %>;
 }
-.series_link:before {
-    content:'\e00b';
+.book_title:visited, .book_title:link {
+    color:<%= title_color %>;
 }
-.book_title_link:before {
-    content:'\e00a';
-}
-.book_title, .series_title {
-    display:inline-block;
-    max-width:80%;
-    padding:0em 1em 0em 1em;
-    vertical-align:top;
+  
+.book_title:first-letter {
+    font-size:1.3em;
 }
 
 .bookstore_list {
@@ -1340,7 +1320,7 @@ true
         padding-bottom:0.3em;
         font-size:1.4em;
 
-        .ddsmoothmenu_widget {
+        .menu_widget {
             font: Verdana;
             margin-left:auto;
             margin-right:auto;
@@ -1487,7 +1467,7 @@ true
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance order="5" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+            <instance order="3" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
@@ -1505,44 +1485,12 @@ true
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
               </params>
             </instance>
-            <instance order="6" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance order="4" widget_guid="3DE97301-A7E8-4956-95E8-FF52F4059BA0">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
-                <param description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" class="local" name="show_search_box">false</param>
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
+                <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="smooth">false</param>
                 <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
-                <param description="45A433ED-7183-4A28-890B-08F585A0E41A" class="local" name="menu_root">
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_0">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Home</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                  </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_1">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Blog</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/blog</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                  </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_2">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">super</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Books</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/books</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_books</param>
-                  </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_3">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">super</param>
-                    <param description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" class="local" name="name">Calendar</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/events</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier">main_menu_calendar</param>
-                  </param>
-                  <param description="FB30B299-B498-4848-AD22-7B973433C9F9" class="local" name="child_4">
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="permission">guest</param>
-                    <param description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" class="local" name="name">About</param>
-                    <param description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" class="local" name="url">/biography</param>
-                    <param description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" class="local" name="identifier"></param>
-                  </param>
-                </param>
               </params>
             </instance>
           </widget_instances>
@@ -1950,7 +1898,6 @@ true
                  margin:1em 2em 4em 0;
                  max-width:25%;
                  height:auto;
-                 padding:5px;
                  background: <%= link_color %>;
              }
          }
@@ -2017,15 +1964,11 @@ true
              clear:both;
              position:relative;
              margin-bottom:3em;
-             .book_title_link:before {
-                 content:'\e00a';
-             }
              img {
                  float:left;
                  margin:1em 2em 4em 0;
                  max-width:50%;
                  height:auto;
-                 padding:5px;
                  background: <%= link_color %>;
              }
          }

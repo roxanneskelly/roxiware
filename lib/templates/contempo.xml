@@ -15,18 +15,8 @@ title = person.full_name if title.blank?
 
 Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
 Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
-Roxiware::Param::Param.set_application_param("system", "meta_description", "F0E1D8A9-33B9-4605-B10F-831D2BB3D423", person.full_name)
-Roxiware::Param::Param.set_application_param("system", "meta_keywords", "1843B11F-EBA1-4B9A-A01F-F98A3E458FA8", title+", #{subtitle}")
 Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
 Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", title)
-
-books_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_2/permission")
-books_menu_permission.value = Roxiware::Param::Param.application_param_val("books", "enable_books") ? ((Roxiware::Book.all.count > 0) ? "guest" : "admin") : "super"
-books_menu_permission.save!
-
-calendar_menu_permission = @current_layout.get_by_path("_/header_bar/main_menu/menu_root/child_3/permission")
-calendar_menu_permission.value = Roxiware::Param::Param.application_param_val("events", "enable_events") ? "guest" : "super"
-calendar_menu_permission.save!
 ]]>
   </setup>
   <settings_form>
@@ -1331,7 +1321,7 @@ true
            font-size:1.2em;
         }
 
-        .ddsmoothmenu_widget {
+        .menu_widget {
             font: Verdana;
             margin-left:auto;
             margin-right:auto;
@@ -1460,7 +1450,7 @@ true
                 <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">login_bar</param>
               </params>
             </instance>
-            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="2">
+            <instance widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7" order="3">
               <params>
                 <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
                 <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3"><![CDATA[
@@ -1477,44 +1467,12 @@ true
                 <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">logo_bar</param>
               </params>
             </instance>
-            <instance order="4" widget_guid="8BC3E33E-3040-4E21-964A-9F892AD86E6D">
+            <instance order="4" widget_guid="3DE97301-A7E8-4956-95E8-FF52F4059BA0">
               <params>
-                <param class="local" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793" name="show_search_box">false</param>
-                <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="show_arrow">false</param>
-                <param class="local" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" name="show_background">false</param>
-                <param class="local" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" name="widget_instance_id">main_menu</param>
-                <param class="local" description="45A433ED-7183-4A28-890B-08F585A0E41A" name="menu_root">
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_0">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Home</param>
-                  </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_1">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/blog</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Blog</param>
-                  </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_2">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/books</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier">main_menu_books</param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Books</param>
-                  </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_3">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/events</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Calendar</param>
-                  </param>
-                  <param class="local" description="FB30B299-B498-4848-AD22-7B973433C9F9" name="child_4">
-                    <param class="local" description="14E5907E-2C02-413B-8F3B-6C03C2AC9EA1" name="permission">guest</param>
-                    <param class="local" description="43EE6D21-7BEB-4F45-8105-78ED08A931B0" name="url">/biography</param>
-                    <param class="local" description="6AF49BA2-97E3-46FD-A538-9680DEF268D3" name="identifier"></param>
-                    <param class="local" description="CFBE4135-C0F9-4438-BFBB-6B26EEB365BB" name="name">Biography</param>
-                  </param>
-                </param>
+                <param description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F" class="local" name="show_background">false</param>
+                <param description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70" class="local" name="widget_instance_id">main_menu</param>
+                <param class="local" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" name="smooth">false</param>
+                <param description="5AC29485-DFD2-4D09-B80C-F32F59FF5680" class="local" name="show_arrow">false</param>
               </params>
             </instance>
           </widget_instances>

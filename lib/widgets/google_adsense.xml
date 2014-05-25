@@ -50,7 +50,11 @@ $(function() {
 ]]>
     </editform>
     <preload>
-      <![CDATA[@google_ad_client.present?]]>
+      <![CDATA[
+puts "SHOW AD goog? #{@google_ad_client.present?}"
+puts "SHOW AD type? #{(@hosting_package == 'basic_blog')}"
+puts "SHOW AD? #{@google_ad_client.present? && (@hosting_package == 'basic_blog')}"
+@google_ad_client.present? && (@hosting_package == "basic_blog")]]>
     </preload>
     <render_view>
       <![CDATA[

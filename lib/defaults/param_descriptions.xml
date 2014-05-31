@@ -514,6 +514,13 @@
     <permissions></permissions>
     <meta/>
   </param_description>
+  <param_description guid="565FEE22-9663-4BFC-B448-5A75C1F3960C">
+    <name>Column Count</name>
+    <description>Count of columns</description>
+    <field_type>integer</field_type>
+    <permissions></permissions>
+    <meta/>
+  </param_description>
   <param_description guid="26F42447-4148-4F5F-AAE3-FE3744618E3F">
     <name>Refresh Period</name>
     <description>Refresh period for pulling down goodreads currently reading.  Typically one day.  Lowering this value can affect performance if goodreads is slow.</description>

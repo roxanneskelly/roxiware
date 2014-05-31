@@ -8,7 +8,7 @@
              content_tag(:div, :class=>"panes") do
                  content_tag(:div, :id=>"settings_pane") do
                      layout_section_form.fields_for(:params) do |param_field_block|
-                         param_fields(param_field_block, @page.get_param_objs)
+                         param_fields(param_field_block, @section.get_params)
                      end
                  end +
                  content_tag(:div, :id=>"style_pane") do

@@ -1,14 +1,46 @@
+require 'msgpack'
 module Roxiware
     module AuthHelpers
+
+        class SafeToken
+            def initialize(password, options={})
+                @password = password
+            end
+
+            def pack(data, options={ })
+                salt = SecureRandom.random_bytes(64)
+                key = ActiveSupport::KeyGenerator.new(@password).generate_key(salt)
+                crypt = ActiveSupport::MessageEncryptor.new(key)
+                expiry = options[:expiry].present? ? options[:expiry].to_s : ""
+                decrypted_message = [expiry, data]
+                encrypted_data = crypt.encrypt_and_sign(decrypted_message.to_msgpack)
+                puts "DATA "+ encrypted_data + "," + Base64.encode64(salt)
+                puts "DATA2 " + CGI::escape(encrypted_data + "," + Base64.encode64(salt))
+                CGI::escape(encrypted_data + "," + Base64.encode64(salt))
+            end
+
+            def unpack(message, options={})
+                encrypted_data,salt = CGI::unescape(message).split(",")
+                puts "ENCRYPTED DATA #{ salt } | #{encrypted_data}"
+                key = ActiveSupport::KeyGenerator.new(@password).generate_key(Base64.decode64(salt))
+                crypt = ActiveSupport::MessageEncryptor.new(key)
+                expiry,data = MessagePack.unpack(crypt.decrypt_and_verify(encrypted_data))
+                raise Exception.new("Your session has expired.  Please restart your sign-up.") if expiry.present? && (Time.zone.parse(expiry) < Time.now)
+                if(options[:include_expiry])
+                    [data, expiry]
+                else
+                    data
+                end
+            end
+        end
+
         # AuthUserToken identifies a pre-authorized user
         class AuthUserToken
             def initialize(auth_user_info_or_options={})
-                @verifier = ActiveSupport::MessageVerifier.new(AppConfig.auth_state_verify_key)
                 if auth_user_info_or_options.class == String
                     # unpack and validate the auth state
-                    verified_params = @verifier.verify(auth_user_info_or_options)
-                    raise Exception.new("Auth User Info unpacking was unverified") if verified_params.nil?
-                    @expires,@auth_kind,@uid,@full_name,@thumbnail_url,@email,@url = verified_params
+                    data, @expiry = Roxiware::AuthHelpers::SafeToken.new(AppConfig.auth_state_verify_key).unpack(auth_user_info_or_options, :include_expiry=>true)
+                    @auth_kind,@uid,@full_name,@thumbnail_url,@email,@url = data
                 else
                     # generate an auth state from params
                     @expires = nil
@@ -59,8 +91,7 @@ module Roxiware
 
             def get_state
                 @expires=1.week.from_now
-                CGI::escape(@verifier.generate([@expires, @auth_kind, @uid, @full_name, @thumbnail_url, @email, @url]))
-                @verifier.generate([@expires, @auth_kind, @uid, @full_name, @thumbnail_url, @email, @url])
+                Roxiware::AuthHelpers::SafeToken.new(AppConfig.auth_state_verify_key).pack([@auth_kind, @uid, @full_name, @thumbnail_url, @email, @url], :expiry=>@expires)
             end
         end
 
@@ -69,24 +100,12 @@ module Roxiware
         # from a Roxiware site, etc.
         class AuthState
             def initialize(auth_state_or_options={})
-
-                @verifier = ActiveSupport::MessageVerifier.new(AppConfig.auth_state_verify_key)
+                puts "INITIALIZE Auth State " + auth_state_or_options.inspect
                 if auth_state_or_options.class == String
                     # unpack and validate the auth state
 
-                    verified_params = @verifier.verify(auth_state_or_options)
-                    expires = verified_params.shift if verified_params.present?
-                    verified_params = nil if expires.present? && (expires < Time.now)
-                    raise Exception.new("Auth State unpacking was unverified or expired") if verified_params.nil?
-                    # Indicates whether this is a proxy request or a full login request.
-                    # proxy requests simply validate that the oauth was valid, but don't
-                    # check against the user account
-                    @proxy = verified_params.shift
-
-                    # After authentication, we'll redirect to the appropriate URI based on
-                    # this host and port
-                    @host_with_port = verified_params.shift
-                    @auth_kind = verified_params.shift
+                    verified_params, @expiry = Roxiware::AuthHelpers::SafeToken.new(AppConfig.auth_state_verify_key).unpack(auth_state_or_options, :include_expiry=>true)
+                    @proxy, @host_with_port, @auth_kind = verified_params
                 else
                     # generate an auth state from params
 
@@ -119,7 +138,8 @@ module Roxiware
             end
 
             def get_state
-                @verifier.generate([1.day.from_now, @proxy, @host_with_port, @auth_kind])
+                @expires=1.day.from_now
+                Roxiware::AuthHelpers::SafeToken.new(AppConfig.auth_state_verify_key).pack([@proxy, @host_with_port, @auth_kind], :expiry=>@expires)
             end
         end
     end

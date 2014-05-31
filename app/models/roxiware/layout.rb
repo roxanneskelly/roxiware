@@ -466,8 +466,8 @@ module Roxiware
                 end
                 params = page_layout_node.find("params/param")
                 params.each do |param|
-                    param = self.params.build
-                    param.import(param, true)
+                    page_param = self.params.build
+                    page_param.import(param, true)
                 end
                 layout_section_nodes = nil
             end

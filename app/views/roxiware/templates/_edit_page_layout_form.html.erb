@@ -18,7 +18,7 @@
                                                         "Content|Widget|Widget"=>"roxiware/layouts/double_right"}, @page.render_layout))
                      end +
                      page_layout_form.fields_for(:params) do |param_field_block|
-                         param_fields(param_field_block, @page.get_param_objs)
+                         param_fields(param_field_block, @page.get_param_obj_list)
                      end
                  end +
                  content_tag(:div, :id=>"style_pane") do

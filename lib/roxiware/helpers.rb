@@ -71,6 +71,7 @@ module Roxiware
         end
 
         def param_fields(field_group, params, options = {})
+            puts "PARAMS " + params.inspect
             (params.collect {|param| param_field(field_group, param, options)}.join(" ") + " ").html_safe
         end
 

@@ -849,6 +849,9 @@ div#mainBody .post {
         }
     }
 }
+.widget#google_top_bar{
+    margin:0 0 1em 0;
+}
 
 /* Individual widget settings */
 #mainBody #content_section {

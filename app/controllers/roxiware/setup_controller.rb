@@ -25,16 +25,12 @@ class Roxiware::SetupController < ApplicationController
 
     # GET /setup
     def show
-        verifier = ActiveSupport::MessageVerifier.new(AppConfig.host_setup_verify_key)
-        verified_result = verifier.verify(params[:key]) if params[:key].present?
-        #verified_result = nil if verified_result.present? && (verified_result.shift < Time.now)
-        verified_result.shift
-        if(verified_result.nil? && params[:key].present?)
+        @verified_params = Roxiware::AuthHelpers::SafeToken.new(AppConfig.host_setup_verify_key).unpack(params[:key]) if params[:key].present?
+        puts "VERIFIED PARAMS " + @verified_params.inspect
+        if(@verified_params.blank? && params[:key].present?)
             redirect_to "http://www.scribaroo.com/"
             return;
         end
-        @verified_params = MessagePack.unpack(verified_result.first)
-
         Roxiware::Param::Param.set_application_param("system", "hosting_package", "EE71224A-52E0-42D6-A7C9-97FFB7972329", "basic_blog") if @setup_step == "welcome"
         Roxiware::Param::Param.set_application_param("system", "hostname", "9311CEF8-86CE-44C0-B3DD-126B718A26C2", request.host) if @setup_step == "welcome"
 
@@ -88,7 +84,7 @@ class Roxiware::SetupController < ApplicationController
                                                 :last_name=>@verified_params['last_name'],
                                                 :email=>@verified_params['email'],
                                                 :role=>"", :bio=>""}, :as=>"")
-                        @user.auth_services.build({:provider=>"roxiware", :uid=>"username"}, :as=>"")
+                        @user.auth_services.build({:provider=>"roxiware", :uid=>@user.username}, :as=>"")
                         social_networks = @person.set_param("social_networks", {}, "4EB6BB84-276A-4074-8FEA-E49FABC22D83", "local")
                         (@verified_params['social_networks'] || {}).each do |provider, uid|
                             @user.auth_services.build({ :provider=>provider, :uid=>uid }, :as=>"")
@@ -232,8 +228,8 @@ class Roxiware::SetupController < ApplicationController
             @setup_step = setup_step
         rescue Exception => e
             result = {:error=>[["exception", e.message]]}
-            puts "FAILURE setting setup step: #{e.message}"
-            puts e.backtrace.join("\n")
+            Rails.logger.error "FAILURE setting setup step: #{e.message}"
+            Rails.logger.error e.backtrace.join("\n")
         end
         result
     end
@@ -258,8 +254,8 @@ class Roxiware::SetupController < ApplicationController
                 result ||= {}
                 result[:error] ||= []
                 result[:error] << ["exception", e.message]
-                puts "FAILURE creating account: #{e.message}"
-                puts e.backtrace.join("\n")
+                Rails.logger.error "FAILURE creating account: #{e.message}"
+                Rails.logger.error e.backtrace.join("\n")
                 raise ActiveRecord::Rollback
             end
         end
@@ -290,8 +286,8 @@ class Roxiware::SetupController < ApplicationController
                 result ||= {}
                 result[:error] ||= []
                 result[:error] << ["exception", e.message]
-                puts "FAILURE editing author biography: #{e.message}"
-                puts e.backtrace.join("\n")
+                Rails.logger.error "FAILURE editing author biography: #{e.message}"
+                Rails.logger.error e.backtrace.join("\n")
                 raise ActiveRecord::Rollback
             end
         end
@@ -315,8 +311,8 @@ class Roxiware::SetupController < ApplicationController
                 result ||= {}
                 result[:error] ||= []
                 result[:error] << ["exception", e.message]
-                puts "FAILURE editing setting system settings: #{e.message}"
-                puts e.backtrace.join("\n")
+                Rails.logger.error "FAILURE editing setting system settings: #{e.message}"
+                Rails.logger.error e.backtrace.join("\n")
                 raise ActiveRecord::Rollback
             end
         end
@@ -374,8 +370,8 @@ class Roxiware::SetupController < ApplicationController
                 result ||= {}
                 result[:error] ||= []
                 result[:error] << ["exception", e.message]
-                puts "FAILURE managing author books: #{e.message}"
-                puts e.backtrace.join("\n")
+                Rails.logger.error "FAILURE managing author books: #{e.message}"
+                Rails.logger.error e.backtrace.join("\n")
                 raise ActiveRecord::Rollback
             end
         end
@@ -404,8 +400,8 @@ class Roxiware::SetupController < ApplicationController
                 result ||= {}
                 result[:error] ||= []
                 result[:error] << ["exception", e.message]
-                puts "FAILURE managing author books: #{e.message}"
-                puts e.backtrace.join("\n")
+                Rails.logger.error "FAILURE managing author books: #{e.message}"
+                Rails.logger.error e.backtrace.join("\n")
                 raise ActiveRecord::Rollback
             end
         end

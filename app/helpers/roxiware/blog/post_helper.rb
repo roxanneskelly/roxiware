@@ -14,7 +14,8 @@ module Roxiware::Blog::PostHelper
                 blog_uri.query = [blog_uri.query, "category=#{Roxiware::Terms::Term.categories()[category_id].seo_index}"].compact.join("&")
                 link_to Roxiware::Terms::Term.categories()[category_id].name, blog_uri.to_s, :class=>"post_category"
             end.join("").html_safe
-        end
+        end if post.category_ids.present?
+        header_content[:categories] ||= ""
 
         header_content[:post_thumbnail] = tag(:img, :src=>post.post_thumbnail_url, :class=>"post_thumbnail")
         case post.post_type

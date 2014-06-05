@@ -1,25 +1,46 @@
-<% hidden_post = "hidden_post" if post.post_status != "publish" %>
-  <article class="<%= hidden_post %> post post_type_<%= post.post_type %>" id="post-<%= post.id %>" rel="<%= blog_post_path(post.id) %>" post_status="<%= post.post_status %>">
-     <% if (can? :edit, post) %>
-         <div class="manage_post_menu manage_menu" id="manage_<%= post.id %>"><ul>
-             <li><div class="manage_button icon-arrow-down-9"></div><ul>
-		<li class="edit_post"><a>Edit</a></li>
-		<li class="post_status"  post_status="<%= post.post_status %>"><a><%= "Hide" if post.post_status == "publish" %><%= "Show" unless post.post_status == "publish"%></a></li>
-		<hr/>
-		<li class="comment_permissions"><span>Comments</span></li>
-		<% Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.each do |permission| %>
-		    <% current_perm = "selected_item" if post.comment_permissions == permission %>
-		    <li permission="<%= permission %>" class="comment_permission permission_<%= permission %>  <%= current_perm %>"><a><div class="checkbox"></div><%= permission.titleize %></a></li>
-		 <% end %>
-		<hr/>
-		<li class="delete_post"><a>Delete</a></li>
-	    </ul></li></ul></div>
-     <% end %>
-     <%= 
-         Roxiware::Blog::PostHelper.post_header(post, :show_comments=>can?(:read_comments, post), :header_format=>@post_header_format, :blog_path=>send("#{@blog_class}_path"), :date_format=>@post_date_format, :show_pending_comments=>can?(:edit, post)) +
-         content_tag(:div, raw(show_full_content ? post.post_content : post.post_exerpt), :class=>"content") + 
-         (show_full_content ? "".html_safe : link_to("", post.post_link, :class=>"more_link")) + 
-         (content_tag(:div, :class=>"post_tags") do
-             post.tags.collect{|tag| link_to(tag.name, send("#{@blog_class}_path", :tag=>tag.seo_index), :class=>"post_tag") }.join("").html_safe
-         end if post.tags.present? )%>
-</article>
+<%= hidden_post = "hidden_post" if post.post_status != "publish"
+content_tag(:article, :class=>"#{hidden_post} post post_type_#{ post.post_type }", 
+                      :id=>"post-#{ post.id }",  
+                      :rel=>blog_post_path(post.id), 
+                      :post_status=>post.post_status) do
+    "".html_safe +
+    if (can? :edit, post)
+        content_tag(:div, :class=>"manage_post_menu manage_menu", :id=>"manage_#{ post.id }") do
+            content_tag(:ul) do 
+                content_tag(:li) do
+                    content_tag(:div, "", :class=>"manage_button icon-arrow-down-9") +
+                    content_tag(:ul) do
+		                content_tag(:li, content_tag(:a, "Edit"), :class=>"edit_post") +
+		                content_tag(:li, :class=>"post_status", :post_status=>post.post_status) do
+                            content_tag(:a, (post.post_status == "publish") ? "Hide" : "Show")
+                        end +
+                        tag(:hr) +
+                        content_tag(:li, content_tag(:span, "Comments"), :class=>"comment_permissions") +
+		                Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.collect do |permission|
+		                    current_perm = "selected_item" if post.comment_permissions == permission
+                            content_tag(:li, :permission=>permission, :class=>"comment_permission permission_#{permission} #{current_perm}") do
+                                content_tag(:a, content_tag(:div, permission.titleize, :class=>"checkbox"))
+                            end
+                        end.join("").html_safe +
+                        tag(:hr) +
+		                content_tag(:li, content_tag(:a, "Delete"), :class=>"delete_post")
+                    end
+                end
+            end
+        end
+    end +
+    Roxiware::Blog::PostHelper.post_header(post, 
+        :show_comments=>can?(:read_comments, post), 
+        :header_format=>@post_header_format, 
+        :blog_path=>send("#{@blog_class}_path"), 
+        :date_format=>@post_date_format, 
+        :show_pending_comments=>can?(:edit, post)) +
+    content_tag(:div, raw(show_full_content ? post.post_content : post.post_exerpt), :class=>"content") +
+    (link_to("", post.post_link, :class=>"more_link") if show_full_content) + 
+    (content_tag(:div, :class=>"post_tags") do
+        post.tags.collect do |tag| 
+            link_to(tag.name, send("#{@blog_class}_path", :tag=>tag.seo_index), :class=>"post_tag")
+        end.join("").html_safe
+    end if post.tags.present?) +
+    render(:partial => 'roxiware/layouts/section', :locals=>{:section=> "blog_content_end" })
+end %>

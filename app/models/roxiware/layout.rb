@@ -546,7 +546,11 @@ module Roxiware
             end
 
             def section(section_name)
-                @sections[section_name] ||= self.layout_sections.create({:name=>section_name, :style=>""}, :as=>"")
+                if @sections[section_name].blank?
+                    @sections[section_name] = self.layout_sections.create({:name=>section_name, :style=>""}, :as=>"")
+                    @sections[section_name].page_layout = self
+                end
+                @sections[section_name]
             end
             before_validation do
                 self.style = self.style.gsub(/\r\n?/, "\n");

@@ -1,0 +1,2371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout version="1.0" guid="EE294C86-4B64-48FD-9334-F9867D637614">
+  <!-- Roxiware Web Engine Template: Flash -->
+  <name>Flash</name>
+  <thumbnail_url>http://cdn.roxiware.com/templates/catalyst-royal/chooser_image.jpg</thumbnail_url>
+  <preview_url>http://blogdemo.scribaroo.com/</preview_url>
+  <description>
+    <![CDATA[]]>
+  </description>
+  <setup>
+    <![CDATA[person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+person = Roxiware::Person.find(person_id)
+
+subtitle = Roxiware::Param::Param.application_param_val("system", "subtitle")
+title = Roxiware::Param::Param.application_param_val("system", "title")
+title = person.full_name if title.blank?
+
+Roxiware::Param::Param.set_application_param("system", "webmaster_email", "9041D4FC-D97F-44F0-BFF2-FC2B4D3F6270", person.email)
+Roxiware::Param::Param.set_application_param("system", "site_copyright", "4454EFC0-EC3C-4C9D-8EF5-6F848E3B33D7", person.full_name)
+Roxiware::Param::Param.set_application_param("blog", "blog_editor_email", "89139210-E699-4D47-A656-B2F860D2015B", person.email)
+Roxiware::Param::Param.set_application_param("blog", "blog_title", "3D102055-8C9B-4838-90F7-2B3C7DB23A1D", title)
+]]>
+  </setup>
+  <settings_form>
+    <![CDATA[
+<style>
+#template_customize_form {
+    position:relative;
+}
+div#background_pane {
+    text-align:justify;
+    position:absolute;
+}
+div#colors_pane {
+    padding-top:1em;
+    text-align:justify;
+    line-height:3em;
+}
+div#colors_pane > div {
+    width:30%;
+    display:inline-block;
+    margin-right:2em;
+    vertical-align:top;
+}
+#param_header_background_image {
+    position:absolute;
+    top:10px;
+    left:20px;
+    width:237px;
+    height:43px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+#param_body_background_image {
+    position:absolute;
+    top:63px;
+    width:237px;
+    height:300px;
+    left:20px;
+}
+
+#param_background_image {
+    position:absolute;
+    top:10px;
+    width:480px;
+    height:300px;
+    right:20px;
+}
+
+</style>
+<div class="template_customize_form huge_form" id="template_customize_form">
+   <%= form_for :custom_settings, :url=> customize_layout_path(@layout.guid), :method=>"PUT" do |customize_form|
+       custom_params = @layout.get_scheme_params(@layout_scheme).merge(@layout.custom_settings.h)
+       content_tag(:div, :class=>"tab_form") do
+           content_tag(:ul, :class=>"tabs") do
+               content_tag(:li, content_tag(:a, "Backgrounds")) +
+               content_tag(:li, content_tag(:a, "Colors"))
+           end +
+           content_tag(:div, :class=>"panes") do 
+               content_tag(:div, :id=>"background_pane") do
+               param_field(customize_form, custom_params.delete("background_image"), :id=>"background_image", :width=>1920, :height=>1200) + " " +
+               param_field(customize_form, custom_params.delete("body_background_image"), :id=>"body_background_image", :width=>1038, :height=>1200) 
+               end +
+               content_tag(:div, :id=>"colors_pane") do
+                   content_tag(:div, :id=>"left_fields") do
+                       param_field(customize_form, custom_params.delete("default_splash_image"), :width=>728, :height=>450, :id=>"default_splash_image") +
+               param_field(customize_form, custom_params.delete("menu_background_color"), :id=>"menu_background_color") + 
+               param_field(customize_form, custom_params.delete("menu_text_color"), :id=>"menu_text_color") + 
+               param_field(customize_form, custom_params.delete("menu_hover_color"), :id=>"menu_hover_color") + 
+               param_field(customize_form, custom_params.delete("menu_active_color"), :id=>"menu_active_color") + 
+               param_field(customize_form, custom_params.delete("body_background_color"), :id=>"body_background_color") + 
+               param_field(customize_form, custom_params.delete("background_color"), :id=>"background_color")
+                   end +
+                   content_tag(:div, :id=>"center_fields") do
+               param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
+               param_field(customize_form, custom_params.delete("secondary_text_color"), :id=>"secondary_text_color") +
+               param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") +
+               param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
+               param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
+               param_field(customize_form, custom_params.delete("link_active_color"), :id=>"link_active_color")
+                   end +
+                   content_tag(:div, :id=>"right_fields") do
+               custom_params.values.sort{|x,y| x.name <=> y.name}.collect do |param|
+                   param_field(customize_form, param, :id=>param.name) 
+               end.join("").html_safe
+                   end
+               end
+           end
+       end + 
+       content_tag(:div, button_tag("Save", :class=>"save_button", :id=>"save_button", :type=>"submit"), :class=>"dialog_buttons");
+    end %>
+</div>
+<script>
+    $(function() {
+       $(".template_customize_form ul.tabs").tabs((".template_customize_form div.panes > div"))
+
+       $(".template_customize_form form").submit(function(e) {
+           e.preventDefault();
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>.json", $("form").serializeArray(), {
+                                method:"PUT",
+                                success: function(json_data) {
+                                    window.location.reload();
+                                }
+           });
+    });
+ });
+</script>
+
+]]>
+  </settings_form>
+  <categories>
+    <category>General</category>
+  </categories>
+  <packages>
+    <package>premium_blog</package>
+  </packages>
+  <style>
+    <![CDATA[/* Document layout */
+/* NOTE: Be careful when adding styles to the application body.  Management controls, dialogs and such are contained within.
+    It's better to apply styles to the #mainBody which only contains client website content */
+
+$text-font-family:'Bookman Old Style', Georgia, 'Times New Roman', Times, serif;
+$header-font-family:"Raleway", Arial, Helvetica, sans-serif;
+
+@mixin widget-title {
+    font-size:1.7em;
+    color:<%= title_color %>;
+    background:<%= highlight_color %>;
+    text-align:left;
+    width:100%;
+    display:block;
+    margin-bottom:0.7em;
+    text-transform:uppercase;
+    line-height:1.0em;
+    padding:0.4em 1em 0.2em 1em;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+
+@mixin icon-font {
+  font-family: 'Metro Icons';
+  speak: none;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.application_body
+{
+    background: url('<%= background_image %>') no-repeat fixed top left;
+    background-color:<%= background_color %>;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+
+/* General layout */
+div#mainBody {
+    font-size:15px;
+    width:100%;
+}
+
+
+div#mainBody {
+    #layout_body {
+        margin:0;
+    }
+    #content_section {
+        margin:0;
+        #center_bar {
+            margin:0;
+            position:relative;
+            vertical-align:top;
+            #center_content {
+                max-width:728px;
+                width:100%;
+                margin:0 auto 0 auto;
+                padding:1em;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+            }
+        }
+        #left_bar_section {
+            position:relative;
+            padding-right:20px;
+            width:250px;
+            padding-left:20px;
+            overflow:hidden;
+            .widget {
+                margin-bottom:2em;
+            }
+            > div#recent_posts {
+            }
+        }
+    }
+    #bottom_bar_section {
+       width:100%;
+       max-width:728px;
+       margin:1em auto 1em auto;
+    }
+}
+@media all and (max-width:950px) {
+    div#mainBody #content_section {
+        #left_bar_section {
+            display:none;
+        }
+    }
+}
+
+@media all and (max-width:747px) {
+    div#mainBody {
+        #center_bar {
+            .widget#google_top_bar {
+                display:none;
+            }
+        }
+    }
+}
+
+/* Landscape */
+@media all and (min-width: 320px) {
+      div#mainBody {
+          font-size:10px;
+      }
+      div#mainBody #content_section {
+           min-height:220px;
+       }
+}
+
+@media all and (min-width: 480px) {
+      div#mainBody #content_section {
+           min-height:370px;
+       }
+}
+
+
+@media all and (min-width: 640px) {
+      div#mainBody {
+          font-size:15px;
+      }
+      div#mainBody #content_section {
+           min-height:540px;
+       }
+}
+
+@media all and (min-width: 768px) {
+      div#mainBody {
+          min-height:680px;
+      }
+      div#mainBody #content_section {
+           min-height:480px;
+       }
+}
+
+@media all and (min-device-width: 800px) {
+      div#mainBody {
+          font-size:15px;
+      }
+      div#mainBody #content_section {
+           min-height:550px;
+       }
+}
+
+@media all and (min-device-width: 1024px) {
+      div#mainBody {
+          min-height:1120px;
+          font-size:15px;
+      }
+      div#mainBody #content_section {
+           min-height:740px;
+       }
+}
+
+@media all and (device-width: 1280px) and (device-height:800px) and (orientation:landscape) {
+      div#mainBody {
+          min-height:1200px;
+          font-size:15px;
+      }
+      div#mainBody #content_section {
+           min-height:1000px;
+       }
+}
+
+@import url(http://fonts.googleapis.com/css?family=Raleway:300,400);
+
+
+div#mainBody
+{
+    header {
+       width:100%;
+       background-color: <%= menu_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
+    }
+
+    footer {
+       width:100%;
+       max-width:728px;
+       margin:0 auto 0 auto;
+    }
+
+    #layout_body {
+       margin:0px;
+       padding:0;
+       margin:0px;
+       width:100%;
+       display:table;
+       background: url('<%= body_background_image %>') no-repeat scroll top left;
+       background-color:<%= body_background_color %>;
+       -webkit-background-size: cover;
+       -moz-background-size: cover;
+       -o-background-size: cover;
+       background-size: cover;
+       > div {
+            display:table-row;
+            > div {
+               display:table-cell;
+               vertical-align:top;
+            }
+       }
+      
+    }
+}
+
+/* Fonts and text */
+div#mainBody
+{
+    font-family:$text-font-family;
+    margin:0px auto 20px auto;
+    color:<%= text_color %>;
+
+    h1, h2, h3, h4, h5, h6 {
+        font-family:$header-font-family;
+        color:<%= text_color %>;
+    }
+
+    h1 {font-size:2em;line-height:1;margin-bottom:0.5em;}
+    h2 {font-size:1.7em;margin-bottom:0.75em;}
+    h3 {font-size:1.5em;line-height:1;margin-bottom:1em;}
+    h4 {font-size:1.3em;line-height:1.25;margin-bottom:1.25em;}
+    h5 {font-size:1.1em;font-weight:bold;margin-bottom:1.5em;}
+    h6 {font-size:1em;font-weight:bold;}
+
+    hr {
+        color: <%= text_color %>;
+        background: <%= text_color %>;
+    }
+
+    a, a:visited, a:link {
+        color: <%= link_color %>;
+        text-decoration:none;
+        font-style:none;
+        cursor:pointer;
+    }
+
+    a, a:visited, a:link, a:hover {
+        color: <%= link_color %>;
+    }
+    a:hover {
+      color: <%= link_hover_color %>;
+    }
+    blockquote {
+        position:relative;
+    }
+    blockquote:before {
+        display:inline-block;
+        color:<%= secondary_text_color %>;
+        float:left;
+        margin:0 10px 5px 0;
+        @include icon-font;
+        content:"\f10d";
+        font-size:2.0em;
+    }
+    
+    .watermark {
+       color:#ccc !important;
+    }
+    input {
+        margin:0px;
+        padding:1px;
+    }
+    label {
+        padding:2px
+    }
+
+    button.ui-widget, ui-button-text-only {
+        border:none;
+        background:none;
+        color:<%= link_color %>;
+        border-radius:16px;
+        height:32px;
+        vertical-align:middle;
+        padding:0 1em 0 1em;
+        vertical-align:center;
+        font-family:$header-font-family;
+        border:solid 1px <%= link_color %>;
+    }
+    button.ui-state-hover, button:hover {
+        color:<%= text_color %>;
+        border-color:<%= text_color %>;
+        background:<%= link_hover_color %>;
+    }
+    button.ui-state-active, button:active {
+        background:<%= link_color %>;
+    }
+}
+
+.manage_button {
+    opacity:0;
+    color: <%= link_color %>
+}
+
+/* Content and widget background boxes */
+/* set the content background to relative so we can position the content background off of it */
+div.content_background_container, .widget
+{
+   position:relative;
+}
+
+/* The backgrounds for the content and widget containers span the entire widget */
+div.widget_background, div.content_background
+{
+    position:absolute;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+div.widget_background {
+    background:<%= title_background_color %>;
+}
+
+body[application=home],body[application=blog][app_path=show_by_title] {
+   div#mainBody {
+       #top_bar_section {
+           position:relative;
+           box-sizing:border-box;
+           -moz-box-sizing:border-box;
+           clear:both;
+
+           .widget#header_image {
+               width:100%;
+               height:100%;
+               opacity:0;
+               -webkit-background-size: cover;
+               -moz-background-size: cover;
+               -o-background-size: cover;
+               background-size: cover;
+               background-position:center;
+               .widget_content {
+                   position:relative;
+                   width:100%;
+                   height:100%;
+               }
+           }
+           #post_title {
+               font-family:$header-font-family;
+               font-weight:300;
+               position:absolute;
+               width:100%;
+               bottom:20%;
+               left:0%;
+               text-align:center;
+               padding:0 1em 0 1em;
+               color:<%= title_color %>;
+               font-size:3.5em;
+               line-height:1.0em;
+               box-sizing:border-box;
+               -moz-box-sizing:border-box;
+               text-shadow:0px 0px 2px rgba(0,0,0,0.8);
+               text-transform:none;
+           }
+           #post_title:first-letter {
+               font-size:1.0em;
+           }
+           #post_scroll {
+               position:absolute;
+               display:inline-block;
+               left:50%; 
+               padding-left:-0.5em;
+               bottom:1em;
+               font-size:2em;
+               color:<%= title_color %>;
+               opacity:0.8;
+           }
+           #post_scroll:link {
+               color:<%= title_color %>;
+           }
+           #post_scroll:hover {
+               opacity:1;
+           }
+
+           #site_block {
+               text-align:right;
+               position:absolute;
+               right:10%;
+               top:50px;
+               .site_title, .site_subtitle {
+                   font-family:$header-font-family;
+                   color:<%= title_color %>;
+                   text-align:right;
+                   line-height:1.2em;
+                   box-sizing:border-box;
+                   -moz-box-sizing:border-box;
+                   text-shadow:0px 0px 1px rgba(0,0,0,0.5);
+                   text-transform:uppercase;
+               }
+               .site_title:first-letter, .site_subtitle:first-letter {
+                   font-size:1.3em;
+               }
+               .site_title { font-size:2.5em; font-weight:400; }
+               .site_subtitle { font-size:2.0em; font-weight:300; }
+           }
+       }
+   }
+   @media all and (max-width:950px) {
+       div#mainBody #top_bar_section {
+           #post_title {
+               font-size:2em;
+           }
+           #site_block {
+               font-size:0.8em;
+           }
+       }
+   }
+}
+
+.person_thumbnail {
+    width:32px;
+    height:32px;
+    border-radius:16px;
+}
+
+/* Post*/
+div#mainBody .post {
+    position:relative;
+    margin: 1em 0 1em 0;
+    width:100%;
+    padding:0.5em 0em 3em 0em;
+
+    .post_header {
+        font-family:$header-font-family;
+        margin-bottom:0.5em;
+        font-weight:100;
+        font-size:1.2em;
+        .post_info {
+            line-height:40px;
+            vertical-align:middle;
+            .person_thumbnail {
+                margin: 0 0.5em -0.5em 0;
+            }
+            .post_categories, .comments_link {
+                border-right:solid 2px <%= secondary_text_color %>;
+            }
+            .post_date, .post_categories, .comments_link {
+                margin-bottom:10px;
+                color:<%= secondary_text_color %>;
+                display:inline-block;
+                margin-right:0.5em;
+                padding-right:0.5em;
+                line-height:1em;
+             }
+         }
+         .post_title {
+             clear:both;
+             margin:0;
+             padding:0.4em 1em 0.2em 0em;
+             font-size: 2.0em;
+             display:block;
+             text-align:left;
+             line-height:1.2em;
+             color:<%= text_color %>;
+         }
+         .post_title:visited, .post_title:link {
+             color:<%= text_color %>;
+         }
+  
+         .post_title:first-letter {
+             font-size:1.3em;
+         }
+     }
+    .content {
+        margin:0;
+        font-size:1.3em;
+        display:block;
+        overflow:hidden;
+        clear:both;
+        img {
+            padding:1em;
+            max-width:100%;
+            box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        }
+    }
+
+    .more_link {
+        margin-left:1em;
+        padding-right:3em;
+        font-size:1.2em;
+    }
+    .more_link:before {
+        content:"More...";
+    }
+    .post_tags {
+        .post_tag {
+        }
+        .post_tag:after {
+            content:"\0000a0|\0000a0";
+        }
+        .post_tag:last-child:after {
+            content:"";
+        }
+    }
+    .post_tags:before {
+        position:relative;
+        top:0.2em;
+        @include icon-font;
+	    color: <%= link_color %>;
+        content:"\e012\0000a0\0000a0";
+    }
+}
+
+.comments_link {
+    .comments_count, .pending_comments_count {
+        padding-left:0.1em;
+        display:inline;
+    }
+
+    .comments_count:after, .pending_comments_count:after {
+        @include icon-font;
+        color: <%= link_color %>;
+        cursor:pointer;
+        content: "\e02f";
+        padding-left:0.5em;
+    }
+    .pending_comments_count, .pending_comments_count:after {
+        color: <%= text_alert_color %>;
+    }
+    .pending_comments_count {
+        margin-left:1em;
+    }
+}
+
+.comments_link:hover div {
+    color:<%= link_hover_color %>;
+}
+
+.comments_link:hover div:after {
+    color:<%= link_hover_color %>;
+}
+
+.comments {
+    margin-top:2em;
+    clear:both;
+    .comment > .comment_content_wrapper {
+        margin-left:2em;
+    }
+    .comment > .comment > .comment_content_wrapper {
+        margin-left:4em;
+    }
+
+    .comment > .comment > .comment > .comment_content_wrapper {
+        margin-left:6em;
+    }
+
+    .comment > .comment > .comment > .comment .comment_content_wrapper {
+        margin-left:8em;
+    }
+
+    .comment {
+        padding-top:1em;
+        clear:both;
+        position:relative;
+
+        .comment_content_wrapper {
+            padding:1em;
+	        .comment_status_moderate {
+                float:right;
+                color: <%= text_alert_color %>;
+                margin-right:4em;
+            }
+            .comment_status_publish {
+                display:none;
+            }
+            .comment_content {
+                clear:both;
+                padding-left:6em;
+                img, iframe {
+                    max-width:100%;
+                }
+                img {
+                    height:auto;
+                }
+            }
+            .comment_header {
+                vertical-align:top;
+                color: <%= link_color %>;
+                
+                display:block;
+                > * {
+                    display:inline-block;
+                }
+                .comment_author_image {
+                    margin-right:1em;
+                    img {
+                        width:40px;
+                        height:40px;
+                        border-radius:20px;
+                    }
+                }
+                .comment_author_name {
+                    display:block;
+                    font-weight:500;
+                    font-size:1.3em;
+                    font-family:$header-font-family;
+                }
+                .comment_date {
+                    display:block;
+                    font-style:italic;
+                    font-size:0.8em;
+                }
+            }
+            .comment_footer {
+                clear:both;
+                text-align:center;
+                .comment_reply {
+                    text-align:right;
+                    cursor:pointer;
+                    padding-left:2em;
+                    font-size:1.1em;
+                    display:block;
+                    top:1em;
+                    right:1em;
+                }
+                .comment_reply:before {
+                    @include icon-font;
+                    cursor:pointer;
+                    content: "\e02f";
+                    padding-right:0.5em;
+                    font-size:0.9em;
+                }
+            }
+        }
+    }
+    .comment_content_wrapper:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+}
+
+.post:hover {
+    .manage_button {
+        cursor:pointer;
+        opacity:0.5;
+    }
+}
+
+/* Full post display with comments */
+.post_listing {
+    .post_footer {
+        .comments_link {
+            width:100%;
+            text-align:right;
+            display:block;
+	    .comment_count, .pending_comment_count {
+		font-size:1.3em;
+		display:inline-block;
+	    }
+	    .comment_count {
+		color:<%= link_color %>;
+	     }
+	     .pending_comment_count {
+		color:<%= text_alert_color %>;
+	     }
+
+	     .comment_count:after, .pending_comment_count:after {
+             @include icon-font;
+		 content: "\e032";
+		 padding-left:0.5em;
+		 padding-right:1.2em;
+	     }
+        }
+    }
+}
+.comment_form {
+    clear:both;
+    margin:2em 0 3em 0;
+    #comment_form_core {
+        text-align:justify;
+        width:100%;
+        img#comment_author_image {
+            border-radius:32px;
+        }
+    }
+    .comment_recaptcha {
+         .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
+             color: <%= link_color %>;
+         }
+         .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
+             color: <%= link_hover_color %>;
+         }
+    }
+}
+
+
+.page_content, .person_listing {
+    .manage_button {
+        position:absolute;
+        top:0px;
+        right:0px;
+        cursor:pointer;
+        opacity:0.5;
+    }
+}
+
+.book_title {
+    clear:both;
+    padding:0.4em 1em 0.2em 1em;
+    font-size: 1.5em;
+    width:70%;
+    display:block;
+    text-align:left;
+    line-height:1em;
+    margin-bottom:0.3em;
+    text-transform:uppercase;
+    color:<%= title_color %>;
+    background:<%= highlight_color %>;
+}
+.book_title:visited, .book_title:link {
+    color:<%= title_color %>;
+}
+  
+.book_title:first-letter {
+    font-size:1.3em;
+}
+
+.bookstore_list {
+     float:right;
+         ul {
+          list-style-type:none;
+         li.book_store {
+              display:inline-block;
+              a.store_link {
+                  width:32px;
+                  height:32px;
+                  display:inline-block;
+                  div.store_name {
+                      display:none;
+                  }
+              }
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", "dark") %>') no-repeat center;
+                } 
+            <% end %>   
+             <% %w(sony amazon kobo barnsandnoble).each do |store| %>
+                 a.store_link_<%= store %>:hover{
+                     background:url('<%= CGI::unescape cdn_icon("#{store}_32", "clean", "light") %>') no-repeat center;
+                } 
+            <% end %>   
+       }
+    }
+}
+
+/* WIDGETS */
+.widget {
+    margin:0px;
+
+    .widget_content {
+        margin:0px;
+        padding:0px;
+        position:relative;
+
+        .widget_content h1 {
+            font-size:1.2em;
+            font-weight:700;
+        }
+    }
+}
+
+/* Individual widget settings */
+#mainBody #content_section {
+    .widget#google_widget{
+        margin:1em 0 1em 0;
+    }
+    .widget#calendar_nav {
+        .widget_content {
+            padding:1em;
+            .calendar_nav_title:before {
+                content:"ARCHIVE";
+            }
+            .calendar_nav_title:before:first-letter {
+                font-size:1.2em;
+            }
+            .calendar_nav_title {
+                @include widget-title;
+            }
+            .calendar_nav_title:first-letter {
+                font-size:1.3em;
+            }
+	    ul {
+	        li a {
+		    margin-left:0.5em;
+                    .post_count:before { content:" (";}
+                    .post_count:after { content:")";}
+		}
+
+		ul.calendar_nav_posts {
+		    list-style-type:none;
+	            > li { 
+                        a {
+		            font-weight:400;
+                            text-transform:uppercase;
+		        }
+                        a:first-letter {
+                            font-size:1.2em;
+                        }
+                    }
+		}
+		ul.calendar_nav_months, ul.calendar_nav_years {
+		    list-style-type:circle;
+		    list-style-position:outside;
+		    > li >a {
+		        font-weight:300;
+	            }
+		}
+		li.calendar_nav_hidden {
+		    list-style-type:hidden;
+		}
+            }
+        }
+    }
+    .widget#recent_posts {
+        posititon:relative;
+        .recent_posts_title:before {
+            content:"RECENT POSTS";
+        }
+        .recent_posts_title:before:first-letter {
+            font-size:1.2em;
+        }
+        .recent_posts_title {
+            @include widget-title;
+        }
+        .recent_posts_title:first-letter {
+            font-size:1.3em;
+        }
+        .widget_content .recent_posts {
+            .recent_post_entry {
+                display:block;
+                width:100%;
+                margin-bottom:1em;
+                position:relative;
+                padding:1em;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                .post_header {
+                    margin:0;
+                    .post_thumbnail {
+                        float:left;
+                        width:30%;
+                        margin: 0 1em 1em 0;
+                    }
+                    .post_title {
+                        text-align:left;
+                        font-size:1.5em;
+                        display:block;
+                        width:100%;
+                        clear:both;
+                        text-transform:uppercase;
+                    }
+                    .post_title:first-letter {
+                        font-size:1.2em;
+                    }
+                    .post_title, .post_title:link, .post_title:visited {
+                        color:<%= text_color %>;
+                    }
+                }
+                .post_snippet {
+                    img { display:none; }
+	            iframe { display:none; }
+                }
+                .post_more {
+                    padding:0 1em 0 1em;
+                    margin:1em 0 0 0;
+                    font-size:1.2em;
+                }
+                .post_more:before{
+                    content:"More...";
+                }
+            }
+        }
+    }
+}
+
+/* Social networking icons */
+span.social_network_icon {
+     display:inline-block;
+     @include icon-font;
+}
+
+span#twitter.social_network_icon:before,span.twitter_icon:before { content:'\e0a2'; }
+span#google.social_network_icon:before,span.google_icon:before { content:'\e09c'; }
+span#facebook.social_network_icon:before,span.facebook_icon:before { content:'\e09f'; }
+span#rss.social_network_icon:before,span.rss_icon:before { content:'\e0a5'; }
+span#youtube.social_network_icon:before,span.youtube_icon:before { content:'\e0a9'; }
+span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; }
+
+/* Prev/Next post */
+.widget#prev_next_post {
+    text-align:center;
+    margin:2em 0em 1em 0em;
+    .widget_content {
+        width:20em;
+        .prev_post {
+            float:left;
+        }
+        .prev_post:before {
+           content: "<< ";
+        }
+
+        .next_post {
+             float:right;
+        }
+        .next_post:after {
+            content:" >>";
+        }
+    }
+}
+
+
+div.share_bar {
+    > div {
+        display:inline-block;
+        vertical-align:middle;
+        width:90px;
+        height:20px;
+    }
+    line-height:20px;
+    height:20px;
+    padding-left:1em;
+}
+]]>
+  </style>
+  <params>
+    <param class="local" name="asset_theme" description="67BFE233-F4D1-400B-855F-393BF53B05A4">clear</param>
+    <param class="local" name="book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">500</param>
+    <param class="local" name="book_excerpt_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">1000</param>
+    <param class="local" name="books_display_type" description="1FA46E6A-3DB1-4B32-ABC3-532A66ABC0C0">simple</param>
+    <param class="template" name="chooser_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/catalyst-royal/chooser_image.jpg</param>
+    <param class="local" name="comment_header_format" description="0A2C5D2C-6DFC-4CE5-9919-613FF4A623CE">%{author_image}&lt;div&gt;%{author_name}%{date}&lt;/div&gt;%{moderate_indicator}</param>
+    <param class="local" name="event_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%b %e</param>
+    <param class="local" name="home_page_type" description="AE10A07E-03BF-4583-BCA0-B2550786E5F4">first_blog_post_with_comments</param>
+    <param class="local" name="post_date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%A, %B %-d, %Y</param>
+    <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{title}&lt;div class="post_info"&gt;%{categories}%{comments}%{date}&lt;/div&gt;</param>
+    <param class="scheme" name="schemes" description="62275C2A-29F9-4BAA-9893-BB0417917807">
+      <param class="scheme" name="DE89ED71-6B80-4B6A-851D-94B886A0A3ED" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
+          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
+          <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
+          <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
+          <param class="style" name="highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(138,141,147,1)</param>
+          <param class="style" name="default_splash_image" description="6792C972-20F1-48EB-A263-E2DCF029A2E9">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
+          <param class="style" name="link_active_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(40,40,40,1)</param>
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(138,141,147,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(200,200,200,1.0)</param>
+          <param class="style" name="menu_active_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(200,200,200,1)</param>
+          <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(20,20,20,1)</param>
+          <param class="style" name="menu_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
+          <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(140,140,140,1)</param>
+          <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#cc2222</param>
+          <param class="style" name="secondary_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(80,80,80,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(20,20,20,1)</param>
+          <param class="style" name="title_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(32,32,32,1.0)</param>
+          <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
+        </param>
+        <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Cloudburst</param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"></param>
+      </param>
+    </param>
+    <param class="local" name="series_book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">200</param>
+    <param class="local" name="series_display_type" description="0ADB2780-3D21-409F-A7B4-670395F99CD5">simple</param>
+  </params>
+  <pages>
+    <page application="" action="">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[
+div#mainBody {
+    #layout_body {
+        margin:0;
+        #content_section {
+            margin:0;
+            #center_bar {
+                margin:0;
+                .content_background_container {
+                    margin:0;
+                }
+            }
+        }
+    }
+}
+]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="content">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="footer_bar">
+          <style>
+            <![CDATA[
+#footer_bar_section {
+    margin:1em 0 1em 0;
+}
+#copyright.widget {
+    text-align:right;
+    div {
+        display:inline-block;
+    }
+    .scribaroo_site {
+        padding-right:2em;
+        display:inline-block;
+        float:right;
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+    }
+}
+#scribaroo_copyright {
+    text-align:right;
+    padding-right:2em;
+    padding-left:2em;
+    float:right;
+    display:inline-block;
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="3941AA26-528D-4493-A44D-4AAFDB81AE66">
+              <params>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[
+true
+]]>
+                </param>
+                <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[<%= link_to(@current_layout.name, "http://www.scribaroo.com/templates/##{@current_layout.guid}") %> by <%= link_to("Scribaroo", "http://www.scribaroo.com") %>.  Template and it's associated images Copyright &copy;<%= Time.new.year %> Scribaroo ]]>
+                </param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">scribaroo_copyright</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="header_bar">
+          <style>
+            <![CDATA[/* Header layout */ 
+$header-font-family:"Raleway", Arial, Helvetica, sans-serif;
+#mainBody .main_header {
+    position:fixed;
+    left:0;
+    right:0;
+    top:0;
+    background:<%= menu_background_color %>;
+    z-index:6;
+    -o-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -icab-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -khtml-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -moz-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+    -webkit-box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+
+    #header_bar_section {
+       font: Verdana;
+       margin:0.2em auto 0 auto;
+       width:100%;
+       max-width:1024px;
+       text-align:right;
+       font-size:1.3em;
+       font-family:$header-font-family;
+
+       .widget#social_networks_header {
+           display:inline-block;
+           width:auto;
+           margin:0.2em;
+           float:left;
+           line-height:1.0em;
+           .social_networks_item {
+               display:inline-block;
+               margin:0 0.5em 0 0;
+           }
+       }
+
+       .widget#login_bar {
+           display:inline-block;
+           width:auto;
+           margin:0.2em 1em 0.2em auto;
+           line-height:1.0em;
+           .widget_content {
+               text-align:right;
+               color:<%= link_color %>;
+               text-transform:uppercase;
+               #login-strip-login_bar {
+                   display:inline-block;
+                   line-height:1.0em;
+               }
+               #login-strip-login_bar:first-letter {
+                   font-size:1.3em;
+                }
+           }
+       }
+
+       /* Main Menu layout */
+       .widget#main_menu { 
+           display:inline-block;
+           margin:0.2em 1em 0.2em 1em;
+           line-height:1.0em;
+           .menu_widget {
+               margin:0;
+               display:inline-block;
+               ul {
+                   list-style-type:none;
+                   display:inline-block;
+                   margin:0;
+                   padding:0;
+                   li { 
+                      display:inline-block;
+                      text-align:center;
+                      padding:0px;
+
+                      a {
+                          background: none;
+                          display:inline-block;
+                          padding:0 0.5em 0 0.5em;
+                          text-decoration:none;
+                          width:auto;
+                          text-transform:uppercase;
+                      }
+                      a, a:link, a:visited {
+                          color: <%= menu_text_color %>;
+                      }
+                      a:first-letter {
+                          font-size:1.3em;
+                      }
+
+                      a.menu_selected, a.selected
+                      ul li a.menu_selected {
+                          color: <%= menu_active_color %>;
+                      }
+
+                      a:hover, ul li a:hover   {
+                          color: <%= menu_hover_color %>;
+                      }
+                      ul {
+                         padding-right:0px;
+                         position: absolute;
+                         left:0;
+                         display: none;
+                         visibility: hidden;
+                         width: auto;
+                         li {
+                             width:100%;
+                             padding-bottom:0px;
+                             display: list-item;
+                             margin:0;
+                             height:auto;
+                             border:none;
+                             a {
+                                 line-height:1.0em;
+                                 padding-top:0.5em;
+                                 padding-bottom:0.5em;
+                                 margin:0em;
+                                 span {
+                                 line-height:1.0em;
+                                 }
+                             }
+                         }
+                     }
+                 }
+             }
+         }
+     }
+   }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="A85F3B52-C433-4B67-9503-EFEFA13491E7">
+              <params>
+                <param class="local" name="biography_id" description="B908FDB5-A0B5-48AC-8BAE-48741485CC06"></param>
+                <param class="local" name="rss_feed_source" description="D52AAF6A-0228-427B-8529-348282E4C771">blog</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">social_networks_header</param>
+                <param class="local" name="social_networks" description="4EB6BB84-276A-4074-8FEA-E49FABC22D83">
+                  <param class="local" name="goodreads" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="foursquare" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="google" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="tumblr" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="facebook" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="youtube" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                  <param class="local" name="twitter" description="FB528C00-8510-4876-BD82-EF694FEAC06D"></param>
+                </param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="3DE97301-A7E8-4956-95E8-FF52F4059BA0">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">main_menu</param>
+                <param class="local" name="smooth" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680">false</param>
+                <param class="local" name="show_arrow" description="5AC29485-DFD2-4D09-B80C-F32F59FF5680">false</param>
+              </params>
+            </instance>
+            <instance order="3" widget_guid="731793C5-A217-4C5D-9F40-51B23DB4034A">
+              <params>
+                <param class="local" name="show_greeting" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">true</param>
+                <param class="local" name="show_search_box" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">false</param>
+                <param class="local" name="show_links" description="4DDC51E7-BDBA-4457-B7E1-DF1818DD5793">true</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">login_bar</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="left_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"></param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2312852271</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+              </params>
+            </instance>
+            <instance order="2" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+              <params>
+                <param class="local" name="date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%e %b %Y</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="recent_posts_count" description="5AD23478-C90D-4BA8-81DF-7112B0762257">3</param>
+                <param class="local" name="excerpt_length" description="F4AF8F08-955D-4800-992A-3E2912CA8740">300</param>
+                <param class="local" name="header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{title}%{post_thumbnail}</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">recent_posts</param>
+              </params>
+            </instance>
+            <instance order="4" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2312852271</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"></param>
+              </params>
+            </instance>
+            <instance order="5" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="mailer_form" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[
+<p>Join my e-mail list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">contact_widget</param>
+                <param class="local" name="mailers" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF">
+                  <param class="local" name="response" description="EE53AA34-7EC8-409A-AF77-446F712B7777">
+                    <param class="local" name="subject" description="F25B251A-E227-450E-AC2C-0F4A37E79051">Thank you for your interest.</param>
+                    <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param class="local" name="notification" description="EE53AA34-7EC8-409A-AF77-446F712B7777">
+                    <param class="local" name="subject" description="F25B251A-E227-450E-AC2C-0F4A37E79051">Contact Request</param>
+                    <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+     }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #bottom_bar_section {
+        box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        padding-top:1em;
+
+
+          .blog_page_nav_prev {
+             padding-left:1em;
+             margin-right:1em;
+         }
+         .blog_page_nav_prev span:before {
+             content:"<<";
+         }
+          .blog_page_nav_next {
+             padding-right:1em;
+             margin-left:1em;
+         }
+         .blog_page_nav_next span:after {
+             content:">>";
+         }
+    }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="left_bar">
+          <style>
+            <![CDATA[
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="3" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"></param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2312852271</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+              </params>
+            </instance>
+            <instance order="4" widget_guid="250D3145-7891-41FD-94AA-C64EF7A5801A">
+              <params>
+                <param class="local" name="date_format" description="CDC341F5-9EFB-41DB-8B84-B1101A58704D">%e %b %Y</param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="recent_posts_count" description="5AD23478-C90D-4BA8-81DF-7112B0762257">3</param>
+                <param class="local" name="excerpt_length" description="F4AF8F08-955D-4800-992A-3E2912CA8740">300</param>
+                <param class="local" name="header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{title}%{post_thumbnail}</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">recent_posts</param>
+              </params>
+            </instance>
+            <instance order="5" widget_guid="7527F499-6E1A-44AD-AF49-58FEED10364C">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="google_ad_slot" description="CF1C5254-1644-447F-9D87-DE0CBC472E0E">2312852271</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"></param>
+              </params>
+            </instance>
+            <instance order="6" widget_guid="F183DFC0-5A99-45ED-8ECB-D0B61CEC779B">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">calendar_nav</param>
+              </params>
+            </instance>
+            <instance order="7" widget_guid="2AC534A9-439D-4202-B771-A4CEDED38BEE">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="mailer_form" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[
+<p>Sign up for my mailing list.</p>
+<p>
+<label for="email">Email:</label><input type="text" value="" name="email" watermark="my@email.address"><br>
+</p>
+    ]]>
+                </param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70"></param>
+                <param class="local" name="mailers" description="FA29F0CE-99D9-4980-ABAA-E87877C11ADF">
+                  <param class="local" name="response" description="EE53AA34-7EC8-409A-AF77-446F712B7777">
+                    <param class="local" name="subject" description="F25B251A-E227-450E-AC2C-0F4A37E79051">Thank you for your interest.</param>
+                    <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                  <param class="local" name="notification" description="EE53AA34-7EC8-409A-AF77-446F712B7777">
+                    <param class="local" name="subject" description="F25B251A-E227-450E-AC2C-0F4A37E79051">Contact Request</param>
+                    <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                      <![CDATA[]]>
+                    </param>
+                  </param>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+            -moz-box-sizing:border-box;
+        padding-top:1em;
+
+
+          .blog_page_nav_prev {
+             padding-left:1em;
+             margin-right:2em;
+         }
+         .blog_page_nav_prev span:before {
+             content:"<< Prev";
+         }
+          .blog_page_nav_next {
+             padding-right:1em;
+             margin-left:2em;
+         }
+         .blog_page_nav_next span:after {
+             content:"Next >>";
+         }
+    }
+}
+
+@media all and (max-width: 767px) {
+      div#mainBody #content_section #center_bar #top_bar_section {
+           left:2em;
+           right:60px;
+      }
+}]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="index_by_date">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[
+    .post .content {
+        img, iframe { display:none; }
+    }
+]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="blog_content_end">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[div#mainBody {
+    #top_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+        margin-bottom:1em;
+
+        .widget#blog_num_nav {
+            font-size:1.3em;
+
+	    .blog_num_nav {
+	       vertical-align:top;
+	       line-height:1em;
+	    }
+	    .blog_num_nav span {
+	       font-weight:bold;
+	    }
+	    .blog_page_nav_prev {
+	       padding-left:1em;
+	       margin-right:0.1em;
+	       line-height:1em;
+	    }
+	    .blog_page_nav_prev span:before {
+		content:"\e06a";
+	    }
+	     .blog_page_nav_next {
+		padding-right:1em;
+		margin-left:0.1em;
+		line-height:1em;
+	    }
+	    .blog_page_nav_next span:after {
+		content:"\e06b";
+	    }
+	    .blog_page_nav_next span:after, .blog_page_nav_prev span:before {
+		font-family: 'Metro Icons';
+		speak: none;
+		font-weight: normal;
+		font-variant: normal;
+		text-transform: none;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		cursor:pointer;
+		font-size:1.05em;
+		line-height:1em;
+		vertical-align:top;
+	    }
+        }
+    }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="0" widget_guid="FF33ED55-E56B-4062-ACE1-0FFE22BB422A">
+              <params>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="nav_width" description="84EBE0FB-3C9B-4E13-8D33-4179F593FC6F">6</param>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">blog_num_nav</param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="blog" action="show_by_title">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #content_section {
+        #center_bar {
+                  padding:0px 0px 0px 0px;
+        }
+    }
+}]]>
+      </style>
+      <params>
+        <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">&lt;div class="post_info"&gt;%{categories}%{comments}%{date}&lt;/div&gt;</param>
+      </params>
+      <sections>
+        <section name="blog_content_end">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">header_image</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[
+true
+]]>
+                </param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[<%= 
+                      person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+                      person = Roxiware::Person.find(person_id)
+                      title = Roxiware::Param::Param.application_param_val("system", "title") 
+                      title =  person.full_name if title.blank?
+                      content_tag(:div, :id=>"site_block") do
+                          content_tag(:div, title, :class=>"site_title") + 
+                          content_tag(:div, Roxiware::Param::Param.application_param_val("system", "subtitle"), :class=>"site_subtitle")
+                      end +
+                      content_tag(:div, @post.post_title, :id=>"post_title") +
+                      content_tag(:a, content_tag(:span, "", :class=>"icon-arrow-down-7"), :id=>"post_scroll")
+%>
+<script>
+    var header_image = $(new Image);
+    header_image.bind("load", function() {
+        if((this.height < 200) || (this.width < 364)) {
+            $(header_image).attr("src", "<%= @default_splash_image %>");
+        }
+        else {
+            $("#header_image").css("background-image", "url('" + $(this).attr("src") + "')");
+            $("#header_image").animate({opacity:1});
+        }
+    });
+    header_image.bind("error", function() {
+        if(header_image.attr("src") != "<%= @default_splash_image %>") {
+            $(header_image).attr("src", "<%= @default_splash_image %>");
+        }
+    });
+    header_image.attr("src", "<%= @post.post_image.present? ? @post.post_image : @default_splash_image %>")
+    $(window).resize(function() {
+        $("div#mainBody div#top_bar_section").height($(window).outerHeight());
+    });
+    $(window).resize();
+    $(function() {
+        $("#post_scroll").click(function() {
+            $.scrollTo("#center_content", 250);
+        });
+    });
+</script>
+]]>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="books" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="books" action="index">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[.books_listing {
+    position:relative;
+    .books { 
+        height:100%; 
+        width:100%; 
+        display:inline-block;
+
+        > div {
+            clear:both;
+        }
+
+
+         div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:25%;
+                 height:auto;
+                 background: <%= link_color %>;
+             }
+         }
+        .series_listing:hover, .book_listing:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }
+        .series_listing {
+            position:relative;
+             margin-bottom:3em;
+            .more_link:after {
+                content:" More...";
+            }
+
+            div.series_description {
+                position:relative;
+                display:inline-block;
+                max-width:45%;
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                padding-left:1em;
+                margin-bottom:4em;
+            }
+            div.series_books {
+                display:inline-block;
+                float:left;
+                position:relative;
+                max-width:50%;
+                text-align:justify;
+                margin:0 0 4em 0;
+                padding:5px;
+
+                box-sizing:border-box;
+                -moz-box-sizing:border-box;
+                .series_book {
+                    display:inline-block;
+                    width:23%;
+                    padding:1%;
+                    img.series_book_cover {
+                        width:100%;
+                        height:auto;
+                        display:block;
+                    }
+                    .series_book_title {
+                        display:none;
+                    }
+               }
+           }
+       }
+   }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="books" action="show">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:50%;
+                 height:auto;
+                 background: <%= link_color %>;
+             }
+         }
+
+
+
+       .book_listing:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[#bottom_bar_section {
+    clear:both;
+}
+
+div#mainBody {
+    #bottom_bar_section {
+        box-sizing:border-box;
+        -moz-box-sizing:border-box;
+        padding-top:1em;
+
+    }
+}
+]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="forum" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[.forum_board_group_name {
+        font-size:1.5em;
+        width:100%;
+    }
+.forum_board_group {
+    border:solid 1px <%= text_color %>;
+    width:100%;
+    margin-bottom:1em;
+    display:table;
+    border-collapse:collapse;
+
+    .forum_board {
+        display:table-row;
+        width:100%;
+        > div {
+            display:table-cell;
+            border:solid 1px rgba(255,255,255,0.5);
+            padding:0.3em;
+        }
+        .forum_new_posts, .forum_no_new_posts {
+            width:5%;
+            text-align:center;
+            vertical-align:middle;
+        }
+        .forum_board_info {
+            width:60%;
+        }
+        .forum_board_counters {
+             width:15%;
+             .forum_board_topic_count:after {
+                 content:" topics";
+             }
+             .forum_board_post_count:after {
+                 content:" posts";
+             }
+        }
+        .forum_board_last_post {
+             width:20%;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="forum" action="show">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[.forum_board {
+    width:100%;
+
+     .forum_board_header {
+         .forum_no_new_posts, .forum_new_posts {
+             display:none;
+         }
+         .forum_board_counters {
+             display:none;
+         }
+         .forum_board_name {
+              font-size:2.0em;
+         }
+     }
+
+
+    .forum_topics {
+        display:table;
+        width:100%;
+        .forum_topic:hover {
+            .manage_button {
+                cursor:pointer;
+                opacity:0.5;
+            }
+        }
+
+        .forum_topic {
+            display:table-row;
+            width:100%;
+            > div {
+                display:table-cell;
+                border:solid 1px rgba(255,255,255,0.5);
+                padding:0.3em;
+                position:relative;
+            }
+
+            .forum_num_new_posts, .topic_permission_open,.topic_permission_close,.topic_permission_moderate,.topic_permission_hide {
+                width:5%;
+                text-align:center;
+                vertical-align:middle;
+            }
+
+            .topic_permission_open:before,.topic_permission_close:before,.topic_permission_moderate:before,.topic_permission_hide:before {
+                 font-family: 'Metro Icons';
+                 font-size:1.5em;
+                 speak: none;
+                 font-weight: normal;
+                 font-variant: normal;
+                 text-transform: none;
+                 line-height: 1;
+                 -webkit-font-smoothing: antialiased;
+            }
+            .topic_permission_open:before { content:'\e002';}
+            .topic_permission_close:before { content:'\e002';}
+            .topic_permission_moderate:before { content:'\e059';}
+            .topic_permission_hide:before { content:'\e059';}
+
+            .forum_topic_info {
+                .forum_topic_title {
+                    display:block;
+                }
+                .forum_topic_post_date {
+                   display:inline;
+                }
+                .forum_topic_post_date:before {
+                    content:" on ";
+                }
+                .forum_topic_author:before {
+                    content:"by ";
+                }
+            }
+       }
+    }
+}
+.comment_form {
+     margin-top:1em;
+     label {
+         width:10%;
+     }
+     #comment_form_title {
+            width:100%;
+            label {
+                width:10%;
+                display:inline-block;
+            }
+            input {
+                display:inline-block;
+                width:85%;
+            }
+        }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="forum" action="show_topic">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[.forum_topic {
+    width:100%;
+    .forum_topic_header {
+        width:100%;
+        .forum_topic_new_posts, .forum_topic_no_new_posts {
+            display:none;
+        }
+        .forum_topic_title {
+            font-size:2em;
+        }
+        .forum_topic_post_date {
+            display:none;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="home" action="">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[div#mainBody {
+    #layout_body {
+        margin:0;
+        #content_section {
+            margin:0;
+            #center_bar {
+                margin:0;
+                .content_background_container {
+                    margin:0;
+                    #center_content  .post {
+                        .post_header {
+                            position:relative;
+                            width:100%;
+                            .post_title {
+                                text-shadow:2px 2px rgba(0,0,0,0.5);
+                            }
+                            .post_title, .title_header:link, .title_header:visited {
+                                color:<%= text_color %>;
+                            }
+                            .post_title:hover {
+                                color:<%= highlight_color %>;
+                            }
+                        }
+                        .content { 
+                            img, iframe {
+                                max-width:100%;
+                            }
+                            img {
+                                height:auto;
+                            }
+                        }
+                    }
+                }
+            }
+         }
+
+    }
+}
+
+@media all and (max-width:640px) {
+    div#mainBody #content_section #center_bar .content_background_container #center_content .post {
+        .post_header .post_title {
+            font-size:2em;
+            bottom:1.5em;
+            left:0em;
+            right:0em;
+        }
+    }
+}]]>
+      </style>
+      <params>
+        <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">&lt;div class="post_info"&gt;%{categories}%{comments}%{date}&lt;/div&gt;</param>
+      </params>
+      <sections>
+        <section name="blog_content_end">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+        <section name="top_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="1A62CF52-A337-48D9-91A7-1B171F86F0D7">
+              <params>
+                <param class="local" name="widget_instance_id" description="CE9A31B2-4AC7-4C78-82DB-BDC44F3D8D70">header_image</param>
+                <param class="local" name="preload" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[
+true
+]]>
+                </param>
+                <param class="local" name="show_background" description="66966744-BA68-41C6-AC2C-B7B3F2EDE21F">false</param>
+                <param class="local" name="content" description="37D2F04F-7569-4F8E-B488-8D8503FA2DD3">
+                  <![CDATA[<%= 
+                      person_id = Roxiware::Param::Param.application_param_val("people", "default_biography")
+                      person = Roxiware::Person.find(person_id)
+                      title = Roxiware::Param::Param.application_param_val("system", "title") 
+                      title =  person.full_name if title.blank?
+                      content_tag(:div, :id=>"site_block") do
+                          content_tag(:div, title, :class=>"site_title") + 
+                          content_tag(:div, Roxiware::Param::Param.application_param_val("system", "subtitle"), :class=>"site_subtitle")
+                      end +
+                      content_tag(:div, @post.post_title, :id=>"post_title") +
+                      content_tag(:a, content_tag(:span, "", :class=>"icon-arrow-down-7"), :id=>"post_scroll")
+%>
+<script>
+    var header_image = $(new Image);
+    header_image.bind("load", function() {
+        if((this.height < 200) || (this.width < 364)) {
+            $(header_image).attr("src", "<%= @default_splash_image %>");
+        }
+        else {
+            $("#header_image").css("background-image", "url('" + $(this).attr("src") + "')");
+            $("#header_image").animate({opacity:1});
+        }
+    });
+    header_image.bind("error", function() {
+        if(header_image.attr("src") != "<%= @default_splash_image %>") {
+            $(header_image).attr("src", "<%= @default_splash_image %>");
+        }
+    });
+    header_image.attr("src", "<%= @post.post_image.present? ? @post.post_image : @default_splash_image %>")
+    $(window).resize(function() {
+        $("div#mainBody div#top_bar_section").height($(window).outerHeight());
+    });
+    $(window).resize();
+    $(function() {
+        $("#post_scroll").click(function() {
+            $.scrollTo("#center_content", 250);
+        });
+    });
+</script>
+]]>
+                </param>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="people" action="">
+      <render_layout>roxiware/layouts/onecolumn</render_layout>
+      <style>
+        <![CDATA[$header-font-family:"Raleway", Arial, Helvetica, sans-serif;
+.person_listing {
+   margin:5em 0 2em 0;
+    box-sizing:border-box;
+    moz-box-sizing:border-box;
+    .social_network_icons {
+        display:none;
+    }
+    .person_portrait {
+        position:relative;
+        float:right;
+        margin:1em;
+        width:250px;
+        height:auto;
+        max-width:35%;
+        border-radius:50%;
+    }
+    .person_name {
+        font-size:2.5em;
+        font-family:$header-font-family;
+        text-transform:uppercase;
+    }
+    .person_name:first-letter {
+        font-size:1.2em;
+    }
+
+    .person_bio {
+        font-size:1.4em;
+        img {
+            max-width:100%;
+            padding:1em;
+        }
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+        <section name="bottom_bar">
+          <style>
+            <![CDATA[]]>
+          </style>
+          <params>
+          </params>
+          <widget_instances>
+            <instance order="1" widget_guid="0A044282-9BD2-4883-9819-FBEE6F6CBAE3">
+              <params>
+              </params>
+            </instance>
+          </widget_instances>
+        </section>
+      </sections>
+    </page>
+    <page application="series" action="">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+    <page application="series" action="show">
+      <render_layout>roxiware/layouts/twocolumn_right</render_layout>
+      <style>
+        <![CDATA[.series {
+
+    .series_info {
+        position:relative;
+        box-sizing:border-box;
+         -moz-box-sizing:border-box;
+        padding:1em;
+        margin-bottom: 2em;
+        clear:both;
+
+        .series_title {
+            font-size:2.0em;
+            font-face:Verdana;
+        }
+    }
+    .series_info:hover, .book_listing:hover {
+        .manage_button {
+            cursor:pointer;
+            opacity:0.5;
+        }
+    }
+
+    .series_title:before {
+          font-family: 'Metro Icons';
+          speak: none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          -webkit-font-smoothing: antialiased;
+    }
+
+    .series_title:before {
+        content:'\e00b';
+        padding-right:1em;
+    }
+
+     div.book_listing {
+             clear:both;
+             position:relative;
+             margin-bottom:3em;
+             .book_title_link:before {
+                 content:'\e00a';
+             }
+             img {
+                 float:left;
+                 margin:1em 2em 4em 0;
+                 max-width:25%;
+                 height:auto;
+                 padding:5px;
+                 background: <%= link_color %>;
+             }
+         
+    }
+}]]>
+      </style>
+      <params>
+      </params>
+      <sections>
+      </sections>
+    </page>
+  </pages>
+</layout>

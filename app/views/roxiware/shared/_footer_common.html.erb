@@ -3,6 +3,15 @@
    <% end %>
   <script>
 
+$(function() {
+console.log("WTF");
+    if(window.top != window) {
+console.log("WTF2");
+console.log("CHANGE LOCATION " + window.location.pathname);
+        $.postMessage({action:"change_location",
+                       location:window.location.pathname}, "<%= AppConfig.scribaroo_url %>", parent);
+    }
+});
    <% if params[:preview].present? %>
        $("a").click(function(e) {
            e.preventDefault();

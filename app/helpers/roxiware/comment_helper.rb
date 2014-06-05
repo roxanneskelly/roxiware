@@ -42,7 +42,7 @@ module Roxiware::CommentHelper
 	    header_content[:author_image] = ""
 	    if child.comment_author.present?
 	        if child.comment_author.get_author_url.present?
-		    header_content[:author_image] = link_to(tag(:img, :src=>child.comment_author.get_thumbnail_url, :class=>"comment_author_image"), child.comment_author.get_author_url, :target=>"_blank") 
+		    header_content[:author_image] = link_to(tag(:img, :src=>child.comment_author.get_thumbnail_url), child.comment_author.get_author_url, :class=>"comment_author_image", :target=>"_blank")
 		    header_content[:author_name] = link_to(child.comment_author.display_name, child.comment_author.get_author_url, :class=>"comment_author_name", :target=>"_blank")
 		else
 		    header_content[:author_image] = tag(:img, :src=>child.comment_author.get_thumbnail_url, :class=>"comment_author_image")

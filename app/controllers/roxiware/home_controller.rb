@@ -47,6 +47,7 @@ module Roxiware
                     @og_video_url = @posts.first.post_video if @posts.first.present? && @posts.first.post_video.present?
                     @blog_class="blog"
                     @next_page_link = send("#{@blog_class}_path")
+                    @content_path = @posts.first.post_link if @posts.first.present?
                     format.html { render :template=>"roxiware/blog/post/index"}
                 end
             when "first_blog_post_with_comments"
@@ -56,6 +57,7 @@ module Roxiware
                     @post = posts.first
                     @blog_class="blog"
                     if @post.present?
+                        @content_path = @post.post_link
                         @page_images = [@post.post_image]
                         @og_url = @post.post_link
                         @og_video_url = @post.post_video if @post.present? && @post.post_video.present?

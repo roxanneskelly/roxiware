@@ -8,7 +8,7 @@
     <editform/>
     <preload>
       <![CDATA[
-          locals[:share_link] = "#{request.protocol}#{request.host_with_port}#{request.fullpath}" if locals[:share_link].blank?
+          locals[:share_link] = @content_path if locals[:share_link].blank?
           true
 ]]>
     </preload>

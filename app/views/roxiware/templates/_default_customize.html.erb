@@ -12,7 +12,7 @@
     $(function() {
        $(".template_customize_form form").submit(function(e) {
            e.preventDefault();
-           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>", $("form").serializeArray(), {
+           $.ajaxSetParamsJSON("<%= customize_layout_path(@layout.guid) %>.json", $("form").serializeArray(), {
                                 method:"PUT",
                                 success: function(json_data) {
                                     window.location.reload();

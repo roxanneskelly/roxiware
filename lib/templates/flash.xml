@@ -94,7 +94,9 @@ div#colors_pane > div {
                    end +
                    content_tag(:div, :id=>"center_fields") do
                param_field(customize_form, custom_params.delete("text_color"), :id=>"text_color") +
-               param_field(customize_form, custom_params.delete("secondary_text_color"), :id=>"secondary_text_color") +
+               param_field(customize_form, custom_params.delete("secondary_link_color"), :id=>"secondary_link_color") +
+               param_field(customize_form, custom_params.delete("secondary_link_hover_color"), :id=>"secondary_link_hover_color") +
+               param_field(customize_form, custom_params.delete("secondary_link_active_color"), :id=>"secondary_link_active_color") +
                param_field(customize_form, custom_params.delete("text_alert_color"), :id=>"text_alert_color") +
                param_field(customize_form, custom_params.delete("link_color"), :id=>"link_color") +
                param_field(customize_form, custom_params.delete("link_hover_color"), :id=>"link_hover_color") +
@@ -133,6 +135,8 @@ div#colors_pane > div {
     <category>General</category>
   </categories>
   <packages>
+    <package>author</package>
+    <package>basic_blog</package>
     <package>premium_blog</package>
   </packages>
   <style>
@@ -197,12 +201,7 @@ div#mainBody {
             position:relative;
             vertical-align:top;
             #center_content {
-                max-width:728px;
                 width:100%;
-                margin:0 auto 0 auto;
-                padding:1em;
-                box-sizing:border-box;
-                -moz-box-sizing:border-box;
             }
         }
         #left_bar_section {
@@ -391,7 +390,7 @@ div#mainBody
     }
     blockquote:before {
         display:inline-block;
-        color:<%= secondary_text_color %>;
+        color:<%= secondary_link_color %>;
         float:left;
         margin:0 10px 5px 0;
         @include icon-font;
@@ -560,8 +559,9 @@ body[application=home],body[application=blog][app_path=show_by_title] {
 /* Post*/
 div#mainBody .post {
     position:relative;
-    margin: 1em 0 1em 0;
+    margin: 1em auto 1em auto;
     width:100%;
+    max-width:728px;
     padding:0.5em 0em 3em 0em;
 
     .post_header {
@@ -569,18 +569,27 @@ div#mainBody .post {
         margin-bottom:0.5em;
         font-weight:100;
         font-size:1.2em;
+        a, a:link, a:visited {
+            color:<%= secondary_link_color %>;
+        }
+        a:hover {
+            color:<%= secondary_link_hover_color %>;
+        }
+        a:active {
+            color:<%= secondary_link_active_color %>;
+        }
         .post_info {
-            line-height:40px;
+            line-height:1em;
             vertical-align:middle;
+            color:<%= secondary_link_color %>;
             .person_thumbnail {
                 margin: 0 0.5em -0.5em 0;
             }
             .post_categories, .comments_link {
-                border-right:solid 2px <%= secondary_text_color %>;
+                border-right:solid 2px <%= secondary_link_color %>;
             }
             .post_date, .post_categories, .comments_link {
                 margin-bottom:10px;
-                color:<%= secondary_text_color %>;
                 display:inline-block;
                 margin-right:0.5em;
                 padding-right:0.5em;
@@ -590,7 +599,7 @@ div#mainBody .post {
          .post_title {
              clear:both;
              margin:0;
-             padding:0.4em 1em 0.2em 0em;
+             padding:0.4em 1em 0.1em 0em;
              font-size: 2.0em;
              display:block;
              text-align:left;
@@ -624,12 +633,18 @@ div#mainBody .post {
         padding-right:3em;
         font-size:1.2em;
     }
+
+    .more_link, .more_link:link, .more_link:visited { color: <%= secondary_link_color %>; }
+    .more_link:hover { color: <%= secondary_link_hover_color %>; }
+    .more_link:active { color: <%= secondary_link_active_color %>; }
     .more_link:before {
         content:"More...";
     }
     .post_tags {
-        .post_tag {
-        }
+        .post_tag { font-family:$header-font-family; }
+        .post_tag, .post_tag:link, .post_tag:visited { color: <%= secondary_link_color %>; }
+        .post_tag:hover { color: <%= secondary_link_hover_color %>; }
+        .post_tag:active { color: <%= secondary_link_active_color %>; }
         .post_tag:after {
             content:"\0000a0|\0000a0";
         }
@@ -641,20 +656,20 @@ div#mainBody .post {
         position:relative;
         top:0.2em;
         @include icon-font;
-	    color: <%= link_color %>;
+	    color: <%= secondary_link_color %>;
         content:"\e012\0000a0\0000a0";
     }
 }
 
-.comments_link {
+div#mainBody .comments_link {
     .comments_count, .pending_comments_count {
+        color:<%= secondary_link_color %>;
         padding-left:0.1em;
         display:inline;
     }
 
     .comments_count:after, .pending_comments_count:after {
         @include icon-font;
-        color: <%= link_color %>;
         cursor:pointer;
         content: "\e02f";
         padding-left:0.5em;
@@ -667,15 +682,20 @@ div#mainBody .post {
     }
 }
 
-.comments_link:hover div {
-    color:<%= link_hover_color %>;
+div#mainBody .comments_link:hover {
+    div, div:after {
+        color:<%= secondary_link_hover_color %>;
+    }
 }
 
-.comments_link:hover div:after {
-    color:<%= link_hover_color %>;
+div#mainBody .comments_link:active {
+    div, div:after {
+        color:<%= secondary_link_active_color %>;
+    }
 }
 
-.comments {
+
+div#mainBody .comments {
     margin-top:2em;
     clear:both;
     .comment > .comment_content_wrapper {
@@ -720,7 +740,10 @@ div#mainBody .post {
             }
             .comment_header {
                 vertical-align:top;
-                color: <%= link_color %>;
+                color: <%= secondary_link_color %>;
+                a, a:link, a:visited { color: <%= secondary_link_color %>;}
+                a:hover { color: <%= secondary_link_hover_color %>; }
+                a:active { color: <%= secondary_link_hover_color %>; }
                 
                 display:block;
                 > * {
@@ -750,6 +773,7 @@ div#mainBody .post {
                 clear:both;
                 text-align:center;
                 .comment_reply {
+                    color:<%= secondary_link_color %>;
                     text-align:right;
                     cursor:pointer;
                     padding-left:2em;
@@ -765,6 +789,12 @@ div#mainBody .post {
                     padding-right:0.5em;
                     font-size:0.9em;
                 }
+                .comment_reply:after {
+                    content:"Reply";
+                    font-family:$header-font-family;
+                }
+                .comment_reply:active { color: <%= secondary_link_active_color %> !important; }
+                .comment_reply:hover { color: <%= secondary_link_hover_color %>; }
             }
         }
     }
@@ -785,6 +815,9 @@ div#mainBody .post {
 
 /* Full post display with comments */
 .post_listing {
+    max-width:728px;
+    width:100%;
+    margin:0 auto 0 auto;
     .post_footer {
         .comments_link {
             width:100%;
@@ -810,22 +843,27 @@ div#mainBody .post {
         }
     }
 }
-.comment_form {
+div#mainBody .comment_form {
     clear:both;
     margin:2em 0 3em 0;
+    a, a:link, a:visited { color: <%= secondary_link_color %>;}
+    a:hover { color: <%= secondary_link_hover_color %>; }
+    a:active { color: <%= secondary_link_hover_color %>; }
+
     #comment_form_core {
         text-align:justify;
         width:100%;
         img#comment_author_image {
             border-radius:32px;
         }
+        font-family:$header-font-family;
     }
     .comment_recaptcha {
          .captcha_reload, .captcha_audio, .captcha_image, .captcha_help {
-             color: <%= link_color %>;
+             color: <%= secondary_link_color %>;
          }
          .captcha_reload:hover, .captcha_audio:hover, .captcha_image:hover, .captcha_help:hover {
-             color: <%= link_hover_color %>;
+             color: <%= secondary_link_hover_color %>;
          }
     }
 }
@@ -1066,6 +1104,7 @@ div.share_bar {
     line-height:20px;
     height:20px;
     padding-left:1em;
+    margin:1em 0 1em 0;
 }
 ]]>
   </style>
@@ -1087,23 +1126,25 @@ div.share_bar {
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
           <param class="style" name="body_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
           <param class="style" name="body_background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"></param>
-          <param class="style" name="highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(138,141,147,1)</param>
           <param class="style" name="default_splash_image" description="6792C972-20F1-48EB-A263-E2DCF029A2E9">http://cdn.roxiware.com/templates/catalyst_royal/royalbw.jpg</param>
-          <param class="style" name="link_active_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(40,40,40,1)</param>
-          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(138,141,147,1)</param>
-          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(200,200,200,1.0)</param>
+          <param class="style" name="highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(138,141,147,1)</param>
+          <param class="style" name="link_active_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(57,20,217,1)</param>
+          <param class="style" name="link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,178,243,1)</param>
+          <param class="style" name="link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(191,191,249,1)</param>
           <param class="style" name="menu_active_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(200,200,200,1)</param>
           <param class="style" name="menu_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(20,20,20,1)</param>
           <param class="style" name="menu_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
           <param class="style" name="menu_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(140,140,140,1)</param>
+          <param class="style" name="secondary_link_active_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(61,61,61,1)</param>
+          <param class="style" name="secondary_link_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(191,191,191,1)</param>
+          <param class="style" name="secondary_link_hover_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(160,160,160,1)</param>
           <param class="style" name="text_alert_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#cc2222</param>
-          <param class="style" name="secondary_text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(80,80,80,1)</param>
-          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(20,20,20,1)</param>
+          <param class="style" name="text_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(42,32,32,1)</param>
           <param class="style" name="title_background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(32,32,32,1.0)</param>
           <param class="style" name="title_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(255,255,255,1)</param>
         </param>
         <param class="scheme" name="name" description="620EE4B4-2615-4B03-ADCB-FCC7198455AC">Cloudburst</param>
-        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"></param>
+        <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"/>
       </param>
     </param>
     <param class="local" name="series_book_description_length" description="1EFF4D33-DCDF-4245-BC49-90D1C6F1FABA">200</param>
@@ -1231,6 +1272,15 @@ $header-font-family:"Raleway", Arial, Helvetica, sans-serif;
        font-size:1.3em;
        font-family:$header-font-family;
 
+       a, a:link, a:visited {
+           color: <%= menu_text_color %>;
+       }
+       a:hover {
+           color: <%= menu_hover_color %>;
+       }
+       a:active{
+           color: <%= menu_active_color %>;
+       }
        .widget#social_networks_header {
            display:inline-block;
            width:auto;
@@ -1250,7 +1300,6 @@ $header-font-family:"Raleway", Arial, Helvetica, sans-serif;
            line-height:1.0em;
            .widget_content {
                text-align:right;
-               color:<%= link_color %>;
                text-transform:uppercase;
                #login-strip-login_bar {
                    display:inline-block;
@@ -1288,9 +1337,6 @@ $header-font-family:"Raleway", Arial, Helvetica, sans-serif;
                           width:auto;
                           text-transform:uppercase;
                       }
-                      a, a:link, a:visited {
-                          color: <%= menu_text_color %>;
-                      }
                       a:first-letter {
                           font-size:1.3em;
                       }
@@ -1300,9 +1346,6 @@ $header-font-family:"Raleway", Arial, Helvetica, sans-serif;
                           color: <%= menu_active_color %>;
                       }
 
-                      a:hover, ul li a:hover   {
-                          color: <%= menu_hover_color %>;
-                      }
                       ul {
                          padding-right:0px;
                          position: absolute;
@@ -1604,9 +1647,18 @@ $header-font-family:"Raleway", Arial, Helvetica, sans-serif;
       <render_layout>roxiware/layouts/onecolumn</render_layout>
       <style>
         <![CDATA[
-    .post .content {
-        img, iframe { display:none; }
+.posts {
+    margin:0;
+    .post_list_item {
+        border-bottom:solid 1px <%= secondary_link_color %>;
+        margin:0;
+        .post {
+            .content {
+              img, iframe { display:none; }
+            }
+        }
     }
+}
 ]]>
       </style>
       <params>
@@ -1705,7 +1757,9 @@ $header-font-family:"Raleway", Arial, Helvetica, sans-serif;
       <sections>
         <section name="blog_content_end">
           <style>
-            <![CDATA[]]>
+            <![CDATA[#blog_content_end_section {
+    margin:1em 0 1em 0;
+}]]>
           </style>
           <params>
           </params>
@@ -2242,7 +2296,9 @@ true
       <style>
         <![CDATA[$header-font-family:"Raleway", Arial, Helvetica, sans-serif;
 .person_listing {
-   margin:5em 0 2em 0;
+    width:100%;
+    max-width:728px;
+   margin:5em auto 2em auto;
     box-sizing:border-box;
     moz-box-sizing:border-box;
     .social_network_icons {

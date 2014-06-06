@@ -1,0 +1,18 @@
+<%= render :inline=>@layout.settings_form %>
+<% if can? :edit, @layout %>
+<script>
+$(function() {
+    $(".dialog_buttons").append("<button id='new_scheme' class='save_button' type='button'>New Scheme</button>");
+    $(".dialog_buttons").append("<button id='save_to_scheme' class='save_button' type='button'>Save Scheme</button>");
+
+    $("#save_to_scheme").click(function() {
+           $.ajaxSetParamsJSON("<%= layout_scheme_path(@layout.guid, @layout_scheme) %>.json", 
+                $("form").serializeArray(), {
+                method:"PUT",
+                success: function(json_data) {
+                }
+           });
+    });
+});
+</script>
+<% end %>

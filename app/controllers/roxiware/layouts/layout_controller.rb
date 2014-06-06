@@ -275,7 +275,7 @@ module Roxiware
 
                 respond_to do |format|
                     if(@layout.settings_form.present?)
-                        format.html {render :inline=>@layout.settings_form}
+                        format.html {render :partial=>"roxiware/templates/customize_form"}
                     else
                         format.html {render :partial=>"roxiware/templates/default_customize"}
                     end
@@ -298,8 +298,8 @@ module Roxiware
                     rescue ActiveRecord::Rollback
                         raise ActiveRecord::Rollback
                     rescue Exception => e
-                        puts e.message
-                        puts e.backtrace.join("\n")
+                        Rails.logger.error e.message
+                        Rails.logger.error e.backtrace.join("\n")
                         success = false
                         @layout.errors.add(:setup, "#{e.message}")
                     end
@@ -318,7 +318,6 @@ module Roxiware
                     end
                 end
             end
-
             private
             def _load_role
                 @role = "guest"

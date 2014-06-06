@@ -14,7 +14,8 @@ end %>
                  content_tag(:li, content_tag(:a, "General", :href=>"#")) +
                  content_tag(:li, content_tag(:a, "Schemes", :href=>"#")) +
                  content_tag(:li, content_tag(:a, "Style", :href=>"#")) +
-                 content_tag(:li, content_tag(:a, "Setup", :href=>"#"))
+                 content_tag(:li, content_tag(:a, "Setup", :href=>"#")) +
+                 content_tag(:li, content_tag(:a, "Settings Form", :href=>"#"))
              end +
              content_tag(:div, :class=>"panes") do
                  content_tag(:div, :id=>"general_pane") do
@@ -96,6 +97,9 @@ end %>
                  end +
                  content_tag(:div, :id=>"setup_pane") do
                      layout_form.text_area(:setup, :class=>"layout_setup")
+                 end +
+                 content_tag(:div, :id=>"settings_form") do
+                     layout_form.text_area(:settings_form, :class=>"layout_settings_form")
                  end
              end
          end +
@@ -107,7 +111,7 @@ end %>
 end %>
 <script>
    $(function() {
-      var styleEditor, setupEditor;
+      var styleEditor, setupEditor, settingsFormEditor;
       var styleErrors = [];
       var config_large_image_tabs = function(self) {
           var tabs_api = self.find(".scheme_large_image_tabs").data("tabs");
@@ -204,6 +208,9 @@ end %>
            if(setupEditor) {
                setupEditor.save();
            }
+           if(settingsFormEditor) {
+               settingsFormEditor.save();
+           }
            $("input.template_large_image").remove();
            styleErrors=[];
            $.ajaxSetParamsJSON("<%= endpoint %>", $("form").serializeArray(), {
@@ -281,6 +288,18 @@ end %>
                 foldGutter: true,
                 gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
             });
+          settingsFormEditor = CodeMirror.fromTextArea($("#layout_settings_form").get(0),
+            {
+                mode:"text/x-ruby",
+                matchBrackets:true,
+                lineNumbers:true,
+                lineWrapping: true,
+                autoCloseBrackets: true,
+                keyMap:"emacs",
+                extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+                foldGutter: true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+            });
           CodeMirror.commands.save = function(cm) {
               $("#save_button").click();
           }
@@ -291,6 +310,9 @@ end %>
           } 
           if ((index == 3) && setupEditor) {
               setupEditor.refresh();
+          } 
+          if ((index == 4) && settingsFormEditor) {
+              settingsFormEditor.refresh();
           } 
       });
    });

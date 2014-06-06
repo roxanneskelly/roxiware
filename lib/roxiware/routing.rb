@@ -92,15 +92,16 @@ module ActionDispatch::Routing
 
 	def roxiware_design
 	    resources :layout, :module=>"layouts" do
-	      resources :page do
-		 resources :section do
-		    resources :widget do
-		      put "move" => "widget#move", :on=>:member
-		    end
-		 end
-	      end
-	      get "customize" => "layout#customize_form", :on=>:member
-	      put "customize" => "layout#customize", :on=>:member
+            resources :page do
+                resources :section do
+                    resources :widget do
+                        put "move" => "widget#move", :on=>:member
+                    end
+                end
+            end
+            resources :scheme
+            get "customize" => "layout#customize_form", :on=>:member
+            put "customize" => "layout#customize", :on=>:member
 	    end
 	end
 

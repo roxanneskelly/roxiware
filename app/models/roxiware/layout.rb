@@ -380,6 +380,12 @@ module Roxiware
                 custom_settings.h[name]
             end
 
+            def reset_custom_settings
+                @custom_settings  = Roxiware::Param::Param.application_param_hash("custom_settings")[self.guid]
+                @custom_settings.destroy! if @custom_settings.present?
+                @custom_settings = nil
+            end
+
             def resolve_layout_params(scheme, params_in)
                 page_layout = self.find_page_layout(params_in)
                 puts "LAYOUT_PARAMS #{get_params(:local).inspect}"

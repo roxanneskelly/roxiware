@@ -2622,6 +2622,39 @@ else
     end
 end + content_tag(:div, "", :style=>"clear:both;")
 %>
+<% if book.blank? && can?(:edit, last_post[:post]) %>
+<%= content_tag(:ul, :id=>"blog_edit_application_menu", :class=>"application_menu") do
+    content_tag(:li) do
+        content_tag(:a, :rel=> edit_blog_post_path(last_post[:post]), :form=>"") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-pencil")+content_tag(:span, "Edit Post", :class=>"top_menu_text")
+        end
+    end +
+    content_tag(:li) do
+        content_tag(:a, :id=>"delete_post_app") do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-remove")+content_tag(:span, "Delete Post", :class=>"top_menu_text")
+        end
+    end +
+    content_tag(:li) do
+        content_tag(:a, :id=>"post_status_app", :class=>".post_status", :post_status=>last_post[:post].post_status) do
+            content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-post-status")+content_tag(:span, "", :class=>"post_status_visibility top_menu_text")
+        end
+    end +
+    content_tag(:li, :class=>"post_moderate_menu comment_permission_#{last_post[:post].comment_permissions}") do
+        content_tag(:span, "", "aria-hidden"=>"true", :class=>"menu-icon icon-bubbles")+content_tag(:span, "Comments", :class=>"top_menu_text") +
+        content_tag(:ul, :class=>"moderate_options") do
+            Roxiware::Blog::Post::ALLOWED_COMMENT_PERMISSIONS.collect do |permission|
+                current_perm = "selected_item" if last_post[:post].comment_permissions == permission
+                content_tag(:li, :class=>"comment_permission") do
+                    content_tag(:a, :id=>permission, :class=>current_perm) do
+                        content_tag(:span, "", :class=>"icon-checkmark menu-icon") + content_tag(:span, permission.titleize)
+                    end
+                end
+            end.join("").html_safe
+        end
+    end
+end %>
+<%= render :partial=>"roxiware/blog/post/context_menus" %>
+<% end %>
 ]]>
                 </param>
               </params>

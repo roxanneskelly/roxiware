@@ -8,7 +8,7 @@
 var login_form_template = '<form accept-charset="UTF-8" action="/account/login" method="post">' +
                               '<div id="login_status"></div>' +
                               '<div id="username_entry">' +
-                              '<label for="user_username">Username</label>' +
+                              '<label for="user_username">Email Address or Username</label>' +
                               '<input id="user_username" name="user[username]" size="255" type="text" watermark="username" /></div>' +
                               '<div id="password_entry"><label for="user_password">Password</label><input id="user_password" name="user[password]" size="30" type="password" watermark="password" /></div>' +
                               '<div id="remember_me_check" class="labeled-checkbox">' +

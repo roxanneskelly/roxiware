@@ -14,7 +14,7 @@ module Roxiware
                 expiry = options[:expiry].present? ? options[:expiry].to_s : ""
                 decrypted_message = [expiry, data]
                 encrypted_data = crypt.encrypt_and_sign(decrypted_message.to_msgpack)
-                CGI::escape(encrypted_data + "," + Base64.encode64(salt).encode64(salt).gsub(/\n/,''))
+                encrypted_data + "," + Base64.encode64(salt).gsub(/\n/,'')
             end
 
             def unpack(message, options={})

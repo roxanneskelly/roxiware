@@ -14,11 +14,18 @@ module Roxiware
                 expiry = options[:expiry].present? ? options[:expiry].to_s : ""
                 decrypted_message = [expiry, data]
                 encrypted_data = crypt.encrypt_and_sign(decrypted_message.to_msgpack)
-                encrypted_data + "," + Base64.encode64(salt).gsub(/\n/,'')
+                puts "ENCRYPTED DATA IS " + encrypted_data
+                puts "UNENCODED MESSAGE IS " + (encrypted_data + "." + Base64.encode64(salt))
+                puts "MESSAGE IS " + (encrypted_data + "." + Base64.encode64(salt)).gsub(/[\n+=\/]/,"\n"=>"", "+"=>"_", "="=>"~")
+                (encrypted_data + "." + Base64.encode64(salt)).gsub(/[\n+=]/,"\n"=>"", "+"=>"_", "="=>"~", )
             end
 
             def unpack(message, options={})
-                encrypted_data,salt = message.split(",")
+                puts "MESSAGE IS " + message
+                encrypted_data, salt = message.gsub(/[\_\~]/, "_"=>"+", "~"=>"=").split(".")
+                puts "SALT IS " + salt
+                puts "ENCRYPTED DATA IS " + encrypted_data
+                puts "PASSWORD IS " + @password
                 key = ActiveSupport::KeyGenerator.new(@password).generate_key(Base64.decode64(salt))
                 crypt = ActiveSupport::MessageEncryptor.new(key)
                 expiry,data = MessagePack.unpack(crypt.decrypt_and_verify(encrypted_data))

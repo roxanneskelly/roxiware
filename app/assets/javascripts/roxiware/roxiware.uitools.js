@@ -1236,6 +1236,18 @@ $.roxiware.cycle_background = {
     }
 }    
 
+$.fn.section_cover = function() {
+    var self = $(this);
+    $(window).resize(function() {
+        if ((navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i)) && (window.innerHeight < window.innerWidth)) {
+            self.height($(window).innerHeight()-19);
+        }
+        else {
+            self.height($(window).innerHeight());
+        }
+        });
+    $(window).resize();
+}
 
 // Add a bunch of divs with backgrounds set to the images parameter.
 // The images are loaded in parallel, but are added to the base object

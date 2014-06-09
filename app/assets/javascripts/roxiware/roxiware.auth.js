@@ -162,7 +162,7 @@ function do_login(data) {
         var handleSuccess = function(auth_info, data) {
             var date = new Date();
             date.setDate(date.getDate()+7);
-            document.cookie = "ext_oauth_token="+escape(auth_info.auth_token) + ";Path=/;Expires="+date.toUTCString();
+            document.cookie = "ext_oauth_token="+auth_info.auth_token + ";Path=/;Expires="+date.toUTCString();
             data.onSuccess(auth_info);
         }
 

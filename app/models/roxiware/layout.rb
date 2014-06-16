@@ -67,8 +67,8 @@ module Roxiware
             include Roxiware::Param::ParamClientBase
 
             self.table_name= "layouts"
-            PUBLIC_PACKAGES = %w(basic-blog premium-blog basic-author premium-author basic-form premium-forum)
-            ADMIN_PACKAGES = %w(custom basic-blog premium-blog basic-author premium-author basic-form premium-forum)
+            PUBLIC_PACKAGES = %w(basic-blog premium-blog author)
+            ADMIN_PACKAGES = %w(custom basic-blog premium-blog author)
 
             after_initialize :init_layout
             after_find :init_layout

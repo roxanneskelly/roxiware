@@ -827,6 +827,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
     <param class="local" name="post_header_format" description="D009D4B0-5428-4A04-82AC-5A846EC12379">%{title}%{date}%{author_name}%{comments}</param>
     <param class="scheme" name="schemes" description="62275C2A-29F9-4BAA-9893-BB0417917807">
       <param class="scheme" name="f0fa162b-0e6c-46cc-b67e-c02dd1e71520" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"/>
@@ -845,6 +847,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"/>
       </param>
       <param class="scheme" name="23e55361-1e5a-4f2d-b180-1d56c1d7132e" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(217,236,255,1)</param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"/>
@@ -863,6 +867,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"/>
       </param>
       <param class="scheme" name="1ce89fb5-0ea0-4ed9-c460-b66d547b925e" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#ffffff</param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"/>
@@ -880,6 +886,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"/>
       </param>
       <param class="scheme" name="278002fd-36bc-4acb-8216-1ef6b133df20" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#F5F4EB</param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"/>
@@ -898,6 +906,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"/>
       </param>
       <param class="scheme" name="EFFE39DE-02E5-4F7C-90F7-F9D517D6275C" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#000000</param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"/>
@@ -916,6 +926,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"/>
       </param>
       <param class="scheme" name="17d838db-4b46-492d-aead-a13819d9c8b3" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(29,41,52,1)</param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"/>
@@ -934,6 +946,8 @@ span#vimeo.social_network_icon:before,span.vimeo_icon:before { content:'\e0aa'; 
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D"/>
       </param>
       <param class="scheme" name="66ac65b4-4d0f-46e7-bdf1-6e969f6d2ca5" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(210,125,42,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#eceae0</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">#232b2b</param>
           <param class="style" name="background_image" description="E121E288-E726-46C3-8B1C-D2E8EE692531"/>

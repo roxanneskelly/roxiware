@@ -1363,8 +1363,6 @@ div.share_bar {
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/slate.jpg</param>
       </param>
       <param class="scheme" name="D8ED6A26-FD22-4742-AB88-7ACDE18C7D3A" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(41,41,41,1)</param>
-          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(185,185,185,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(233,233,233,1)</param>
@@ -1396,8 +1394,8 @@ div.share_bar {
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/grey.jpg</param>
       </param>
       <param class="scheme" name="C299992B-869C-4CF6-9181-A108D02100F5" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(14562,29,23,1)</param>
-          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(14562,29,23,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(205,205,205,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(250,250,250,1)</param>
@@ -1429,8 +1427,8 @@ div.share_bar {
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/candy-cane.jpg</param>
       </param>
       <param class="scheme" name="F9478A1E-3D64-4186-ADEF-3E510FE04A3B" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
-          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,13,13,1)</param>
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(145,57,53,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,13,13,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(60,22,22,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15,13,13,1)</param>
@@ -1462,8 +1460,8 @@ div.share_bar {
         <param class="scheme" name="thumbnail_image" description="0B092D47-0161-42C8-AEEC-6D7AA361CF1D">http://cdn.roxiware.com/templates/videodrome/crimson.jpg</param>
       </param>
       <param class="scheme" name="4777A407-CE06-497D-BA03-1C822262EC16" description="3E0D9787-B5C8-4883-882A-98BFAEEF7D53">
-          <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15, 53, 129,1)</param>
-          <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
+        <param class="style" name="foreground_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(15, 53, 129,1)</param>
+        <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>
         <param class="scheme" name="params" description="2124E080-D791-4784-A89D-B1984DB73657">
           <param class="style" name="background_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(0,0,32,1)</param>
           <param class="style" name="background_highlight_color" description="A8AC4FA7-9574-49B0-A38A-AE067C607745">rgba(240,240,240,1)</param>

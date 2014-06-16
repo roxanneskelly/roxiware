@@ -131,7 +131,6 @@ div#colors_pane > div {
     <category>General</category>
   </categories>
   <packages>
-    <package>basic_blog</package>
     <package>premium_blog</package>
     <package>author</package>
   </packages>

@@ -43,8 +43,7 @@ namespace :settings do
         param_nodes = doc_obj.find("/settings/param")
         param_nodes.each do |param_node|
             param = Roxiware::Param::Param.new
-            old_param = Roxiware::Param::Param.where(:name=>param_node["name"], :param_class=>param_node["class"]).first
-            old_param.destroy if old_param.present?
+            Roxiware::Param::Param.where(:name=>param_node["name"], :param_class=>param_node["class"]).each{ |old_param| old_param.destroy }
             param.import(param_node, true)
             param.save!
         end

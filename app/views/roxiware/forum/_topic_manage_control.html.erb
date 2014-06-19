@@ -64,16 +64,7 @@ $(function() {
     });
 
     $(".forum_topic_menu_target li.delete_forum_topic a").click(function() {
-       var topic_link = $(this).parents(".forum_topic").attr("rel");
-       if(confirm("Remove Topic\nAre you sure?")) {
-           $.ajax({url:topic_link,
-                   type:"DELETE",
-                   dataType: "json",
-                   success: function(json_data, textStatus, jqXHR) {
-                      window.location.reload();
-                   }
-            });
-        }
+        $(this).parents(".forum_topic").trigger("context_menu", "delete_forum_topic");
     });
 
     $(".forum_topic_menu_target .topic_priority a").click(function(e) {

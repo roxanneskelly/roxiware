@@ -18,7 +18,11 @@ $(document).bind("ready", function() {
                       type:"DELETE",
                       dataType: "json", 
                       success: function(json_data, textStatus, jqXHR) {
-                         window.location.reload();
+                         <% if @topic.present? %>
+                             window.location = "<%= forum_path(@topic.board.seo_index) %>"
+                         <% else %>
+                             window.location.reload();
+                         <% end %>
                       }
                });
               }

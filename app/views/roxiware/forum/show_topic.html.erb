@@ -5,11 +5,11 @@
         <%= link_to("", forum_index_path, :class=>"forum_home_title") %>
         <%= link_to(@topic.board.name, forum_path(@topic.board.seo_index), :class=>"forum_board_title") %>
         <%= content_tag(:div, @topic.title, :class=>"forum_topic_title") %>
-        <%= content_tag(:div, @topic.root_post.comment_date.strftime("%c"), :class=>"forum_topic_post_date") %>
+        <%= content_tag(:div, @topic.root_post.comment_date.strftime("%c"), :class=>"forum_topic_post_date") if @topic.root_post.present? %>
     <% end %>
     <%= content_tag(:div, :class=>"comments") do %>
         <%= raw Roxiware::CommentHelper.display_comments(@comments, :allow_reply=>true, :allow_edit=>(current_user.present? && current_user.is_admin?), :comment_date_format=>"%c", :comment_header_format=>@forum_post_header_format) %>
-    <% end %>
+    <% end if @comments.present? %>
 <% end %>
 <% if can? :post, @topic %>
 <%= render :partial=>"roxiware/shared/comment_form", :locals=>{:additional_fields=>""} %>
@@ -155,7 +155,7 @@ $(function() {
 
 <% if can? :delete, @topic %>
     $("#delete_forum_topic_app_menu").click(function() {
-        $(".post").trigger("context_menu", "delete_forum_topic");
+        $(".forum_topic").trigger("context_menu", "delete_forum_topic");
     });
 <% end %>
 
@@ -275,7 +275,7 @@ $(function() {
 			        });
 			    }
 			    else {
-			        window.location.reload();
+			        window.location = "<%= forum_path(@topic.board.seo_index) %>";
 		            }
                         }
         });

@@ -33,6 +33,12 @@ class Roxiware::Book < ActiveRecord::Base
 
     }
 
+    after_initialize do
+        self.large_image = default_image_path(:book, :large)
+        self.image = default_image_path(:book, :medium)
+        self.thumbnail = default_image_path(:book, :thumbnail)
+    end
+
     def description_excerpt(description_length, &block)
         Sanitize.clean(truncate(description || "", :length => description_length, :escape=>false, :separator=>" ", :omission=>""), Sanitize::Config::RELAXED) + block.call
     end
@@ -157,6 +163,9 @@ class Roxiware::Book < ActiveRecord::Base
             self.image = "/asset/#{base_file_name}_100x150#{extension}"
             self.thumbnail = "/asset/#{base_file_name}_50x75#{extension}"
         end
+        self.large_image ||= default_image_path(:book, :large)
+        self.image ||= default_image_path(:book, :medium)
+        self.thumbnail ||= default_image_path(:book, :thumbnail)
         init_sales_links if get_param("bookstores").blank?
     end
 end

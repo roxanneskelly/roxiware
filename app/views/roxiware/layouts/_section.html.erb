@@ -1,5 +1,4 @@
 <% layout_section = @page_layout.section(section) %>
-<% puts "LAYOUT SECTION " + layout_section.inspect %>
 <% first_widget = true %>
 <% if layout_section.present? %>
 <% section_class = "#{section}_class " + (can?(:edit, layout_section) ? "edit_section" : "") %>

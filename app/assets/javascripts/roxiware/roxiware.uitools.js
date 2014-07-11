@@ -989,7 +989,7 @@ function settingsForm(source, title, options) {
             },
             onLoad: function(event) {
                  $("body").css("overflow", "hidden");
-                 overlay.find("button").button();
+                 overlay.find("button:not(.ui-button)").button();
                  overlay.find("input[alt_type=color]").colorpicker();
                  overlay.find(".param-field-image").bind("click", function() {
                      var param_field = $(this);
@@ -1239,13 +1239,15 @@ $.roxiware.cycle_background = {
 $.fn.section_cover = function() {
     var self = $(this);
     $(window).resize(function() {
-        if ((navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i)) && (window.innerHeight < window.innerWidth)) {
-            self.height($(window).innerHeight()-19);
-        }
-        else {
-            self.height($(window).innerHeight());
-        }
+        self.each(function(index, item){
+            if ((navigator.userAgent.match(/iPad;.*CPU.*OS 7_\d/i)) && (window.innerHeight < window.innerWidth)) {
+                $(item).height($(window).innerHeight()-19);
+            }
+            else {
+                $(item).height($(window).innerHeight());
+            }
         });
+    });
     $(window).resize();
 }
 

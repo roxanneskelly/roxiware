@@ -53,8 +53,8 @@ class Roxiware::AssetController < ApplicationController
         when "image"
             thumbprint = UUID.new.generate :compact
             if(params[:qqfile])
-                extension = File.extname(params[:qqfile])
-                image_file_handle=request.body
+                extension = File.extname(params[:qqfilename])
+                image_file_handle=params[:qqfile]
             else
                 image_url = URI(params[:url])
                 extension = File.extname(image_url.path)

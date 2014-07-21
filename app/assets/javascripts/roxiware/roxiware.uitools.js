@@ -932,7 +932,7 @@
 })(jQuery);
 
 function settingsForm(source, title, options) {
-    var conf = $.extend({}, options);
+    var conf = $.extend({fixed:true}, options);
     title = typeof title  != 'undefined' ? title : "&nbsp;";
     var overlay = $("<div id='edit_overlay' class='settings settings_dialog settings_form' style='z-index:2000'><a class='close icon-cancel-circle'></a>");
 
@@ -947,7 +947,7 @@ function settingsForm(source, title, options) {
 
     var instantiateOverlay = function() {
         var top = "5%";
-        var fixed=true;
+        var fixed=conf.fixed;
         var source = overlay.find(".contentWrap > div");
         source.data("settings_form", conf);
         if(source.is(".huge_form")) { 
@@ -999,7 +999,8 @@ function settingsForm(source, title, options) {
                          params.width = param_field.find("input").attr("width");
                          params.height = param_field.find("input").attr("height");
                      }
-                     settingsForm("/asset/edit?"+jQuery.param(params), "Choose Image", {
+                     settingsForm("/asset/edit?"+jQuery.param(params), "", {
+                             fixed:false,
                          success: function(image_url) {
                              param_field.find("img").attr("src", image_url);
                              param_field.find("input").val(image_url);

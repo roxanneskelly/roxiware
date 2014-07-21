@@ -1,0 +1,277 @@
+<%= can_upload ||= current_user.present?
+    media_types ||= [:image]
+    content_tag(:div, :id=>"media_upload") do
+        content_tag(:div, tag(:img), :id=>"image_preview_pane") do
+            content_tag(:div, :id=>"image_preview_row") do
+                content_tag(:div, :id=>"image_toolbar") do
+                    content_tag(:a, content_tag(:span, "", :class=>"icon-crop"), :id=>"crop", :title=>"Crop")
+                end +
+                content_tag(:div, tag(:img), :id=>"image_preview")
+            end +
+            content_tag(:div, :id=>"save_row") do
+                content_tag(:div, "") +
+                content_tag(:div, :id=>"save_cell") do
+                    button_tag("Save", :id=>"save", :type=>"button")
+                end
+            end
+        end +
+        content_tag(:div, :id=>"image_target") do
+            content_tag(:div, :id=>"media_types") do
+                "".html_safe +
+                if media_types.include?(:image)
+                    if local_assigns.has_key?(:multiple)
+                        content_tag(:span, "", :class=>"icon-images")
+                    else
+                        content_tag(:span, "", :class=>"icon-image")
+                    end
+                end +
+                if media_types.include?(:video)
+                    content_tag(:span, "", :class=>"icon-video")
+                end +
+                if media_types.include?(:audio)
+                    content_tag(:span, "", :class=>"icon-volume-high-2")
+                end
+            end +
+            if local_assigns.has_key?(:multiple)
+                content_tag(:div, "Upload your files.", :id=>"drop_help")
+            else
+                content_tag(:div, "Upload your file.", :id=>"drop_help")
+            end +
+            content_tag(:div, "", :id=>"upload_drop_area") +
+            content_tag(:div, :id=>"upload_toolbar") do
+                content_tag(:div, :id=>"url_section") do
+                    text_field_tag(:image_url, asset_url, :id=>"image_url", :value=>asset_url, :watermark=>"URL") +
+                    content_tag(:span, "", :class=>"icon-link")
+                end
+            end +
+            content_tag(:div, "", :class=>"spinner-icon spinner-upload") +
+            content_tag(:a, "Cancel", :id=>"upload_cancel") +
+            content_tag(:div, content_tag(:div, "", :id=>"progress"), :id=>"progress_bar")
+        end
+     end
+%>
+<script>
+$(function() {
+
+   var image_selection_dialog = $("#image_selection_dialog");
+   var loader_image = $("#image_preview img");
+   var set_image = function(image_url) {
+       image_selection_dialog.find("div#progress_section").hide();
+       $("div#url_section input").val(image_url).removeClass("watermark");
+        $("#media_upload").removeClass("uploading").addClass("edit_image");
+       loader_image.attr("src", image_url);
+   } 
+   var changeSetTimeout = null;
+   $("input#image_url").bind("input propertychange", function() {
+       $("button[name=save]").button("enable");
+       var image_url = $(this).val();
+       if(changeSetTimeout) {
+           clearTimeout(changeSetTimeout);
+       }
+       changeSetTimeout = setTimeout(function() {
+          clearTimeout(changeSetTimeout);
+          set_image(image_url);
+          changeSetTimeout = null;
+       }, 1000);
+   });
+
+
+    // Set up cropping control
+    var img_area_conf = {handles:true, 
+                         parent:image_selection_dialog.find("#image_preview"),
+                         hide:true};
+<% if local_assigns[:width].present? || local_assigns[:height].present? %>
+    img_area_conf.aspectRatio = '<%= "#{width}:#{height}" %>';
+<% end %>
+    // preloading image
+    loader_image.load(function() {
+        image_selection_dialog.find("#image_preview img").attr("src", $(this).attr("src"));
+        var img_area_options =  $.extend({instance:true}, img_area_conf);
+        img_area_options.imageHeight = loader_image[0].height;
+        img_area_options.imageWidth = loader_image[0].width;
+        img_area_options.x1 = 0;
+        img_area_options.y1 = 0;
+        img_area_options.x2 = loader_image[0].width;
+        img_area_options.y2 = loader_image[0].height;
+
+    <% if local_assigns[:width].present? || local_assigns[:height].present? %>
+        <% if (local_assigns[:width].present? && local_assigns[:height].present?) %>
+            var width = <%= width %>;
+            var height = <%= height %>;
+            var aspect_ratio = width/height;
+        <% elsif local_assigns[:width].present? %>
+            var aspect_ratio = img_area_options.imageWidth/img_area_options.imgHeight;
+            var width = <%= width %>;
+            var height = width/aspect_ratio;
+        <% else %>
+            var width = <%= height %>*aspect_ratio;
+            var height = height;
+        <% end %>
+        img_area_options.onSelectChange = function(image, select) {
+            $("button[name=save]").button("enable");
+        }
+        img_area_options.show = true;
+        img_area_options.hide = false;
+        img_area_options.x2 = Math.min(img_area_options.imageWidth, width);
+        img_area_options.y2 = Math.min(img_area_options.imageHeight, height);
+        if (img_area_options.x2 < img_area_options.y2 * aspect_ratio) {
+            img_area_options.x2 = Math.min(img_area_options.imageWidth,
+            img_area_options.y2 * aspect_ratio);
+            img_area_options.y2 = Math.min(img_area_options.imageHeight,
+            img_area_options.x2 / aspect_ratio);
+        }
+        else {
+            img_area_options.y2 = Math.min(img_area_options.imageHeight,
+            img_area_options.x2 / aspect_ratio);
+            img_area_options.x2 = Math.min(img_area_options.imageWidth,
+            img_area_options.y2 * aspect_ratio);
+        }
+        $("#image_toolbar #crop").addClass("selected");
+    <% end %>
+        image_selection_dialog.find("#image_preview img").imgAreaSelect({remove:true});
+        ias = image_selection_dialog.find("#image_preview img").imgAreaSelect(img_area_options);
+        ias.update();
+    });
+
+    <% unless local_assigns[:width].present? || local_assigns[:height].present? %>
+        $("#image_toolbar #crop").click(function() {
+            $(this).toggleClass("selected");
+            ias = image_selection_dialog.find("#image_preview img").imgAreaSelect({instance:true});
+            if($(this).is(".selected")) {
+                ias.setOptions({show:true});
+            }
+            else {
+                ias.setOptions({hide:true});
+            }
+        });
+    <% end %>
+
+    var csrf_token = $('meta[name="csrf-token"]').attr('content');
+    var csrf_param = $('meta[name="csrf-param"]').attr('content');
+    var upload_params = {asset_type:"image"};
+    if (csrf_param !== undefined && csrf_token !== undefined) {
+        upload_params[csrf_param] = csrf_token;
+    }
+<%
+    extensions = []
+    if media_types.include?(:image)
+        extensions = %w(jpg png jpeg gif)
+    end
+    if media_types.include?(:video)
+        extensions += %w(mov mp4)
+    end
+    if media_types.include?(:video)
+        extensions += %w(mp3)
+    end
+
+%>
+
+    $("#image_preview img").load(function() {
+        $("#image_preview_pane").animate({opacity:1}, 100);
+   });
+    $("#image_target").on("complete", function(event, id, name, json_data) {
+        if(json_data["success"]) {
+            set_image(json_data["url"]);
+        }
+        else {
+            $.alert(json_data["error"]);
+        }
+    })
+    .on("allComplete", function(event) {
+        $("#media_upload").removeClass("uploading").addClass("edit_image");
+    })
+    .on("submit", function(event, id, name) {
+        // replace upload button with progress bar
+        image_selection_dialog.find("div#progres_bar div#progress").css("width", "0%");
+        $("#media_upload").addClass("uploading");
+    })
+    .on("progress", function(event, id, name, loaded, total) {
+        var progress = String(Math.round((loaded*90)/total));
+        image_selection_dialog.find("div#progress_bar div#progress").css("width", progress + "%");
+    })
+    .on("cancel", function() {
+        $("#media_upload").removeClass("uploading");
+    });
+
+    image_selection_dialog.find("#upload_cancel").click(function(e) {
+        $("#image_target").fineUploader("cancel");
+    });
+
+    console.log("setting up fineUploader");
+    var extensions = <%= raw extensions.to_json %>;
+    $("#image_target").fineUploader( {
+        uploaderType: 'basic',
+        button:$("#upload_drop_area"),
+        debug:true,
+        multiple: <%= local_assigns.has_key?(:multiple) ? "true" : "false" %>,
+        camera: {
+            ios: <%= local_assigns.has_key?(:multiple) ? "false" : "true" %>
+        },
+        request: {
+            endpoint: "/asset.json",
+            params: upload_params
+        },
+        validation: {
+            allowedExtensions: extensions
+        },
+        showMessage: function(message) {
+            $.alert(message);
+        },
+        sizeLimit: 0,
+        minSizeLimit: 0
+    });
+
+    image_selection_dialog.find("button#save").click(function (e) {
+        e.preventDefault();
+        var settings_conf = $("#image_selection_dialog").data("settings_form");
+        image_selection_dialog.find(".watermark").val("");
+        // no image was selected
+        if(image_selection_dialog.find("div#url_section input").val() == "") {
+            console.log("url section " + image_selection_dialog.find("div#url_section input").val());
+            settings_conf.success(image_selection_dialog.find("div#url_section input").val());
+            image_selection_dialog.parents("#edit_overlay").find(".close").click();
+            return;
+       }
+       selection = ias.getSelection(false);
+       // no resizing/cropping
+<% if !(width && height)  %>
+       if (!(selection.width && selection.height)) {
+           settings_conf.success(image_selection_dialog.find("div#url_section input").val());
+           image_selection_dialog.parents("#edit_overlay").find(".close").click();
+           return;
+       }
+<% end %>
+
+       //tell asset manager to generate an image with appropriate clipping
+       var create_params = {
+           url:image_selection_dialog.find("div#url_section input").val(),
+           asset_type:"image"
+       }
+
+       if(selection.width && selection.height) {
+           create_params["crop"] = {
+               x:selection.x1,
+               y:selection.y1,
+               width:selection.width,
+               height:selection.height}
+       }
+<% if local_assigns[:width].present? %>
+       create_params["width"] = <%= width %>;
+<% end %>
+<% if local_assigns[:height].present? %>
+       create_params["height"] = <%= height %>;
+<% end %>
+       $.ajaxSetParamsJSON("/asset.json", create_params, {
+           method:"POST",
+           success:function(json_data) {
+               console.log("success on json_data.url" + json_data.url);
+               settings_conf.success(json_data.url);
+               image_selection_dialog.parents("#edit_overlay").find(".close").click();
+           }
+       });
+   });
+   <% if asset_url.present? %>
+       set_image("<%= asset_url %>")
+   <% end %>
+});
+</script>

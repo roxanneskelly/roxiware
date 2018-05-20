@@ -24,7 +24,7 @@ require 'roxiware/image_helpers'
 require 'roxiware/sanitizer'
 require 'roxiware/routing'
 require 'roxiware/auth_helpers'
-require 'recaptcha/rails'
+#require 'recaptcha/rails'
 module Roxiware
   class Engine < ::Rails::Engine
     engine_name "roxiware"

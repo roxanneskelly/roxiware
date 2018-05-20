@@ -71,15 +71,15 @@ class Roxiware::AccountController < ApplicationController
         @robots="noindex,nofollow"
         authorize! :create, Roxiware::User
         @user = Roxiware::User.new
-        @user.build_person
-        @user.person.bio = ""
-        @user.person.role = params[:user][:role] if params.has_key?("role")
+        role = params[:user][:role] if params.has_key?("role")
+        @user.create_person({:bio=>"", :role=>role, :first_name=>"New", :last_name=>"User"}, :as=>@role)
         respond_to do |format|
             @user.assign_attributes(params[:user], :as=>current_user.role)
             if !@user.save
                 format.html { redirect_to "/", :notice=>flash_from_object_errors(@user) }
                 format.json { render :json=>report_error(@user)}
             else
+                @user.person.save!
                 @user.reload
                 @user.person.user_id = @user.id
                 @user.save

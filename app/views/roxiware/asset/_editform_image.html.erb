@@ -1,5 +1,25 @@
 <%= content_tag(:div, :id=>"image_selection_dialog", :class=>"huge_form") do
     content_tag(:div, :id=>"media_section") do
-       render(:partial=>"media_upload", :locals=>local_assigns)
+       render(:partial=>"media_upload") +
+       content_tag(:div, "", :id=>"media_upload_field") +
+       content_tag(:div, :id=>"save_button_field") do
+           button_tag("Save", :type=>"button", :id=>"save_image", :style=>"display:none")
+       end
     end
 end %>
+<script>
+var media_upload_api = $("#media_upload_field").media_upload({multiple:false,
+                                                              onEdit:function() {
+                                                                  $("#image_selection_dialog button#save_image").show();
+                                                              },
+                                                              width:<%= width || "null" %>,
+                                                              height:<%= height || "null" %>,
+                                                              image:true});
+$("#image_selection_dialog button#save_image").click(function() {
+    media_upload_api.process(function(url) {
+        var settings_conf = $("#image_selection_dialog").data("settings_form");
+        settings_conf.success(url);
+        $("#image_selection_dialog").parents("#edit_overlay").find(".close").click();
+    });
+});
+</script>

@@ -35,7 +35,8 @@ module Roxiware
 
         def image_upload_tag(field_group, param, options = {})
             tag(:img, :src=>options[:value]) +
-                field_group.hidden_field(param.name.to_sym, options)
+            content_tag(:div, "", :class=>"icon-cross ",  :style=>(options[:value].present? ? "display:block" : "display:none")) +
+            field_group.hidden_field(param.name.to_sym, options)
         end
 
         def param_field(field_group, param, options={})

@@ -1,0 +1,9 @@
+
+arr1 = ["x","y"]
+
+arrstr = arr1.collect{|val| content_tag(:div, "stuff in div #{val})}.join("") +
+content_tag(:div, "end")
+
+
+
+<div>stuff in div x</div><div>stuff in div y</div><div>end</end>

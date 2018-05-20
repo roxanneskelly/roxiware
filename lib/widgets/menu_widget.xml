@@ -273,6 +273,7 @@ ddsmoothmenu.init({
     classname: 'ddsmoothmenu_widget',
     contentsource: "markup"});
 <% end %>
+});
 </script>]]>
 </render_view>
    <style>

@@ -991,6 +991,13 @@ function settingsForm(source, title, options) {
                  $("body").css("overflow", "hidden");
                  overlay.find("button:not(.ui-button)").button();
                  overlay.find("input[alt_type=color]").colorpicker();
+                 overlay.find(".param-field-image .icon-cross").bind("click", function(e) {
+                     var param_field = $(this).parents(".param-field-image");
+                     e.stopImmediatePropagation();
+                     param_field.find("img").removeAttr("src");
+                     param_field.find("input").val("");
+                     $(this).hide();
+                 });
                  overlay.find(".param-field-image").bind("click", function() {
                      var param_field = $(this);
                      var params = {};
@@ -1004,6 +1011,9 @@ function settingsForm(source, title, options) {
                          success: function(image_url) {
                              param_field.find("img").attr("src", image_url);
                              param_field.find("input").val(image_url);
+                             if(image_url && (image_url != "")) {
+                                 param_field.find("icon-cross").show();
+                             }
                          }
                      });
                  });

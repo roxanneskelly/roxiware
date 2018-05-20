@@ -6,6 +6,19 @@ require 'tempfile'
 
 ENV['RAILS_ENV'] ||= "development"
 
+namespace :wordpress do
+    desc "export"
+    task :export =>:environment do |t|
+        xml = ::Builder::XmlMarkup.new(:indent=>2, :target=>$stdout)
+        xml.instruct! :xml, :version => "1.0"
+        xml.settings do |xml_params|
+            params.each do |param|
+                param.export(xml_params, true)
+            end
+        end
+    end
+end
+
 namespace :settings do
     desc "list"
     task :list =>:environment do |t|

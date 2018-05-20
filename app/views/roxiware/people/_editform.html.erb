@@ -13,7 +13,7 @@ $(function() {
             var endpoint = "<%= person_path(@person.id) %>.json";
             var method = "PUT";
         <% else %>
-            var endpoint = "<%= people_path %>.json";
+            var endpoint = "<%= biography_path %>.json";
             var method="POST";
         <% end %>
         $("form input.watermark").val("");

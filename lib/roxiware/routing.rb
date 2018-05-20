@@ -105,15 +105,16 @@ module ActionDispatch::Routing
 	    end
 	end
 
-        def roxiware_people
+    def roxiware_people
+	    resources :people, :path=>"/person"
 	    get "/people/" => "people#index"
+	    post "/people" => "people#create"
 	    get "/people/:seo_index" => "people#show_seo"
 	    get "/biography/" => "people#index"
 	    get "/biography/:seo_index" => "people#show_seo"
-	    resources :people, :path=>"/person"
 	end
 
-        def roxiware_galleries
+    def roxiware_galleries
 	    get "/galleries" => "gallery#index"
 	    get "/galleries/:gallery_seo_index" => "gallery#show_seo"
 	    get "/galleries/:gallery_seo_index/:item_seo_index/" => "gallery_items#show_seo"

@@ -117,8 +117,8 @@ module Roxiware
 	        email = access_token['extra']['raw_info']['email']
 	    when :twitter
 	        uid = access_token['info']['nickname']
-            when :roxiware
-                username = access_token['uid']
+        when :roxiware
+            username = access_token['uid']
 	    else
 	        raise 'Provider #{provider} not handled'
 	    end
